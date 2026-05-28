@@ -397,118 +397,6 @@
             color: var(--text-primary);
         }
 
-        /* Why This Matters */
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        @media (max-width: 600px) {
-            .benefits-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .benefit-card {
-            background: var(--bg-slider);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .benefit-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .benefit-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: var(--text-primary);
-        }
-
-        .benefit-desc {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        /* Quiz Section */
-        .quiz-section {
-            margin-top: 2rem;
-        }
-
-        .quiz-card {
-            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(99, 102, 241, 0.1) 100%);
-            border: 2px solid var(--primary);
-        }
-
-        .quiz-question {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .quiz-options {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .quiz-option {
-            padding: 0.75rem 1rem;
-            background: var(--bg-slider);
-            border: 2px solid transparent;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: left;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .quiz-option:hover {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.1);
-        }
-
-        .quiz-option.correct {
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--success);
-        }
-
-        .quiz-option.incorrect {
-            border-color: var(--accent-north-face);
-            background: rgba(225, 29, 72, 0.2);
-            color: var(--accent-north-face);
-        }
-
-        .quiz-feedback {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            display: none;
-        }
-
-        .quiz-feedback.show {
-            display: block;
-        }
-
-        .quiz-feedback.correct {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid var(--success);
-            color: var(--success);
-        }
-
-        .quiz-feedback.incorrect {
-            background: rgba(225, 29, 72, 0.15);
-            border: 1px solid var(--accent-north-face);
-            color: var(--accent-north-face);
-        }
-
         /* Reset Button */
         .reset-btn {
             padding: 0.5rem 1rem;
@@ -651,13 +539,7 @@
 
         <!-- Preset Selection -->
         <div class="preset-buttons" style="justify-content: center; margin-bottom: 2rem;">
-            <button class="preset-btn active" onclick="setPreset('custom')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                </svg>
-                Custom Brand
-            </button>
-            <button class="preset-btn north-face" onclick="setPreset('northface')">
+            <button class="preset-btn north-face active" onclick="setPreset('northface')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                 </svg>
@@ -671,6 +553,12 @@
                     <line x1="15" y1="9" x2="15.01" y2="9"/>
                 </svg>
                 Old Navy
+            </button>
+            <button class="preset-btn" onclick="setPreset('custom')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+                Try it Out
             </button>
         </div>
 
@@ -853,68 +741,6 @@
             </div>
         </div>
 
-        <!-- Why This Matters Section -->
-        <div class="card">
-            <h2 class="card-title" style="margin-bottom: 1rem;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                    <line x1="12" y1="17" x2="12.01" y2="17"/>
-                </svg>
-                Why Voice-Tone Sliders Matter
-            </h2>
-            <div class="benefits-grid">
-                <div class="benefit-card">
-                    <div class="benefit-icon">🎯</div>
-                    <h4 class="benefit-title">Reduces Subjectivity</h4>
-                    <p class="benefit-desc">No more debates like "this feels off"—sliders give concrete reference points.</p>
-                </div>
-                <div class="benefit-card">
-                    <div class="benefit-icon">📈</div>
-                    <h4 class="benefit-title">Scales Well</h4>
-                    <p class="benefit-desc">Writers, marketers, and AI tools all align faster with clear slider positions.</p>
-                </div>
-                <div class="benefit-card">
-                    <div class="benefit-icon">🔄</div>
-                    <h4 class="benefit-title">Context-Aware</h4>
-                    <p class="benefit-desc">Website ≠ support email ≠ TikTok caption. Same brand, different slider flex.</p>
-                </div>
-                <div class="benefit-card">
-                    <div class="benefit-icon">📚</div>
-                    <h4 class="benefit-title">Teachable</h4>
-                    <p class="benefit-desc">Easy for students, contractors, or new hires to learn and apply consistently.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quiz Section -->
-        <div class="quiz-section">
-            <div class="card quiz-card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                            <polyline points="22 4 12 14.01 9 11.01"/>
-                        </svg>
-                        Test Your Understanding
-                    </h2>
-                </div>
-
-                <div id="quiz-container">
-                    <p class="quiz-question" id="quiz-question">
-                        A brand's help article should use different slider positions than their TikTok caption. Why?
-                    </p>
-                    <div class="quiz-options" id="quiz-options">
-                        <button class="quiz-option" onclick="checkAnswer(0)">Different audiences require completely different brand voices</button>
-                        <button class="quiz-option" onclick="checkAnswer(1)">Context demands different expression within the same voice framework</button>
-                        <button class="quiz-option" onclick="checkAnswer(2)">Help articles should always be formal while social should be casual</button>
-                        <button class="quiz-option" onclick="checkAnswer(3)">Brands should pick one tone and use it everywhere for consistency</button>
-                    </div>
-                    <div class="quiz-feedback" id="quiz-feedback"></div>
-                </div>
-            </div>
-        </div>
-
         <footer>
             <p>Voice-Tone Sliders Interactive • Based on training content from <a href="https://www.notion.so/9bc1d028b9f4837ba46901f67c2ffab8" target="_blank">Extern Program</a></p>
             <p style="margin-top: 0.5rem;">Think of sliders as <strong>guardrails for voice</strong>, not a script.</p>
@@ -1039,7 +865,7 @@
             return 'Strongly Right';
         }
 
-        function updateSlider(name) {
+        function updateSlider(name, skipPresetReset = false) {
             const slider = document.getElementById(`slider-${name}`);
             const fill = document.getElementById(`fill-${name}`);
             const text = document.getElementById(`text-${name}`);
@@ -1060,10 +886,10 @@
 
             text.textContent = getPositionText(value, labels[name][0], labels[name][1]);
 
-            // Clear preset selection when manually adjusting
-            if (currentPreset !== 'custom') {
+            // Clear preset selection when manually adjusting (skip during initialization)
+            if (!skipPresetReset && currentPreset !== 'custom') {
                 document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelector('.preset-btn:first-child').classList.add('active');
+                document.querySelector('.preset-btn:last-child').classList.add('active');
                 currentPreset = 'custom';
             }
 
@@ -1131,7 +957,7 @@
                 const slider = document.getElementById(`slider-${name}`);
                 if (slider) {
                     slider.value = config[name];
-                    updateSlider(name);
+                    updateSlider(name, true);
                 }
             });
 
@@ -1176,67 +1002,26 @@
             setPreset('custom');
         }
 
-        // Quiz functionality
-        const quizData = [
-            {
-                question: "A brand's help article should use different slider positions than their TikTok caption. Why?",
-                options: [
-                    "Different audiences require completely different brand voices",
-                    "Context demands different expression within the same voice framework",
-                    "Help articles should always be formal while social should be casual",
-                    "Brands should pick one tone and use it everywhere for consistency"
-                ],
-                correct: 1,
-                feedback: {
-                    correct: "Exactly! The same brand flexes its slider positions based on context. A help article might lean more 'plain-spoken' and 'reassuring' while a TikTok might be more 'conversational' and 'bold'—but both stay within the brand's established range.",
-                    incorrect: "Not quite. Voice-tone sliders aren't about different audiences having different voices—they're about the same brand voice flexing within its established range based on context. A help article might need to be more 'plain-spoken' while staying true to the brand."
-                }
-            }
-        ];
-
-        let currentQuizIndex = 0;
-        let quizAnswered = false;
-
-        function checkAnswer(selectedIndex) {
-            if (quizAnswered) return;
-            quizAnswered = true;
-
-            const quiz = quizData[currentQuizIndex];
-            const options = document.querySelectorAll('.quiz-option');
-            const feedback = document.getElementById('quiz-feedback');
-
-            options.forEach((opt, index) => {
-                if (index === quiz.correct) {
-                    opt.classList.add('correct');
-                } else if (index === selectedIndex && selectedIndex !== quiz.correct) {
-                    opt.classList.add('incorrect');
-                }
-                opt.style.pointerEvents = 'none';
-            });
-
-            feedback.classList.add('show');
-            if (selectedIndex === quiz.correct) {
-                feedback.classList.add('correct');
-                feedback.classList.remove('incorrect');
-                feedback.innerHTML = `<strong>✓ Correct!</strong> ${quiz.feedback.correct}`;
-            } else {
-                feedback.classList.add('incorrect');
-                feedback.classList.remove('correct');
-                feedback.innerHTML = `<strong>✗ Not quite.</strong> ${quiz.feedback.incorrect}`;
-            }
-        }
-
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize all sliders
+            // Load North Face preset by default
+            currentPreset = 'northface';
+            const config = presets.northface;
+
             sliders.forEach(name => {
                 const slider = document.getElementById(`slider-${name}`);
                 if (slider) {
-                    updateSlider(name);
+                    slider.value = config[name];
+                    updateSlider(name, true);
                 }
             });
-            // Set initial state (custom mode - Technical visible, Trendy hidden)
+
+            // Set Technical visible, Trendy hidden, with North Face badge
             document.getElementById('group-trendy').style.display = 'none';
+            document.getElementById('group-technical').classList.add('highlight');
+            document.getElementById('badge-technical').textContent = 'North Face uses this slider';
+            document.getElementById('anchor-text').textContent = config.anchor;
+
             updatePreview();
         });
     </script>
