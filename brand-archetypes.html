@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Four Brand Archetypes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #a8dadc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a8b2d1;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .instruction {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #8892b0;
+        }
+
+        .archetypes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        /* Card wrapper for animation */
+        .archetype-card {
+            height: 420px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        /* Inner container that flips */
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .archetype-card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .card-back {
+            background: #fff;
+            color: #1a1a2e;
+            transform: rotateY(180deg);
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .archetype-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            font-size: 48px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero .archetype-icon {
+            background: linear-gradient(135deg, #e63946 0%, #ff6b6b 100%);
+        }
+
+        .explorer .archetype-icon {
+            background: linear-gradient(135deg, #2a9d8f 0%, #40c9a2 100%);
+        }
+
+        .caregiver .archetype-icon {
+            background: linear-gradient(135deg, #457b9d 0%, #90caf9 100%);
+        }
+
+        .rebel .archetype-icon {
+            background: linear-gradient(135deg, #9d4edd 0%, #c77dff 100%);
+        }
+
+        .archetype-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .archetype-tagline {
+            font-size: 0.95rem;
+            color: #a8b2d1;
+            line-height: 1.5;
+        }
+
+        .flip-hint {
+            margin-top: auto;
+            padding-top: 20px;
+            font-size: 0.8rem;
+            color: #8892b0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .flip-hint svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Card Back Styles */
+        .back-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .back-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .hero .back-icon { background: linear-gradient(135deg, #e63946, #ff6b6b); }
+        .explorer .back-icon { background: linear-gradient(135deg, #2a9d8f, #40c9a2); }
+        .caregiver .back-icon { background: linear-gradient(135deg, #457b9d, #90caf9); }
+        .rebel .back-icon { background: linear-gradient(135deg, #9d4edd, #c77dff); }
+
+        .back-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .traits-section {
+            flex: 1;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8892b0;
+            margin-bottom: 10px;
+        }
+
+        .traits-list {
+            list-style: none;
+        }
+
+        .traits-list li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #4a5568;
+        }
+
+        .traits-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .hero .traits-list li::before { background: #e63946; }
+        .explorer .traits-list li::before { background: #2a9d8f; }
+        .caregiver .traits-list li::before { background: #457b9d; }
+        .rebel .traits-list li::before { background: #9d4edd; }
+
+        .brand-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .brand-tag {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .hero .brand-tag { background: #ffe3e3; color: #c92a2a; }
+        .explorer .brand-tag { background: #d3f9d8; color: #087f5b; }
+        .caregiver .brand-tag { background: #d0ebff; color: #1971c2; }
+        .rebel .brand-tag { background: #f3d9fa; color: #862e9c; }
+
+        .close-hint {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #a8b2d1;
+        }
+
+        /* Hover Effects */
+        .archetype-card:not(.flipped):hover .card-front {
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .archetype-card:not(.flipped):hover .card-inner {
+            transform: translateY(-8px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .archetype-card {
+                height: 400px;
+            }
+
+            .card-back {
+                padding: 20px;
+            }
+        }
+
+        /* Animation for initial load */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .archetype-card {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .archetype-card:nth-child(1) { animation-delay: 0.1s; }
+        .archetype-card:nth-child(2) { animation-delay: 0.2s; }
+        .archetype-card:nth-child(3) { animation-delay: 0.3s; }
+        .archetype-card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Four Brand Archetypes</h1>
+            <p class="subtitle">Brand archetypes are recurring character types that help people instantly understand what a brand stands for. They work as shortcuts to brand personality.</p>
+            <span class="instruction">Click any card to learn more</span>
+        </header>
+
+        <div class="archetypes-grid">
+            <!-- Hero Card -->
+            <div class="archetype-card hero" onclick="toggleCard(this)">
+                <div class="card-inner">
+                    <div class="card-face card-front">
+                        <div class="archetype-icon">&#9876;</div>
+                        <h2 class="archetype-name">The Hero</h2>
+                        <p class="archetype-tagline">Bold, determined, and focused on overcoming challenges to make the world better.</p>
+                        <div class="brand-tags">
+                            <span class="brand-tag">Nike</span>
+                            <span class="brand-tag">Adidas</span>
+                            <span class="brand-tag">Gatorade</span>
+                        </div>
+                        <div class="flip-hint">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                            Click to explore
+                        </div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="back-header">
+                            <div class="back-icon">&#9876;</div>
+                            <span class="back-title">The Hero</span>
+                        </div>
+                        <div class="traits-section">
+                            <div class="section-label">Key Characteristics</div>
+                            <ul class="traits-list">
+                                <li>Bold, courageous, and determined to succeed</li>
+                                <li>Focused on overcoming challenges and winning</li>
+                                <li>Talks about courage, hard work, and achievement</li>
+                                <li>Promises to help customers reach their potential</li>
+                            </ul>
+                        </div>
+                        <p class="close-hint">Click to flip back</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explorer Card -->
+            <div class="archetype-card explorer" onclick="toggleCard(this)">
+                <div class="card-inner">
+                    <div class="card-face card-front">
+                        <div class="archetype-icon">&#9978;</div>
+                        <h2 class="archetype-name">The Explorer</h2>
+                        <p class="archetype-tagline">Driven by freedom, discovery, and pushing beyond the comfort zone.</p>
+                        <div class="brand-tags">
+                            <span class="brand-tag">North Face</span>
+                            <span class="brand-tag">Patagonia</span>
+                            <span class="brand-tag">Nat Geo</span>
+                        </div>
+                        <div class="flip-hint">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                            Click to explore
+                        </div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="back-header">
+                            <div class="back-icon">&#9978;</div>
+                            <span class="back-title">The Explorer</span>
+                        </div>
+                        <div class="traits-section">
+                            <div class="section-label">Key Characteristics</div>
+                            <ul class="traits-list">
+                                <li>Driven by freedom and self-discovery</li>
+                                <li>Celebrates adventure and new experiences</li>
+                                <li>Invites customers on a journey of discovery</li>
+                                <li>Values individuality and pushing boundaries</li>
+                            </ul>
+                        </div>
+                        <p class="close-hint">Click to flip back</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Caregiver Card -->
+            <div class="archetype-card caregiver" onclick="toggleCard(this)">
+                <div class="card-inner">
+                    <div class="card-face card-front">
+                        <div class="archetype-icon">&#10084;</div>
+                        <h2 class="archetype-name">The Caregiver</h2>
+                        <p class="archetype-tagline">Nurturing, protective, and focused on helping others feel safe and supported.</p>
+                        <div class="brand-tags">
+                            <span class="brand-tag">J&J</span>
+                            <span class="brand-tag">Pampers</span>
+                            <span class="brand-tag">Volvo</span>
+                        </div>
+                        <div class="flip-hint">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                            Click to explore
+                        </div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="back-header">
+                            <div class="back-icon">&#10084;</div>
+                            <span class="back-title">The Caregiver</span>
+                        </div>
+                        <div class="traits-section">
+                            <div class="section-label">Key Characteristics</div>
+                            <ul class="traits-list">
+                                <li>Nurturing, compassionate, and protective</li>
+                                <li>Focused on making others feel safe and cared for</li>
+                                <li>Emphasizes empathy, service, and wellbeing</li>
+                                <li>Positions as a trusted helper or guardian</li>
+                            </ul>
+                        </div>
+                        <p class="close-hint">Click to flip back</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rebel Card -->
+            <div class="archetype-card rebel" onclick="toggleCard(this)">
+                <div class="card-inner">
+                    <div class="card-face card-front">
+                        <div class="archetype-icon">&#9889;</div>
+                        <h2 class="archetype-name">The Rebel</h2>
+                        <p class="archetype-tagline">Challenges rules, breaks from the status quo, and stands for radical freedom.</p>
+                        <div class="brand-tags">
+                            <span class="brand-tag">Harley-Davidson</span>
+                            <span class="brand-tag">Netflix</span>
+                            <span class="brand-tag">Virgin</span>
+                        </div>
+                        <div class="flip-hint">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                            Click to explore
+                        </div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="back-header">
+                            <div class="back-icon">&#9889;</div>
+                            <span class="back-title">The Rebel</span>
+                        </div>
+                        <div class="traits-section">
+                            <div class="section-label">Key Characteristics</div>
+                            <ul class="traits-list">
+                                <li>Also called the Outlaw archetype</li>
+                                <li>Challenges rules and breaks from convention</li>
+                                <li>Attracts those who want to push boundaries</li>
+                                <li>Feels edgy, bold, and non-conformist</li>
+                            </ul>
+                        </div>
+                        <p class="close-hint">Click to flip back</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleCard(card) {
+            card.classList.toggle('flipped');
+        }
+
+        // Allow keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.archetype-card.flipped').forEach(card => {
+                    card.classList.remove('flipped');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
