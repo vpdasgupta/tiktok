@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-Tone Sliders Interactive | Brand Voice Workshop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-slider: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --accent-north-face: #e11d48;
+            --accent-old-navy: #0284c7;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-light);
+        }
+
+        /* Preset Buttons */
+        .preset-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .preset-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--text-muted);
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary-light);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .preset-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .preset-btn.north-face.active {
+            border-color: var(--accent-north-face);
+            background: var(--accent-north-face);
+        }
+
+        .preset-btn.old-navy.active {
+            border-color: var(--accent-old-navy);
+            background: var(--accent-old-navy);
+        }
+
+        /* Sliders */
+        .slider-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .slider-label.left {
+            color: var(--warning);
+        }
+
+        .slider-label.right {
+            color: var(--success);
+        }
+
+        .slider-container {
+            position: relative;
+            height: 50px;
+            display: flex;
+            align-items: center;
+        }
+
+        .slider-track {
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            background: var(--bg-slider);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .slider-fill {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, var(--warning), var(--primary), var(--success));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .slider-input {
+            position: relative;
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .slider-input::-webkit-slider-thumb:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .slider-input::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .slider-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        .slider-container:hover .slider-value {
+            opacity: 1;
+        }
+
+        /* Position Indicator */
+        .position-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            min-height: 1.5em;
+            font-style: italic;
+        }
+
+        .slider-badge {
+            font-size: 0.65rem;
+            background: rgba(99, 102, 241, 0.3);
+            color: var(--primary-light);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            margin-left: auto;
+            font-weight: 500;
+        }
+
+        .slider-group.inactive {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .slider-group.inactive .slider-badge {
+            background: rgba(100, 116, 139, 0.3);
+            color: var(--text-muted);
+        }
+
+        .slider-group.highlight {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 1rem;
+            margin: -0.5rem -0.5rem 1.5rem -0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        /* Preview Panel */
+        .preview-section {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .preview-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary-light);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .preview-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        .preview-context {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .context-btn {
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-slider);
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            border-radius: 0.4rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .context-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--text-primary);
+        }
+
+        .context-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Anchor Statement */
+        .anchor-statement {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--warning);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .anchor-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--warning);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .anchor-text {
+            font-size: 1rem;
+            font-style: italic;
+            color: var(--text-primary);
+        }
+
+        /* Why This Matters */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .benefit-card {
+            background: var(--bg-slider);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .benefit-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .benefit-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            margin-top: 2rem;
+        }
+
+        .quiz-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(99, 102, 241, 0.1) 100%);
+            border: 2px solid var(--primary);
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .quiz-option {
+            padding: 0.75rem 1rem;
+            background: var(--bg-slider);
+            border: 2px solid transparent;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--accent-north-face);
+            background: rgba(225, 29, 72, 0.2);
+            color: var(--accent-north-face);
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(225, 29, 72, 0.15);
+            border: 1px solid var(--accent-north-face);
+            color: var(--accent-north-face);
+        }
+
+        /* Reset Button */
+        .reset-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .reset-btn:hover {
+            border-color: var(--accent-north-face);
+            color: var(--accent-north-face);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+            border: 1px solid var(--primary);
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Interactive Demo Section */
+        .demo-section {
+            margin-top: 2rem;
+        }
+
+        .sample-copy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .sample-copy-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sample-copy-card {
+            background: var(--bg-slider);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .sample-copy-card.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.15);
+        }
+
+        .copy-type {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .copy-content {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 3rem;
+        }
+
+        footer a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge">Interactive Training</div>
+            <h1>Voice-Tone Sliders</h1>
+            <p class="subtitle">Learn how brands define their voice using sliders—guardrails for expression, not a script. Drag the sliders to see how voice changes in real-time.</p>
+        </header>
+
+        <!-- Preset Selection -->
+        <div class="preset-buttons" style="justify-content: center; margin-bottom: 2rem;">
+            <button class="preset-btn active" onclick="setPreset('custom')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+                Custom Brand
+            </button>
+            <button class="preset-btn north-face" onclick="setPreset('northface')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                The North Face
+            </button>
+            <button class="preset-btn old-navy" onclick="setPreset('oldnavy')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                    <line x1="9" y1="9" x2="9.01" y2="9"/>
+                    <line x1="15" y1="9" x2="15.01" y2="9"/>
+                </svg>
+                Old Navy
+            </button>
+        </div>
+
+        <div class="main-grid">
+            <!-- Left Panel: Sliders -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="4" y1="21" x2="4" y2="14"/>
+                            <line x1="4" y1="10" x2="4" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="12"/>
+                            <line x1="12" y1="8" x2="12" y2="3"/>
+                            <line x1="20" y1="21" x2="20" y2="16"/>
+                            <line x1="20" y1="12" x2="20" y2="3"/>
+                            <circle cx="4" cy="12" r="2"/>
+                            <circle cx="12" cy="10" r="2"/>
+                            <circle cx="20" cy="14" r="2"/>
+                        </svg>
+                        Voice Tone Sliders
+                    </h2>
+                    <button class="reset-btn" onclick="resetSliders()">Reset All</button>
+                </div>
+
+                <p class="slider-note" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem; padding: 0.75rem; background: rgba(99, 102, 241, 0.1); border-radius: 0.5rem; border-left: 3px solid var(--primary);">
+                    <strong>Note:</strong> Brands customize which sliders matter to them. North Face uses Technical ⟷ Plain-spoken, while Old Navy swaps it for Trendy ⟷ Timeless. Try loading each preset to see the difference!
+                </p>
+
+                <!-- Slider 1: Formal ⟷ Conversational -->
+                <div class="slider-group">
+                    <div class="slider-labels">
+                        <span class="slider-label left tooltip" data-tooltip="Professional, structured, distant">Formal</span>
+                        <span class="slider-label right tooltip" data-tooltip="Friendly, casual, approachable">Conversational</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track">
+                            <div class="slider-fill" id="fill-formal" style="width: 50%"></div>
+                        </div>
+                        <input type="range" class="slider-input" id="slider-formal" min="0" max="100" value="50" oninput="updateSlider('formal')">
+                        <div class="slider-value" id="value-formal">Balanced</div>
+                    </div>
+                    <p class="position-text" id="text-formal">Balanced between formal and conversational</p>
+                </div>
+
+                <!-- Slider 2: Playful ⟷ Serious -->
+                <div class="slider-group">
+                    <div class="slider-labels">
+                        <span class="slider-label left tooltip" data-tooltip="Fun, lighthearted, whimsical">Playful</span>
+                        <span class="slider-label right tooltip" data-tooltip="Earnest, thoughtful, grounded">Serious</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track">
+                            <div class="slider-fill" id="fill-playful" style="width: 50%"></div>
+                        </div>
+                        <input type="range" class="slider-input" id="slider-playful" min="0" max="100" value="50" oninput="updateSlider('playful')">
+                        <div class="slider-value" id="value-playful">Balanced</div>
+                    </div>
+                    <p class="position-text" id="text-playful">Balanced between playful and serious</p>
+                </div>
+
+                <!-- Slider 3: Bold ⟷ Reassuring -->
+                <div class="slider-group">
+                    <div class="slider-labels">
+                        <span class="slider-label left tooltip" data-tooltip="Confident, assertive, commanding">Bold</span>
+                        <span class="slider-label right tooltip" data-tooltip="Calming, supportive, comforting">Reassuring</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track">
+                            <div class="slider-fill" id="fill-bold" style="width: 50%"></div>
+                        </div>
+                        <input type="range" class="slider-input" id="slider-bold" min="0" max="100" value="50" oninput="updateSlider('bold')">
+                        <div class="slider-value" id="value-bold">Balanced</div>
+                    </div>
+                    <p class="position-text" id="text-bold">Balanced between bold and reassuring</p>
+                </div>
+
+                <!-- Slider 4: Technical ⟷ Plain-spoken (North Face uses this) -->
+                <div class="slider-group" id="group-technical">
+                    <div class="slider-labels">
+                        <span class="slider-label left tooltip" data-tooltip="Expert terminology, detailed, precise">Technical</span>
+                        <span class="slider-label right tooltip" data-tooltip="Simple words, accessible, clear">Plain-spoken</span>
+                        <span class="slider-badge" id="badge-technical"></span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track">
+                            <div class="slider-fill" id="fill-technical" style="width: 50%"></div>
+                        </div>
+                        <input type="range" class="slider-input" id="slider-technical" min="0" max="100" value="50" oninput="updateSlider('technical')">
+                        <div class="slider-value" id="value-technical">Balanced</div>
+                    </div>
+                    <p class="position-text" id="text-technical">Balanced between technical and plain-spoken</p>
+                </div>
+
+                <!-- Slider 4b: Trendy ⟷ Timeless (Old Navy uses this instead) -->
+                <div class="slider-group" id="group-trendy" style="display: none;">
+                    <div class="slider-labels">
+                        <span class="slider-label left tooltip" data-tooltip="Current, fashionable, of-the-moment">Trendy</span>
+                        <span class="slider-label right tooltip" data-tooltip="Classic, enduring, evergreen">Timeless</span>
+                        <span class="slider-badge" id="badge-trendy">Old Navy uses this</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track">
+                            <div class="slider-fill" id="fill-trendy" style="width: 50%"></div>
+                        </div>
+                        <input type="range" class="slider-input" id="slider-trendy" min="0" max="100" value="50" oninput="updateSlider('trendy')">
+                        <div class="slider-value" id="value-trendy">Balanced</div>
+                    </div>
+                    <p class="position-text" id="text-trendy">Balanced between trendy and timeless</p>
+                </div>
+
+                <!-- Slider 5: Aspirational ⟷ Practical -->
+                <div class="slider-group">
+                    <div class="slider-labels">
+                        <span class="slider-label left tooltip" data-tooltip="Inspiring, visionary, dreamy">Aspirational</span>
+                        <span class="slider-label right tooltip" data-tooltip="Grounded, useful, actionable">Practical</span>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-track">
+                            <div class="slider-fill" id="fill-aspirational" style="width: 50%"></div>
+                        </div>
+                        <input type="range" class="slider-input" id="slider-aspirational" min="0" max="100" value="50" oninput="updateSlider('aspirational')">
+                        <div class="slider-value" id="value-aspirational">Balanced</div>
+                    </div>
+                    <p class="position-text" id="text-aspirational">Balanced between aspirational and practical</p>
+                </div>
+            </div>
+
+            <!-- Right Panel: Live Preview -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        Live Voice Preview
+                    </h2>
+                </div>
+
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">See how your slider choices affect content across different contexts:</p>
+
+                <div class="preview-context">
+                    <button class="context-btn active" onclick="setContext('tiktok')">TikTok Caption</button>
+                    <button class="context-btn" onclick="setContext('landing')">Landing Page</button>
+                    <button class="context-btn" onclick="setContext('support')">Help Article</button>
+                </div>
+
+                <div class="preview-section fade-in" id="preview-area">
+                    <p class="preview-label">Sample Copy</p>
+                    <p class="preview-text" id="preview-text">
+                        Check out our new collection! 🔥 Whether you're hitting the trails or just vibing at home, we've got you covered.
+                    </p>
+                </div>
+
+                <div class="anchor-statement">
+                    <p class="anchor-label">Your Anchor Statement</p>
+                    <p class="anchor-text" id="anchor-text">"We sound like someone who balances expertise with approachability."</p>
+                </div>
+
+                <!-- Sample Copy Across Contexts -->
+                <div class="demo-section">
+                    <h3 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-primary);">Same Brand, Different Contexts</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Notice how the voice adapts while staying true to your slider positions:</p>
+
+                    <div class="sample-copy-grid">
+                        <div class="sample-copy-card active" id="copy-tiktok">
+                            <p class="copy-type">TikTok</p>
+                            <p class="copy-content" id="copy-tiktok-text">Check out our new collection! 🔥 Link in bio.</p>
+                        </div>
+                        <div class="sample-copy-card" id="copy-landing">
+                            <p class="copy-type">Landing Page</p>
+                            <p class="copy-content" id="copy-landing-text">Discover what's next for you.</p>
+                        </div>
+                        <div class="sample-copy-card" id="copy-support">
+                            <p class="copy-type">Help Article</p>
+                            <p class="copy-content" id="copy-support-text">Here's how to get started.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Why This Matters Section -->
+        <div class="card">
+            <h2 class="card-title" style="margin-bottom: 1rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                Why Voice-Tone Sliders Matter
+            </h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h4 class="benefit-title">Reduces Subjectivity</h4>
+                    <p class="benefit-desc">No more debates like "this feels off"—sliders give concrete reference points.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📈</div>
+                    <h4 class="benefit-title">Scales Well</h4>
+                    <p class="benefit-desc">Writers, marketers, and AI tools all align faster with clear slider positions.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔄</div>
+                    <h4 class="benefit-title">Context-Aware</h4>
+                    <p class="benefit-desc">Website ≠ support email ≠ TikTok caption. Same brand, different slider flex.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📚</div>
+                    <h4 class="benefit-title">Teachable</h4>
+                    <p class="benefit-desc">Easy for students, contractors, or new hires to learn and apply consistently.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="quiz-section">
+            <div class="card quiz-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                        Test Your Understanding
+                    </h2>
+                </div>
+
+                <div id="quiz-container">
+                    <p class="quiz-question" id="quiz-question">
+                        A brand's help article should use different slider positions than their TikTok caption. Why?
+                    </p>
+                    <div class="quiz-options" id="quiz-options">
+                        <button class="quiz-option" onclick="checkAnswer(0)">Different audiences require completely different brand voices</button>
+                        <button class="quiz-option" onclick="checkAnswer(1)">Context demands different expression within the same voice framework</button>
+                        <button class="quiz-option" onclick="checkAnswer(2)">Help articles should always be formal while social should be casual</button>
+                        <button class="quiz-option" onclick="checkAnswer(3)">Brands should pick one tone and use it everywhere for consistency</button>
+                    </div>
+                    <div class="quiz-feedback" id="quiz-feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Voice-Tone Sliders Interactive • Based on training content from <a href="https://www.notion.so/9bc1d028b9f4837ba46901f67c2ffab8" target="_blank">Extern Program</a></p>
+            <p style="margin-top: 0.5rem;">Think of sliders as <strong>guardrails for voice</strong>, not a script.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Slider configuration
+        const sliders = ['formal', 'playful', 'bold', 'technical', 'trendy', 'aspirational'];
+        let currentContext = 'tiktok';
+        let currentPreset = 'custom';
+
+        // Preset configurations - values verified against original Notion content
+        const presets = {
+            custom: {
+                formal: 50,
+                playful: 50,
+                bold: 50,
+                technical: 50,
+                trendy: 50,
+                aspirational: 50,
+                usesTrendy: false,  // Custom mode shows Technical by default
+                anchor: '"We sound like someone who balances expertise with approachability."'
+            },
+            northface: {
+                // From Notion: Outdoor exploration brand built on endurance, credibility, purpose
+                // Voice principle: "Inspiring without exaggeration. Confident without hype."
+                formal: 30,       // Leans Formal (not extreme)
+                playful: 90,      // Strongly Serious
+                bold: 25,         // Bold with restraint (confident but not aggressive)
+                technical: 30,    // Technical, but accessible
+                trendy: 50,       // N/A for North Face
+                aspirational: 10, // Highly Aspirational
+                usesTrendy: false,
+                anchor: '"We sound like someone who has actually done the climb."'
+            },
+            oldnavy: {
+                // From Notion: Accessible, inclusive fashion brand for everyday families
+                // Voice principle: "Friendly, upbeat, and human—never intimidating."
+                formal: 90,       // Strongly Conversational
+                playful: 15,      // Playful (clearly playful, not just leaning)
+                bold: 80,         // Reassuring (clearly on reassuring side)
+                technical: 50,    // N/A - Old Navy uses Trendy ⟷ Timeless instead
+                trendy: 25,       // Lightly Trendy (fashion-forward but accessible)
+                aspirational: 90, // Strongly Practical
+                usesTrendy: true, // Old Navy uses Trendy slider instead of Technical
+                anchor: '"We sound like a cheerful friend who helps you get dressed."'
+            }
+        };
+
+        // Copy templates based on slider positions
+        function generateCopy(context, values) {
+            const isConversational = values.formal > 50;
+            const isPlayful = values.playful < 50;
+            const isBold = values.bold < 50;
+            const isPlainSpoken = values.technical > 50;
+            const isPractical = values.aspirational > 50;
+
+            const copies = {
+                tiktok: {
+                    // Conversational + Playful + Bold
+                    ccc: "🔥 New drop alert! This is THE collection you've been waiting for. Link in bio, don't sleep on it!",
+                    // Conversational + Playful + Reassuring
+                    ccr: "Hey friend! ✨ Our new collection just dropped and we think you're gonna love it. Check it out when you're ready!",
+                    // Conversational + Serious + Bold
+                    csb: "Real talk: this collection was made for people who don't compromise. Explore it now.",
+                    // Conversational + Serious + Reassuring
+                    csr: "We put a lot of care into this new collection. Hope it brings you as much joy as it brought us creating it.",
+                    // Formal + Playful + Bold
+                    fcb: "Introducing our latest collection. Designed to make a statement. Discover more.",
+                    // Formal + Playful + Reassuring
+                    fcr: "We're excited to share our new collection with you. Something special for everyone.",
+                    // Formal + Serious + Bold
+                    fsb: "Our newest collection represents the pinnacle of design excellence. Explore the line.",
+                    // Formal + Serious + Reassuring
+                    fsr: "We've crafted this collection with intention and care. We invite you to experience it."
+                },
+                landing: {
+                    ccc: "Ready to level up? Our gear is built for people who push limits. Let's go.",
+                    ccr: "Finding what works for you shouldn't be complicated. We're here to help you discover your perfect fit.",
+                    csb: "Excellence isn't an accident. It's a choice. Make yours.",
+                    csr: "Whatever you're working toward, we're here to support that journey. Take your time, explore what speaks to you.",
+                    fcb: "Innovation meets ambition. Discover a collection engineered for those who demand more.",
+                    fcr: "Quality you can trust, designed with your needs in mind. Explore our curated selection.",
+                    fsb: "Setting the standard in design and performance. Experience the difference.",
+                    fsr: "Thoughtfully designed. Carefully crafted. Made for you."
+                },
+                support: {
+                    ccc: "Got questions? Here's the quick rundown to get you back on track fast.",
+                    ccr: "No worries! Let's walk through this together. Here's what you need to know.",
+                    csb: "Here's exactly what you need to do. Follow these steps.",
+                    csr: "We understand this can be frustrating. Here's how to resolve it, step by step.",
+                    fcb: "Reference the following instructions to resolve your inquiry efficiently.",
+                    fcr: "Please follow these steps. If you need additional assistance, we're here to help.",
+                    fsb: "The following procedure will address your inquiry. Execute each step as directed.",
+                    fsr: "We're happy to guide you through this process. Please follow the instructions below."
+                }
+            };
+
+            // Determine which copy variant to use
+            let key = '';
+            key += isConversational ? 'c' : 'f';
+            key += isPlayful ? 'c' : 's';
+            key += isBold ? 'b' : 'r';
+
+            return copies[context][key] || copies[context]['ccc'];
+        }
+
+        function getPositionText(value, leftLabel, rightLabel) {
+            if (value <= 15) return `Strongly ${leftLabel.toLowerCase()}`;
+            if (value <= 35) return `${leftLabel}, but with nuance`;
+            if (value <= 65) return `Balanced between ${leftLabel.toLowerCase()} and ${rightLabel.toLowerCase()}`;
+            if (value <= 85) return `${rightLabel}, but accessible`;
+            return `Strongly ${rightLabel.toLowerCase()}`;
+        }
+
+        function getValueLabel(value) {
+            if (value <= 15) return 'Strongly Left';
+            if (value <= 35) return 'Left w/ nuance';
+            if (value <= 65) return 'Balanced';
+            if (value <= 85) return 'Right w/ nuance';
+            return 'Strongly Right';
+        }
+
+        function updateSlider(name) {
+            const slider = document.getElementById(`slider-${name}`);
+            const fill = document.getElementById(`fill-${name}`);
+            const text = document.getElementById(`text-${name}`);
+            const valueLabel = document.getElementById(`value-${name}`);
+
+            const value = slider.value;
+            fill.style.width = `${value}%`;
+            valueLabel.textContent = getValueLabel(value);
+
+            const labels = {
+                formal: ['Formal', 'Conversational'],
+                playful: ['Playful', 'Serious'],
+                bold: ['Bold', 'Reassuring'],
+                technical: ['Technical', 'Plain-spoken'],
+                trendy: ['Trendy', 'Timeless'],
+                aspirational: ['Aspirational', 'Practical']
+            };
+
+            text.textContent = getPositionText(value, labels[name][0], labels[name][1]);
+
+            // Clear preset selection when manually adjusting
+            if (currentPreset !== 'custom') {
+                document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector('.preset-btn:first-child').classList.add('active');
+                currentPreset = 'custom';
+            }
+
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const values = {};
+            sliders.forEach(name => {
+                values[name] = parseInt(document.getElementById(`slider-${name}`).value);
+            });
+
+            // Update all copy contexts
+            ['tiktok', 'landing', 'support'].forEach(ctx => {
+                const copy = generateCopy(ctx, values);
+                document.getElementById(`copy-${ctx}-text`).textContent = copy;
+            });
+
+            // Update main preview
+            const mainCopy = generateCopy(currentContext, values);
+            document.getElementById('preview-text').textContent = mainCopy;
+
+            // Generate dynamic anchor statement
+            if (currentPreset === 'custom') {
+                const traits = [];
+                if (values.formal > 60) traits.push('approachable');
+                else if (values.formal < 40) traits.push('professional');
+
+                if (values.playful < 40) traits.push('fun');
+                else if (values.playful > 60) traits.push('thoughtful');
+
+                if (values.bold < 40) traits.push('confident');
+                else if (values.bold > 60) traits.push('supportive');
+
+                let anchor = '"We sound like someone who is ';
+                if (traits.length === 0) {
+                    anchor += 'balances expertise with approachability."';
+                } else {
+                    anchor += traits.join(' and ') + '."';
+                }
+                document.getElementById('anchor-text').textContent = anchor;
+            }
+        }
+
+        function setContext(context) {
+            currentContext = context;
+
+            // Update button states
+            document.querySelectorAll('.context-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update copy card highlights
+            document.querySelectorAll('.sample-copy-card').forEach(card => card.classList.remove('active'));
+            document.getElementById(`copy-${context}`).classList.add('active');
+
+            updatePreview();
+        }
+
+        function setPreset(preset) {
+            currentPreset = preset;
+            const config = presets[preset];
+
+            // Update slider values
+            sliders.forEach(name => {
+                const slider = document.getElementById(`slider-${name}`);
+                if (slider) {
+                    slider.value = config[name];
+                    updateSlider(name);
+                }
+            });
+
+            // Handle Technical vs Trendy slider visibility
+            const technicalGroup = document.getElementById('group-technical');
+            const trendyGroup = document.getElementById('group-trendy');
+            const technicalBadge = document.getElementById('badge-technical');
+            const trendyBadge = document.getElementById('badge-trendy');
+
+            if (config.usesTrendy) {
+                // Old Navy: Show Trendy, hide Technical
+                technicalGroup.style.display = 'none';
+                trendyGroup.style.display = 'block';
+                trendyGroup.classList.add('highlight');
+                trendyBadge.textContent = 'Old Navy uses this slider';
+            } else if (preset === 'northface') {
+                // North Face: Show Technical with badge
+                technicalGroup.style.display = 'block';
+                trendyGroup.style.display = 'none';
+                technicalGroup.classList.add('highlight');
+                technicalBadge.textContent = 'North Face uses this slider';
+            } else {
+                // Custom: Show Technical, hide Trendy, no highlights
+                technicalGroup.style.display = 'block';
+                trendyGroup.style.display = 'none';
+                technicalGroup.classList.remove('highlight');
+                trendyGroup.classList.remove('highlight');
+                technicalBadge.textContent = '';
+            }
+
+            // Update anchor statement
+            document.getElementById('anchor-text').textContent = config.anchor;
+
+            // Update button states
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            updatePreview();
+        }
+
+        function resetSliders() {
+            setPreset('custom');
+        }
+
+        // Quiz functionality
+        const quizData = [
+            {
+                question: "A brand's help article should use different slider positions than their TikTok caption. Why?",
+                options: [
+                    "Different audiences require completely different brand voices",
+                    "Context demands different expression within the same voice framework",
+                    "Help articles should always be formal while social should be casual",
+                    "Brands should pick one tone and use it everywhere for consistency"
+                ],
+                correct: 1,
+                feedback: {
+                    correct: "Exactly! The same brand flexes its slider positions based on context. A help article might lean more 'plain-spoken' and 'reassuring' while a TikTok might be more 'conversational' and 'bold'—but both stay within the brand's established range.",
+                    incorrect: "Not quite. Voice-tone sliders aren't about different audiences having different voices—they're about the same brand voice flexing within its established range based on context. A help article might need to be more 'plain-spoken' while staying true to the brand."
+                }
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizAnswered = false;
+
+        function checkAnswer(selectedIndex) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+
+            const quiz = quizData[currentQuizIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            const feedback = document.getElementById('quiz-feedback');
+
+            options.forEach((opt, index) => {
+                if (index === quiz.correct) {
+                    opt.classList.add('correct');
+                } else if (index === selectedIndex && selectedIndex !== quiz.correct) {
+                    opt.classList.add('incorrect');
+                }
+                opt.style.pointerEvents = 'none';
+            });
+
+            feedback.classList.add('show');
+            if (selectedIndex === quiz.correct) {
+                feedback.classList.add('correct');
+                feedback.classList.remove('incorrect');
+                feedback.innerHTML = `<strong>✓ Correct!</strong> ${quiz.feedback.correct}`;
+            } else {
+                feedback.classList.add('incorrect');
+                feedback.classList.remove('correct');
+                feedback.innerHTML = `<strong>✗ Not quite.</strong> ${quiz.feedback.incorrect}`;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize all sliders
+            sliders.forEach(name => {
+                const slider = document.getElementById(`slider-${name}`);
+                if (slider) {
+                    updateSlider(name);
+                }
+            });
+            // Set initial state (custom mode - Technical visible, Trendy hidden)
+            document.getElementById('group-trendy').style.display = 'none';
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
