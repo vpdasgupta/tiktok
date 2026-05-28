@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Hook Remix Tool | Transform Any Topic</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff2d55;
+            --primary-light: #ff6b8a;
+            --primary-dark: #d91a47;
+            --secondary: #00f2ea;
+            --accent-purple: #8b5cf6;
+            --accent-yellow: #fbbf24;
+            --accent-green: #10b981;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-elevated: #252525;
+            --bg-input: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --success: #10b981;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .aspect-wrapper {
+            width: 100%;
+            max-width: 1400px;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a0a1a 50%, #0a1a1a 100%);
+            border-radius: 1.5rem;
+            box-shadow:
+                0 0 60px rgba(255, 45, 85, 0.15),
+                0 0 120px rgba(0, 242, 234, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .aspect-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255, 45, 85, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 242, 234, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 2rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--bg-card);
+        }
+
+        .container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: var(--bg-card);
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--secondary), var(--accent-purple));
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.5rem;
+            color: #000;
+        }
+
+        .badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-content {
+            display: flex;
+            gap: 1.5rem;
+            flex: 1;
+            min-height: 0;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+        }
+
+        /* Input Panel */
+        .input-panel {
+            width: 320px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        @media (max-width: 900px) {
+            .input-panel {
+                width: 100%;
+            }
+        }
+
+        .input-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .input-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-label svg {
+            width: 14px;
+            height: 14px;
+            color: var(--primary-light);
+        }
+
+        .topic-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 2px solid var(--bg-elevated);
+            border-radius: 0.75rem;
+            padding: 0.875rem 1rem;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            transition: all 0.2s ease;
+            resize: none;
+        }
+
+        .topic-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 45, 85, 0.15);
+        }
+
+        .topic-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Quick Examples */
+        .quick-examples {
+            margin-top: 0.75rem;
+        }
+
+        .quick-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .example-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .example-chip {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-chip:hover {
+            background: rgba(255, 45, 85, 0.15);
+            border-color: var(--primary);
+            color: var(--text-primary);
+        }
+
+        /* Brand Context */
+        .brand-select {
+            width: 100%;
+            background: var(--bg-input);
+            border: 2px solid var(--bg-elevated);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+
+        .brand-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 45, 85, 0.3);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .generate-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Results Panel */
+        .results-panel {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .results-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .results-title svg {
+            width: 16px;
+            height: 16px;
+            color: var(--secondary);
+        }
+
+        .copy-all-btn {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.875rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .copy-all-btn:hover {
+            background: rgba(0, 242, 234, 0.15);
+            border-color: var(--secondary);
+            color: var(--text-primary);
+        }
+
+        .copy-all-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Hook Cards Grid */
+        .hooks-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.875rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 1100px) {
+            .hooks-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hook-result-card {
+            background: var(--bg-card);
+            border-radius: 0.875rem;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hook-result-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .hook-result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--card-accent, var(--primary));
+        }
+
+        .hook-result-card[data-type="curiosity"] { --card-accent: #8b5cf6; }
+        .hook-result-card[data-type="pain"] { --card-accent: #ef4444; }
+        .hook-result-card[data-type="hottake"] { --card-accent: #f59e0b; }
+        .hook-result-card[data-type="value"] { --card-accent: #10b981; }
+        .hook-result-card[data-type="pattern"] { --card-accent: #06b6d4; }
+        .hook-result-card[data-type="story"] { --card-accent: #ec4899; }
+
+        .hook-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .hook-type-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--card-accent, var(--primary-light));
+        }
+
+        .hook-type-emoji {
+            font-size: 1rem;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: none;
+            padding: 0.4rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+        }
+
+        .copy-btn.copied {
+            color: var(--success);
+        }
+
+        .copy-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .hook-content {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .hook-tip {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            flex: 1;
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            max-width: 280px;
+        }
+
+        /* Loading State */
+        .loading-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            flex: 1;
+        }
+
+        .loading-state.show {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--bg-elevated);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hook-result-card {
+            animation: fadeInUp 0.3s ease forwards;
+        }
+
+        .hook-result-card:nth-child(1) { animation-delay: 0ms; }
+        .hook-result-card:nth-child(2) { animation-delay: 50ms; }
+        .hook-result-card:nth-child(3) { animation-delay: 100ms; }
+        .hook-result-card:nth-child(4) { animation-delay: 150ms; }
+        .hook-result-card:nth-child(5) { animation-delay: 200ms; }
+        .hook-result-card:nth-child(6) { animation-delay: 250ms; }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--success);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast svg {
+            width: 16px;
+            height: 16px;
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+    <div class="aspect-wrapper">
+        <div class="container">
+            <header>
+                <div class="badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Remix Mode
+                </div>
+                <h1>Hook Remixer</h1>
+                <p class="subtitle">Enter any topic → get 6 hook variations instantly</p>
+            </header>
+
+            <div class="main-content">
+                <!-- Input Panel -->
+                <div class="input-panel">
+                    <div class="input-card">
+                        <label class="input-label">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                            </svg>
+                            Your Topic or Idea
+                        </label>
+                        <textarea
+                            class="topic-input"
+                            id="topicInput"
+                            rows="3"
+                            placeholder="e.g., stain-resistant uniforms, back to school prep, sizing guide..."
+                        ></textarea>
+                        <div class="quick-examples">
+                            <p class="quick-label">Try these:</p>
+                            <div class="example-chips">
+                                <span class="example-chip" onclick="setExample('stain-resistant fabric')">stain-resistant</span>
+                                <span class="example-chip" onclick="setExample('back to school shopping')">back to school</span>
+                                <span class="example-chip" onclick="setExample('uniform sizing tips')">sizing tips</span>
+                                <span class="example-chip" onclick="setExample('affordable uniforms')">affordable</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-card">
+                        <label class="input-label">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                            Brand Context
+                        </label>
+                        <select class="brand-select" id="brandSelect">
+                            <option value="abu">All Basics Uniforms (ABU)</option>
+                            <option value="generic">Generic / No Brand</option>
+                            <option value="premium">Premium Brand Voice</option>
+                            <option value="playful">Playful Brand Voice</option>
+                        </select>
+                    </div>
+
+                    <button class="generate-btn" id="generateBtn" onclick="generateHooks()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        Generate 6 Hooks
+                    </button>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="results-panel">
+                    <div class="results-header">
+                        <h2 class="results-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            Your Hook Variations
+                        </h2>
+                        <button class="copy-all-btn" id="copyAllBtn" onclick="copyAllHooks()" style="display: none;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            Copy All
+                        </button>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="emptyState">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                        <p>Enter a topic and hit generate to see your hooks transformed into 6 different styles</p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="loading-state" id="loadingState">
+                        <div class="loading-spinner"></div>
+                        <p class="loading-text">Remixing your hooks...</p>
+                    </div>
+
+                    <!-- Results Grid -->
+                    <div class="hooks-grid" id="hooksGrid" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 13l4 4L19 7"/>
+        </svg>
+        <span id="toastText">Copied to clipboard!</span>
+    </div>
+
+    <script>
+        // Hook templates for each type
+        const hookTemplates = {
+            curiosity: {
+                emoji: '🤔',
+                name: 'Curiosity',
+                patterns: [
+                    "Nobody tells you this about {topic}...",
+                    "The {topic} secret that changed everything",
+                    "What they don't show you about {topic}",
+                    "I wish someone told me this before {topic}..."
+                ],
+                tip: "Leave the viewer hanging — don't reveal the answer in the hook"
+            },
+            pain: {
+                emoji: '😫',
+                name: 'Pain Point',
+                patterns: [
+                    "When {topic} goes completely wrong...",
+                    "POV: You're struggling with {topic} again",
+                    "If {topic} stresses you out, watch this",
+                    "The {topic} struggle is too real 😭"
+                ],
+                tip: "Name the frustration they already feel — make them think 'that's me'"
+            },
+            hottake: {
+                emoji: '🔥',
+                name: 'Hot Take',
+                patterns: [
+                    "{topic} is actually overrated. Here's why.",
+                    "Unpopular opinion: {topic} isn't what you think",
+                    "Everyone's wrong about {topic}",
+                    "{topic} is secretly a flex"
+                ],
+                tip: "Challenge assumptions but back it up — controversy without substance fails"
+            },
+            value: {
+                emoji: '📦',
+                name: 'Value Drop',
+                patterns: [
+                    "3 {topic} tips you need to know",
+                    "The only {topic} guide you need",
+                    "How to {topic} in under 60 seconds",
+                    "{topic} hack that actually works"
+                ],
+                tip: "Be specific — numbers and clear outcomes perform better"
+            },
+            pattern: {
+                emoji: '👁️',
+                name: 'Pattern Interrupt',
+                patterns: [
+                    "*shows {topic}* vs *shows alternative* — same price.",
+                    "Watch what happens when I try {topic}...",
+                    "*holds up {topic}* This changed everything.",
+                    "Before {topic} → After {topic}"
+                ],
+                tip: "Start with motion or visuals — the brain notices change before meaning"
+            },
+            story: {
+                emoji: '📖',
+                name: 'Story Start',
+                patterns: [
+                    "So I tried {topic} and this happened...",
+                    "The {topic} situation got out of hand",
+                    "I almost gave up on {topic} until...",
+                    "This {topic} story is wild..."
+                ],
+                tip: "Start mid-action — skip the setup and drop into tension"
+            }
+        };
+
+        // Brand voice modifiers
+        const brandVoices = {
+            abu: {
+                name: "All Basics Uniforms",
+                modifiers: {
+                    curiosity: ["school uniforms", "uniform shopping", "dress code", "back to school"],
+                    pain: ["uniform stains", "sizing nightmares", "morning rush", "uniform costs"],
+                    hottake: ["uniforms actually save time", "expensive uniforms are a scam", "uniforms reduce decision fatigue"],
+                    value: ["uniform care", "stain removal", "size selection", "styling basics"],
+                    pattern: ["stained vs clean uniform", "cheap vs quality fabric", "before vs after wash"],
+                    story: ["principal called about", "uniform disaster", "first day outfit"]
+                }
+            },
+            generic: {
+                name: "Generic",
+                modifiers: null
+            },
+            premium: {
+                name: "Premium Voice",
+                modifiers: null,
+                tone: "elevated, refined"
+            },
+            playful: {
+                name: "Playful Voice",
+                modifiers: null,
+                tone: "fun, energetic, emoji-heavy"
+            }
+        };
+
+        let generatedHooks = [];
+
+        // Set example topic
+        function setExample(topic) {
+            document.getElementById('topicInput').value = topic;
+        }
+
+        // Generate hooks
+        function generateHooks() {
+            const topic = document.getElementById('topicInput').value.trim();
+            const brand = document.getElementById('brandSelect').value;
+
+            if (!topic) {
+                document.getElementById('topicInput').focus();
+                return;
+            }
+
+            // Show loading
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('hooksGrid').style.display = 'none';
+            document.getElementById('loadingState').classList.add('show');
+            document.getElementById('copyAllBtn').style.display = 'none';
+
+            // Simulate generation delay for effect
+            setTimeout(() => {
+                generatedHooks = createHooks(topic, brand);
+                displayHooks(generatedHooks);
+            }, 600);
+        }
+
+        // Create hooks from templates
+        function createHooks(topic, brand) {
+            const hooks = [];
+            const brandConfig = brandVoices[brand];
+
+            Object.keys(hookTemplates).forEach(type => {
+                const template = hookTemplates[type];
+                const patterns = template.patterns;
+
+                // Pick a random pattern
+                let pattern = patterns[Math.floor(Math.random() * patterns.length)];
+
+                // Apply topic
+                let hookText = pattern.replace(/{topic}/g, topic);
+
+                // Apply brand-specific modifiers if available
+                if (brandConfig.modifiers && brandConfig.modifiers[type]) {
+                    const mods = brandConfig.modifiers[type];
+                    // Sometimes blend in brand-specific context
+                    if (Math.random() > 0.5) {
+                        const mod = mods[Math.floor(Math.random() * mods.length)];
+                        hookText = pattern.replace(/{topic}/g, mod);
+                    }
+                }
+
+                // Apply tone adjustments
+                if (brand === 'playful') {
+                    hookText = addPlayfulTone(hookText);
+                } else if (brand === 'premium') {
+                    hookText = addPremiumTone(hookText);
+                }
+
+                hooks.push({
+                    type: type,
+                    emoji: template.emoji,
+                    name: template.name,
+                    text: hookText,
+                    tip: template.tip
+                });
+            });
+
+            return hooks;
+        }
+
+        // Add playful tone
+        function addPlayfulTone(text) {
+            const emojis = ['✨', '💅', '👀', '🙌', '💯'];
+            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            if (!text.includes('😭') && !text.includes('🔥')) {
+                text = text + ' ' + emoji;
+            }
+            return text;
+        }
+
+        // Add premium tone
+        function addPremiumTone(text) {
+            return text
+                .replace(/hack/g, 'approach')
+                .replace(/tips/g, 'insights')
+                .replace(/wild/g, 'remarkable')
+                .replace(/😭/g, '')
+                .replace(/🔥/g, '');
+        }
+
+        // Display hooks
+        function displayHooks(hooks) {
+            const grid = document.getElementById('hooksGrid');
+            grid.innerHTML = '';
+
+            hooks.forEach((hook, index) => {
+                const card = document.createElement('div');
+                card.className = 'hook-result-card';
+                card.dataset.type = hook.type;
+                card.innerHTML = `
+                    <div class="hook-card-header">
+                        <div class="hook-type-badge">
+                            <span class="hook-type-emoji">${hook.emoji}</span>
+                            ${hook.name}
+                        </div>
+                        <button class="copy-btn" onclick="copyHook(${index}, this)" title="Copy hook">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="hook-content">"${hook.text}"</p>
+                    <p class="hook-tip">💡 ${hook.tip}</p>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Show results
+            document.getElementById('loadingState').classList.remove('show');
+            grid.style.display = 'grid';
+            document.getElementById('copyAllBtn').style.display = 'flex';
+        }
+
+        // Copy single hook
+        function copyHook(index, button) {
+            const hook = generatedHooks[index];
+            navigator.clipboard.writeText(hook.text).then(() => {
+                button.classList.add('copied');
+                button.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M5 13l4 4L19 7"/>
+                    </svg>
+                `;
+                showToast('Hook copied!');
+
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                        </svg>
+                    `;
+                }, 2000);
+            });
+        }
+
+        // Copy all hooks
+        function copyAllHooks() {
+            const allText = generatedHooks.map(h => `${h.emoji} ${h.name}:\n"${h.text}"`).join('\n\n');
+            navigator.clipboard.writeText(allText).then(() => {
+                showToast('All 6 hooks copied!');
+            });
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Enter key to generate
+        document.getElementById('topicInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                generateHooks();
+            }
+        });
+    </script>
+</body>
+</html>

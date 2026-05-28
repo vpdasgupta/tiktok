@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Hook Type Trainer | Quiz Mode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff2d55;
+            --primary-light: #ff6b8a;
+            --primary-dark: #d91a47;
+            --secondary: #00f2ea;
+            --accent-purple: #8b5cf6;
+            --accent-yellow: #fbbf24;
+            --bg-dark: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-elevated: #252525;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .aspect-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a0a1a 50%, #0a1a1a 100%);
+            border-radius: 1.5rem;
+            box-shadow:
+                0 0 60px rgba(255, 45, 85, 0.15),
+                0 0 120px rgba(0, 242, 234, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Animated background gradient */
+        .aspect-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255, 45, 85, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 242, 234, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.75rem;
+        }
+
+        .badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--secondary) 50%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-elevated);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-elevated);
+            padding: 0.4rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .score-correct {
+            color: var(--success);
+        }
+
+        .score-separator {
+            color: var(--text-muted);
+        }
+
+        .score-total {
+            color: var(--text-secondary);
+        }
+
+        /* Main Quiz Area */
+        .quiz-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Hook Display Card */
+        .hook-card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hook-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 8rem;
+            font-family: Georgia, serif;
+            color: rgba(255, 45, 85, 0.1);
+            line-height: 1;
+        }
+
+        .hook-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--primary-light);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .hook-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hook-context {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Answer Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .option-btn {
+            background: var(--bg-card);
+            border: 2px solid var(--bg-elevated);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: rgba(255, 45, 85, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .option-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        .option-btn.selected {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .option-btn.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.2);
+            animation: pulse-success 0.5s ease;
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--error);
+            background: rgba(239, 68, 68, 0.15);
+            animation: shake 0.4s ease;
+        }
+
+        .option-btn.reveal-correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        @keyframes pulse-success {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .option-emoji {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Feedback Section */
+        .feedback-section {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            border-left: 4px solid var(--success);
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        .feedback-section.incorrect {
+            border-left-color: var(--error);
+        }
+
+        .feedback-section.show {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feedback-icon {
+            font-size: 1.25rem;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .feedback-title.correct {
+            color: var(--success);
+        }
+
+        .feedback-title.incorrect {
+            color: var(--error);
+        }
+
+        .feedback-explanation {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .feedback-explanation strong {
+            color: var(--text-primary);
+        }
+
+        /* Next Button */
+        .next-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: none;
+            margin: 0 auto;
+            min-width: 200px;
+        }
+
+        .next-btn.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 45, 85, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .results-screen.show {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .results-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .results-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-score span {
+            color: var(--text-muted);
+            font-size: 1.5rem;
+        }
+
+        .results-message {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 400px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .restart-btn {
+            background: var(--bg-elevated);
+            border: 2px solid var(--text-muted);
+            border-radius: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .restart-btn:hover {
+            border-color: var(--primary);
+            background: rgba(255, 45, 85, 0.1);
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 45, 85, 0.3);
+        }
+
+        /* Streak indicator */
+        .streak-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--accent-yellow), #f59e0b);
+            color: #000;
+            padding: 0.4rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: none;
+            animation: bounceIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .streak-indicator.show {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Hide quiz when showing results */
+        .quiz-area.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="aspect-wrapper">
+        <div class="container">
+            <header>
+                <div class="badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                    Quiz Mode
+                </div>
+                <h1>Name That Hook</h1>
+                <p class="subtitle">Can you identify the hook type? 6 styles, 10 questions.</p>
+            </header>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <span class="progress-text" id="progressText">0 / 10</span>
+                <div class="score-display">
+                    <span class="score-correct" id="scoreCorrect">0</span>
+                    <span class="score-separator">/</span>
+                    <span class="score-total" id="scoreTotal">0</span>
+                </div>
+            </div>
+
+            <div class="streak-indicator" id="streakIndicator">
+                <span>🔥</span>
+                <span id="streakCount">3</span> streak!
+            </div>
+
+            <div class="quiz-area" id="quizArea">
+                <div class="hook-card">
+                    <p class="hook-label">What type of hook is this?</p>
+                    <p class="hook-text" id="hookText">"Nobody tells you this about school uniforms..."</p>
+                    <p class="hook-context" id="hookContext">— uniform brand TikTok</p>
+                </div>
+
+                <div class="options-grid" id="optionsGrid">
+                    <button class="option-btn" data-type="curiosity">
+                        <div class="option-emoji">🤔</div>
+                        <div class="option-name">Curiosity</div>
+                    </button>
+                    <button class="option-btn" data-type="pain">
+                        <div class="option-emoji">😫</div>
+                        <div class="option-name">Pain Point</div>
+                    </button>
+                    <button class="option-btn" data-type="hottake">
+                        <div class="option-emoji">🔥</div>
+                        <div class="option-name">Hot Take</div>
+                    </button>
+                    <button class="option-btn" data-type="value">
+                        <div class="option-emoji">📦</div>
+                        <div class="option-name">Value Drop</div>
+                    </button>
+                    <button class="option-btn" data-type="pattern">
+                        <div class="option-emoji">👁️</div>
+                        <div class="option-name">Pattern Interrupt</div>
+                    </button>
+                    <button class="option-btn" data-type="story">
+                        <div class="option-emoji">📖</div>
+                        <div class="option-name">Story Start</div>
+                    </button>
+                </div>
+
+                <div class="feedback-section" id="feedbackSection">
+                    <div class="feedback-header">
+                        <span class="feedback-icon" id="feedbackIcon">✅</span>
+                        <span class="feedback-title" id="feedbackTitle">Correct!</span>
+                    </div>
+                    <p class="feedback-explanation" id="feedbackExplanation">
+                        This is a <strong>Curiosity Hook</strong>. It creates an information gap—your brain literally can't scroll away without knowing what comes next.
+                    </p>
+                </div>
+
+                <button class="next-btn" id="nextBtn">Next Question →</button>
+            </div>
+
+            <div class="results-screen" id="resultsScreen">
+                <div class="results-emoji" id="resultsEmoji">🎯</div>
+                <h2 class="results-title" id="resultsTitle">Hook Expert!</h2>
+                <p class="results-subtitle">You've completed the quiz</p>
+                <div class="results-score">
+                    <span id="finalScore">8</span><span> / 10</span>
+                </div>
+                <p class="results-message" id="resultsMessage">
+                    You've got a solid grasp of TikTok hook types. Now it's time to write some for ABU.
+                </p>
+                <div class="results-actions">
+                    <button class="restart-btn" onclick="restartQuiz()">Try Again</button>
+                    <button class="continue-btn" onclick="continueToRemix()">Continue to Remix Mode →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz questions - mix of ABU-specific and general examples
+        const questions = [
+            {
+                hook: "Nobody tells you this about school uniforms...",
+                context: "— uniform brand TikTok",
+                answer: "curiosity",
+                explanation: "This is a <strong>Curiosity Hook</strong>. It creates an information gap—your brain literally can't scroll away without knowing what comes next. The unfinished thought demands resolution."
+            },
+            {
+                hook: "When your kid destroys their uniform in the first week of school 😭",
+                context: "— parent-focused content",
+                answer: "pain",
+                explanation: "This is a <strong>Pain Point Hook</strong>. It names a frustration parents already feel. The viewer immediately thinks \"that's literally me\" and keeps watching for the solution."
+            },
+            {
+                hook: "School uniforms are actually a parenting flex",
+                context: "— hot take content",
+                answer: "hottake",
+                explanation: "This is a <strong>Hot Take Hook</strong>. It challenges the common assumption that uniforms are boring or restrictive. Light controversy = engagement, as long as you back it up."
+            },
+            {
+                hook: "3 ways to style one polo shirt 5 different ways",
+                context: "— styling tips",
+                answer: "value",
+                explanation: "This is a <strong>Value Drop Hook</strong>. It promises something specific and useful—exact number, clear outcome. Viewers know exactly what they'll get."
+            },
+            {
+                hook: "*holds up stained shirt next to pristine one* Same kid. Same month.",
+                context: "— visual demonstration",
+                answer: "pattern",
+                explanation: "This is a <strong>Pattern Interrupt Hook</strong>. The visual comparison stops the scroll before any words register. Motion and contrast catch attention faster than text."
+            },
+            {
+                hook: "So the principal called me about my daughter's outfit...",
+                context: "— storytime content",
+                answer: "story",
+                explanation: "This is a <strong>Story Start Hook</strong>. It drops you mid-drama with immediate tension. You have to know what happened—humans are wired for narrative."
+            },
+            {
+                hook: "The uniform hack that saved me $200 this year",
+                context: "— money-saving tip",
+                answer: "curiosity",
+                explanation: "This is a <strong>Curiosity Hook</strong>. Even though it mentions value ($200), the \"hack\" is hidden. Your brain needs to know the secret—that's the curiosity gap."
+            },
+            {
+                hook: "POV: You're ironing uniforms at 6am for the third time this week",
+                context: "— relatable content",
+                answer: "pain",
+                explanation: "This is a <strong>Pain Point Hook</strong>. The POV format puts viewers directly in the frustrating scenario. It's not selling—it's commiserating first."
+            },
+            {
+                hook: "Expensive uniforms are a scam. Here's why.",
+                context: "— opinion piece",
+                answer: "hottake",
+                explanation: "This is a <strong>Hot Take Hook</strong>. \"Scam\" is a strong word that challenges an industry norm. The \"Here's why\" promises justification—controversy with substance."
+            },
+            {
+                hook: "I didn't believe it until I tried it myself...",
+                context: "— testimonial content",
+                answer: "story",
+                explanation: "This is a <strong>Story Start Hook</strong>. It begins with a personal transformation mid-journey. The skepticism-to-belief arc creates immediate narrative tension."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let streak = 0;
+        let answered = 0;
+        let shuffledQuestions = [];
+
+        // Shuffle array
+        function shuffle(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Initialize quiz
+        function initQuiz() {
+            shuffledQuestions = shuffle(questions);
+            currentQuestion = 0;
+            score = 0;
+            streak = 0;
+            answered = 0;
+            updateProgress();
+            loadQuestion();
+
+            document.getElementById('quizArea').classList.remove('hidden');
+            document.getElementById('resultsScreen').classList.remove('show');
+        }
+
+        // Load current question
+        function loadQuestion() {
+            const q = shuffledQuestions[currentQuestion];
+            document.getElementById('hookText').textContent = `"${q.hook}"`;
+            document.getElementById('hookContext').textContent = q.context;
+
+            // Reset UI
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected', 'correct', 'incorrect', 'reveal-correct');
+                btn.disabled = false;
+            });
+            document.getElementById('feedbackSection').classList.remove('show', 'incorrect');
+            document.getElementById('nextBtn').classList.remove('show');
+            document.getElementById('streakIndicator').classList.remove('show');
+        }
+
+        // Handle answer selection
+        function selectAnswer(type) {
+            const q = shuffledQuestions[currentQuestion];
+            const isCorrect = type === q.answer;
+
+            // Disable all buttons
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = true;
+                if (btn.dataset.type === type) {
+                    btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+                if (btn.dataset.type === q.answer && !isCorrect) {
+                    btn.classList.add('reveal-correct');
+                }
+            });
+
+            // Update score and streak
+            answered++;
+            if (isCorrect) {
+                score++;
+                streak++;
+                if (streak >= 3) {
+                    document.getElementById('streakIndicator').classList.add('show');
+                    document.getElementById('streakCount').textContent = streak;
+                }
+            } else {
+                streak = 0;
+                document.getElementById('streakIndicator').classList.remove('show');
+            }
+
+            // Show feedback
+            const feedback = document.getElementById('feedbackSection');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackExplanation = document.getElementById('feedbackExplanation');
+
+            feedbackIcon.textContent = isCorrect ? '✅' : '❌';
+            feedbackTitle.textContent = isCorrect ? getCorrectMessage() : 'Not quite!';
+            feedbackTitle.className = `feedback-title ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackExplanation.innerHTML = q.explanation;
+            feedback.classList.add('show');
+            feedback.classList.toggle('incorrect', !isCorrect);
+
+            // Update progress
+            updateProgress();
+
+            // Show next button
+            document.getElementById('nextBtn').classList.add('show');
+            document.getElementById('nextBtn').textContent =
+                currentQuestion < shuffledQuestions.length - 1 ? 'Next Question →' : 'See Results →';
+        }
+
+        // Get random correct message
+        function getCorrectMessage() {
+            const messages = ['Correct!', 'Nailed it!', 'You got it!', 'Exactly right!', 'Perfect!'];
+            return messages[Math.floor(Math.random() * messages.length)];
+        }
+
+        // Go to next question
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < shuffledQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Update progress bar and score
+        function updateProgress() {
+            const progress = (answered / shuffledQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${answered} / ${shuffledQuestions.length}`;
+            document.getElementById('scoreCorrect').textContent = score;
+            document.getElementById('scoreTotal').textContent = answered;
+        }
+
+        // Show results screen
+        function showResults() {
+            document.getElementById('quizArea').classList.add('hidden');
+            document.getElementById('resultsScreen').classList.add('show');
+
+            const percentage = (score / shuffledQuestions.length) * 100;
+            document.getElementById('finalScore').textContent = score;
+
+            let emoji, title, message;
+            if (percentage === 100) {
+                emoji = '🏆';
+                title = 'Perfect Score!';
+                message = "You're a hook identification master. Time to put that knowledge to work—let's remix some hooks for ABU.";
+            } else if (percentage >= 80) {
+                emoji = '🎯';
+                title = 'Hook Expert!';
+                message = "You've got a solid grasp of TikTok hook types. Now it's time to write some for ABU.";
+            } else if (percentage >= 60) {
+                emoji = '👍';
+                title = 'Getting There!';
+                message = "You know the basics. Try again to lock in the patterns, or continue to practice writing hooks.";
+            } else {
+                emoji = '📚';
+                title = 'Keep Learning!';
+                message = "Hook types take practice to recognize. Try the quiz again—repetition builds instinct.";
+            }
+
+            document.getElementById('resultsEmoji').textContent = emoji;
+            document.getElementById('resultsTitle').textContent = title;
+            document.getElementById('resultsMessage').textContent = message;
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            initQuiz();
+        }
+
+        // Continue to remix mode (placeholder)
+        function continueToRemix() {
+            // In production, this would navigate to the remix tool
+            alert('Remix Mode coming next! 🎨\n\nYou\'ll be able to input any hook and see it transformed into all 6 styles.');
+        }
+
+        // Event listeners
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', () => selectAnswer(btn.dataset.type));
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>
