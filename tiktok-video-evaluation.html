@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Video Evaluation - All Basics Uniforms</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00f5d4, #00bbf9, #fee440);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+
+        .instructions {
+            background: rgba(0, 245, 212, 0.1);
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .instructions h3 {
+            color: #00f5d4;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            color: #ccc;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1200px) {
+            .video-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .video-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .video-header {
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .video-number {
+            background: linear-gradient(135deg, #fe2c55, #25f4ee);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .video-date {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .video-embed {
+            position: relative;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .video-embed iframe {
+            border: none;
+            border-radius: 8px;
+        }
+
+        .video-caption {
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.2);
+            font-size: 0.9rem;
+            color: #ccc;
+            line-height: 1.5;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .engagement-stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .stat {
+            text-align: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #00f5d4;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        .rating-section {
+            padding: 20px;
+        }
+
+        .rating-category {
+            margin-bottom: 20px;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .category-title {
+            font-weight: 600;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .category-score {
+            background: rgba(0, 245, 212, 0.2);
+            color: #00f5d4;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .rating-stars input {
+            display: none;
+        }
+
+        .rating-stars label {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #444;
+            transition: color 0.2s, transform 0.1s;
+        }
+
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label,
+        .rating-stars input:checked ~ label {
+            color: #fee440;
+            transform: scale(1.1);
+        }
+
+        .category-hint {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .notes-section {
+            padding: 0 20px 20px;
+        }
+
+        .notes-section textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .notes-section textarea:focus {
+            outline: none;
+            border-color: #00f5d4;
+        }
+
+        .notes-section textarea::placeholder {
+            color: #555;
+        }
+
+        .summary-section {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .summary-section h2 {
+            color: #00f5d4;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 800px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .summary-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .summary-card h4 {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .summary-card .score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fee440;
+        }
+
+        .summary-card .max-score {
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00f5d4, #00bbf9);
+            color: #1a1a2e;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .legend {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .legend h3 {
+            color: #00bbf9;
+            margin-bottom: 15px;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .legend-item {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .legend-item h4 {
+            color: #fee440;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .legend-item ul {
+            list-style: none;
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .legend-item li {
+            margin-bottom: 4px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .legend-item li::before {
+            content: "...";
+            position: absolute;
+            left: 0;
+            color: #00f5d4;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .engagement-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .stat:nth-child(4),
+            .stat:nth-child(5) {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TikTok Video Evaluation</h1>
+            <p class="subtitle">All Basics Uniforms (@allbasicsuniforms)</p>
+        </header>
+
+        <div class="instructions">
+            <h3>How to Complete This Evaluation</h3>
+            <ol>
+                <li><strong>Watch each video</strong> embedded below</li>
+                <li><strong>Review the engagement data</strong> shown below each video</li>
+                <li><strong>Rate each category</strong> from 1-5 stars based on the criteria</li>
+                <li><strong>Add notes</strong> with specific observations or recommendations</li>
+                <li><strong>Export your evaluation</strong> when complete</li>
+            </ol>
+        </div>
+
+        <div class="legend">
+            <h3>Evaluation Criteria</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <h4>Content Quality</h4>
+                    <ul>
+                        <li>Hook strength (first 1-3 seconds)</li>
+                        <li>Pacing & viewer retention</li>
+                        <li>Audio clarity & music choice</li>
+                        <li>Visual quality & lighting</li>
+                    </ul>
+                </div>
+                <div class="legend-item">
+                    <h4>Strategic Elements</h4>
+                    <ul>
+                        <li>Trend alignment & formats</li>
+                        <li>Native TikTok feel</li>
+                        <li>Authenticity vs. scripted</li>
+                        <li>Call-to-action effectiveness</li>
+                    </ul>
+                </div>
+                <div class="legend-item">
+                    <h4>Platform Optimization</h4>
+                    <ul>
+                        <li>Vertical format (9:16) usage</li>
+                        <li>Captions for sound-off viewing</li>
+                        <li>Duration (15-60 sec ideal)</li>
+                        <li>Hashtag strategy</li>
+                    </ul>
+                </div>
+                <div class="legend-item">
+                    <h4>Brand/Creator Fit</h4>
+                    <ul>
+                        <li>Voice consistency</li>
+                        <li>Value delivery (educate/entertain/inspire)</li>
+                        <li>Community engagement</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-grid">
+            <!-- Video 1 -->
+            <div class="video-card" data-video="1">
+                <div class="video-header">
+                    <div class="video-number">1</div>
+                    <div class="video-date">March 30, 2026</div>
+                </div>
+                <div class="video-embed">
+                    <iframe
+                        src="https://www.tiktok.com/embed/v2/7623136632048274718"
+                        width="325"
+                        height="575"
+                        allowfullscreen
+                        allow="encrypted-media;">
+                    </iframe>
+                </div>
+                <div class="video-caption">
+                    "More parents are asking a simple question: Why shouldn't uniforms and kids clothing be comfortable? They're saying NO to stiff, restrictive fabrics..."
+                </div>
+                <div class="engagement-stats">
+                    <div class="stat">
+                        <div class="stat-value">484</div>
+                        <div class="stat-label">Views</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">Likes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Comments</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Shares</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Saves</div>
+                    </div>
+                </div>
+                <div class="rating-section">
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Content Quality</span>
+                            <span class="category-score" data-category="content-1">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="content-1" id="content-1-5" value="5"><label for="content-1-5">&#9733;</label>
+                            <input type="radio" name="content-1" id="content-1-4" value="4"><label for="content-1-4">&#9733;</label>
+                            <input type="radio" name="content-1" id="content-1-3" value="3"><label for="content-1-3">&#9733;</label>
+                            <input type="radio" name="content-1" id="content-1-2" value="2"><label for="content-1-2">&#9733;</label>
+                            <input type="radio" name="content-1" id="content-1-1" value="1"><label for="content-1-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Hook, pacing, audio, visuals</div>
+                    </div>
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Strategic Elements</span>
+                            <span class="category-score" data-category="strategic-1">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="strategic-1" id="strategic-1-5" value="5"><label for="strategic-1-5">&#9733;</label>
+                            <input type="radio" name="strategic-1" id="strategic-1-4" value="4"><label for="strategic-1-4">&#9733;</label>
+                            <input type="radio" name="strategic-1" id="strategic-1-3" value="3"><label for="strategic-1-3">&#9733;</label>
+                            <input type="radio" name="strategic-1" id="strategic-1-2" value="2"><label for="strategic-1-2">&#9733;</label>
+                            <input type="radio" name="strategic-1" id="strategic-1-1" value="1"><label for="strategic-1-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Trends, native feel, authenticity, CTA</div>
+                    </div>
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Platform Optimization</span>
+                            <span class="category-score" data-category="platform-1">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="platform-1" id="platform-1-5" value="5"><label for="platform-1-5">&#9733;</label>
+                            <input type="radio" name="platform-1" id="platform-1-4" value="4"><label for="platform-1-4">&#9733;</label>
+                            <input type="radio" name="platform-1" id="platform-1-3" value="3"><label for="platform-1-3">&#9733;</label>
+                            <input type="radio" name="platform-1" id="platform-1-2" value="2"><label for="platform-1-2">&#9733;</label>
+                            <input type="radio" name="platform-1" id="platform-1-1" value="1"><label for="platform-1-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Format, captions, duration, hashtags</div>
+                    </div>
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Brand/Creator Fit</span>
+                            <span class="category-score" data-category="brand-1">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="brand-1" id="brand-1-5" value="5"><label for="brand-1-5">&#9733;</label>
+                            <input type="radio" name="brand-1" id="brand-1-4" value="4"><label for="brand-1-4">&#9733;</label>
+                            <input type="radio" name="brand-1" id="brand-1-3" value="3"><label for="brand-1-3">&#9733;</label>
+                            <input type="radio" name="brand-1" id="brand-1-2" value="2"><label for="brand-1-2">&#9733;</label>
+                            <input type="radio" name="brand-1" id="brand-1-1" value="1"><label for="brand-1-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Voice, value, community</div>
+                    </div>
+                </div>
+                <div class="notes-section">
+                    <textarea placeholder="Add your notes, observations, and recommendations for this video..." data-notes="1"></textarea>
+                </div>
+            </div>
+
+            <!-- Video 2 -->
+            <div class="video-card" data-video="2">
+                <div class="video-header">
+                    <div class="video-number">2</div>
+                    <div class="video-date">March 25, 2026</div>
+                </div>
+                <div class="video-embed">
+                    <iframe
+                        src="https://www.tiktok.com/embed/v2/7621244595472551182"
+                        width="325"
+                        height="575"
+                        allowfullscreen
+                        allow="encrypted-media;">
+                    </iframe>
+                </div>
+                <div class="video-caption">
+                    "All Basics - made for everyday life. Video by Ewerton #AllBasics #ExternSpotlight #fyp #KidsFashion #FashionBrand"
+                </div>
+                <div class="engagement-stats">
+                    <div class="stat">
+                        <div class="stat-value">159</div>
+                        <div class="stat-label">Views</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Likes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Comments</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Shares</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Saves</div>
+                    </div>
+                </div>
+                <div class="rating-section">
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Content Quality</span>
+                            <span class="category-score" data-category="content-2">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="content-2" id="content-2-5" value="5"><label for="content-2-5">&#9733;</label>
+                            <input type="radio" name="content-2" id="content-2-4" value="4"><label for="content-2-4">&#9733;</label>
+                            <input type="radio" name="content-2" id="content-2-3" value="3"><label for="content-2-3">&#9733;</label>
+                            <input type="radio" name="content-2" id="content-2-2" value="2"><label for="content-2-2">&#9733;</label>
+                            <input type="radio" name="content-2" id="content-2-1" value="1"><label for="content-2-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Hook, pacing, audio, visuals</div>
+                    </div>
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Strategic Elements</span>
+                            <span class="category-score" data-category="strategic-2">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="strategic-2" id="strategic-2-5" value="5"><label for="strategic-2-5">&#9733;</label>
+                            <input type="radio" name="strategic-2" id="strategic-2-4" value="4"><label for="strategic-2-4">&#9733;</label>
+                            <input type="radio" name="strategic-2" id="strategic-2-3" value="3"><label for="strategic-2-3">&#9733;</label>
+                            <input type="radio" name="strategic-2" id="strategic-2-2" value="2"><label for="strategic-2-2">&#9733;</label>
+                            <input type="radio" name="strategic-2" id="strategic-2-1" value="1"><label for="strategic-2-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Trends, native feel, authenticity, CTA</div>
+                    </div>
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Platform Optimization</span>
+                            <span class="category-score" data-category="platform-2">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="platform-2" id="platform-2-5" value="5"><label for="platform-2-5">&#9733;</label>
+                            <input type="radio" name="platform-2" id="platform-2-4" value="4"><label for="platform-2-4">&#9733;</label>
+                            <input type="radio" name="platform-2" id="platform-2-3" value="3"><label for="platform-2-3">&#9733;</label>
+                            <input type="radio" name="platform-2" id="platform-2-2" value="2"><label for="platform-2-2">&#9733;</label>
+                            <input type="radio" name="platform-2" id="platform-2-1" value="1"><label for="platform-2-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Format, captions, duration, hashtags</div>
+                    </div>
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Brand/Creator Fit</span>
+                            <span class="category-score" data-category="brand-2">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="brand-2" id="brand-2-5" value="5"><label for="brand-2-5">&#9733;</label>
+                            <input type="radio" name="brand-2" id="brand-2-4" value="4"><label for="brand-2-4">&#9733;</label>
+                            <input type="radio" name="brand-2" id="brand-2-3" value="3"><label for="brand-2-3">&#9733;</label>
+                            <input type="radio" name="brand-2" id="brand-2-2" value="2"><label for="brand-2-2">&#9733;</label>
+                            <input type="radio" name="brand-2" id="brand-2-1" value="1"><label for="brand-2-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Voice, value, community</div>
+                    </div>
+                </div>
+                <div class="notes-section">
+                    <textarea placeholder="Add your notes, observations, and recommendations for this video..." data-notes="2"></textarea>
+                </div>
+            </div>
+
+            <!-- Video 3 -->
+            <div class="video-card" data-video="3">
+                <div class="video-header">
+                    <div class="video-number">3</div>
+                    <div class="video-date">March 16, 2026</div>
+                </div>
+                <div class="video-embed">
+                    <iframe
+                        src="https://www.tiktok.com/embed/v2/7617952786348625183"
+                        width="325"
+                        height="575"
+                        allowfullscreen
+                        allow="encrypted-media;">
+                    </iframe>
+                </div>
+                <div class="video-caption">
+                    "Our fabric moves, stretches, and holds up to real play, so kids can focus on what really matters - being kids. Video created by Natalie #AllBasics #ExternSpotlight #KidsFashion #KidsUniforms #fyp"
+                </div>
+                <div class="engagement-stats">
+                    <div class="stat">
+                        <div class="stat-value">190</div>
+                        <div class="stat-label">Views</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Likes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Comments</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Shares</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Saves</div>
+                    </div>
+                </div>
+                <div class="rating-section">
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Content Quality</span>
+                            <span class="category-score" data-category="content-3">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="content-3" id="content-3-5" value="5"><label for="content-3-5">&#9733;</label>
+                            <input type="radio" name="content-3" id="content-3-4" value="4"><label for="content-3-4">&#9733;</label>
+                            <input type="radio" name="content-3" id="content-3-3" value="3"><label for="content-3-3">&#9733;</label>
+                            <input type="radio" name="content-3" id="content-3-2" value="2"><label for="content-3-2">&#9733;</label>
+                            <input type="radio" name="content-3" id="content-3-1" value="1"><label for="content-3-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Hook, pacing, audio, visuals</div>
+                    </div>
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Strategic Elements</span>
+                            <span class="category-score" data-category="strategic-3">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="strategic-3" id="strategic-3-5" value="5"><label for="strategic-3-5">&#9733;</label>
+                            <input type="radio" name="strategic-3" id="strategic-3-4" value="4"><label for="strategic-3-4">&#9733;</label>
+                            <input type="radio" name="strategic-3" id="strategic-3-3" value="3"><label for="strategic-3-3">&#9733;</label>
+                            <input type="radio" name="strategic-3" id="strategic-3-2" value="2"><label for="strategic-3-2">&#9733;</label>
+                            <input type="radio" name="strategic-3" id="strategic-3-1" value="1"><label for="strategic-3-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Trends, native feel, authenticity, CTA</div>
+                    </div>
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Platform Optimization</span>
+                            <span class="category-score" data-category="platform-3">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="platform-3" id="platform-3-5" value="5"><label for="platform-3-5">&#9733;</label>
+                            <input type="radio" name="platform-3" id="platform-3-4" value="4"><label for="platform-3-4">&#9733;</label>
+                            <input type="radio" name="platform-3" id="platform-3-3" value="3"><label for="platform-3-3">&#9733;</label>
+                            <input type="radio" name="platform-3" id="platform-3-2" value="2"><label for="platform-3-2">&#9733;</label>
+                            <input type="radio" name="platform-3" id="platform-3-1" value="1"><label for="platform-3-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Format, captions, duration, hashtags</div>
+                    </div>
+                    <div class="rating-category">
+                        <div class="category-header">
+                            <span class="category-title">Brand/Creator Fit</span>
+                            <span class="category-score" data-category="brand-3">0/5</span>
+                        </div>
+                        <div class="rating-stars">
+                            <input type="radio" name="brand-3" id="brand-3-5" value="5"><label for="brand-3-5">&#9733;</label>
+                            <input type="radio" name="brand-3" id="brand-3-4" value="4"><label for="brand-3-4">&#9733;</label>
+                            <input type="radio" name="brand-3" id="brand-3-3" value="3"><label for="brand-3-3">&#9733;</label>
+                            <input type="radio" name="brand-3" id="brand-3-2" value="2"><label for="brand-3-2">&#9733;</label>
+                            <input type="radio" name="brand-3" id="brand-3-1" value="1"><label for="brand-3-1">&#9733;</label>
+                        </div>
+                        <div class="category-hint">Voice, value, community</div>
+                    </div>
+                </div>
+                <div class="notes-section">
+                    <textarea placeholder="Add your notes, observations, and recommendations for this video..." data-notes="3"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-section">
+            <h2>Evaluation Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h4>Video 1</h4>
+                    <div class="score" id="total-1">0</div>
+                    <div class="max-score">/ 20</div>
+                </div>
+                <div class="summary-card">
+                    <h4>Video 2</h4>
+                    <div class="score" id="total-2">0</div>
+                    <div class="max-score">/ 20</div>
+                </div>
+                <div class="summary-card">
+                    <h4>Video 3</h4>
+                    <div class="score" id="total-3">0</div>
+                    <div class="max-score">/ 20</div>
+                </div>
+                <div class="summary-card" style="background: rgba(0, 245, 212, 0.1);">
+                    <h4>Overall Average</h4>
+                    <div class="score" id="overall-avg" style="color: #00f5d4;">0</div>
+                    <div class="max-score">/ 20</div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="exportResults()">Export Evaluation (CSV)</button>
+                <button class="btn btn-secondary" onclick="clearAll()">Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const VIDEO_COUNT = 3;
+
+        // Video metadata
+        const videoData = {
+            1: { url: 'https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718', views: 484, likes: 7, comments: 0, shares: 0, saves: 0, date: 'March 30, 2026' },
+            2: { url: 'https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182', views: 159, likes: 0, comments: 0, shares: 0, saves: 0, date: 'March 25, 2026' },
+            3: { url: 'https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183', views: 190, likes: 2, comments: 0, shares: 1, saves: 0, date: 'March 16, 2026' }
+        };
+
+        // Handle star rating changes
+        document.querySelectorAll('.rating-stars input').forEach(input => {
+            input.addEventListener('change', function() {
+                const category = this.name;
+                const value = this.value;
+                const scoreEl = document.querySelector(`[data-category="${category}"]`);
+                if (scoreEl) {
+                    scoreEl.textContent = `${value}/5`;
+                }
+                updateTotals();
+            });
+        });
+
+        function updateTotals() {
+            const categories = ['content', 'strategic', 'platform', 'brand'];
+            let allTotals = [];
+
+            for (let video = 1; video <= VIDEO_COUNT; video++) {
+                let total = 0;
+                categories.forEach(cat => {
+                    const checked = document.querySelector(`input[name="${cat}-${video}"]:checked`);
+                    if (checked) {
+                        total += parseInt(checked.value);
+                    }
+                });
+                document.getElementById(`total-${video}`).textContent = total;
+                if (total > 0) allTotals.push(total);
+            }
+
+            // Calculate overall average
+            const avg = allTotals.length > 0
+                ? (allTotals.reduce((a, b) => a + b, 0) / allTotals.length).toFixed(1)
+                : 0;
+            document.getElementById('overall-avg').textContent = avg;
+        }
+
+        function exportResults() {
+            const categories = ['content', 'strategic', 'platform', 'brand'];
+            let csv = 'Video,URL,Date,Views,Likes,Comments,Shares,Saves,Content Quality,Strategic Elements,Platform Optimization,Brand Fit,Total Score,Notes\n';
+
+            for (let video = 1; video <= VIDEO_COUNT; video++) {
+                const data = videoData[video];
+                let scores = [];
+
+                categories.forEach(cat => {
+                    const checked = document.querySelector(`input[name="${cat}-${video}"]:checked`);
+                    scores.push(checked ? checked.value : 0);
+                });
+
+                const total = scores.reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                const notes = document.querySelector(`[data-notes="${video}"]`).value.replace(/"/g, '""');
+
+                csv += `"Video ${video}","${data.url}","${data.date}",${data.views},${data.likes},${data.comments},${data.shares},${data.saves},${scores[0]},${scores[1]},${scores[2]},${scores[3]},${total},"${notes}"\n`;
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tiktok-evaluation-allbasics.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all ratings and notes?')) {
+                document.querySelectorAll('.rating-stars input').forEach(input => {
+                    input.checked = false;
+                });
+                document.querySelectorAll('.category-score').forEach(el => {
+                    el.textContent = '0/5';
+                });
+                document.querySelectorAll('textarea').forEach(ta => {
+                    ta.value = '';
+                });
+                for (let i = 1; i <= VIDEO_COUNT; i++) {
+                    document.getElementById(`total-${i}`).textContent = '0';
+                }
+                document.getElementById('overall-avg').textContent = '0';
+                localStorage.removeItem('tiktok-evaluation');
+            }
+        }
+
+        // Load saved data from localStorage
+        function loadSavedData() {
+            const saved = localStorage.getItem('tiktok-evaluation');
+            if (saved) {
+                const data = JSON.parse(saved);
+
+                // Restore ratings
+                Object.keys(data.ratings || {}).forEach(key => {
+                    const input = document.getElementById(key);
+                    if (input) {
+                        input.checked = true;
+                        const category = input.name;
+                        const scoreEl = document.querySelector(`[data-category="${category}"]`);
+                        if (scoreEl) {
+                            scoreEl.textContent = `${input.value}/5`;
+                        }
+                    }
+                });
+
+                // Restore notes
+                Object.keys(data.notes || {}).forEach(key => {
+                    const textarea = document.querySelector(`[data-notes="${key}"]`);
+                    if (textarea) {
+                        textarea.value = data.notes[key];
+                    }
+                });
+
+                updateTotals();
+            }
+        }
+
+        // Save data to localStorage on changes
+        function saveData() {
+            const ratings = {};
+            const notes = {};
+
+            document.querySelectorAll('.rating-stars input:checked').forEach(input => {
+                ratings[input.id] = true;
+            });
+
+            document.querySelectorAll('textarea').forEach(ta => {
+                const key = ta.getAttribute('data-notes');
+                if (ta.value) {
+                    notes[key] = ta.value;
+                }
+            });
+
+            localStorage.setItem('tiktok-evaluation', JSON.stringify({ ratings, notes }));
+        }
+
+        // Auto-save on changes
+        document.querySelectorAll('.rating-stars input, textarea').forEach(el => {
+            el.addEventListener('change', saveData);
+            el.addEventListener('input', saveData);
+        });
+
+        // Load saved data on page load
+        loadSavedData();
+    </script>
+</body>
+</html>
