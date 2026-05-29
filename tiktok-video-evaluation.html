@@ -129,6 +129,7 @@
         .video-embed {
             position: relative;
             background: #000;
+            min-height: 580px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -139,6 +140,40 @@
         .video-embed iframe {
             border: none;
             border-radius: 8px;
+        }
+
+        .tiktok-embed {
+            max-width: 325px;
+            min-width: 280px;
+        }
+
+        .video-fallback {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .video-fallback a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #fe2c55, #25f4ee);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .video-fallback a:hover {
+            transform: scale(1.05);
+        }
+
+        .video-fallback p {
+            color: #888;
+            margin-top: 15px;
+            font-size: 0.85rem;
         }
 
         .video-caption {
@@ -480,14 +515,17 @@
                     <div class="video-number">1</div>
                     <div class="video-date">March 30, 2026</div>
                 </div>
-                <div class="video-embed">
-                    <iframe
-                        src="https://www.tiktok.com/embed/v2/7623136632048274718"
-                        width="325"
-                        height="575"
-                        allowfullscreen
-                        allow="encrypted-media;">
-                    </iframe>
+                <div class="video-embed" id="embed-1">
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718" data-video-id="7623136632048274718">
+                        <section><a target="_blank" href="https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718">Watch Video</a></section>
+                    </blockquote>
+                    <div class="video-fallback" id="fallback-1">
+                        <a href="https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718" target="_blank">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                            Watch on TikTok
+                        </a>
+                        <p>Embed blocked - click to watch directly</p>
+                    </div>
                 </div>
                 <div class="video-caption">
                     "More parents are asking a simple question: Why shouldn't uniforms and kids clothing be comfortable? They're saying NO to stiff, restrictive fabrics..."
@@ -583,14 +621,17 @@
                     <div class="video-number">2</div>
                     <div class="video-date">March 25, 2026</div>
                 </div>
-                <div class="video-embed">
-                    <iframe
-                        src="https://www.tiktok.com/embed/v2/7621244595472551182"
-                        width="325"
-                        height="575"
-                        allowfullscreen
-                        allow="encrypted-media;">
-                    </iframe>
+                <div class="video-embed" id="embed-2">
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182" data-video-id="7621244595472551182">
+                        <section><a target="_blank" href="https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182">Watch Video</a></section>
+                    </blockquote>
+                    <div class="video-fallback" id="fallback-2">
+                        <a href="https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182" target="_blank">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                            Watch on TikTok
+                        </a>
+                        <p>Embed blocked - click to watch directly</p>
+                    </div>
                 </div>
                 <div class="video-caption">
                     "All Basics - made for everyday life. Video by Ewerton #AllBasics #ExternSpotlight #fyp #KidsFashion #FashionBrand"
@@ -686,14 +727,17 @@
                     <div class="video-number">3</div>
                     <div class="video-date">March 16, 2026</div>
                 </div>
-                <div class="video-embed">
-                    <iframe
-                        src="https://www.tiktok.com/embed/v2/7617952786348625183"
-                        width="325"
-                        height="575"
-                        allowfullscreen
-                        allow="encrypted-media;">
-                    </iframe>
+                <div class="video-embed" id="embed-3">
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183" data-video-id="7617952786348625183">
+                        <section><a target="_blank" href="https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183">Watch Video</a></section>
+                    </blockquote>
+                    <div class="video-fallback" id="fallback-3">
+                        <a href="https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183" target="_blank">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                            Watch on TikTok
+                        </a>
+                        <p>Embed blocked - click to watch directly</p>
+                    </div>
                 </div>
                 <div class="video-caption">
                     "Our fabric moves, stretches, and holds up to real play, so kids can focus on what really matters - being kids. Video created by Natalie #AllBasics #ExternSpotlight #KidsFashion #KidsUniforms #fyp"
@@ -966,6 +1010,27 @@
 
         // Load saved data on page load
         loadSavedData();
+
+        // Check if TikTok embeds loaded, show fallback if not
+        function checkEmbeds() {
+            for (let i = 1; i <= VIDEO_COUNT; i++) {
+                const embed = document.getElementById(`embed-${i}`);
+                const fallback = document.getElementById(`fallback-${i}`);
+                const blockquote = embed.querySelector('.tiktok-embed');
+
+                // If blockquote still exists (wasn't replaced by iframe), show fallback
+                if (blockquote && !embed.querySelector('iframe')) {
+                    blockquote.style.display = 'none';
+                    fallback.style.display = 'block';
+                }
+            }
+        }
+
+        // Check after TikTok script has had time to load
+        setTimeout(checkEmbeds, 3000);
     </script>
+
+    <!-- TikTok Embed Script -->
+    <script async src="https://www.tiktok.com/embed.js"></script>
 </body>
 </html>
