@@ -201,55 +201,16 @@
 
         .video-player {
             background: #000;
-            aspect-ratio: 9/16;
-            max-height: 500px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .watch-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            text-decoration: none;
-        }
-
-        .play-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #fe2c55, #25f4ee);
-            border-radius: 50%;
+            min-height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s, box-shadow 0.3s;
+            padding: 10px;
         }
 
-        .play-icon svg {
-            width: 35px;
-            height: 35px;
-            fill: white;
-            margin-left: 5px;
-        }
-
-        .watch-button:hover .play-icon {
-            transform: scale(1.1);
-            box-shadow: 0 0 40px rgba(254, 44, 85, 0.5);
-        }
-
-        .watch-text {
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .watch-subtext {
-            color: #888;
-            font-size: 0.85rem;
+        .video-player .tiktok-embed {
+            margin: 0 !important;
+            max-width: 325px !important;
         }
 
         .video-caption {
@@ -592,7 +553,7 @@
         <div class="instructions">
             <div class="instruction-item">
                 <span class="instruction-number">1</span>
-                <span>Watch the video on TikTok</span>
+                <span>Watch the embedded video</span>
             </div>
             <div class="instruction-item">
                 <span class="instruction-number">2</span>
@@ -619,16 +580,11 @@
                     <div class="video-date">March 30, 2026</div>
                 </div>
                 <div class="video-player">
-                    <a href="https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718" target="_blank" class="watch-button">
-                        <div class="play-icon">
-                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </div>
-                        <span class="watch-text">Watch on TikTok</span>
-                        <span class="watch-subtext">Opens in new tab</span>
-                    </a>
-                </div>
-                <div class="video-caption">
-                    "More parents are asking a simple question: Why shouldn't uniforms and kids clothing be comfortable? They're saying NO to stiff, restrictive fabrics, and YES to pieces that stretch, breathe, and actually keep up with kids."
+                    <blockquote class="tiktok-embed"
+                        cite="https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718"
+                        data-video-id="7623136632048274718"
+                        style="max-width: 325px; min-width: 300px;">
+                    </blockquote>
                 </div>
                 <div class="engagement-stats">
                     <div class="stat">
@@ -741,16 +697,11 @@
                     <div class="video-date">March 25, 2026</div>
                 </div>
                 <div class="video-player">
-                    <a href="https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182" target="_blank" class="watch-button">
-                        <div class="play-icon">
-                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </div>
-                        <span class="watch-text">Watch on TikTok</span>
-                        <span class="watch-subtext">Opens in new tab</span>
-                    </a>
-                </div>
-                <div class="video-caption">
-                    "All Basics - made for everyday life. Video by Ewerton #AllBasics #ExternSpotlight #fyp #KidsFashion #FashionBrand"
+                    <blockquote class="tiktok-embed"
+                        cite="https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182"
+                        data-video-id="7621244595472551182"
+                        style="max-width: 325px; min-width: 300px;">
+                    </blockquote>
                 </div>
                 <div class="engagement-stats">
                     <div class="stat">
@@ -863,16 +814,11 @@
                     <div class="video-date">March 16, 2026</div>
                 </div>
                 <div class="video-player">
-                    <a href="https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183" target="_blank" class="watch-button">
-                        <div class="play-icon">
-                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </div>
-                        <span class="watch-text">Watch on TikTok</span>
-                        <span class="watch-subtext">Opens in new tab</span>
-                    </a>
-                </div>
-                <div class="video-caption">
-                    "Our fabric moves, stretches, and holds up to real play, so kids can focus on what really matters - being kids. Video created by Natalie #AllBasics #ExternSpotlight #KidsFashion #KidsUniforms #fyp"
+                    <blockquote class="tiktok-embed"
+                        cite="https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183"
+                        data-video-id="7617952786348625183"
+                        style="max-width: 325px; min-width: 300px;">
+                    </blockquote>
                 </div>
                 <div class="engagement-stats">
                     <div class="stat">
@@ -1194,5 +1140,6 @@
 
         loadSavedData();
     </script>
+    <script async src="https://www.tiktok.com/embed.js"></script>
 </body>
 </html>
