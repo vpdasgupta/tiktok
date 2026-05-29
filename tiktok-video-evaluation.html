@@ -213,6 +213,56 @@
             max-width: 325px !important;
         }
 
+        .video-player .tiktok-embed section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 40px 20px;
+        }
+
+        .video-player .tiktok-embed .fallback-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .video-player .tiktok-embed .play-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fe2c55, #25f4ee);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .video-player .tiktok-embed .play-icon svg {
+            width: 35px;
+            height: 35px;
+            fill: white;
+            margin-left: 5px;
+        }
+
+        .video-player .tiktok-embed .fallback-link:hover .play-icon {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(254, 44, 85, 0.5);
+        }
+
+        .video-player .tiktok-embed .watch-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .video-player .tiktok-embed .watch-subtext {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
         .video-caption {
             padding: 15px 20px;
             background: rgba(0,0,0,0.2);
@@ -553,7 +603,7 @@
         <div class="instructions">
             <div class="instruction-item">
                 <span class="instruction-number">1</span>
-                <span>Watch the embedded video</span>
+                <span>Watch the video</span>
             </div>
             <div class="instruction-item">
                 <span class="instruction-number">2</span>
@@ -584,6 +634,15 @@
                         cite="https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718"
                         data-video-id="7623136632048274718"
                         style="max-width: 325px; min-width: 300px;">
+                        <section>
+                            <a href="https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718" target="_blank" class="fallback-link">
+                                <div class="play-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                                <span class="watch-text">Watch on TikTok</span>
+                                <span class="watch-subtext">Opens in new tab</span>
+                            </a>
+                        </section>
                     </blockquote>
                 </div>
                 <div class="engagement-stats">
@@ -701,6 +760,15 @@
                         cite="https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182"
                         data-video-id="7621244595472551182"
                         style="max-width: 325px; min-width: 300px;">
+                        <section>
+                            <a href="https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182" target="_blank" class="fallback-link">
+                                <div class="play-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                                <span class="watch-text">Watch on TikTok</span>
+                                <span class="watch-subtext">Opens in new tab</span>
+                            </a>
+                        </section>
                     </blockquote>
                 </div>
                 <div class="engagement-stats">
@@ -818,6 +886,15 @@
                         cite="https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183"
                         data-video-id="7617952786348625183"
                         style="max-width: 325px; min-width: 300px;">
+                        <section>
+                            <a href="https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183" target="_blank" class="fallback-link">
+                                <div class="play-icon">
+                                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                                <span class="watch-text">Watch on TikTok</span>
+                                <span class="watch-subtext">Opens in new tab</span>
+                            </a>
+                        </section>
                     </blockquote>
                 </div>
                 <div class="engagement-stats">
