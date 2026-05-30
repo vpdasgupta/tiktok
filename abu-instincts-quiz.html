@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Your ABU Instincts | TikTok Externship</title>
+    <style>
+        :root {
+            --primary: #00C9B1;
+            --primary-dark: #00A896;
+            --secondary: #FF6B6B;
+            --bg-dark: #1a1a2e;
+            --bg-card: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #b8b8d1;
+            --success: #4ade80;
+            --border: #2a2a4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #0f0f23 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 14px;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(90deg, var(--primary), #00f5d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .intro {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 201, 177, 0.1);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--bg-dark);
+            font-weight: 700;
+            font-size: 14px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .question-hint {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: rgba(0, 201, 177, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(0, 201, 177, 0.15);
+        }
+
+        .option.correct {
+            border-color: var(--success);
+            background: rgba(74, 222, 128, 0.15);
+        }
+
+        .option.incorrect {
+            border-color: var(--secondary);
+            background: rgba(255, 107, 107, 0.15);
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--border);
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background: var(--primary);
+            color: var(--bg-dark);
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .reveal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .reveal-btn:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+        }
+
+        .reveal-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .answer-reveal {
+            display: none;
+            margin-top: 24px;
+            padding: 24px;
+            background: rgba(0, 201, 177, 0.08);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .answer-reveal.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .answer-label {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .answer-text {
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .answer-explanation {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .answer-explanation strong {
+            color: var(--text-primary);
+        }
+
+        /* Open-ended question */
+        .open-answer {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+        }
+
+        .open-answer:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .open-answer::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .prompts {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+        .prompts-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .prompts ul {
+            margin-left: 20px;
+            color: var(--text-secondary);
+        }
+
+        .prompts li {
+            margin-bottom: 4px;
+        }
+
+        /* Score section */
+        .score-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 40px 0;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .score-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--primary), #00f5d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .score-message {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-primary);
+        }
+
+        /* Key takeaways */
+        .takeaways {
+            display: none;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .takeaways.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .takeaways h2 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+
+        .takeaway-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .takeaway-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .takeaway-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 201, 177, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+
+        .takeaway-content h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .takeaway-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 20px;
+            }
+
+            .question-card, .score-section, .takeaways {
+                background: white;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+
+            .btn-primary, .btn-secondary, .reveal-btn {
+                display: none;
+            }
+
+            .answer-reveal {
+                display: block !important;
+                background: #f5f5f5;
+                border-left: 4px solid #00C9B1;
+            }
+
+            h1 {
+                background: none;
+                -webkit-text-fill-color: #00C9B1;
+                color: #00C9B1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .question-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="quiz-content">
+        <header>
+            <div class="logo">TikTok Externship</div>
+            <h1>Test Your ABU Instincts</h1>
+            <p class="intro">You've done the research. Now let's see what your strategist brain picked up. Make your best guess, then reveal the answer. Every reveal is a new piece of intel you can use.</p>
+        </header>
+
+        <!-- Question 1 -->
+        <div class="question-card" data-question="1" data-answer="B">
+            <span class="question-number">Question 1</span>
+            <h2 class="question-text">Who is ABU's PRIMARY customer?</h2>
+            <p class="question-hint">This one's trickier than it looks. Think about who's actually pulling out their wallet.</p>
+
+            <div class="options">
+                <div class="option" data-value="A" onclick="selectOption(this)">
+                    <span class="option-letter">A</span>
+                    <span class="option-text">Kids who want cool uniforms</span>
+                </div>
+                <div class="option" data-value="B" onclick="selectOption(this)">
+                    <span class="option-letter">B</span>
+                    <span class="option-text">Parents who want comfortable, durable uniforms</span>
+                </div>
+                <div class="option" data-value="C" onclick="selectOption(this)">
+                    <span class="option-letter">C</span>
+                    <span class="option-text">Schools looking for bulk uniform suppliers</span>
+                </div>
+                <div class="option" data-value="D" onclick="selectOption(this)">
+                    <span class="option-letter">D</span>
+                    <span class="option-text">Fashion-conscious teens</span>
+                </div>
+            </div>
+
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>
+                <span>Reveal Answer</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            <div class="answer-reveal">
+                <div class="answer-label">Answer</div>
+                <div class="answer-text">B — Parents who want comfortable, durable uniforms</div>
+                <div class="answer-explanation">
+                    Here's the thing: kids might wear the uniforms, but <strong>parents are making the call AND swiping the card</strong>. ABU knows this—that's why their messaging zeroes in on comfort, durability, and fit. All parent priorities.
+                    <br><br>
+                    <strong>The insight here:</strong> Did you catch this in your research? Look back at ABU's website—it's speaking directly to parents, not kids. Every value prop addresses a parent pain point: uncomfortable uniforms, morning battles, clothes that fall apart after three washes.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-card" data-question="2" data-answer="C">
+            <span class="question-number">Question 2</span>
+            <h2 class="question-text">What does ABU compete on?</h2>
+            <p class="question-hint">Every brand has a lane. Based on your competitor deep-dive, what's ABU's secret weapon?</p>
+
+            <div class="options">
+                <div class="option" data-value="A" onclick="selectOption(this)">
+                    <span class="option-letter">A</span>
+                    <span class="option-text">Lowest price in the market</span>
+                </div>
+                <div class="option" data-value="B" onclick="selectOption(this)">
+                    <span class="option-letter">B</span>
+                    <span class="option-text">Trendiest styles</span>
+                </div>
+                <div class="option" data-value="C" onclick="selectOption(this)">
+                    <span class="option-letter">C</span>
+                    <span class="option-text">Quality + comfort experience</span>
+                </div>
+                <div class="option" data-value="D" onclick="selectOption(this)">
+                    <span class="option-letter">D</span>
+                    <span class="option-text">Fastest shipping</span>
+                </div>
+            </div>
+
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>
+                <span>Reveal Answer</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            <div class="answer-reveal">
+                <div class="answer-label">Answer</div>
+                <div class="answer-text">C — Quality + comfort experience</div>
+                <div class="answer-explanation">
+                    This is where it gets interesting. Most uniform brands are in a race to the bottom on price—French Toast and Cat & Jack basically scream "affordable!" ABU? <strong>They're playing a completely different game.</strong> They compete on <em>how the uniform feels</em>—soft fabrics, stretch for movement, a fit that actually looks good.
+                    <br><br>
+                    <strong>Why this matters for you:</strong> ABU owns a premium-but-accessible position. Their whole vibe is "uniforms kids actually want to wear," not "cheapest uniforms in town." That positioning changes everything about the content you'd create for them. Different lane, different strategy.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-card" data-question="3" data-answer="B">
+            <span class="question-number">Question 3</span>
+            <h2 class="question-text">What emotion should ABU content make parents feel?</h2>
+            <p class="question-hint">Great content doesn't just inform—it makes people feel something. What's the emotional bullseye for ABU's TikToks?</p>
+
+            <div class="options">
+                <div class="option" data-value="A" onclick="selectOption(this)">
+                    <span class="option-letter">A</span>
+                    <span class="option-text">Excitement about trends</span>
+                </div>
+                <div class="option" data-value="B" onclick="selectOption(this)">
+                    <span class="option-letter">B</span>
+                    <span class="option-text">Relief that mornings will be easier</span>
+                </div>
+                <div class="option" data-value="C" onclick="selectOption(this)">
+                    <span class="option-letter">C</span>
+                    <span class="option-text">Fear of missing out</span>
+                </div>
+                <div class="option" data-value="D" onclick="selectOption(this)">
+                    <span class="option-letter">D</span>
+                    <span class="option-text">Nostalgia for their school days</span>
+                </div>
+            </div>
+
+            <button class="reveal-btn" onclick="revealAnswer(this)" disabled>
+                <span>Reveal Answer</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            <div class="answer-reveal">
+                <div class="answer-label">Answer</div>
+                <div class="answer-text">B — Relief that mornings will be easier</div>
+                <div class="answer-explanation">
+                    Nailed it if you got this one. ABU is solving a very specific parent problem: <strong>the daily chaos of wrestling kids into uncomfortable uniforms</strong>. Content that captures "morning battles: solved" or shows kids who genuinely like what they're wearing? That hits right in the feels for parents.
+                    <br><br>
+                    <strong>Your content unlock:</strong> The most effective ABU content taps into that exhale moment—one less thing to fight about. Picture this: transformation content (chaotic mornings vs. smooth ones), real parent testimonials, kids who are actually comfortable and happy. That's the emotional territory you want to own.
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 4 (Open-ended) -->
+        <div class="question-card" data-question="4">
+            <span class="question-number">Question 4</span>
+            <h2 class="question-text">Based on your competitor research, what is ONE thing ABU could own that competitors don't?</h2>
+            <p class="question-hint">Now this is where YOU become the strategist. No right or wrong answer here—this is your original insight.</p>
+
+            <textarea class="open-answer" id="q4-answer" placeholder="Write your strategic insight here..."></textarea>
+
+            <div class="prompts">
+                <div class="prompts-title">Some prompts to get your wheels turning:</div>
+                <ul>
+                    <li>What gaps did you spot in competitor content?</li>
+                    <li>What does ABU do that nobody else is doing?</li>
+                    <li>What territory is wide open on TikTok, just waiting to be claimed?</li>
+                </ul>
+            </div>
+
+            <div class="answer-reveal" style="display: block; margin-top: 24px; background: rgba(255, 107, 107, 0.08); border-left-color: var(--secondary);">
+                <div class="answer-explanation">
+                    <strong>Here's the thing:</strong> Your answer matters. Seriously. This insight becomes part of your Brand Strategy Document in Step 2. You're not just completing an exercise—you're developing a real strategic recommendation.
+                </div>
+            </div>
+        </div>
+
+        <!-- Score Section -->
+        <div class="score-section">
+            <h2 class="score-title">How Did You Do?</h2>
+            <div class="score-display" id="score-display">–/3</div>
+            <p class="score-message" id="score-message">Complete the quiz and reveal all answers to see your score.</p>
+
+            <div class="actions">
+                <button class="btn-secondary" onclick="resetQuiz()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
+                    </svg>
+                    Start Over
+                </button>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways" id="takeaways">
+            <h2>Key Takeaways</h2>
+
+            <div class="takeaway-item">
+                <div class="takeaway-icon">👨‍👩‍👧</div>
+                <div class="takeaway-content">
+                    <h3>Parents are the real customer</h3>
+                    <p>Kids wear it, parents buy it. Your content speaks to both, but the conversion happens with mom and dad.</p>
+                </div>
+            </div>
+
+            <div class="takeaway-item">
+                <div class="takeaway-icon">✨</div>
+                <div class="takeaway-content">
+                    <h3>ABU's edge is quality and comfort, not price</h3>
+                    <p>They're not trying to win a price war—they're winning on how the product feels.</p>
+                </div>
+            </div>
+
+            <div class="takeaway-item">
+                <div class="takeaway-icon">😌</div>
+                <div class="takeaway-content">
+                    <h3>Relief is the emotional unlock</h3>
+                    <p>The best ABU content makes parents exhale. One less battle. One less thing to worry about.</p>
+                </div>
+            </div>
+
+            <div class="takeaway-item">
+                <div class="takeaway-icon">💡</div>
+                <div class="takeaway-content">
+                    <h3>Your strategic insight is yours</h3>
+                    <p>That original observation you made in Question 4? It goes straight into your deliverable. You're not just learning strategy—you're doing it.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let answersRevealed = 0;
+        let correctAnswers = 0;
+
+        function selectOption(element) {
+            const card = element.closest('.question-card');
+            const options = card.querySelectorAll('.option');
+            const revealBtn = card.querySelector('.reveal-btn');
+
+            // Deselect all options
+            options.forEach(opt => opt.classList.remove('selected'));
+
+            // Select clicked option
+            element.classList.add('selected');
+
+            // Enable reveal button
+            revealBtn.disabled = false;
+        }
+
+        function revealAnswer(button) {
+            const card = button.closest('.question-card');
+            const answerReveal = card.querySelector('.answer-reveal');
+            const correctAnswer = card.dataset.answer;
+            const selectedOption = card.querySelector('.option.selected');
+
+            if (!selectedOption) return;
+
+            const selectedValue = selectedOption.dataset.value;
+
+            // Show correct/incorrect styling
+            if (selectedValue === correctAnswer) {
+                selectedOption.classList.add('correct');
+                correctAnswers++;
+            } else {
+                selectedOption.classList.add('incorrect');
+                // Highlight correct answer
+                card.querySelector(`.option[data-value="${correctAnswer}"]`).classList.add('correct');
+            }
+
+            // Disable further selection
+            card.querySelectorAll('.option').forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+
+            // Hide button and show answer
+            button.style.display = 'none';
+            answerReveal.classList.add('show');
+
+            answersRevealed++;
+            updateScore();
+        }
+
+        function updateScore() {
+            if (answersRevealed === 3) {
+                const scoreDisplay = document.getElementById('score-display');
+                const scoreMessage = document.getElementById('score-message');
+                const takeaways = document.getElementById('takeaways');
+
+                scoreDisplay.textContent = `${correctAnswers}/3`;
+
+                if (correctAnswers >= 3) {
+                    scoreMessage.textContent = "Your brand instincts are sharp. You're already thinking like a strategist—trust that.";
+                } else if (correctAnswers >= 1) {
+                    scoreMessage.textContent = "Solid foundation. The reveals just handed you insights that'll make your Strategy Doc even stronger. Consider this a level-up.";
+                } else {
+                    scoreMessage.textContent = "Here's the real talk: you just learned things you didn't know before. That's not failure—that's exactly how strategists build expertise. Every \"miss\" was actually a win in disguise.";
+                }
+
+                // Show key takeaways
+                takeaways.classList.add('show');
+            }
+        }
+
+        function resetQuiz() {
+            answersRevealed = 0;
+            correctAnswers = 0;
+
+            document.querySelectorAll('.question-card').forEach(card => {
+                card.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                    opt.style.pointerEvents = 'auto';
+                });
+
+                const revealBtn = card.querySelector('.reveal-btn');
+                if (revealBtn) {
+                    revealBtn.style.display = 'inline-flex';
+                    revealBtn.disabled = true;
+                }
+
+                const answerReveal = card.querySelector('.answer-reveal');
+                if (answerReveal && card.dataset.answer) {
+                    answerReveal.classList.remove('show');
+                }
+            });
+
+            document.getElementById('q4-answer').value = '';
+            document.getElementById('score-display').textContent = '–/3';
+            document.getElementById('score-message').textContent = 'Complete the quiz and reveal all answers to see your score.';
+            document.getElementById('takeaways').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
