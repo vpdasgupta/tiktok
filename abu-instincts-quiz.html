@@ -242,6 +242,32 @@
             cursor: not-allowed;
         }
 
+        .next-btn {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: var(--primary);
+            border: none;
+            color: var(--bg-dark);
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .next-btn.show {
+            display: inline-flex;
+            animation: slideIn 0.3s ease;
+        }
+
+        .next-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
         .answer-reveal {
             display: none;
             margin-top: 24px;
@@ -564,6 +590,13 @@
                     <strong>The insight here:</strong> Did you catch this in your research? Look back at ABU's website—it's speaking directly to parents, not kids. Every value prop addresses a parent pain point: uncomfortable uniforms, morning battles, clothes that fall apart after three washes.
                 </div>
             </div>
+
+            <button class="next-btn" onclick="goToNextQuestion(1)">
+                <span>Next Question</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
         </div>
 
         <!-- Question 2 -->
@@ -607,6 +640,13 @@
                     <strong>Why this matters for you:</strong> ABU owns a premium-but-accessible position. Their whole vibe is "uniforms kids actually want to wear," not "cheapest uniforms in town." That positioning changes everything about the content you'd create for them. Different lane, different strategy.
                 </div>
             </div>
+
+            <button class="next-btn" onclick="goToNextQuestion(2)">
+                <span>Next Question</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
         </div>
 
         <!-- Question 3 -->
@@ -650,6 +690,13 @@
                     <strong>Your content unlock:</strong> The most effective ABU content taps into that exhale moment—one less thing to fight about. Picture this: transformation content (chaotic mornings vs. smooth ones), real parent testimonials, kids who are actually comfortable and happy. That's the emotional territory you want to own.
                 </div>
             </div>
+
+            <button class="next-btn" onclick="goToNextQuestion(3)">
+                <span>Next Question</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
         </div>
 
         <!-- Question 4 (Open-ended) -->
@@ -775,32 +822,30 @@
             }
         }
 
-        function showNextQuestion(currentQuestionNum) {
+        function goToNextQuestion(currentQuestionNum) {
             const currentQuestion = document.querySelector(`[data-question="${currentQuestionNum}"]`);
             const nextQuestionNum = currentQuestionNum + 1;
 
-            // Hide current question after a delay to let user see the answer
-            setTimeout(() => {
-                if (currentQuestion) {
-                    currentQuestion.classList.remove('active');
-                }
+            // Hide current question
+            if (currentQuestion) {
+                currentQuestion.classList.remove('active');
+            }
 
-                // Update progress indicator
-                updateProgress(currentQuestionNum, nextQuestionNum);
+            // Update progress indicator
+            updateProgress(currentQuestionNum, nextQuestionNum);
 
-                if (nextQuestionNum <= totalQuestions) {
-                    const nextQuestion = document.querySelector(`[data-question="${nextQuestionNum}"]`);
-                    if (nextQuestion) {
-                        nextQuestion.classList.add('active');
-                        // Scroll to top of container
-                        document.querySelector('.container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                } else {
-                    // All questions done - show score section
-                    const scoreSection = document.querySelector('.score-section');
-                    scoreSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (nextQuestionNum <= totalQuestions) {
+                const nextQuestion = document.querySelector(`[data-question="${nextQuestionNum}"]`);
+                if (nextQuestion) {
+                    nextQuestion.classList.add('active');
+                    // Scroll to top of container
+                    document.querySelector('.container').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
-            }, 1500); // 1.5 second delay to read the answer
+            } else {
+                // All questions done - show score section
+                const scoreSection = document.querySelector('.score-section');
+                scoreSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         }
 
         function selectOption(element) {
@@ -850,9 +895,11 @@
             answersRevealed++;
             updateScore();
 
-            // Show next question
-            const currentQuestionNum = parseInt(card.dataset.question);
-            showNextQuestion(currentQuestionNum);
+            // Show the "Next Question" button
+            const nextBtn = card.querySelector('.next-btn');
+            if (nextBtn) {
+                nextBtn.classList.add('show');
+            }
         }
 
         function submitQ4() {
@@ -915,6 +962,12 @@
                 const answerReveal = card.querySelector('.answer-reveal');
                 if (answerReveal && card.dataset.answer) {
                     answerReveal.classList.remove('show');
+                }
+
+                // Hide next buttons
+                const nextBtn = card.querySelector('.next-btn');
+                if (nextBtn) {
+                    nextBtn.classList.remove('show');
                 }
 
                 // Hide all questions except the first one
