@@ -208,59 +208,8 @@
             padding: 10px;
         }
 
-        .video-player .tiktok-embed {
-            margin: 0 !important;
-            max-width: 325px !important;
-        }
-
-        .video-player .tiktok-embed section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            padding: 40px 20px;
-        }
-
-        .video-player .tiktok-embed .fallback-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            text-decoration: none;
-            color: #fff;
-        }
-
-        .video-player .tiktok-embed .play-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #fe2c55, #25f4ee);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .video-player .tiktok-embed .play-icon svg {
-            width: 35px;
-            height: 35px;
-            fill: white;
-            margin-left: 5px;
-        }
-
-        .video-player .tiktok-embed .fallback-link:hover .play-icon {
-            transform: scale(1.1);
-            box-shadow: 0 0 40px rgba(254, 44, 85, 0.5);
-        }
-
-        .video-player .tiktok-embed .watch-text {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .video-player .tiktok-embed .watch-subtext {
-            color: #888;
-            font-size: 0.85rem;
+        .video-player iframe {
+            border-radius: 8px;
         }
 
         .video-caption {
@@ -630,20 +579,12 @@
                     <div class="video-date">March 30, 2026</div>
                 </div>
                 <div class="video-player">
-                    <blockquote class="tiktok-embed"
-                        cite="https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718"
-                        data-video-id="7623136632048274718"
-                        style="max-width: 325px; min-width: 300px;">
-                        <section>
-                            <a href="https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718" target="_blank" class="fallback-link">
-                                <div class="play-icon">
-                                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                </div>
-                                <span class="watch-text">Watch on TikTok</span>
-                                <span class="watch-subtext">Opens in new tab</span>
-                            </a>
-                        </section>
-                    </blockquote>
+                    <iframe
+                        src="https://www.tiktok.com/embed/v2/7623136632048274718"
+                        style="width: 325px; height: 580px; border: none;"
+                        allowfullscreen
+                        allow="encrypted-media;">
+                    </iframe>
                 </div>
                 <div class="engagement-stats">
                     <div class="stat">
@@ -756,20 +697,12 @@
                     <div class="video-date">April 14, 2026</div>
                 </div>
                 <div class="video-player">
-                    <blockquote class="tiktok-embed"
-                        cite="https://www.tiktok.com/@allbasicsuniforms/video/7628675882571320590"
-                        data-video-id="7628675882571320590"
-                        style="max-width: 325px; min-width: 300px;">
-                        <section>
-                            <a href="https://www.tiktok.com/@allbasicsuniforms/video/7628675882571320590" target="_blank" class="fallback-link">
-                                <div class="play-icon">
-                                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                </div>
-                                <span class="watch-text">Watch on TikTok</span>
-                                <span class="watch-subtext">Opens in new tab</span>
-                            </a>
-                        </section>
-                    </blockquote>
+                    <iframe
+                        src="https://www.tiktok.com/embed/v2/7628675882571320590"
+                        style="width: 325px; height: 580px; border: none;"
+                        allowfullscreen
+                        allow="encrypted-media;">
+                    </iframe>
                 </div>
                 <div class="engagement-stats">
                     <div class="stat">
@@ -882,20 +815,12 @@
                     <div class="video-date">March 16, 2026</div>
                 </div>
                 <div class="video-player">
-                    <blockquote class="tiktok-embed"
-                        cite="https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183"
-                        data-video-id="7617952786348625183"
-                        style="max-width: 325px; min-width: 300px;">
-                        <section>
-                            <a href="https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183" target="_blank" class="fallback-link">
-                                <div class="play-icon">
-                                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                </div>
-                                <span class="watch-text">Watch on TikTok</span>
-                                <span class="watch-subtext">Opens in new tab</span>
-                            </a>
-                        </section>
-                    </blockquote>
+                    <iframe
+                        src="https://www.tiktok.com/embed/v2/7617952786348625183"
+                        style="width: 325px; height: 580px; border: none;"
+                        allowfullscreen
+                        allow="encrypted-media;">
+                    </iframe>
                 </div>
                 <div class="engagement-stats">
                     <div class="stat">
@@ -1039,23 +964,6 @@
             3: { url: 'https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183', views: 190, likes: 2, comments: 0, shares: 1, saves: 0, date: 'March 16, 2026' }
         };
 
-        // Function to reload TikTok embeds when switching videos
-        function reloadTikTokEmbeds() {
-            if (window.tiktok && window.tiktok.widgets && window.tiktok.widgets.load) {
-                window.tiktok.widgets.load();
-            } else {
-                // Fallback: reload the embed script
-                const oldScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
-                if (oldScript) {
-                    oldScript.remove();
-                }
-                const script = document.createElement('script');
-                script.src = 'https://www.tiktok.com/embed.js';
-                script.async = true;
-                document.body.appendChild(script);
-            }
-        }
-
         function goToVideo(num) {
             currentVideo = num;
 
@@ -1065,9 +973,6 @@
 
             // Show selected video
             document.querySelector(`[data-video="${num}"]`).classList.add('active');
-
-            // Re-initialize TikTok embeds for the newly visible section
-            setTimeout(reloadTikTokEmbeds, 100);
 
             // Update progress bar
             updateProgressBar();
@@ -1237,6 +1142,5 @@
 
         loadSavedData();
     </script>
-    <script async src="https://www.tiktok.com/embed.js"></script>
 </body>
 </html>
