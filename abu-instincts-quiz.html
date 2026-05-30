@@ -67,6 +67,51 @@
             margin: 0 auto;
         }
 
+        /* Progress indicator */
+        .progress-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .progress-step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--primary);
+            color: var(--bg-dark);
+            transform: scale(1.1);
+        }
+
+        .progress-step.completed {
+            background: var(--success);
+            color: var(--bg-dark);
+        }
+
+        .progress-connector {
+            width: 24px;
+            height: 2px;
+            background: var(--border);
+            align-self: center;
+            transition: background 0.3s ease;
+        }
+
+        .progress-connector.completed {
+            background: var(--success);
+        }
+
         .question-card {
             display: none;
             background: var(--bg-card);
@@ -294,12 +339,18 @@
 
         /* Score section */
         .score-section {
+            display: none;
             background: var(--bg-card);
             border-radius: 16px;
             padding: 32px;
             margin: 40px 0;
             border: 1px solid var(--border);
             text-align: center;
+        }
+
+        .score-section.show {
+            display: block;
+            animation: slideIn 0.3s ease;
         }
 
         .score-title {
@@ -460,6 +511,16 @@
             <div class="logo">TikTok Externship</div>
             <h1>Test Your ABU Instincts</h1>
             <p class="intro">You've done the research. Now let's see what your strategist brain picked up. Make your best guess, then reveal the answer. Every reveal is a new piece of intel you can use.</p>
+
+            <div class="progress-bar" id="progress-bar">
+                <div class="progress-step active" data-step="1">1</div>
+                <div class="progress-connector"></div>
+                <div class="progress-step" data-step="2">2</div>
+                <div class="progress-connector"></div>
+                <div class="progress-step" data-step="3">3</div>
+                <div class="progress-connector"></div>
+                <div class="progress-step" data-step="4">4</div>
+            </div>
         </header>
 
         <!-- Question 1 -->
@@ -613,6 +674,13 @@
                     <strong>Here's the thing:</strong> Your answer matters. Seriously. This insight becomes part of your Brand Strategy Document in Step 2. You're not just completing an exercise—you're developing a real strategic recommendation.
                 </div>
             </div>
+
+            <button class="reveal-btn" id="q4-submit" onclick="submitQ4()" style="margin-top: 24px; background: var(--primary); color: var(--bg-dark);">
+                <span>See My Results</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
         </div>
 
         <!-- Score Section -->
@@ -683,18 +751,56 @@
             }
         });
 
-        function showNextQuestion(currentQuestionNum) {
-            const nextQuestionNum = currentQuestionNum + 1;
-            if (nextQuestionNum <= totalQuestions) {
-                const nextQuestion = document.querySelector(`[data-question="${nextQuestionNum}"]`);
-                if (nextQuestion) {
-                    nextQuestion.classList.add('active');
-                    // Scroll to the next question smoothly
-                    setTimeout(() => {
-                        nextQuestion.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 300);
+        function updateProgress(currentStep, nextStep) {
+            // Mark current step as completed
+            const currentStepEl = document.querySelector(`.progress-step[data-step="${currentStep}"]`);
+            if (currentStepEl) {
+                currentStepEl.classList.remove('active');
+                currentStepEl.classList.add('completed');
+                currentStepEl.innerHTML = '✓';
+            }
+
+            // Mark connector as completed
+            const connectors = document.querySelectorAll('.progress-connector');
+            if (currentStep <= connectors.length) {
+                connectors[currentStep - 1].classList.add('completed');
+            }
+
+            // Mark next step as active
+            if (nextStep <= totalQuestions) {
+                const nextStepEl = document.querySelector(`.progress-step[data-step="${nextStep}"]`);
+                if (nextStepEl) {
+                    nextStepEl.classList.add('active');
                 }
             }
+        }
+
+        function showNextQuestion(currentQuestionNum) {
+            const currentQuestion = document.querySelector(`[data-question="${currentQuestionNum}"]`);
+            const nextQuestionNum = currentQuestionNum + 1;
+
+            // Hide current question after a delay to let user see the answer
+            setTimeout(() => {
+                if (currentQuestion) {
+                    currentQuestion.classList.remove('active');
+                }
+
+                // Update progress indicator
+                updateProgress(currentQuestionNum, nextQuestionNum);
+
+                if (nextQuestionNum <= totalQuestions) {
+                    const nextQuestion = document.querySelector(`[data-question="${nextQuestionNum}"]`);
+                    if (nextQuestion) {
+                        nextQuestion.classList.add('active');
+                        // Scroll to top of container
+                        document.querySelector('.container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                } else {
+                    // All questions done - show score section
+                    const scoreSection = document.querySelector('.score-section');
+                    scoreSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 1500); // 1.5 second delay to read the answer
         }
 
         function selectOption(element) {
@@ -749,11 +855,34 @@
             showNextQuestion(currentQuestionNum);
         }
 
+        function submitQ4() {
+            const q4Card = document.querySelector('[data-question="4"]');
+            const submitBtn = document.getElementById('q4-submit');
+
+            // Hide the submit button
+            submitBtn.style.display = 'none';
+
+            // Update progress for Q4
+            updateProgress(4, 5);
+
+            // Hide Q4 and show results
+            setTimeout(() => {
+                q4Card.classList.remove('active');
+
+                const scoreSection = document.querySelector('.score-section');
+                const takeaways = document.getElementById('takeaways');
+
+                scoreSection.classList.add('show');
+                takeaways.classList.add('show');
+
+                scoreSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 500);
+        }
+
         function updateScore() {
             if (answersRevealed === 3) {
                 const scoreDisplay = document.getElementById('score-display');
                 const scoreMessage = document.getElementById('score-message');
-                const takeaways = document.getElementById('takeaways');
 
                 scoreDisplay.textContent = `${correctAnswers}/3`;
 
@@ -764,9 +893,6 @@
                 } else {
                     scoreMessage.textContent = "Here's the real talk: you just learned things you didn't know before. That's not failure—that's exactly how strategists build expertise. Every \"miss\" was actually a win in disguise.";
                 }
-
-                // Show key takeaways
-                takeaways.classList.add('show');
             }
         }
 
@@ -800,9 +926,23 @@
             });
 
             document.getElementById('q4-answer').value = '';
+            document.getElementById('q4-submit').style.display = 'inline-flex';
             document.getElementById('score-display').textContent = '–/3';
             document.getElementById('score-message').textContent = 'Complete the quiz and reveal all answers to see your score.';
+            document.querySelector('.score-section').classList.remove('show');
             document.getElementById('takeaways').classList.remove('show');
+
+            // Reset progress bar
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.remove('completed', 'active');
+                step.innerHTML = index + 1;
+                if (index === 0) {
+                    step.classList.add('active');
+                }
+            });
+            document.querySelectorAll('.progress-connector').forEach(connector => {
+                connector.classList.remove('completed');
+            });
 
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
