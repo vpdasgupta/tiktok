@@ -753,15 +753,15 @@
                         <div class="video-number">2</div>
                         <span>Video 2 of 3</span>
                     </div>
-                    <div class="video-date">March 25, 2026</div>
+                    <div class="video-date">April 14, 2026</div>
                 </div>
                 <div class="video-player">
                     <blockquote class="tiktok-embed"
-                        cite="https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182"
-                        data-video-id="7621244595472551182"
+                        cite="https://www.tiktok.com/@allbasicsuniforms/video/7628675882571320590"
+                        data-video-id="7628675882571320590"
                         style="max-width: 325px; min-width: 300px;">
                         <section>
-                            <a href="https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182" target="_blank" class="fallback-link">
+                            <a href="https://www.tiktok.com/@allbasicsuniforms/video/7628675882571320590" target="_blank" class="fallback-link">
                                 <div class="play-icon">
                                     <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                                 </div>
@@ -773,11 +773,11 @@
                 </div>
                 <div class="engagement-stats">
                     <div class="stat">
-                        <div class="stat-value">159</div>
+                        <div class="stat-value">179</div>
                         <div class="stat-label">Views</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-value">0</div>
+                        <div class="stat-value">3</div>
                         <div class="stat-label">Likes</div>
                     </div>
                     <div class="stat">
@@ -785,7 +785,7 @@
                         <div class="stat-label">Comments</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-value">0</div>
+                        <div class="stat-value">1</div>
                         <div class="stat-label">Shares</div>
                     </div>
                     <div class="stat">
@@ -1035,9 +1035,26 @@
 
         const videoData = {
             1: { url: 'https://www.tiktok.com/@allbasicsuniforms/video/7623136632048274718', views: 484, likes: 7, comments: 0, shares: 0, saves: 0, date: 'March 30, 2026' },
-            2: { url: 'https://www.tiktok.com/@allbasicsuniforms/video/7621244595472551182', views: 159, likes: 0, comments: 0, shares: 0, saves: 0, date: 'March 25, 2026' },
+            2: { url: 'https://www.tiktok.com/@allbasicsuniforms/video/7628675882571320590', views: 179, likes: 3, comments: 0, shares: 1, saves: 0, date: 'April 14, 2026' },
             3: { url: 'https://www.tiktok.com/@allbasicsuniforms/video/7617952786348625183', views: 190, likes: 2, comments: 0, shares: 1, saves: 0, date: 'March 16, 2026' }
         };
+
+        // Function to reload TikTok embeds when switching videos
+        function reloadTikTokEmbeds() {
+            if (window.tiktok && window.tiktok.widgets && window.tiktok.widgets.load) {
+                window.tiktok.widgets.load();
+            } else {
+                // Fallback: reload the embed script
+                const oldScript = document.querySelector('script[src*="tiktok.com/embed.js"]');
+                if (oldScript) {
+                    oldScript.remove();
+                }
+                const script = document.createElement('script');
+                script.src = 'https://www.tiktok.com/embed.js';
+                script.async = true;
+                document.body.appendChild(script);
+            }
+        }
 
         function goToVideo(num) {
             currentVideo = num;
@@ -1048,6 +1065,9 @@
 
             // Show selected video
             document.querySelector(`[data-video="${num}"]`).classList.add('active');
+
+            // Re-initialize TikTok embeds for the newly visible section
+            setTimeout(reloadTikTokEmbeds, 100);
 
             // Update progress bar
             updateProgressBar();
