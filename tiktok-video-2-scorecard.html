@@ -185,11 +185,11 @@
         </header>
 
         <div class="engagement-stats">
-            <div class="stat"><div class="stat-value">170</div><div class="stat-label">Views</div></div>
-            <div class="stat"><div class="stat-value">1</div><div class="stat-label">Likes</div></div>
-            <div class="stat"><div class="stat-value">0</div><div class="stat-label">Comments</div></div>
-            <div class="stat"><div class="stat-value">0</div><div class="stat-label">Shares</div></div>
-            <div class="stat"><div class="stat-value">0</div><div class="stat-label">Saves</div></div>
+            <div class="stat"><div class="stat-value">1689</div><div class="stat-label">Views</div></div>
+            <div class="stat"><div class="stat-value">35</div><div class="stat-label">Likes</div></div>
+            <div class="stat"><div class="stat-value">1</div><div class="stat-label">Comments</div></div>
+            <div class="stat"><div class="stat-value">1</div><div class="stat-label">Shares</div></div>
+            <div class="stat"><div class="stat-value">1</div><div class="stat-label">Saves</div></div>
         </div>
 
         <div class="evaluation-section">
@@ -272,10 +272,9 @@
     </div>
 
     <script>
-        const STORAGE_KEY = 'tiktok-eval-video-2';
         const VIDEO_DATA = {
             url: 'https://www.tiktok.com/@allbasicsuniforms/video/7635037665787710750',
-            views: 170, likes: 1, comments: 0, shares: 0, saves: 0,
+            views: 1689, likes: 35, comments: 1, shares: 1, saves: 1,
             date: 'May 2, 2026'
         };
 
@@ -292,7 +291,6 @@
             input.addEventListener('change', function() {
                 document.querySelector(`[data-category="${this.name}"]`).textContent = `${this.value}/5`;
                 updateTotal();
-                saveData();
             });
         });
 
@@ -328,31 +326,6 @@ ${notes || '(No notes)'}`;
             a.download = 'tiktok-video-2-evaluation.txt';
             a.click();
         }
-
-        function loadSavedData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const data = JSON.parse(saved);
-                Object.keys(data.ratings || {}).forEach(key => {
-                    const input = document.getElementById(key);
-                    if (input) {
-                        input.checked = true;
-                        document.querySelector(`[data-category="${input.name}"]`).textContent = `${input.value}/5`;
-                    }
-                });
-                if (data.notes) document.getElementById('notes').value = data.notes;
-                updateTotal();
-            }
-        }
-
-        function saveData() {
-            const ratings = {};
-            document.querySelectorAll('.rating-stars input:checked').forEach(input => ratings[input.id] = true);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({ ratings, notes: document.getElementById('notes').value }));
-        }
-
-        document.getElementById('notes').addEventListener('input', saveData);
-        loadSavedData();
     </script>
 </body>
 </html>
