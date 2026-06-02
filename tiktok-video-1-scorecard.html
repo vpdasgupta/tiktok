@@ -272,7 +272,6 @@
     </div>
 
     <script>
-        const STORAGE_KEY = 'tiktok-eval-video-1';
         const VIDEO_DATA = {
             url: 'https://www.tiktok.com/@allbasicsuniforms/photo/7642392765732539662',
             views: 556, likes: 4, comments: 0, shares: 0, saves: 0,
@@ -292,7 +291,6 @@
             input.addEventListener('change', function() {
                 document.querySelector(`[data-category="${this.name}"]`).textContent = `${this.value}/5`;
                 updateTotal();
-                saveData();
             });
         });
 
@@ -328,31 +326,6 @@ ${notes || '(No notes)'}`;
             a.download = 'tiktok-video-1-evaluation.txt';
             a.click();
         }
-
-        function loadSavedData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const data = JSON.parse(saved);
-                Object.keys(data.ratings || {}).forEach(key => {
-                    const input = document.getElementById(key);
-                    if (input) {
-                        input.checked = true;
-                        document.querySelector(`[data-category="${input.name}"]`).textContent = `${input.value}/5`;
-                    }
-                });
-                if (data.notes) document.getElementById('notes').value = data.notes;
-                updateTotal();
-            }
-        }
-
-        function saveData() {
-            const ratings = {};
-            document.querySelectorAll('.rating-stars input:checked').forEach(input => ratings[input.id] = true);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({ ratings, notes: document.getElementById('notes').value }));
-        }
-
-        document.getElementById('notes').addEventListener('input', saveData);
-        loadSavedData();
     </script>
 </body>
 </html>
