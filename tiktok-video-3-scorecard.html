@@ -266,7 +266,7 @@
                     <span class="score" id="total-score">0</span>
                     <span class="max">/ 20</span>
                 </div>
-                <button class="export-btn" onclick="exportResults()">Export text file</button>
+                <button class="export-btn" onclick="copyResults()">Copy to Clipboard</button>
             </div>
         </div>
     </div>
@@ -294,7 +294,7 @@
             });
         });
 
-        function exportResults() {
+        function copyResults() {
             let scores = ['content', 'strategic', 'platform', 'brand'].map(cat => {
                 const checked = document.querySelector(`input[name="${cat}"]:checked`);
                 return checked ? parseInt(checked.value) : 0;
@@ -320,11 +320,16 @@ TOTAL: ${total}/20
 NOTES
 ${notes || '(No notes)'}`;
 
-            const blob = new Blob([text], { type: 'text/plain' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'tiktok-video-3-evaluation.txt';
-            a.click();
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.export-btn');
+                const original = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'linear-gradient(135deg, #00c853, #00e676)';
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.style.background = 'linear-gradient(135deg, #00f5d4, #00bbf9)';
+                }, 2000);
+            });
         }
     </script>
 </body>
