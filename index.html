@@ -1,0 +1,480 @@
+<!doctype html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Externship Performance Dashboard",
+  "schemaVersion": 1,
+  "description": "Live dashboard for the 17 currently-recruiting Extern externships. Summary KPIs plus a sortable per-externship breakdown of Project 1 completion, Project 1 within 7 days of registration, program completion (final module), and cancellation rate. Click any externship for its own funnel mini-dashboard. Enrollments, cancellations, and completion metrics refresh live from Mixpanel; P1-within-7-days is a June 8 2026 snapshot.",
+  "mcpTools": [
+    "mcp__604f7fce-92a6-4a15-9c04-d7314b8c52da__Run-Query"
+  ],
+  "mcpServerNames": [
+    "Mixpanel"
+  ]
+}
+</script>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Externship Performance Dashboard</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:#f6f7f9; color:#1d2330; font-size:14px; line-height:1.45; }
+.wrap { max-width:1180px; margin:0 auto; padding:24px 20px 60px; }
+.tabs { display:flex; gap:2px; margin:16px 0 0; border-bottom:1px solid #e7eaf0; }
+.tabbtn { border:none; background:none; padding:9px 16px; font:inherit; font-size:13px; font-weight:600; color:#7a8494; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; }
+.tabbtn:hover { color:#2b59ff; }
+.tabbtn.active { color:#1f3a5f; border-bottom-color:#2b59ff; }
+.tabpane.hidden { display:none; }
+.tabpane { margin-top:18px; }
+h1 { font-size:22px; margin:0 0 4px; letter-spacing:-0.01em; }
+.sub { color:#5b6472; font-size:13px; }
+.freshness { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:4px 10px; border-radius:999px; background:#eef1f5; color:#44506a; font-size:12px; font-weight:500; }
+.dot { width:7px; height:7px; border-radius:50%; background:#c2c9d4; }
+.dot.live { background:#1f9d57; } .dot.loading { background:#e0a106; animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.kpis { display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:18px 0 26px; }
+@media (max-width:1100px){ .kpis{ grid-template-columns:repeat(3,1fr);} }
+.kpi { background:#fff; border:1px solid #e7eaf0; border-radius:12px; padding:14px 15px; }
+.kpi .label { font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#7a8494; font-weight:600; }
+.kpi .val { font-size:24px; font-weight:700; margin-top:6px; letter-spacing:-0.02em; }
+.kpi .meta { font-size:11px; color:#8a93a3; margin-top:2px; }
+.card { background:#fff; border:1px solid #e7eaf0; border-radius:14px; overflow:hidden; }
+.card-h { padding:14px 18px; border-bottom:1px solid #eef1f5; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+.card-h h2 { font-size:15px; margin:0; } .hint { font-size:12px; color:#8a93a3; }
+table { width:100%; border-collapse:collapse; }
+thead th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:#7a8494; font-weight:600; padding:11px 14px; border-bottom:1px solid #eef1f5; cursor:pointer; user-select:none; white-space:nowrap; }
+thead th.name { text-align:left; } thead th:hover { color:#2b59ff; }
+thead th .arr { font-size:9px; color:#b5bdca; }
+tbody td { padding:10px 14px; border-bottom:1px solid #f1f3f7; text-align:left; vertical-align:middle; }
+tbody td.name { text-align:left; font-weight:600; color:#222c3d; cursor:pointer; }
+tbody td.name span.idx { color:#aab2c0; font-weight:600; margin-right:8px; font-size:12px; }
+tbody tr.row:hover { background:#fafbfc; }
+.enr { font-variant-numeric:tabular-nums; color:#3a4150; font-weight:600; }
+.cell { display:inline-flex; flex-direction:column; align-items:flex-start; gap:4px; min-width:72px; }
+.pct { font-variant-numeric:tabular-nums; font-weight:600; font-size:13px; }
+.bar { width:72px; height:5px; border-radius:3px; background:#eef1f5; overflow:hidden; }
+.bar > i { display:block; height:100%; border-radius:3px; }
+.g { color:#1f9d57 } .g .bar>i{ background:#34c878 }
+.a { color:#c2870a } .a .bar>i{ background:#f0b429 }
+.r { color:#d23f3f } .r .bar>i{ background:#ef5b5b }
+.detail td { background:#fbfcfe; padding:0; border-bottom:1px solid #eef1f5; }
+.detail .inner { padding:16px 18px 20px; }
+.detail.hidden { display:none; }
+.cohhead { font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#7a8494; font-weight:700; margin-bottom:10px; }
+.cohsub { text-transform:none; letter-spacing:0; font-weight:500; color:#9aa3b2; margin-left:6px; }
+.coht { width:100%; border-collapse:collapse; }
+.coht th { text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.03em; color:#9aa3b2; font-weight:600; padding:6px 10px; border-bottom:1px solid #eef1f5; }
+.coht th.cn { text-align:left; }
+.coht td { text-align:left; padding:7px 10px; border-bottom:1px solid #f4f6f9; font-variant-numeric:tabular-nums; }
+.coht td.cn { text-align:left; font-weight:600; color:#3a4150; }
+.coht td.cn .jb { display:inline-block; background:#eef1f5; color:#5b6678; border-radius:5px; padding:1px 7px; font-size:11px; font-weight:700; }
+.coht .mini { font-weight:600; }
+.coht .mini.g{color:#1f9d57} .coht .mini.a{color:#c2870a} .coht .mini.r{color:#d23f3f}
+.coht tr:hover td { background:#fafbfd; }
+.modwrap { margin-bottom:18px; }
+.modrow { display:flex; align-items:center; gap:10px; padding:3px 0; }
+.modrow .mn { flex:0 0 46%; font-size:12px; color:#3a4150; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.modrow .mbar { flex:1; height:13px; background:#eef1f5; border-radius:4px; overflow:hidden; }
+.modrow .mbar > i { display:block; height:100%; background:#5b7cff; border-radius:4px; }
+.modrow.orient .mbar > i { background:#3f9d6b; }
+.modrow .mp { flex:0 0 44px; text-align:right; font-size:12px; font-weight:600; font-variant-numeric:tabular-nums; color:#3a4150; }
+.modnote { font-size:11px; color:#9aa3b2; margin:6px 0 0; }
+.notes { margin-top:22px; font-size:12px; color:#6b7484; }
+.notes h3 { font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:#7a8494; margin:0 0 8px; }
+.notes ul { margin:0 0 0 16px; padding:0; } .notes li { margin-bottom:6px; }
+.legend { display:flex; gap:14px; flex-wrap:wrap; font-size:11px; color:#6b7484; margin-top:14px; }
+.legend span { display:inline-flex; align-items:center; gap:5px; }
+.sw { width:10px; height:10px; border-radius:3px; display:inline-block; }
+
+.insights-body { padding:14px 18px 18px; }
+.ins-group { margin-bottom:14px; }
+.ins-group:last-child { margin-bottom:0; }
+.ins-h { font-size:11px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; margin:0 0 7px; }
+.ins-h.t { color:#2e5a88; } .ins-h.g { color:#1f9d57; } .ins-h.r { color:#c2870a; }
+.ins-list { margin:0; padding:0; list-style:none; }
+.ins-list li { position:relative; padding:3px 0 3px 16px; font-size:13px; color:#3a4150; }
+.ins-list li:before { content:""; position:absolute; left:2px; top:11px; width:5px; height:5px; border-radius:50%; background:#c2c9d4; }
+.ins-list b { color:#1d2330; }
+
+.exp-body { padding:14px 18px 18px; }
+.exp { border:1px solid #e7eaf0; border-radius:11px; padding:13px 15px; margin-bottom:14px; }
+.exp:last-child { margin-bottom:0; }
+.exp-top { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+.exp-name { font-size:14px; font-weight:700; color:#222c3d; }
+.exp-status { font-size:12px; border:1px solid #d8dee8; border-radius:6px; padding:3px 8px; color:#44506a; background:#fff; }
+.exp-hyp { width:100%; margin-top:9px; border:1px solid #e2e6ee; border-radius:7px; padding:7px 9px; font:inherit; font-size:12.5px; color:#3a4150; resize:vertical; min-height:34px; box-sizing:border-box; }
+.exp-hyp::placeholder { color:#aab2c0; }
+.exp-note { font-size:11.5px; color:#8a93a3; margin:8px 0 4px; }
+.expt { width:100%; border-collapse:collapse; margin-top:8px; }
+.expt th { text-align:right; font-size:10px; text-transform:uppercase; letter-spacing:.03em; color:#9aa3b2; font-weight:600; padding:5px 9px; border-bottom:1px solid #eef1f5; }
+.expt th.l { text-align:left; }
+.expt td { text-align:right; padding:6px 9px; border-bottom:1px solid #f4f6f9; font-variant-numeric:tabular-nums; font-size:12.5px; }
+.expt td.l { text-align:left; }
+.badge-t { background:#e7edff; color:#3a52b4; border-radius:5px; padding:1px 7px; font-size:11px; font-weight:700; }
+.badge-c { background:#eef1f5; color:#5b6678; border-radius:5px; padding:1px 7px; font-size:11px; font-weight:700; }
+.delta-up { color:#1f9d57; font-weight:600; font-size:11px; }
+.delta-dn { color:#d23f3f; font-weight:600; font-size:11px; }
+.delta-0 { color:#9aa3b2; font-size:11px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Live Externship Performance Dashboard</h1>
+    <div class="sub">Engagement &amp; completion across 19 live programs &middot; calendar year 2026 &middot; consolidated by job ID &middot; source: Mixpanel (Extern Production)</div>
+    <div class="freshness" id="fresh"><span class="dot" id="freshdot"></span><span id="freshtxt">Loading…</span></div>
+  </header>
+
+  <div class="tabs">
+    <button class="tabbtn active" data-tab="programs">Programs</button>
+    <button class="tabbtn" data-tab="experiments">Experiments</button>
+  </div>
+
+  <div class="tabpane" id="tab-programs">
+  <div class="kpis" id="kpis"></div>
+
+  <div class="card">
+    <div class="card-h"><h2>Insights</h2><span class="hint">Auto-generated from current data</span></div>
+    <div id="insights" class="insights-body"></div>
+  </div>
+
+  <div class="card" style="margin-top:18px;">
+    <div class="card-h">
+      <h2>Per-program breakdown</h2>
+      <span class="hint">Click any program for its cohorts (job ID + start date) &middot; click headers to sort</span>
+    </div>
+    <table id="tbl">
+      <thead><tr>
+        <th class="name" data-k="short">Program <span class="arr"></span></th>
+        <th data-k="enroll">Enrolled <span class="arr">▼</span></th>
+        <th data-k="orientr">Orientation <span class="arr"></span></th>
+        <th data-k="p1r">Project 1 <span class="arr"></span></th>
+        <th data-k="p17dr">P1 &le; 7d <span class="arr"></span></th>
+        <th data-k="finalr">Program (cert, matured) <span class="arr"></span></th>
+        <th data-k="cancelr">Cancellation <span class="arr"></span></th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw" style="background:#34c878"></i>Strong</span>
+    <span><i class="sw" style="background:#f0b429"></i>Mid</span>
+    <span><i class="sw" style="background:#ef5b5b"></i>Weak / watch</span>
+    <span style="color:#9aa3b2;">(Cancellation inverted: green = low)</span>
+  </div>
+
+  <div class="notes">
+    <h3>How to read this &amp; caveats</h3>
+    <ul>
+      <li><b>Programs are defined by job ID</b> (`externship_id`), not title — several were renamed mid-flight. <b>NASCAR, Pfizer, Healthcare Ops</b> are consolidated across their renamed cohorts; <b>Energy Innovation Capital</b> is consolidated across its renamed titles.</li>
+      <li><b>Cohort scope:</b> programs/cohorts that <i>started</i> in 2026 are included, and each cohort is counted over its <b>full registration window</b> — so January cohorts include sign-ups from December 2025. This keeps per-cohort rates accurate (the denominator matches the whole cohort).</li>
+      <li><b>Orientation / Project 1</b> = unique students who completed that module ÷ enrollments. <b>Program completion = a completion certificate issued</b> (`certificate_approved` + `certificate_top_performer`; top performers get that certificate instead of the standard one). This replaces the earlier final-module proxy, which mis-counted where module names were renamed.</li>
+      <li><b>P1 ≤7d</b> = share of registrants who finished Project 1 within 7 days (7-day funnel). <b>Cancellation</b> = `registration_canceled` ÷ enrollments (approximate).</li>
+      <li><b>Program completion = matured cohorts only.</b> A cohort counts toward completion only once its program has ended plus a 2-week grace window (end = cohort start date + program duration in weeks). In-flight cohorts are shown (greyed, "In-flight" badge) but excluded from the completion number, since they can't have finished yet. "n/total closed" by each program shows how many cohorts are mature; "—" means none have closed. Orientation, Project 1, P1 ≤7d and Cancellation are shown across all cohorts. Note certificates require passing manual review and are issued after a cohort ends, so recently-closed cohorts can read slightly low — treat completion as a conservative floor.</li>
+      <li><b>Live vs snapshot:</b> Enrolled, Orientation, Project 1, Program and Cancellation refresh live from Mixpanel for 2026 (recomputed across each program's job IDs). P1 ≤7d is a Jun 9 2026 snapshot. Cohort roster is as of Jun 9 2026. Maturity is recomputed against the current date on every open. Mirrors the weekly-refreshed "Externship Program Health" Notion page.</li>
+    </ul>
+  </div>
+  </div>
+
+  <div class="tabpane hidden" id="tab-experiments">
+    <div class="card">
+      <div class="card-h"><h2>Experiments</h2><span class="hint">Test vs control · early read · hypothesis &amp; status save locally</span></div>
+      <div id="experiments" class="exp-body"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROJECT_ID = 3612576;
+const RANGE = { type:"absolute", from:"2025-08-01", to:"2026-12-31" }; // wide window = full cohort registration (incl. Dec-2025 sign-ups for Jan-2026 cohorts). Cohort SET is still 2026-start (baked job IDs).
+// Program duration (weeks) by job ID, for cohort-maturity gating. End = start + weeks + 2-week grace.
+const DUR = {"566":8,"541":8,"504":8,"480":8,"449":8,"420":8,"399":8,"562":11,"539":11,"501":11,"478":11,"446":11,"422":11,"401":11,"570":6,"534":6,"506":6,"482":6,"445":6,"433":6,"393":6,"563":8,"538":8,"502":8,"477":8,"460":8,"436":8,"574":8,"546":8,"522":8,"487":8,"451":8,"427":8,"410":8,"577":10,"545":10,"517":10,"485":10,"463":10,"535":8,"523":8,"486":8,"424":8,"407":8,"564":8,"540":8,"512":8,"479":8,"448":8,"423":8,"400":8,"554":8,"526":8,"496":8,"470":8,"442":8,"417":8,"556":8,"530":8,"498":8,"475":8,"444":8,"415":8,"561":12,"531":12,"497":12,"439":12,"409":12,"576":8,"544":8,"519":8,"483":8,"450":8,"553":8,"518":8,"484":8,"452":8,"426":8,"411":8,"537":10,"503":10,"476":10,"458":10,"419":10,"571":8,"536":8,"505":8,"466":8,"465":8,"555":6,"524":6,"488":6,"471":6,"565":8,"527":8,"552":6,"491":6,"490":6,"550":4};
+const GRACE_DAYS = 14;
+// Certificate-based completion by job ID (certificate_approved + certificate_top_performer), 2026. Snapshot Jun 9; refreshed live.
+const CERT = {"566":0, "541":2, "504":2, "480":18, "449":31, "420":36, "399":59, "562":0, "539":0, "501":0, "478":0, "446":28, "422":39, "401":39, "570":0, "534":0, "506":6, "482":14, "445":12, "433":15, "393":46, "563":0, "538":0, "502":0, "477":27, "460":32, "436":94, "574":0, "546":0, "522":0, "487":10, "451":18, "427":21, "410":37, "577":0, "545":1, "517":0, "485":2, "463":13, "535":0, "523":0, "486":6, "424":25, "407":29, "564":0, "540":0, "512":0, "479":5, "448":5, "423":31, "400":42, "554":0, "526":0, "496":0, "470":2, "442":19, "417":25, "556":0, "530":0, "498":0, "475":16, "444":21, "415":53, "561":0, "531":0, "497":0, "439":22, "409":12, "576":0, "544":0, "519":0, "483":9, "450":12, "553":0, "518":0, "484":5, "452":14, "426":7, "411":8, "537":0, "503":0, "476":1, "458":3, "419":4, "571":0, "536":0, "505":0, "466":2, "465":3, "555":0, "524":0, "488":11, "471":11, "565":0, "527":0, "552":0, "491":0, "490":5, "550":0};
+// Average project-by-project module completion across CLOSED cohorts (snapshot Jun 9 2026). % = unique completers of that module ÷ closed-cohort enrollment.
+const MODULES = {"Amazon Ops & People Analytics":[{n:"Project 0: Orientation",p:72.5},{n:"Project 1: Understand the Operational Challenge",p:23.8},{n:"Project 2: Collect & Clean Employee Voice Data",p:13.3},{n:"Project 3: Find Sentiment & Keyword Patterns in Employee Voice Data",p:11.1},{n:"Project 4: Uncover Themes & Root Causes in Employee Voice Data",p:10.8},{n:"Project 5: Segment the Workforce & Identify Priorities",p:10.4},{n:"Project 6: Recommend a Pilot-Ready Intervention",p:10.1}], "Yinan Value Investing":[{n:"Project 0: Orientation",p:80.0},{n:"Project 1: Basics of Equity Research & Company Selection",p:34.2},{n:"Project 2: Company Deep Dive with 10-Ks and Management Insights",p:21.4},{n:"Project 3: Analyzing Competition, Risks & Catalysts",p:17.8},{n:"Project 4: Building the Financial Model",p:12.4},{n:"Project 5: Valuing the Company and Developing a Price Target",p:11.6},{n:"Project 6: Crafting and Presenting Your Final Investment Memo",p:11.1}], "TikTok Brand Strategy":[{n:"Orientation",p:70.4},{n:"Project 1: Create ABU’s Mini Brand Kit",p:14.8},{n:"Project 2: Shape ABU’s Brand with TikTok Storytelling",p:10.1},{n:"Project 3: Experiments with Instagram",p:9.5},{n:"Project 4: Pitch Your ABU Brand Playbook",p:8.8}], "TruBridge Health Data":[{n:"Project 0: Orientation",p:66.7},{n:"Project 1: Build Foundations of Data Analytics",p:27.4},{n:"Project 2: Collect and Pre-Process Data for Analysis",p:10.6},{n:"Project 3: Conduct Explorative Data Analysis (EDA)",p:9.4},{n:"Project 4: Build Your Presentation",p:8.8},{n:"Project 5: Build Your Data Dashboard",p:8.4}], "Hydroficient IoT Cyber":[{n:"Project 0: Orientation",p:80.3},{n:"Project 1: Understanding IoT Systems & Threat Modeling",p:25.7},{n:"Project 2: Learning Python for IoT Security",p:15.5},{n:"Project 3: Building an Insecure MQTT Pipeline",p:16.0},{n:"Project 4: Securing the Pipeline & Measuring the Cost",p:11.2},{n:"Project 5: Enforcing Device Identity & Provisioning",p:11.8},{n:"Project 6: Defeating Replay Attacks",p:13.5},{n:"Project 7: Building a Real-Time Security Dashboard",p:12.4},{n:"Project 8 (Optional): Adding AI-Powered Anomaly Detection",p:11.6}], "HP Tech Ventures":[{n:"Project 0: Orientation",p:75.0},{n:"Project 1: Sourcing Startups",p:22.2},{n:"Project 2: Doing Due Diligence",p:14.4},{n:"Project 3: Synthesizing: From Diligence Data to Actionable Insights",p:13.9},{n:"Project 4: Creating an Investment Memo",p:13.2}], "Pfizer Advanced — Doc Insights":[{n:"Orientation",p:75.2},{n:"Project 1: How AI Reads Pharmaceutical Documents",p:34.7},{n:"Project 2: Learn to Work with Python for AI-Powered Document Processing",p:16.7},{n:"Project 3: Data Extraction from Documents Using Python",p:15.3},{n:"Project 4: Advanced OCR Comparison and Layout-Aware Extraction",p:12.6},{n:"Project 5: Introduction to Retrieval-Augmented Generation (RAG)",p:12.2},{n:"Project 6: Advanced RAG and Open-Source Experiments",p:11.7},{n:"Project 7: Blob Processing, Classification, and Routing",p:10.8},{n:"Project 8: Gradio Chatbot with RAG Integration",p:10.4},{n:"Project 9: Final Integration, Testing, and Evaluation",p:9.9}], "Beats — Consumer Behavior":[{n:"Project 0: Orientation",p:68.8},{n:"Project 1: Create a Pain Point Chart",p:26.2},{n:"Project 2: Create a Customer Journey Map",p:19.5},{n:"Project 3: Conduct A Survey To Gather Consumer Insights",p:12.4},{n:"Project 4: Analyze Consumer Insights",p:9.9},{n:"Project 5: Synthesize Consumer Insights",p:9.5}], "Mangusta Capital":[{n:"Project 0: Orientation",p:72.5},{n:"Project 1: Sourcing Startups",p:15.4},{n:"Project 2: Doing Due Diligence",p:10.3},{n:"Project 3: Synthesizing: From Diligence Data to Actionable Insights",p:9.5},{n:"Project 4: Creating an Investment Memo",p:9.4}], "BeReal Product Management":[{n:"Project 0: Orientation",p:78.4},{n:"Project 1: Map the End-to-End BeReal User Journey",p:24.4},{n:"Project 2: Benchmark BeReal’s Competitors",p:19.3},{n:"Project 3: Design a New App Feature",p:16.5},{n:"Project 4: Test App Feature in Focus Groups",p:15.3},{n:"Project 5: Pitch Your App Feature Proposal",p:15.3}], "Beats — Data Analytics Q&Q":[{n:"Orientation",p:75.5},{n:"Create a Pain Point Chart",p:27.8},{n:"Map the Customer Journey",p:15.9},{n:"Analyze Consumer Insights",p:11.0},{n:"Conduct Sentiment Analysis",p:8.8},{n:"Synthesize Consumer Insights",p:8.4}], "Wayfair AI Agent":[{n:"Project 0: Orientation",p:76.9},{n:"Project 1: Getting Started with AI Agents - Moodboard Generator",p:26.9},{n:"Project 2: Building the Consumer Trend Discovery AI Agent",p:14.7},{n:"Project 3: Building the Competitor Monitoring AI Agent",p:10.9},{n:"Project 4: Designing the AI Insights & Content Agent",p:10.9},{n:"Project 5: Bringing It All Together: Final AI Agent in Action",p:9.6}], "Energy Innovation Capital":[{n:"Project 0: Orientation",p:62.9},{n:"Project 1: Sourcing Startups",p:14.0},{n:"Project 2: Doing Due Diligence",p:9.4},{n:"Project 3: Synthesizing: From Diligence Data to Actionable Insights",p:9.1},{n:"Project 4: Creating an Investment Memo",p:8.1}], "Breaking Games eCommerce":[{n:"Orientation",p:66.4},{n:"Project 1: Explore How Businesses Drive Online Sales",p:20.8},{n:"Project 2: Get Hands-On with Online Sales Data",p:13.5},{n:"Project 3: Analyze Traffic & Engagement from Google Analytics Data",p:8.5},{n:"Project 4: Measure Paid Ad Campaign Effectiveness",p:5.0},{n:"Project 5: Break Down Shopify Data to Understand Sales & Conversion Gaps",p:5.0},{n:"Project 6: Consolidate & Visualize the E-Commerce Funnel With Claude",p:5.0},{n:"Project 7: Turn Your Findings into a Growth Strategy & Presentation",p:4.2}], "NASCAR Sports Analytics":[{n:"Orientation",p:75.8},{n:"Project 1: Sponsorship ROI Foundations",p:15.5},{n:"Project 2: Data Collection & Integration",p:7.8},{n:"Project 3: Exploratory Data Analysis",p:6.8},{n:"Project 4: Visibility Scoring Model",p:5.0},{n:"Project 5: Strategy and Presentation",p:3.7}], "Healthcare Ops & Consulting":[{n:"Orientation",p:74.1},{n:"Know How Business Processes Impact Customer Experience",p:22.4},{n:"Understand Problems for Customers & Staff",p:17.2},{n:"Analyze & Optimize Workflows",p:15.5},{n:"Ideate & Build a Work-Quantification Dashboard",p:15.5}], "Beats — Creative Advertising":[{n:"Project 0: Orientation",p:81.3},{n:"Project 1: Decode the Feed - Map the Video Ad Landscape",p:11.9},{n:"Project 2: Ask Real People - Run a Consumer Ad Review",p:6.0},{n:"Project 3: Set the Standard - Build the Beats Creative Strategy Framework",p:5.2},{n:"Project 4: Present Your Strategy - Final Presentation",p:3.7}]};
+function isMatured(co){ const d=new Date(co.start); d.setDate(d.getDate()+(DUR[String(co.id)]||8)*7+GRACE_DAYS); return d<=new Date(); }
+function rollupMaturity(p){ let mE=0,mF=0,cl=0; p.cohorts.forEach(co=>{ co.mat=isMatured(co); if(co.mat){cl++; mE+=co.enroll; mF+=co.finalr*co.enroll/100;} }); p.finalrM = mE>0 ? 100*mF/mE : null; p.closed=cl; p.total=p.cohorts.length; }
+// Baked snapshot — 2026, computed Jun 9 2026, consolidated by job ID. Matches the Notion page.
+// c = cohorts [job id, start ISO, enrolled, orient%, p1%, program%, cancel%]
+const PROGRAMS = [
+ {short:"Amazon Ops & People Analytics", ok:"Orientation", p1k:"Understand the Operational Challenge", fk:"Recommend a Pilot-Ready Intervention", enroll:2663, orientr:73.8, p1r:20.9, p17dr:9.3, finalr:7.2, cancelr:37.6, c:[[566,"2026-06-21",85,70.6,2.4,0.0,21.2],[541,"2026-05-24",338,78.7,11.8,0.6,24.6],[504,"2026-04-26",227,79.3,15.4,0.9,40.5],[480,"2026-03-29",334,75.4,25.1,5.4,37.1],[449,"2026-03-01",374,75.4,24.6,8.3,36.4],[420,"2026-02-01",588,68.9,21.8,6.1,41.7],[399,"2026-01-04",717,72.5,24.4,8.2,42.3]]},
+ {short:"Yinan Value Investing", ok:"Orientation", p1k:"Basics of Equity Research", fk:"Crafting and Presenting Your Final Investment Memo", enroll:1884, orientr:77.8, p1r:27.0, p17dr:8.2, finalr:9.9, cancelr:31.8, c:[[562,"2026-06-21",73,68.5,0.0,0.0,24.7],[539,"2026-05-24",189,74.1,0.0,0.0,20.6],[501,"2026-04-26",294,77.6,26.2,0.0,29.3],[478,"2026-03-29",255,74.1,25.5,0.0,27.8],[446,"2026-03-01",356,78.9,30.3,7.9,32.6],[422,"2026-02-01",379,80.5,36.7,10.3,35.6],[401,"2026-01-04",338,80.5,35.5,11.5,39.6]]},
+ {short:"TikTok Brand Strategy", ok:"Orientation", p1k:"Mini Brand Kit", fk:"Pitch Your ABU Brand Playbook", enroll:1786, orientr:70.5, p1r:14.3, p17dr:3.3, finalr:6.8, cancelr:45.5, c:[[570,"2026-06-21",70,52.9,0.0,0.0,21.4],[534,"2026-05-24",259,71.8,13.1,0.0,35.9],[506,"2026-04-26",183,76.0,17.5,3.3,46.4],[482,"2026-03-29",259,70.3,14.3,5.4,47.1],[445,"2026-03-01",225,72.0,13.8,5.3,46.2],[433,"2026-02-01",268,66.4,11.9,5.6,48.5],[393,"2026-01-04",522,71.8,17.0,8.8,50.4]]},
+ {short:"TruBridge Health Data", ok:"Orientation", p1k:"Build Foundations of Data Analytics", fk:"Build Your Data Dashboard", enroll:1512, orientr:71.2, p1r:24.6, p17dr:10.8, finalr:9.4, cancelr:38.8, c:[[574,"2026-06-28",17,0.0,0.0,0.0,29.4],[546,"2026-05-31",240,82.1,19.6,0.0,25.8],[522,"2026-05-03",215,76.3,22.3,0.0,37.2],[487,"2026-04-05",230,76.1,23.9,4.3,36.5],[451,"2026-03-08",228,74.6,23.7,7.9,44.3],[427,"2026-02-08",279,57.0,25.4,7.5,41.6],[410,"2026-01-11",303,69.6,32.0,12.2,45.9]]},
+ {short:"Hydroficient IoT Cyber", ok:"Orientation", p1k:"Understanding IoT Systems", fk:"Building a Real-Time Security Dashboard", enroll:1491, orientr:78.4, p1r:22.3, p17dr:5.0, finalr:15.3, cancelr:30.2, c:[[563,"2026-06-21",68,54.4,7.4,0.0,10.3],[538,"2026-05-24",244,80.3,15.6,0.0,15.6],[502,"2026-04-26",182,74.2,18.1,0.0,29.7],[477,"2026-03-29",227,80.6,23.3,11.9,34.8],[460,"2026-03-01",273,77.7,20.1,11.7,31.5],[436,"2026-02-01",497,81.7,29.8,18.9,37.4]]},
+ {short:"HP Tech Ventures", ok:"Orientation", p1k:"Sourcing Startups", fk:"Creating an Investment Memo", enroll:1395, orientr:75.9, p1r:22.9, p17dr:10.5, finalr:7.8, cancelr:36.9, c:[[564,"2026-06-21",35,71.4,14.3,0.0,20.0],[540,"2026-05-24",145,82.8,26.2,0.0,24.1],[512,"2026-04-26",146,76.7,26.7,0.0,34.9],[479,"2026-03-29",265,73.2,21.9,1.9,42.6],[448,"2026-03-01",210,75.7,23.3,2.4,36.2],[423,"2026-02-01",257,74.3,24.1,12.1,38.9],[400,"2026-01-04",337,76.6,20.2,12.5,39.5]]},
+ {short:"Pfizer Advanced — Doc Insights", ok:"Orientation", p1k:"How AI Reads", fk:"Final Integration", enroll:1281, orientr:78.6, p1r:34.6, p17dr:16.9, finalr:5.9, cancelr:24.8, c:[[577,"2026-06-28",29,79.3,3.4,0.0,17.2],[545,"2026-05-31",554,81.0,33.6,0.2,13.9],[517,"2026-05-03",285,78.6,40.0,0.0,31.2],[485,"2026-04-05",191,75.4,34.0,1.0,36.1],[463,"2026-03-08",222,75.2,34.7,5.9,35.1]]},
+ {short:"Beats — Consumer Behavior", ok:"Orientation", p1k:"Create a Pain Point Chart", fk:"Synthesize Consumer Insights", enroll:1267, orientr:71.8, p1r:25.8, p17dr:17.6, finalr:7.1, cancelr:45.5, c:[[535,"2026-05-31",186,75.8,25.3,0.0,35.5],[523,"2026-05-03",197,79.7,25.4,0.0,48.7],[486,"2026-04-05",124,71.8,25.0,4.8,38.7],[424,"2026-02-08",505,68.7,24.6,5.0,49.7],[407,"2026-01-11",255,69.0,29.4,11.4,45.1]]},
+ {short:"Mangusta Capital", ok:"Orientation", p1k:"Sourcing Startups", fk:"Creating an Investment Memo", enroll:1139, orientr:72.6, p1r:14.0, p17dr:4.4, finalr:7.2, cancelr:39.8, c:[[554,"2026-06-14",134,68.7,3.7,0.0,21.6],[526,"2026-05-17",221,72.9,14.5,0.0,40.3],[496,"2026-04-19",143,76.2,16.1,0.0,42.7],[470,"2026-03-22",195,68.7,9.7,1.0,47.2],[442,"2026-02-22",232,73.7,18.1,8.2,37.9],[417,"2026-01-25",214,74.8,17.8,11.7,43.9]]},
+ {short:"BeReal Product Management", ok:"Orientation", p1k:"Map the End-to-End", fk:"Pitch Your App Feature Proposal", enroll:1068, orientr:77.0, p1r:20.9, p17dr:6.2, finalr:15.8, cancelr:36.6, c:[[556,"2026-06-14",117,69.2,4.3,0.0,16.2],[530,"2026-05-17",245,79.6,22.0,0.0,33.5],[498,"2026-04-19",137,73.0,18.2,0.0,32.1],[475,"2026-03-22",160,70.6,18.1,10.0,48.1],[444,"2026-02-22",166,75.9,21.1,12.7,44.0],[415,"2026-01-25",243,85.2,30.9,21.8,39.5]]},
+ {short:"Beats — Data Analytics Q&Q", ok:"Orientation", p1k:"Create a Pain Point Chart", fk:"Synthesize Consumer Insights", enroll:998, orientr:75.5, p1r:27.0, p17dr:17.4, finalr:6.2, cancelr:42.2, c:[[561,"2026-06-07",130,75.4,16.2,0.0,21.5],[531,"2026-05-10",148,75.7,29.7,0.0,40.5],[497,"2026-04-12",174,75.3,29.9,0.0,45.4],[439,"2026-02-08",368,73.9,26.4,6.0,45.1],[409,"2026-01-11",178,78.7,30.9,6.7,49.4]]},
+ {short:"Wayfair AI Agent", ok:"Orientation", p1k:"Getting Started with AI Agents", fk:"Bringing It All Together", enroll:684, orientr:74.7, p1r:24.3, p17dr:13.4, finalr:7.7, cancelr:35.5, c:[[576,"2026-06-28",26,65.4,0.0,0.0,19.2],[544,"2026-06-07",146,74.0,13.0,0.0,18.5],[519,"2026-05-03",184,73.9,31.0,0.0,35.3],[483,"2026-04-05",172,75.6,27.9,5.2,43.6],[450,"2026-03-08",156,76.9,26.9,7.7,45.5]]},
+ {short:"Energy Innovation Capital", ok:"Orientation", p1k:"Sourcing Startups", fk:"Creating an Investment Memo", enroll:674, orientr:68.5, p1r:14.8, p17dr:5.0, finalr:7.4, cancelr:38.4, c:[[553,"2026-06-07",92,72.8,6.5,0.0,31.5],[518,"2026-05-03",125,81.6,20.0,0.0,41.6],[484,"2026-04-05",63,71.4,22.2,7.9,30.2],[452,"2026-03-08",201,58.2,9.5,7.0,34.8],[426,"2026-02-08",68,60.3,20.6,10.3,48.5],[411,"2026-01-11",125,72.0,17.6,6.4,44.8]]},
+ {short:"Breaking Games eCommerce", ok:"Orientation", p1k:"Explore How Businesses Drive Online Sales", fk:"Turn Your Findings into a Growth Strategy", enroll:553, orientr:70.3, p1r:24.2, p17dr:13.7, finalr:2.7, cancelr:43.0, c:[[537,"2026-05-24",85,70.6,21.2,0.0,40.0],[503,"2026-04-26",51,86.3,51.0,0.0,37.3],[476,"2026-03-29",158,71.5,22.8,0.6,51.9],[458,"2026-03-01",189,61.9,15.3,1.6,34.4],[419,"2026-02-01",70,78.6,35.7,5.7,54.3]]},
+ {short:"NASCAR Sports Analytics", ok:"Orientation", p1k:"Sponsorship ROI Foundations", fk:"Strategy and Presentation", enroll:456, orientr:75.0, p1r:13.2, p17dr:3.8, finalr:2.3, cancelr:45.4, c:[[571,"2026-06-21",35,57.1,2.9,0.0,17.1],[536,"2026-05-24",131,78.6,13.0,0.0,35.9],[505,"2026-04-26",71,74.6,11.3,0.0,50.7],[466,"2026-03-29",78,79.5,21.8,2.6,53.8],[465,"2026-03-01",141,73.8,12.1,2.1,53.9]]},
+ {short:"Healthcare Ops & Consulting", ok:"Orientation", p1k:"Know How Business Processes", fk:"Work-Quantification Dashboard", enroll:427, orientr:73.1, p1r:18.0, p17dr:8.6, finalr:19.0, cancelr:36.1, c:[[555,"2026-06-14",71,59.2,2.8,0.0,19.7],[524,"2026-05-17",171,77.8,21.1,0.0,37.4],[488,"2026-04-19",127,74.0,20.5,8.7,41.7],[471,"2026-03-22",58,74.1,22.4,19.0,39.7]]},
+ {short:"Attronica FP&A", ok:"Orientation", p1k:"Diagnosing Attronica", fk:"Making the Case to a Buyer", enroll:373, orientr:71.8, p1r:19.6, p17dr:10.1, finalr:0, cancelr:22.3, c:[[565,"2026-06-14",104,59.6,2.9,0.0,10.6],[527,"2026-05-17",269,76.6,26.0,0.0,26.8]]},
+ {short:"Beats — Creative Advertising", ok:"Orientation", p1k:"Decode the Feed", fk:"Present Your Strategy", enroll:345, orientr:79.4, p1r:9.6, p17dr:0.7, finalr:3.7, cancelr:38.8, c:[[552,"2026-06-07",115,73.0,0.9,0.0,18.3],[491,"2026-05-10",96,84.4,16.7,0.0,49.0],[490,"2026-04-12",134,81.3,11.9,3.7,49.3]]},
+ {short:"Corporate Strategy (Eric Ries)", ok:"Orientation", p1k:"Week 1", fk:"Week 4", enroll:244, orientr:71.7, p1r:12.3, p17dr:8.8, finalr:0, cancelr:30.3, c:[[550,"2026-05-31",244,71.7,12.3,0.0,30.3]]},
+];
+
+let DATA = [], sortKey="enroll", sortDir=-1, expanded=null, LIVE_MODULES=null;
+
+function safe(fn){ try{ fn(); }catch(e){ if(window.console&&console.error) console.error("render error:", e); } }
+function pct(n,d){ return d>0 ? 100*n/d : 0; }
+function fmt(x){ return Math.round(x).toLocaleString(); }
+function cls(v,hi,lo,inv){ let good=inv?v<=hi:v>=hi, bad=inv?v>lo:v<lo; return good?"g":(bad?"r":"a"); }
+function clsFor(k,v){
+  if(k==="orientr") return cls(v,70,50,false);
+  if(k==="p1r")     return cls(v,30,15,false);
+  if(k==="p17dr")   return cls(v,15,8,false);
+  if(k==="finalr")  return cls(v,15,8,false);
+  if(k==="cancelr") return cls(v,30,45,true);
+  return "a";
+}
+function build(){
+  DATA = PROGRAMS.map((p,i)=>({...p, idx:i,
+    cohorts:p.c.map(r=>({id:r[0],start:r[1],enroll:r[2],orientr:r[3],p1r:r[4],finalr:pct(CERT[String(r[0])]||0,r[2]),cancelr:r[6]})),
+    jobs:p.c.map(r=>r[0])
+  }));
+  DATA.forEach(rollupMaturity);
+}
+function fmtDate(d){ if(!d) return "—"; const x=new Date(d); return isNaN(x)?d:x.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"}); }
+
+function renderKPIs(){
+  // enrollment-weighted across programs; completion uses MATURED cohorts only
+  let E=0,O=0,P=0,C=0,S7=0,mFc=0,mE=0,inflE=0;
+  DATA.forEach(p=>{ E+=p.enroll; O+=p.orientr*p.enroll/100; P+=p.p1r*p.enroll/100; C+=p.cancelr*p.enroll/100; S7+=p.p17dr*p.enroll/100;
+    p.cohorts.forEach(co=>{ if(co.mat){ mE+=co.enroll; mFc+=co.finalr*co.enroll/100; } else { inflE+=co.enroll; } });
+  });
+  const inflPct = E>0 ? Math.round(100*inflE/E) : 0;
+  const cards=[
+    {l:"Total enrolled", v:fmt(E), m:inflPct+"% still in flight"},
+    {l:"Orientation completion", v:pct(O,E).toFixed(1)+"%", m:"all cohorts"},
+    {l:"Project 1 completion", v:pct(P,E).toFixed(1)+"%", m:"all cohorts"},
+    {l:"P1 within 7 days", v:pct(S7,E).toFixed(1)+"%", m:"of registrants"},
+    {l:"Program completion", v:pct(mFc,mE).toFixed(1)+"%", m:"certificate · matured cohorts"},
+    {l:"Cancellation rate", v:pct(C,E).toFixed(1)+"%", m:"all cohorts"}
+  ];
+  document.getElementById("kpis").innerHTML = cards.map(c=>`<div class="kpi"><div class="label">${c.l}</div><div class="val">${c.v}</div><div class="meta">${c.m}</div></div>`).join("");
+}
+function cellHTML(k,v){ const c=clsFor(k,v), w=Math.max(2,Math.min(100,v)); return `<div class="cell ${c}"><span class="pct">${v.toFixed(1)}%</span><span class="bar"><i style="width:${w}%"></i></span></div>`; }
+function progCell(p){
+  if(p.finalrM==null) return `<div class="cell"><span class="pct" style="color:#aab2c0">—</span><span style="font-size:10px;color:#aab2c0">0/${p.total} closed</span></div>`;
+  const c=clsFor("finalr",p.finalrM), w=Math.max(2,Math.min(100,p.finalrM));
+  return `<div class="cell ${c}"><span class="pct">${p.finalrM.toFixed(1)}%</span><span class="bar"><i style="width:${w}%"></i></span><span style="font-size:10px;color:#9aa3b2">${p.closed}/${p.total} closed</span></div>`;
+}
+function miniPct(k,v){ return `<span class="mini ${clsFor(k,v)}">${v.toFixed(1)}%</span>`; }
+
+function cohortTable(p){
+  const closed=p.cohorts.filter(c=>c.mat).length;
+  return `<div class="cohhead">Cohorts (by job ID) <span class="cohsub">· ${p.cohorts.length} cohort${p.cohorts.length===1?"":"s"} · ${closed} closed</span></div>
+  <table class="coht"><thead><tr><th class="cn">Job ID</th><th class="cn">Start date</th><th class="cn">Status</th><th>Enrolled</th><th>Orientation</th><th>Project 1</th><th>Program (cert)</th><th>Cancel</th></tr></thead><tbody>${
+    p.cohorts.map(r=>{
+      const badge = r.mat
+        ? '<span style="background:#e3f5ea;color:#1f9d57;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:600;">Closed</span>'
+        : '<span style="background:#fdf1d8;color:#c2870a;border-radius:5px;padding:1px 7px;font-size:11px;font-weight:600;">In-flight</span>';
+      const prog = r.mat ? miniPct("finalr",r.finalr) : `<span style="color:#c2c9d4;" title="in flight — not counted toward completion">${r.finalr.toFixed(1)}%</span>`;
+      return `<tr><td class="cn"><span class="jb">#${r.id}</span></td><td class="cn">${fmtDate(r.start)}</td><td class="cn">${badge}</td><td>${fmt(r.enroll)}</td><td>${miniPct("orientr",r.orientr)}</td><td>${miniPct("p1r",r.p1r)}</td><td>${prog}</td><td>${miniPct("cancelr",r.cancelr)}</td></tr>`;
+    }).join("")
+  }</tbody></table>`;
+}
+// Recompute project-by-project module completion live (closed cohorts) from the module-by-id data fetched in refresh()
+function computeLiveModules(modById){
+  const out={};
+  DATA.forEach(p=>{
+    const closed=p.cohorts.filter(c=>c.mat);
+    const ce=closed.reduce((a,c)=>a+c.enroll,0);
+    if(!ce){ out[p.short]=null; return; }
+    const groups={};
+    closed.forEach(co=>{ (modById[String(co.id)]||[]).forEach(([title,val])=>{
+      const base=title.replace(/^Project\s+\d+\s*\([^)]*\)\s*:?\s*/i,"").replace(/^Project\s+\d+\s*:?\s*/i,"").replace(/^Week\s+\d+\s*:?\s*/i,"").trim();
+      const key=base.toLowerCase();
+      const mm=title.match(/Project\s+(\d+)/i)||title.match(/Week\s+(\d+)/i);
+      let ord=/orientation/i.test(title)?0:(mm?parseInt(mm[1],10):null);
+      if(!groups[key]) groups[key]={sum:0,label:key==="orientation"?"Orientation":title,ord};
+      groups[key].sum+=val;
+      if(key!=="orientation" && /Project\s+\d+|Week\s+\d+/i.test(title) && !/Project\s+\d+|Week\s+\d+/i.test(groups[key].label)) groups[key].label=title;
+      if(groups[key].ord==null && ord!=null) groups[key].ord=ord;
+    }); });
+    const list=Object.keys(groups).map(k=>({n:groups[k].label, p:100*groups[k].sum/ce, ord:groups[k].ord}));
+    list.sort((a,b)=>{ const ao=a.ord==null?999:a.ord, bo=b.ord==null?999:b.ord; return ao!==bo?ao-bo:b.p-a.p; });
+    out[p.short]=list;
+  });
+  LIVE_MODULES=out;
+}
+function moduleFunnel(p){
+  const ms=(LIVE_MODULES&&LIVE_MODULES[p.short]!==undefined?LIVE_MODULES[p.short]:MODULES[p.short]);
+  if(!ms||!ms.length) return `<div class="modwrap"><div class="cohhead">Average project-by-project progress</div><div style="font-size:12px;color:#8a93a3;padding:4px 0;">No closed cohorts yet — available once a cohort ends.</div></div>`;
+  return `<div class="modwrap"><div class="cohhead">Average project-by-project progress <span class="cohsub">· closed cohorts · % of enrolled who completed each module</span></div>`+
+    ms.map((m,i)=>`<div class="modrow ${i===0?'orient':''}"><span class="mn" title="${m.n.replace(/"/g,'&quot;')}">${m.n}</span><span class="mbar"><i style="width:${Math.max(2,Math.min(100,m.p))}%"></i></span><span class="mp">${m.p.toFixed(1)}%</span></div>`).join("")+
+    `<div class="modnote">Module completion (reached each project) across closed cohorts — a looser measure than the certificate-based Program completion in the table above.</div></div>`;
+}
+function detailHTML(p){ return `<div class="inner">${moduleFunnel(p)}${cohortTable(p)}</div>`; }
+
+function renderTable(){
+  const sv=(p,k)=> k==="finalr" ? (p.finalrM==null?-1:p.finalrM) : p[k];
+  const rows=[...DATA].sort((a,b)=>{ let av=sv(a,sortKey),bv=sv(b,sortKey); return typeof av==="string"?sortDir*av.localeCompare(bv):sortDir*(av-bv); });
+  document.getElementById("tbody").innerHTML = rows.map((p,i)=>{
+    const open=expanded===p.short;
+    return `<tr class="row" data-k="${encodeURIComponent(p.short)}">
+      <td class="name"><span class="idx">${i+1}</span>${p.short}</td>
+      <td class="enr">${fmt(p.enroll)}</td>
+      <td>${cellHTML("orientr",p.orientr)}</td>
+      <td>${cellHTML("p1r",p.p1r)}</td>
+      <td>${cellHTML("p17dr",p.p17dr)}</td>
+      <td>${progCell(p)}</td>
+      <td>${cellHTML("cancelr",p.cancelr)}</td>
+    </tr><tr class="detail ${open?'':'hidden'}"><td colspan="7">${open?detailHTML(p):''}</td></tr>`;
+  }).join("");
+  document.querySelectorAll("#tbody tr.row").forEach(tr=>{
+    tr.querySelector(".name").addEventListener("click",()=>{ const k=decodeURIComponent(tr.dataset.k); expanded=(expanded===k)?null:k; renderTable(); });
+  });
+}
+function setSort(k){ if(sortKey===k) sortDir*=-1; else { sortKey=k; sortDir=(k==="short")?1:-1; }
+  document.querySelectorAll("thead th").forEach(th=>{ const a=th.querySelector(".arr"); if(a) a.textContent=(th.dataset.k===sortKey)?(sortDir<0?"▼":"▲"):""; });
+  renderTable();
+}
+function setFresh(s,t){ document.getElementById("freshdot").className="dot "+s; document.getElementById("freshtxt").textContent=t; }
+
+// ---------- Insights (auto-generated) ----------
+function fmtList(a){ return a.map(x=>`${x.short} ${x.v.toFixed(1)}%`).join(", "); }
+function renderInsights(){
+  const el=document.getElementById("insights"); if(!el) return;
+  let E=0,O=0,P=0,C=0,mE=0,mC=0,inflE=0;
+  DATA.forEach(p=>{ E+=p.enroll; O+=p.orientr*p.enroll/100; P+=p.p1r*p.enroll/100; C+=p.cancelr*p.enroll/100;
+    p.cohorts.forEach(co=>{ if(co.mat){mE+=co.enroll;mC+=co.finalr*co.enroll/100;} else inflE+=co.enroll; }); });
+  const oP=pct(O,E),pP=pct(P,E),cP=pct(C,E),compP=pct(mC,mE),infl=E?Math.round(100*inflE/E):0,gap=oP-pP;
+  const matured=DATA.filter(p=>p.finalrM!=null);
+  const byComp=[...matured].sort((a,b)=>b.finalrM-a.finalrM);
+  const top=byComp.slice(0,3).map(p=>({short:p.short,v:p.finalrM}));
+  const bot=byComp.slice(-3).reverse().map(p=>({short:p.short,v:p.finalrM}));
+  const hiCancel=[...DATA].sort((a,b)=>b.cancelr-a.cancelr).slice(0,3).map(p=>({short:p.short,v:p.cancelr}));
+  const loCancel=[...DATA].sort((a,b)=>a.cancelr-b.cancelr).slice(0,3).map(p=>({short:p.short,v:p.cancelr}));
+  const fastP1=[...DATA].sort((a,b)=>b.p17dr-a.p17dr).slice(0,3).map(p=>({short:p.short,v:p.p17dr}));
+  const grp=(cls,title,items)=>`<div class="ins-group"><div class="ins-h ${cls}">${title}</div><ul class="ins-list">${items.map(i=>`<li>${i}</li>`).join("")}</ul></div>`;
+  el.innerHTML =
+    grp("t","Trends",[
+      `Orientation is strong (<b>${oP.toFixed(0)}%</b>) but only <b>${pP.toFixed(0)}%</b> reach Project 1 — the Orientation→Project 1 step loses <b>~${gap.toFixed(0)} pts</b>, the biggest leak across programs.`,
+      `<b>${infl}%</b> of 2026 enrollment is still in flight, so completion is read on matured cohorts only (<b>${compP.toFixed(1)}%</b> certificate-based).`,
+      `Cancellation runs high portfolio-wide (<b>${cP.toFixed(0)}%</b>).`
+    ]) +
+    grp("g","Highlights",[
+      `Top completion (matured): <b>${fmtList(top)}</b>.`,
+      `Fastest Project 1 (≤7 days): <b>${fmtList(fastP1)}</b>.`,
+      `Lowest cancellation: <b>${fmtList(loCancel)}</b>.`
+    ]) +
+    grp("r","Watch-outs & recommended actions",[
+      `Lowest completion: <b>${fmtList(bot)}</b> — check content/fit (and certificate-issuance lag).`,
+      `Highest cancellation: <b>${fmtList(hiCancel)}</b> — review onboarding & expectation-setting.`,
+      `Biggest lever: recover a few points at the <b>Orientation→Project 1</b> step — it compounds across all 19 programs.`
+    ]);
+}
+
+// ---------- Experiments ----------
+const EXPERIMENTS=[
+ {id:"narrative",name:"Narrative Test",
+  groups:[{prog:"Hydroficient IoT Cyber",scope:"all"},{prog:"Attronica FP&A",scope:"all"},{prog:"Yinan Value Investing",cohorts:[562],control:"others"}],
+  note:"Hydroficient &amp; Attronica run the test across the whole program (no internal control — compare to their pre-2026 baseline). Yinan tests cohort #562 vs its other cohorts."},
+ {id:"taskfriction",name:"Task Friction A/B Test",
+  groups:[{prog:"Beats — Data Analytics Q&Q",cohorts:[561],control:"others"}],
+  note:"Cohort #561 (test) vs the program's other cohorts (control)."},
+ {id:"aifirst",name:"AI-First Approach",
+  groups:[{prog:"TikTok Brand Strategy",cohorts:[570],control:"others"}],
+  note:"Cohort #570 (test) vs the program's other cohorts (control)."}
+];
+function progByShort(s){ return DATA.find(p=>p.short===s); }
+function aggr(cohorts){ let e=0,o=0,p1=0; cohorts.forEach(c=>{e+=c.enroll;o+=c.orientr*c.enroll/100;p1+=c.p1r*c.enroll/100;}); return {e, o:e?100*o/e:0, p1:e?100*p1/e:0}; }
+function delta(t,c){ const d=t-c, cls=Math.abs(d)<0.05?"delta-0":(d>0?"delta-up":"delta-dn"), sg=d>0?"+":""; return `<span class="${cls}">${sg}${d.toFixed(1)}</span>`; }
+function lsGet(k,d){ try{ const v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function renderExperiments(){
+  const el=document.getElementById("experiments"); if(!el) return;
+  el.innerHTML = EXPERIMENTS.map(x=>{
+    const rows=[];
+    x.groups.forEach(g=>{
+      const p=progByShort(g.prog); if(!p) return;
+      let testCo, ctrlCo=null, label;
+      if(g.scope==="all"){ testCo=p.cohorts; label=g.prog+" (all cohorts)"; }
+      else { const ids=g.cohorts.map(String); testCo=p.cohorts.filter(c=>ids.includes(String(c.id))); label=g.prog+" #"+g.cohorts.join(", #"); if(g.control==="others") ctrlCo=p.cohorts.filter(c=>!ids.includes(String(c.id))); }
+      const t=aggr(testCo), c=ctrlCo&&ctrlCo.length?aggr(ctrlCo):null;
+      rows.push(`<tr><td class="l"><span class="badge-t">Test</span> ${label}</td><td>${fmt(t.e)}</td><td>${t.o.toFixed(1)}% ${c?delta(t.o,c.o):""}</td><td>${t.p1.toFixed(1)}% ${c?delta(t.p1,c.p1):""}</td></tr>`);
+      if(c) rows.push(`<tr><td class="l"><span class="badge-c">Control</span> ${g.prog} (other cohorts)</td><td>${fmt(c.e)}</td><td>${c.o.toFixed(1)}%</td><td>${c.p1.toFixed(1)}%</td></tr>`);
+      else if(g.scope==="all") rows.push(`<tr><td class="l"><span class="badge-c">Control</span> baseline n/a (whole program)</td><td>—</td><td>—</td><td>—</td></tr>`);
+    });
+    const st=lsGet("exp_"+x.id+"_status","Running"), hyp=lsGet("exp_"+x.id+"_hyp","");
+    return `<div class="exp">
+      <div class="exp-top"><span class="exp-name">${x.name}</span>
+        <select class="exp-status" data-exp="${x.id}">${["Planned","Running","Concluded"].map(o=>`<option ${o===st?"selected":""}>${o}</option>`).join("")}</select></div>
+      <textarea class="exp-hyp" data-exp="${x.id}" placeholder="Add hypothesis…">${String(hyp).replace(/</g,"&lt;")}</textarea>
+      <div class="exp-note">${x.note} · Δ = test minus control (Orientation &amp; Project 1). Test cohorts are recent, so Project 1 reads low until they mature — weigh Orientation early.</div>
+      <table class="expt"><thead><tr><th class="l">Group</th><th>Enrolled</th><th>Orientation</th><th>Project 1</th></tr></thead><tbody>${rows.join("")}</tbody></table>
+    </div>`;
+  }).join("");
+  el.querySelectorAll(".exp-status").forEach(s=>s.addEventListener("change",e=>lsSet("exp_"+e.target.dataset.exp+"_status",e.target.value)));
+  el.querySelectorAll(".exp-hyp").forEach(t=>t.addEventListener("input",e=>lsSet("exp_"+e.target.dataset.exp+"_hyp",e.target.value)));
+}
+
+// ---------- live refresh (job-ID based) ----------
+async function call(report_type,report){
+  const res=await window.cowork.callMcpTool("mcp__604f7fce-92a6-4a15-9c04-d7314b8c52da__Run-Query",{project_id:PROJECT_ID,report_type,report});
+  let o=res; if(typeof res==="string") o=JSON.parse(res);
+  if(o&&o.content&&Array.isArray(o.content)&&o.content[0]&&o.content[0].text) o=JSON.parse(o.content[0].text);
+  return o;
+}
+function rowsOf(o){ const r=o.result?o.result.results:(o.results||{}); return r[Object.keys(r)[0]].rows; }
+function idMap(o){ const m={}; rowsOf(o).forEach(([k,v])=>{ if(k!=="$overall") m[String(k)]=v; }); return m; }
+
+async function refresh(){
+  try{
+    setFresh("loading","Refreshing from Mixpanel…");
+    const bd=(propName,extra)=>({name:"x",metrics:[{eventName:extra?extra.ev:"",measurement:{type:"basic",math:"unique"}}],chartType:"table",dateRange:RANGE,breakdowns:[{metric:{type:"property",propertyName:propName}}]});
+    const enrollQ=call("insights",{name:"e",metrics:[{eventName:"registration_completed",measurement:{type:"basic",math:"unique"}}],chartType:"table",dateRange:RANGE,breakdowns:[{metric:{type:"property",propertyName:"externship_id"}}]});
+    const cancelQ=call("insights",{name:"c",metrics:[{eventName:"registration_canceled",measurement:{type:"basic",math:"unique"}}],chartType:"table",dateRange:RANGE,breakdowns:[{metric:{type:"property",propertyName:"externship_id"}}]});
+    const modQ=call("insights",{name:"m",metrics:[{eventName:"module_completed",measurement:{type:"basic",math:"unique"}}],chartType:"table",dateRange:RANGE,breakdowns:[{metric:{type:"property",propertyName:"externship_id"}},{metric:{type:"property",propertyName:"externship_module_title"}}]});
+    const apprQ=call("insights",{name:"ca",metrics:[{eventName:"certificate_approved",measurement:{type:"basic",math:"unique"}}],chartType:"table",dateRange:RANGE,breakdowns:[{metric:{type:"property",propertyName:"externship_id"}}]});
+    const topQ=call("insights",{name:"ct",metrics:[{eventName:"certificate_top_performer",measurement:{type:"basic",math:"unique"}}],chartType:"table",dateRange:RANGE,breakdowns:[{metric:{type:"property",propertyName:"externship_id"}}]});
+    const [enr,can,mod,appr,top]=await Promise.all([enrollQ,cancelQ,modQ,apprQ,topQ]);
+    const eMap=idMap(enr), cMap=idMap(can), aMap=idMap(appr), tMap=idMap(top);
+    const certOf=id=>(aMap[id]||0)+(tMap[id]||0);
+    // module rows: ["<id>, <module>", value] -> modById[id] = [[module,value],...]
+    const modById={};
+    rowsOf(mod).forEach(([k,v])=>{ if(typeof k!=="string"||k==="$overall") return; const i=k.indexOf(", "); if(i<0) return; const id=k.slice(0,i); if(k.slice(i+2)==="$overall") return; (modById[id]=modById[id]||[]).push([k.slice(i+2),v]); });
+    const matchMax=(id,key)=>{ const a=modById[id]||[]; let mx=0; a.forEach(([m,v])=>{ if(m.indexOf(key)!==-1&&v>mx) mx=v; }); return mx; };
+    DATA.forEach(p=>{
+      let E=0,O=0,P=0,Cn=0;
+      p.cohorts.forEach(co=>{
+        const id=String(co.id);
+        const e=eMap[id]!=null?eMap[id]:co.enroll;
+        const o=matchMax(id,p.ok), p1=matchMax(id,p.p1k), cn=cMap[id]!=null?cMap[id]:0;
+        co.enroll=e; co.orientr=pct(o,e); co.p1r=pct(p1,e); co.finalr=pct(certOf(id),e); co.cancelr=pct(cn,e);
+        E+=e; O+=o; P+=p1; Cn+=cn;
+      });
+      p.enroll=E; p.orientr=pct(O,E); p.p1r=pct(P,E); p.cancelr=pct(Cn,E);
+      rollupMaturity(p); // program completion = matured cohorts only; p17dr stays baked
+    });
+    safe(()=>computeLiveModules(modById));
+    safe(renderTable); safe(renderKPIs); safe(renderInsights); safe(renderExperiments);
+    setFresh("live","Live from Mixpanel · 2026 · refreshed "+new Date().toLocaleString()+" · P1≤7d = Jun 9 snapshot");
+  }catch(err){
+    safe(build); safe(renderTable); safe(renderKPIs); safe(renderInsights); safe(renderExperiments);
+    setFresh("","Showing Jun 9 2026 snapshot · live refresh unavailable");
+  }
+}
+
+build();
+document.querySelectorAll("thead th").forEach(th=>{ if(th.dataset.k) th.addEventListener("click",()=>setSort(th.dataset.k)); });
+document.querySelectorAll(".tabbtn").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".tabbtn").forEach(x=>x.classList.toggle("active", x===b));
+  document.querySelectorAll(".tabpane").forEach(pane=>pane.classList.toggle("hidden", pane.id!=="tab-"+b.dataset.tab));
+}));
+safe(renderTable); safe(()=>setSort("enroll")); safe(renderKPIs); safe(renderInsights); safe(renderExperiments);
+if(window.cowork&&window.cowork.callMcpTool) refresh(); else setFresh("","2026 snapshot · Jun 9");
+</script>
+</body>
+</html>
