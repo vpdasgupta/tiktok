@@ -1,4 +1,16 @@
-<!doctype html>
+<!doctype html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Externship Performance Dashboard",
+  "schemaVersion": 1,
+  "description": "Live dashboard for the 17 currently-recruiting Extern externships. Summary KPIs plus a sortable per-externship breakdown of Project 1 completion, Project 1 within 7 days of registration, program completion (final module), and cancellation rate. Click any externship for its own funnel mini-dashboard. Enrollments, cancellations, and completion metrics refresh live from Mixpanel; P1-within-7-days is a June 8 2026 snapshot.",
+  "mcpTools": [
+    "mcp__604f7fce-92a6-4a15-9c04-d7314b8c52da__Run-Query"
+  ],
+  "mcpServerNames": [
+    "Mixpanel"
+  ]
+}
+</script>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -9,6 +21,12 @@
 * { box-sizing: border-box; }
 body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:#f6f7f9; color:#1d2330; font-size:14px; line-height:1.45; }
 .wrap { max-width:1180px; margin:0 auto; padding:24px 20px 60px; }
+.tabs { display:flex; gap:2px; margin:16px 0 0; border-bottom:1px solid #e7eaf0; }
+.tabbtn { border:none; background:none; padding:9px 16px; font:inherit; font-size:13px; font-weight:600; color:#7a8494; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; }
+.tabbtn:hover { color:#2b59ff; }
+.tabbtn.active { color:#1f3a5f; border-bottom-color:#2b59ff; }
+.tabpane.hidden { display:none; }
+.tabpane { margin-top:18px; }
 h1 { font-size:22px; margin:0 0 4px; letter-spacing:-0.01em; }
 .sub { color:#5b6472; font-size:13px; }
 .freshness { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:4px 10px; border-radius:999px; background:#eef1f5; color:#44506a; font-size:12px; font-weight:500; }
@@ -25,15 +43,15 @@ h1 { font-size:22px; margin:0 0 4px; letter-spacing:-0.01em; }
 .card-h { padding:14px 18px; border-bottom:1px solid #eef1f5; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
 .card-h h2 { font-size:15px; margin:0; } .hint { font-size:12px; color:#8a93a3; }
 table { width:100%; border-collapse:collapse; }
-thead th { text-align:right; font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:#7a8494; font-weight:600; padding:11px 14px; border-bottom:1px solid #eef1f5; cursor:pointer; user-select:none; white-space:nowrap; }
+thead th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:#7a8494; font-weight:600; padding:11px 14px; border-bottom:1px solid #eef1f5; cursor:pointer; user-select:none; white-space:nowrap; }
 thead th.name { text-align:left; } thead th:hover { color:#2b59ff; }
 thead th .arr { font-size:9px; color:#b5bdca; }
-tbody td { padding:10px 14px; border-bottom:1px solid #f1f3f7; text-align:right; vertical-align:middle; }
+tbody td { padding:10px 14px; border-bottom:1px solid #f1f3f7; text-align:left; vertical-align:middle; }
 tbody td.name { text-align:left; font-weight:600; color:#222c3d; cursor:pointer; }
 tbody td.name span.idx { color:#aab2c0; font-weight:600; margin-right:8px; font-size:12px; }
 tbody tr.row:hover { background:#fafbfc; }
 .enr { font-variant-numeric:tabular-nums; color:#3a4150; font-weight:600; }
-.cell { display:inline-flex; flex-direction:column; align-items:flex-end; gap:4px; min-width:72px; }
+.cell { display:inline-flex; flex-direction:column; align-items:flex-start; gap:4px; min-width:72px; }
 .pct { font-variant-numeric:tabular-nums; font-weight:600; font-size:13px; }
 .bar { width:72px; height:5px; border-radius:3px; background:#eef1f5; overflow:hidden; }
 .bar > i { display:block; height:100%; border-radius:3px; }
@@ -46,14 +64,22 @@ tbody tr.row:hover { background:#fafbfc; }
 .cohhead { font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#7a8494; font-weight:700; margin-bottom:10px; }
 .cohsub { text-transform:none; letter-spacing:0; font-weight:500; color:#9aa3b2; margin-left:6px; }
 .coht { width:100%; border-collapse:collapse; }
-.coht th { text-align:right; font-size:10px; text-transform:uppercase; letter-spacing:.03em; color:#9aa3b2; font-weight:600; padding:6px 10px; border-bottom:1px solid #eef1f5; }
+.coht th { text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.03em; color:#9aa3b2; font-weight:600; padding:6px 10px; border-bottom:1px solid #eef1f5; }
 .coht th.cn { text-align:left; }
-.coht td { text-align:right; padding:7px 10px; border-bottom:1px solid #f4f6f9; font-variant-numeric:tabular-nums; }
+.coht td { text-align:left; padding:7px 10px; border-bottom:1px solid #f4f6f9; font-variant-numeric:tabular-nums; }
 .coht td.cn { text-align:left; font-weight:600; color:#3a4150; }
 .coht td.cn .jb { display:inline-block; background:#eef1f5; color:#5b6678; border-radius:5px; padding:1px 7px; font-size:11px; font-weight:700; }
 .coht .mini { font-weight:600; }
 .coht .mini.g{color:#1f9d57} .coht .mini.a{color:#c2870a} .coht .mini.r{color:#d23f3f}
 .coht tr:hover td { background:#fafbfd; }
+.modwrap { margin-bottom:18px; }
+.modrow { display:flex; align-items:center; gap:10px; padding:3px 0; }
+.modrow .mn { flex:0 0 46%; font-size:12px; color:#3a4150; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.modrow .mbar { flex:1; height:13px; background:#eef1f5; border-radius:4px; overflow:hidden; }
+.modrow .mbar > i { display:block; height:100%; background:#5b7cff; border-radius:4px; }
+.modrow.orient .mbar > i { background:#3f9d6b; }
+.modrow .mp { flex:0 0 44px; text-align:right; font-size:12px; font-weight:600; font-variant-numeric:tabular-nums; color:#3a4150; }
+.modnote { font-size:11px; color:#9aa3b2; margin:6px 0 0; }
 .notes { margin-top:22px; font-size:12px; color:#6b7484; }
 .notes h3 { font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:#7a8494; margin:0 0 8px; }
 .notes ul { margin:0 0 0 16px; padding:0; } .notes li { margin-bottom:6px; }
@@ -90,16 +116,32 @@ tbody tr.row:hover { background:#fafbfc; }
 .delta-up { color:#1f9d57; font-weight:600; font-size:11px; }
 .delta-dn { color:#d23f3f; font-weight:600; font-size:11px; }
 .delta-0 { color:#9aa3b2; font-size:11px; }
+.cdwrap { margin-top:16px; }
+.cdcols { display:flex; gap:24px; flex-wrap:wrap; }
+.cdcol { flex:1; min-width:240px; }
+.cdh { font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:#7a8494; font-weight:700; margin:0 0 7px; }
+.cdrow { display:flex; align-items:center; gap:8px; padding:2px 0; }
+.cdrow .cdl { flex:0 0 56%; font-size:11.5px; color:#3a4150; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cdrow .cdbar { flex:1; height:11px; background:#eef1f5; border-radius:3px; overflow:hidden; }
+.cdrow .cdbar > i { display:block; height:100%; background:#ef8a5b; border-radius:3px; }
+.cdcol.mod .cdbar > i { background:#8a6bef; }
+.cdrow .cdp { flex:0 0 30px; text-align:right; font-size:11px; font-weight:600; color:#3a4150; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>Live Externship Performance Dashboard</h1>
-    <div class="sub">Engagement &amp; completion across 19 live programs &middot; calendar year 2026 &middot; consolidated by job ID &middot; source: Mixpanel (Extern Production)</div>
+    <div class="sub">Engagement &amp; completion across 20 live programs &middot; calendar year 2026 &middot; consolidated by job ID &middot; source: Mixpanel (Extern Production)</div>
     <div class="freshness" id="fresh"><span class="dot" id="freshdot"></span><span id="freshtxt">Loading…</span></div>
   </header>
 
+  <div class="tabs">
+    <button class="tabbtn active" data-tab="programs">Programs</button>
+    <button class="tabbtn" data-tab="experiments">Experiments</button>
+  </div>
+
+  <div class="tabpane" id="tab-programs">
   <div class="kpis" id="kpis"></div>
 
   <div class="card">
@@ -126,11 +168,6 @@ tbody tr.row:hover { background:#fafbfc; }
     </table>
   </div>
 
-  <div class="card" style="margin-top:18px;">
-    <div class="card-h"><h2>Experiments</h2><span class="hint">Test vs control · early read · hypothesis &amp; status save locally</span></div>
-    <div id="experiments" class="exp-body"></div>
-  </div>
-
   <div class="legend">
     <span><i class="sw" style="background:#34c878"></i>Strong</span>
     <span><i class="sw" style="background:#f0b429"></i>Mid</span>
@@ -142,50 +179,65 @@ tbody tr.row:hover { background:#fafbfc; }
     <h3>How to read this &amp; caveats</h3>
     <ul>
       <li><b>Programs are defined by job ID</b> (`externship_id`), not title — several were renamed mid-flight. <b>NASCAR, Pfizer, Healthcare Ops</b> are consolidated across their renamed cohorts; <b>Energy Innovation Capital</b> is consolidated across its renamed titles.</li>
+      <li><b>Cohort scope:</b> programs/cohorts that <i>started</i> in 2026 are included, and each cohort is counted over its <b>full registration window</b> — so January cohorts include sign-ups from December 2025. This keeps per-cohort rates accurate (the denominator matches the whole cohort).</li>
       <li><b>Orientation / Project 1</b> = unique students who completed that module ÷ enrollments. <b>Program completion = a completion certificate issued</b> (`certificate_approved` + `certificate_top_performer`; top performers get that certificate instead of the standard one). This replaces the earlier final-module proxy, which mis-counted where module names were renamed.</li>
-      <li><b>P1 ≤7d</b> = share of registrants who finished Project 1 within 7 days (7-day funnel). <b>Cancellation</b> = `registration_canceled` ÷ enrollments (approximate).</li>
+      <li><b>P1 ≤7d</b> = share of registrants who finished Project 1 within 7 days (7-day funnel). <b>Cancellation</b> = `registration_canceled` ÷ enrollments, <b>excluding students who earned a certificate</b> — so it counts only those who dropped without finishing.</li>
       <li><b>Program completion = matured cohorts only.</b> A cohort counts toward completion only once its program has ended plus a 2-week grace window (end = cohort start date + program duration in weeks). In-flight cohorts are shown (greyed, "In-flight" badge) but excluded from the completion number, since they can't have finished yet. "n/total closed" by each program shows how many cohorts are mature; "—" means none have closed. Orientation, Project 1, P1 ≤7d and Cancellation are shown across all cohorts. Note certificates require passing manual review and are issued after a cohort ends, so recently-closed cohorts can read slightly low — treat completion as a conservative floor.</li>
       <li><b>Live vs snapshot:</b> Enrolled, Orientation, Project 1, Program and Cancellation refresh live from Mixpanel for 2026 (recomputed across each program's job IDs). P1 ≤7d is a Jun 9 2026 snapshot. Cohort roster is as of Jun 9 2026. Maturity is recomputed against the current date on every open. Mirrors the weekly-refreshed "Externship Program Health" Notion page.</li>
     </ul>
+  </div>
+  </div>
+
+  <div class="tabpane hidden" id="tab-experiments">
+    <div class="card">
+      <div class="card-h"><h2>Experiments</h2><span class="hint">Test vs control · early read · hypothesis &amp; status save locally</span></div>
+      <div id="experiments" class="exp-body"></div>
+    </div>
   </div>
 </div>
 
 <script>
 const PROJECT_ID = 3612576;
-const RANGE = { type:"absolute", from:"2026-01-01", to:"2026-12-31" };
+const RANGE = { type:"absolute", from:"2025-08-01", to:"2026-12-31" }; // wide window = full cohort registration (incl. Dec-2025 sign-ups for Jan-2026 cohorts). Cohort SET is still 2026-start (baked job IDs).
 // Program duration (weeks) by job ID, for cohort-maturity gating. End = start + weeks + 2-week grace.
-const DUR = {"566":8,"541":8,"504":8,"480":8,"449":8,"420":8,"399":8,"562":11,"539":11,"501":11,"478":11,"446":11,"422":11,"401":11,"570":6,"534":6,"506":6,"482":6,"445":6,"433":6,"393":6,"563":8,"538":8,"502":8,"477":8,"460":8,"436":8,"574":8,"546":8,"522":8,"487":8,"451":8,"427":8,"410":8,"577":10,"545":10,"517":10,"485":10,"463":10,"535":8,"523":8,"486":8,"424":8,"407":8,"564":8,"540":8,"512":8,"479":8,"448":8,"423":8,"400":8,"554":8,"526":8,"496":8,"470":8,"442":8,"417":8,"556":8,"530":8,"498":8,"475":8,"444":8,"415":8,"561":12,"531":12,"497":12,"439":12,"409":12,"576":8,"544":8,"519":8,"483":8,"450":8,"553":8,"518":8,"484":8,"452":8,"426":8,"411":8,"537":10,"503":10,"476":10,"458":10,"419":10,"571":8,"536":8,"505":8,"466":8,"465":8,"555":6,"524":6,"488":6,"471":6,"565":8,"527":8,"552":6,"491":6,"490":6,"550":4};
+const DUR = {"566":8,"541":8,"504":8,"480":8,"449":8,"420":8,"399":8,"562":11,"539":11,"501":11,"478":11,"446":11,"422":11,"401":11,"570":6,"534":6,"506":6,"482":6,"445":6,"433":6,"393":6,"563":8,"538":8,"502":8,"477":8,"460":8,"436":8,"574":8,"546":8,"522":8,"487":8,"451":8,"427":8,"410":8,"577":10,"545":10,"517":10,"485":10,"463":10,"535":8,"523":8,"486":8,"424":8,"407":8,"564":8,"540":8,"512":8,"479":8,"448":8,"423":8,"400":8,"554":8,"526":8,"496":8,"470":8,"442":8,"417":8,"556":8,"530":8,"498":8,"475":8,"444":8,"415":8,"561":12,"531":12,"497":12,"439":12,"409":12,"576":8,"544":8,"519":8,"483":8,"450":8,"553":8,"518":8,"484":8,"452":8,"426":8,"411":8,"537":10,"503":10,"476":10,"458":10,"419":10,"571":8,"536":8,"505":8,"466":8,"465":8,"555":6,"524":6,"488":6,"471":6,"565":8,"527":8,"552":6,"491":6,"490":6,"550":4,"406":10,"421":10,"447":10,"481":10,"500":10};
 const GRACE_DAYS = 14;
 // Certificate-based completion by job ID (certificate_approved + certificate_top_performer), 2026. Snapshot Jun 9; refreshed live.
-const CERT = {"393":46,"399":59,"400":42,"401":39,"407":29,"409":12,"410":37,"411":8,"415":53,"417":25,"419":4,"420":36,"422":39,"423":31,"424":25,"426":7,"427":21,"433":15,"436":94,"439":22,"442":19,"444":21,"445":12,"446":28,"448":5,"449":31,"450":12,"451":18,"452":14,"458":3,"460":32,"463":13,"465":3,"466":2,"470":2,"471":11,"475":16,"476":1,"477":27,"478":0,"479":5,"480":18,"482":14,"483":9,"484":5,"485":2,"486":6,"487":10,"488":11,"490":5,"491":0,"496":0,"497":0,"498":0,"501":0,"502":0,"503":0,"504":2,"505":0,"506":6,"512":0,"517":0,"518":0,"519":0,"522":0,"523":0,"524":0,"526":0,"527":0,"530":0,"531":0,"534":0,"535":0,"536":0,"537":0,"538":0,"539":0,"540":0,"541":2,"544":0,"545":1,"546":0,"550":0,"552":0,"553":0,"554":0,"555":0,"556":0,"561":0,"562":0,"563":0,"564":0,"565":0,"566":0,"570":0,"571":0,"574":0,"576":0,"577":0};
+const CERT = {"566":0, "541":2, "504":2, "480":18, "449":31, "420":36, "399":59, "562":0, "539":0, "501":0, "478":0, "446":28, "422":39, "401":39, "570":0, "534":0, "506":6, "482":14, "445":12, "433":15, "393":46, "563":0, "538":0, "502":0, "477":27, "460":32, "436":94, "574":0, "546":0, "522":0, "487":10, "451":18, "427":21, "410":37, "577":0, "545":1, "517":0, "485":2, "463":13, "535":0, "523":0, "486":6, "424":25, "407":29, "564":0, "540":0, "512":0, "479":5, "448":5, "423":31, "400":42, "554":0, "526":0, "496":0, "470":2, "442":19, "417":25, "556":0, "530":0, "498":0, "475":16, "444":21, "415":53, "561":0, "531":0, "497":0, "439":22, "409":12, "576":0, "544":0, "519":0, "483":9, "450":12, "553":0, "518":0, "484":5, "452":14, "426":7, "411":8, "537":0, "503":0, "476":1, "458":3, "419":4, "571":0, "536":0, "505":0, "466":2, "465":3, "555":0, "524":0, "488":11, "471":11, "565":0, "527":0, "552":0, "491":0, "490":5, "550":0, "406":21, "421":14, "447":7, "481":3, "500":0};
+// Average project-by-project module completion across CLOSED cohorts (snapshot Jun 9 2026). % = unique completers of that module ÷ closed-cohort enrollment.
+const MODULES = {"Amazon Ops & People Analytics":[{n:"Project 0: Orientation",p:72.5},{n:"Project 1: Understand the Operational Challenge",p:23.8},{n:"Project 2: Collect & Clean Employee Voice Data",p:13.3},{n:"Project 3: Find Sentiment & Keyword Patterns in Employee Voice Data",p:11.1},{n:"Project 4: Uncover Themes & Root Causes in Employee Voice Data",p:10.8},{n:"Project 5: Segment the Workforce & Identify Priorities",p:10.4},{n:"Project 6: Recommend a Pilot-Ready Intervention",p:10.1}], "Yinan Value Investing":[{n:"Project 0: Orientation",p:80.0},{n:"Project 1: Basics of Equity Research & Company Selection",p:34.2},{n:"Project 2: Company Deep Dive with 10-Ks and Management Insights",p:21.4},{n:"Project 3: Analyzing Competition, Risks & Catalysts",p:17.8},{n:"Project 4: Building the Financial Model",p:12.4},{n:"Project 5: Valuing the Company and Developing a Price Target",p:11.6},{n:"Project 6: Crafting and Presenting Your Final Investment Memo",p:11.1}], "TikTok Brand Strategy":[{n:"Orientation",p:70.4},{n:"Project 1: Create ABU’s Mini Brand Kit",p:14.8},{n:"Project 2: Shape ABU’s Brand with TikTok Storytelling",p:10.1},{n:"Project 3: Experiments with Instagram",p:9.5},{n:"Project 4: Pitch Your ABU Brand Playbook",p:8.8}], "TruBridge Health Data":[{n:"Project 0: Orientation",p:66.7},{n:"Project 1: Build Foundations of Data Analytics",p:27.4},{n:"Project 2: Collect and Pre-Process Data for Analysis",p:10.6},{n:"Project 3: Conduct Explorative Data Analysis (EDA)",p:9.4},{n:"Project 4: Build Your Presentation",p:8.8},{n:"Project 5: Build Your Data Dashboard",p:8.4}], "Hydroficient IoT Cyber":[{n:"Project 0: Orientation",p:80.3},{n:"Project 1: Understanding IoT Systems & Threat Modeling",p:25.7},{n:"Project 2: Learning Python for IoT Security",p:15.5},{n:"Project 3: Building an Insecure MQTT Pipeline",p:16.0},{n:"Project 4: Securing the Pipeline & Measuring the Cost",p:11.2},{n:"Project 5: Enforcing Device Identity & Provisioning",p:11.8},{n:"Project 6: Defeating Replay Attacks",p:13.5},{n:"Project 7: Building a Real-Time Security Dashboard",p:12.4},{n:"Project 8 (Optional): Adding AI-Powered Anomaly Detection",p:11.6}], "HP Tech Ventures":[{n:"Project 0: Orientation",p:75.0},{n:"Project 1: Sourcing Startups",p:22.2},{n:"Project 2: Doing Due Diligence",p:14.4},{n:"Project 3: Synthesizing: From Diligence Data to Actionable Insights",p:13.9},{n:"Project 4: Creating an Investment Memo",p:13.2}], "Pfizer Advanced — Doc Insights":[{n:"Orientation",p:75.2},{n:"Project 1: How AI Reads Pharmaceutical Documents",p:34.7},{n:"Project 2: Learn to Work with Python for AI-Powered Document Processing",p:16.7},{n:"Project 3: Data Extraction from Documents Using Python",p:15.3},{n:"Project 4: Advanced OCR Comparison and Layout-Aware Extraction",p:12.6},{n:"Project 5: Introduction to Retrieval-Augmented Generation (RAG)",p:12.2},{n:"Project 6: Advanced RAG and Open-Source Experiments",p:11.7},{n:"Project 7: Blob Processing, Classification, and Routing",p:10.8},{n:"Project 8: Gradio Chatbot with RAG Integration",p:10.4},{n:"Project 9: Final Integration, Testing, and Evaluation",p:9.9}], "Beats — Consumer Behavior":[{n:"Project 0: Orientation",p:68.8},{n:"Project 1: Create a Pain Point Chart",p:26.2},{n:"Project 2: Create a Customer Journey Map",p:19.5},{n:"Project 3: Conduct A Survey To Gather Consumer Insights",p:12.4},{n:"Project 4: Analyze Consumer Insights",p:9.9},{n:"Project 5: Synthesize Consumer Insights",p:9.5}], "Mangusta Capital":[{n:"Project 0: Orientation",p:72.5},{n:"Project 1: Sourcing Startups",p:15.4},{n:"Project 2: Doing Due Diligence",p:10.3},{n:"Project 3: Synthesizing: From Diligence Data to Actionable Insights",p:9.5},{n:"Project 4: Creating an Investment Memo",p:9.4}], "BeReal Product Management":[{n:"Project 0: Orientation",p:78.4},{n:"Project 1: Map the End-to-End BeReal User Journey",p:24.4},{n:"Project 2: Benchmark BeReal’s Competitors",p:19.3},{n:"Project 3: Design a New App Feature",p:16.5},{n:"Project 4: Test App Feature in Focus Groups",p:15.3},{n:"Project 5: Pitch Your App Feature Proposal",p:15.3}], "Beats — Data Analytics Q&Q":[{n:"Orientation",p:75.5},{n:"Create a Pain Point Chart",p:27.8},{n:"Map the Customer Journey",p:15.9},{n:"Analyze Consumer Insights",p:11.0},{n:"Conduct Sentiment Analysis",p:8.8},{n:"Synthesize Consumer Insights",p:8.4}], "Wayfair AI Agent":[{n:"Project 0: Orientation",p:76.9},{n:"Project 1: Getting Started with AI Agents - Moodboard Generator",p:26.9},{n:"Project 2: Building the Consumer Trend Discovery AI Agent",p:14.7},{n:"Project 3: Building the Competitor Monitoring AI Agent",p:10.9},{n:"Project 4: Designing the AI Insights & Content Agent",p:10.9},{n:"Project 5: Bringing It All Together: Final AI Agent in Action",p:9.6}], "Energy Innovation Capital":[{n:"Project 0: Orientation",p:62.9},{n:"Project 1: Sourcing Startups",p:14.0},{n:"Project 2: Doing Due Diligence",p:9.4},{n:"Project 3: Synthesizing: From Diligence Data to Actionable Insights",p:9.1},{n:"Project 4: Creating an Investment Memo",p:8.1}], "Breaking Games eCommerce":[{n:"Orientation",p:66.4},{n:"Project 1: Explore How Businesses Drive Online Sales",p:20.8},{n:"Project 2: Get Hands-On with Online Sales Data",p:13.5},{n:"Project 3: Analyze Traffic & Engagement from Google Analytics Data",p:8.5},{n:"Project 4: Measure Paid Ad Campaign Effectiveness",p:5.0},{n:"Project 5: Break Down Shopify Data to Understand Sales & Conversion Gaps",p:5.0},{n:"Project 6: Consolidate & Visualize the E-Commerce Funnel With Claude",p:5.0},{n:"Project 7: Turn Your Findings into a Growth Strategy & Presentation",p:4.2}], "NASCAR Sports Analytics":[{n:"Orientation",p:75.8},{n:"Project 1: Sponsorship ROI Foundations",p:15.5},{n:"Project 2: Data Collection & Integration",p:7.8},{n:"Project 3: Exploratory Data Analysis",p:6.8},{n:"Project 4: Visibility Scoring Model",p:5.0},{n:"Project 5: Strategy and Presentation",p:3.7}], "Healthcare Ops & Consulting":[{n:"Orientation",p:74.1},{n:"Know How Business Processes Impact Customer Experience",p:22.4},{n:"Understand Problems for Customers & Staff",p:17.2},{n:"Analyze & Optimize Workflows",p:15.5},{n:"Ideate & Build a Work-Quantification Dashboard",p:15.5}], "Beats — Creative Advertising":[{n:"Project 0: Orientation",p:81.3},{n:"Project 1: Decode the Feed - Map the Video Ad Landscape",p:11.9},{n:"Project 2: Ask Real People - Run a Consumer Ad Review",p:6.0},{n:"Project 3: Set the Standard - Build the Beats Creative Strategy Framework",p:5.2},{n:"Project 4: Present Your Strategy - Final Presentation",p:3.7}], "Outamation AI Workflow Automation":[{n:"Orientation",p:75.6},{n:"Project 1: How AI Reads and Understands Mortgage Documents",p:28.0},{n:"Project 2: Learn to Work with Python for AI-Powered Document Processing",p:14.9},{n:"Project 3: Data Extraction from Documents Using Python",p:12.7},{n:"Project 4: Advanced OCR Comparison and Layout-Aware Extraction",p:10.1},{n:"Project 5: Introduction to Retrieval-Augmented Generation (RAG)",p:8.4},{n:"Project 6: Advanced RAG and Open-Source Experiments",p:7.4},{n:"Project 7: Blob Processing, Classification, and Routing",p:6.8},{n:"Project 8: Gradio Chatbot with RAG Integration",p:6.6},{n:"Project 9: Final Integration, Testing, and Evaluation",p:6.1}]};
+const OVERLAP = {"393":15,"399":9,"400":3,"401":8,"407":1,"409":4,"410":5,"411":2,"415":0,"417":2,"419":3,"420":4,"422":3,"423":1,"424":7,"426":0,"427":1,"433":3,"436":5,"439":7,"442":2,"444":4,"445":4,"446":2,"448":4,"449":2,"450":5,"451":1,"452":1,"458":2,"460":3,"463":10,"465":7,"466":4,"470":4,"471":0,"475":2,"476":8,"477":4,"478":2,"479":5,"480":5,"482":7,"483":4,"484":0,"485":2,"486":2,"487":0,"488":0,"490":3,"491":0,"496":4,"497":1,"498":1,"501":2,"502":0,"503":0,"504":5,"505":4,"506":2,"512":0,"517":3,"518":0,"519":2,"522":0,"523":0,"524":0,"526":0,"527":6,"530":1,"531":1,"534":1,"535":0,"536":4,"537":0,"538":1,"539":2,"540":0,"541":1,"544":2,"545":1,"546":3,"550":0,"552":0,"553":0,"554":0,"555":0,"556":0,"561":1,"562":0,"563":0,"564":0,"565":0,"566":0,"570":0,"571":0,"574":0,"576":0,"577":0,"406":8,"421":5,"447":3,"481":4,"500":1};
+const WHENWHY = {"Amazon Ops & People Analytics":{"total":1025,"reasons":[["I found a different program that interested me more",418],["The program didn’t align with my goals",208],["I got behind and couldn’t catch up",207],["The session times or logistics didn’t work for me",131],["The content or workload felt difficult",32],["The program goals or expectations weren’t clear",29]],"when":[[1,385],[2,247],[3,95],[4,16],[5,2],[6,1]]},"Yinan Value Investing":{"total":622,"reasons":[["I found a different program that interested me more",236],["I got behind and couldn’t catch up",153],["The session times or logistics didn’t work for me",104],["The program didn’t align with my goals",97],["The content or workload felt difficult",20],["The program goals or expectations weren’t clear",12]],"when":[[1,181],[2,191],[3,69],[4,17],[5,20],[6,1],[7,1]]},"TikTok Brand Strategy":{"total":840,"reasons":[["I found a different program that interested me more",315],["I got behind and couldn’t catch up",198],["The session times or logistics didn’t work for me",161],["The program didn’t align with my goals",127],["The program goals or expectations weren’t clear",20],["The content or workload felt difficult",19]],"when":[[1,324],[2,277],[3,32],[4,5],[5,2]]},"Hydroficient IoT Cyber":{"total":462,"reasons":[["I got behind and couldn’t catch up",179],["I found a different program that interested me more",126],["The program didn’t align with my goals",70],["The session times or logistics didn’t work for me",64],["The content or workload felt difficult",17],["The program goals or expectations weren’t clear",6]],"when":[[1,120],[2,198],[3,33],[4,9],[5,7],[6,2],[8,2]]},"TruBridge Health Data":{"total":601,"reasons":[["I found a different program that interested me more",228],["I got behind and couldn’t catch up",161],["The session times or logistics didn’t work for me",92],["The program didn’t align with my goals",86],["The content or workload felt difficult",19],["The program goals or expectations weren’t clear",15]],"when":[[1,149],[2,230],[3,79],[4,5],[5,2],[6,1]],"noReason":6},"Pfizer Advanced — Doc Insights":{"total":328,"reasons":[["I found a different program that interested me more",141],["I got behind and couldn’t catch up",66],["The program didn’t align with my goals",58],["The session times or logistics didn’t work for me",40],["The program goals or expectations weren’t clear",13],["The content or workload felt difficult",10]],"when":[[1,106],[2,89],[3,23],[4,6],[5,2],[6,2],[8,2]],"noReason":1},"Beats — Consumer Behavior":{"total":585,"reasons":[["I found a different program that interested me more",234],["The program didn’t align with my goals",119],["I got behind and couldn’t catch up",87],["The session times or logistics didn’t work for me",85],["The program goals or expectations weren’t clear",35],["The content or workload felt difficult",25]],"when":[[1,155],[2,186],[3,24],[4,30],[5,8],[6,1]],"noReason":1},"HP Tech Ventures":{"total":525,"reasons":[["I found a different program that interested me more",214],["I got behind and couldn’t catch up",99],["The program didn’t align with my goals",95],["The session times or logistics didn’t work for me",79],["The content or workload felt difficult",22],["The program goals or expectations weren’t clear",16]],"when":[[1,165],[2,182],[3,28],[4,1],[5,1]]},"Mangusta Capital":{"total":463,"reasons":[["I found a different program that interested me more",207],["The program didn’t align with my goals",83],["The session times or logistics didn’t work for me",82],["I got behind and couldn’t catch up",60],["The program goals or expectations weren’t clear",20],["The content or workload felt difficult",11]],"when":[[1,154],[2,152],[3,13]]},"BeReal Product Management":{"total":408,"reasons":[["I found a different program that interested me more",153],["I got behind and couldn’t catch up",87],["The program didn’t align with my goals",83],["The session times or logistics didn’t work for me",60],["The program goals or expectations weren’t clear",17],["The content or workload felt difficult",8]],"when":[[1,124],[2,142],[3,12],[4,5],[5,4]]},"Beats — Data Analytics Q&Q":{"total":437,"reasons":[["I found a different program that interested me more",182],["The program didn’t align with my goals",96],["I got behind and couldn’t catch up",85],["The session times or logistics didn’t work for me",54],["The program goals or expectations weren’t clear",14],["The content or workload felt difficult",6]],"when":[[1,151],[2,132],[3,27],[4,13],[5,4],[6,1]]},"Wayfair AI Agent":{"total":256,"reasons":[["I found a different program that interested me more",106],["The program didn’t align with my goals",52],["I got behind and couldn’t catch up",51],["The session times or logistics didn’t work for me",32],["The content or workload felt difficult",9],["The program goals or expectations weren’t clear",6]],"when":[[1,83],[2,72],[3,17],[4,3],[5,1],[6,2]]},"Energy Innovation Capital":{"total":261,"reasons":[["I found a different program that interested me more",121],["The program didn’t align with my goals",49],["The session times or logistics didn’t work for me",34],["I got behind and couldn’t catch up",34],["The program goals or expectations weren’t clear",16],["The content or workload felt difficult",7]],"when":[[1,75],[2,87],[3,8],[5,1]],"noReason":3},"Breaking Games eCommerce":{"total":250,"reasons":[["I found a different program that interested me more",112],["I got behind and couldn’t catch up",48],["The program didn’t align with my goals",43],["The session times or logistics didn’t work for me",29],["The program goals or expectations weren’t clear",10],["The content or workload felt difficult",8]],"when":[[1,102],[2,40],[3,21],[4,11],[5,5],[7,1],[8,1]]},"NASCAR Sports Analytics":{"total":216,"reasons":[["I found a different program that interested me more",93],["The program didn’t align with my goals",42],["I got behind and couldn’t catch up",40],["The session times or logistics didn’t work for me",26],["The content or workload felt difficult",11],["The program goals or expectations weren’t clear",4]],"when":[[1,53],[2,101],[3,11],[4,1],[5,2]]},"Healthcare Ops & Consulting":{"total":159,"reasons":[["I found a different program that interested me more",73],["The program didn’t align with my goals",34],["The session times or logistics didn’t work for me",26],["I got behind and couldn’t catch up",20],["The content or workload felt difficult",3],["The program goals or expectations weren’t clear",3]],"when":[[1,53],[2,59],[3,1]]},"Attronica FP&A":{"total":86,"reasons":[["I found a different program that interested me more",36],["The program didn’t align with my goals",19],["The session times or logistics didn’t work for me",18],["I got behind and couldn’t catch up",7],["The content or workload felt difficult",4],["The program goals or expectations weren’t clear",2]],"when":[[1,33],[2,31],[3,1],[5,1]]},"Beats — Creative Advertising":{"total":141,"reasons":[["I found a different program that interested me more",48],["The session times or logistics didn’t work for me",30],["I got behind and couldn’t catch up",26],["The program didn’t align with my goals",23],["The content or workload felt difficult",9],["The program goals or expectations weren’t clear",5]],"when":[[1,46],[2,52],[3,4],[4,1]]},"Corporate Strategy (Eric Ries)":{"total":80,"reasons":[["I found a different program that interested me more",43],["The program didn’t align with my goals",23],["The session times or logistics didn’t work for me",7],["I got behind and couldn’t catch up",4],["The program goals or expectations weren’t clear",3]],"when":[[1,22],[2,25]]}};
 function isMatured(co){ const d=new Date(co.start); d.setDate(d.getDate()+(DUR[String(co.id)]||8)*7+GRACE_DAYS); return d<=new Date(); }
 function rollupMaturity(p){ let mE=0,mF=0,cl=0; p.cohorts.forEach(co=>{ co.mat=isMatured(co); if(co.mat){cl++; mE+=co.enroll; mF+=co.finalr*co.enroll/100;} }); p.finalrM = mE>0 ? 100*mF/mE : null; p.closed=cl; p.total=p.cohorts.length; }
 // Baked snapshot — 2026, computed Jun 9 2026, consolidated by job ID. Matches the Notion page.
 // c = cohorts [job id, start ISO, enrolled, orient%, p1%, program%, cancel%]
 const PROGRAMS = [
- {short:"Amazon Ops & People Analytics", ok:"Orientation", p1k:"Understand the Operational Challenge", fk:"Recommend a Pilot-Ready Intervention", enroll:2318, orientr:74.8, p1r:23.0, p17dr:8.2, finalr:9.1, cancelr:40.1, c:[[566,"2026-06-21",77,70.1,1.3,1.3,18.2],[541,"2026-05-24",338,78.7,11.8,1.5,24.3],[504,"2026-04-26",227,79.3,15.4,1.8,40.5],[480,"2026-03-29",334,75.4,24.9,9.6,36.8],[449,"2026-03-01",374,75.4,24.6,12.8,36.4],[420,"2026-02-01",588,68.9,21.8,8.5,41.5],[399,"2026-01-04",380,77.4,40.5,18.9,62.6]]},
- {short:"Yinan Value Investing", ok:"Orientation", p1k:"Basics of Equity Research", fk:"Crafting and Presenting Your Final Investment Memo", enroll:1678, orientr:78.4, p1r:29.0, p17dr:7.2, finalr:7.6, cancelr:34.1, c:[[562,"2026-06-21",69,69.6,0.0,0.0,23.2],[539,"2026-05-24",189,74.1,0.0,0.0,20.1],[501,"2026-04-26",294,77.6,25.2,2.4,29.3],[478,"2026-03-29",255,73.7,25.5,1.2,27.8],[446,"2026-03-01",356,78.9,30.1,10.7,32.6],[422,"2026-02-01",379,80.5,36.7,9.8,35.6],[401,"2026-01-04",136,91.9,75.0,31.6,81.6]]},
- {short:"TikTok Brand Strategy", ok:"Orientation", p1k:"Mini Brand Kit", fk:"Pitch Your ABU Brand Playbook", enroll:1510, orientr:73.6, p1r:16.4, p17dr:3.4, finalr:8.7, cancelr:48.7, c:[[570,"2026-06-21",58,55.2,0.0,0.0,24.1],[534,"2026-05-24",259,71.8,10.4,1.2,35.1],[506,"2026-04-26",183,76.0,17.5,9.3,46.4],[482,"2026-03-29",259,70.3,14.3,7.7,47.1],[445,"2026-03-01",225,72.0,13.8,8.0,45.8],[433,"2026-02-01",268,66.4,11.9,7.1,48.5],[393,"2026-01-04",258,89.9,34.5,21.3,74.0]]},
- {short:"Hydroficient IoT Cyber", ok:"Orientation", p1k:"Understanding IoT Systems", fk:"Building a Real-Time Security Dashboard", enroll:1476, orientr:78.7, p1r:22.2, p17dr:4.7, finalr:8.7, cancelr:29.7, c:[[563,"2026-06-21",53,58.5,9.4,1.9,0.0],[538,"2026-05-24",244,79.9,14.3,0.0,14.8],[502,"2026-04-26",182,74.2,18.1,1.6,29.1],[477,"2026-03-29",227,80.6,22.9,11.5,34.8],[460,"2026-03-01",273,77.7,20.1,9.2,31.1],[436,"2026-02-01",497,81.5,29.6,14.7,37.4]]},
- {short:"TruBridge Health Data", ok:"Orientation", p1k:"Build Foundations of Data Analytics", fk:"Build Your Data Dashboard", enroll:1426, orientr:73.1, p1r:25.4, p17dr:9.5, finalr:6.2, cancelr:40.2, c:[[574,"2026-06-28",7,71.4,0.0,0.0,14.3],[546,"2026-05-31",240,82.1,16.2,0.4,25.4],[522,"2026-05-03",215,76.3,22.3,1.9,35.8],[487,"2026-04-05",230,76.1,23.9,7.0,36.5],[451,"2026-03-08",228,74.6,23.7,6.6,44.3],[427,"2026-02-08",279,57.0,25.4,7.9,41.6],[410,"2026-01-11",227,75.8,41.9,13.7,58.6]]},
- {short:"Pfizer Advanced — Doc Insights", ok:"Orientation", p1k:"How AI Reads", fk:"Final Integration", enroll:1270, orientr:78.1, p1r:34.0, p17dr:14.7, finalr:2.8, cancelr:24.6, c:[[577,"2026-06-28",18,72.2,5.6,0.0,16.7],[545,"2026-05-31",554,80.3,31.9,0.5,13.9],[517,"2026-05-03",285,78.6,39.6,1.4,30.9],[485,"2026-04-05",191,74.9,33.5,3.1,35.6],[463,"2026-03-08",222,75.2,34.7,9.9,34.7]]},
- {short:"Beats — Consumer Behavior", ok:"Orientation", p1k:"Create a Pain Point Chart", fk:"Synthesize Consumer Insights", enroll:1214, orientr:72.2, p1r:26.1, p17dr:15.9, finalr:7.1, cancelr:46.5, c:[[535,"2026-05-31",186,75.8,23.7,1.1,34.4],[523,"2026-05-03",197,79.7,24.9,2.0,48.7],[486,"2026-04-05",124,71.8,25.0,7.3,38.7],[424,"2026-02-08",505,68.7,24.6,8.1,49.7],[407,"2026-01-11",202,70.8,34.2,14.9,52.5]]},
- {short:"HP Tech Ventures", ok:"Orientation", p1k:"Sourcing Startups", fk:"Creating an Investment Memo", enroll:1206, orientr:76.4, p1r:25.2, p17dr:9.2, finalr:13.1, cancelr:39.7, c:[[564,"2026-06-21",32,65.6,12.5,3.1,18.8],[540,"2026-05-24",145,82.8,25.5,3.4,23.4],[512,"2026-04-26",146,76.7,26.0,8.2,34.9],[479,"2026-03-29",265,73.2,21.9,9.4,42.3],[448,"2026-03-01",210,75.7,23.3,16.2,36.2],[423,"2026-02-01",257,74.3,24.1,14.0,38.9],[400,"2026-01-04",151,82.1,37.1,29.8,66.2]]},
- {short:"Mangusta Capital", ok:"Orientation", p1k:"Sourcing Startups", fk:"Creating an Investment Memo", enroll:1122, orientr:72.6, p1r:14.1, p17dr:3.6, finalr:6.0, cancelr:39.9, c:[[554,"2026-06-14",117,68.4,3.4,0.0,21.4],[526,"2026-05-17",221,72.9,14.5,0.9,39.8],[496,"2026-04-19",143,76.2,16.1,3.5,42.7],[470,"2026-03-22",195,68.7,9.7,5.1,47.2],[442,"2026-02-22",232,73.7,18.1,8.6,37.9],[417,"2026-01-25",214,74.8,17.8,14.0,43.9]]},
- {short:"BeReal Product Management", ok:"Orientation", p1k:"Map the End-to-End", fk:"Pitch Your App Feature Proposal", enroll:1060, orientr:76.9, p1r:20.9, p17dr:5.5, finalr:8.5, cancelr:36.3, c:[[556,"2026-06-14",109,67.9,4.6,0.0,15.6],[530,"2026-05-17",245,79.6,22.0,0.8,32.2],[498,"2026-04-19",137,73.0,17.5,0.7,32.1],[475,"2026-03-22",160,70.6,18.1,8.8,47.5],[444,"2026-02-22",166,75.9,21.1,11.4,44.0],[415,"2026-01-25",243,85.2,30.9,22.2,39.5]]},
- {short:"Beats — Data Analytics Q&Q", ok:"Orientation", p1k:"Create a Pain Point Chart", fk:"Synthesize Consumer Insights", enroll:973, orientr:75.0, p1r:27.2, p17dr:15.3, finalr:5.3, cancelr:42.3, c:[[561,"2026-06-07",121,72.7,15.7,0.0,19.8],[531,"2026-05-10",148,75.0,29.1,0.0,40.5],[497,"2026-04-12",174,75.3,29.9,3.4,45.4],[439,"2026-02-08",368,73.9,26.4,8.7,45.1],[409,"2026-01-11",162,79.0,33.3,8.6,51.2]]},
- {short:"Wayfair AI Agent", ok:"Orientation", p1k:"Getting Started with AI Agents", fk:"Bringing It All Together", enroll:670, orientr:74.8, p1r:24.3, p17dr:11.8, finalr:4.3, cancelr:35.7, c:[[576,"2026-06-28",13,69.2,0.0,0.0,30.8],[544,"2026-06-07",145,73.1,11.7,0.0,18.6],[519,"2026-05-03",184,73.9,30.4,1.6,33.7],[483,"2026-04-05",172,75.6,27.9,6.4,43.6],[450,"2026-03-08",156,76.9,26.9,9.6,45.5]]},
- {short:"Energy Innovation Capital", ok:"Orientation", p1k:"Sourcing Startups", fk:"Creating an Investment Memo", enroll:650, orientr:68.5, p1r:14.9, p17dr:4.3, finalr:6.6, cancelr:38.6, c:[[553,"2026-06-07",92,72.8,6.5,0.0,29.3],[518,"2026-05-03",125,81.6,20.0,0.8,40.8],[484,"2026-04-05",63,71.4,22.2,15.9,30.2],[452,"2026-03-08",201,58.2,9.5,7.5,34.8],[426,"2026-02-08",68,60.3,20.6,13.2,48.5],[411,"2026-01-11",101,72.3,18.8,7.9,50.5]]},
- {short:"Breaking Games eCommerce", ok:"Orientation", p1k:"Explore How Businesses Drive Online Sales", fk:"Turn Your Findings into a Growth Strategy", enroll:550, orientr:70.4, p1r:24.2, p17dr:12.0, finalr:2.7, cancelr:42.7, c:[[537,"2026-05-24",82,70.7,20.7,0.0,39.0],[503,"2026-04-26",51,86.3,51.0,2.0,37.3],[476,"2026-03-29",158,71.5,22.8,1.9,51.3],[458,"2026-03-01",189,61.9,15.3,3.2,34.4],[419,"2026-02-01",70,78.6,35.7,7.1,54.3]]},
- {short:"NASCAR Sports Analytics", ok:"Orientation", p1k:"Sponsorship ROI Foundations", fk:"Strategy and Presentation", enroll:453, orientr:75.1, p1r:13.2, p17dr:3.5, finalr:2.0, cancelr:45.5, c:[[571,"2026-06-21",32,56.2,3.1,0.0,15.6],[536,"2026-05-24",131,78.6,13.0,0.8,35.9],[505,"2026-04-26",71,74.6,11.3,0.0,50.7],[466,"2026-03-29",78,79.5,21.8,5.1,53.8],[465,"2026-03-01",141,73.8,12.1,2.8,53.9]]},
- {short:"Healthcare Ops & Consulting", ok:"Orientation", p1k:"Know How Business Processes", fk:"Work-Quantification Dashboard", enroll:422, orientr:72.7, p1r:18.2, p17dr:7.6, finalr:7.6, cancelr:36.0, c:[[555,"2026-06-14",66,57.6,3.0,0.0,19.7],[524,"2026-05-17",171,77.2,21.1,3.5,36.8],[488,"2026-04-19",127,74.0,20.5,13.4,41.7],[471,"2026-03-22",58,74.1,22.4,15.5,39.7]]},
- {short:"Attronica FP&A", ok:"Orientation", p1k:"Diagnosing Attronica", fk:"Making the Case to a Buyer", enroll:352, orientr:71.6, p1r:20.7, p17dr:9.1, finalr:1.7, cancelr:22.7, c:[[565,"2026-06-14",83,55.4,3.6,1.2,10.8],[527,"2026-05-17",269,76.6,26.0,1.9,26.4]]},
- {short:"Beats — Creative Advertising", ok:"Orientation", p1k:"Decode the Feed", fk:"Present Your Strategy", enroll:337, orientr:79.2, p1r:9.2, p17dr:0.9, finalr:1.8, cancelr:38.9, c:[[552,"2026-06-07",107,72.0,0.0,0.0,18.7],[491,"2026-05-10",96,84.4,15.6,1.0,46.9],[490,"2026-04-12",134,81.3,11.9,3.7,49.3]]},
- {short:"Corporate Strategy (Eric Ries)", ok:"Orientation", p1k:"Week 1", fk:"Week 4", enroll:234, orientr:72.2, p1r:11.5, p17dr:7.3, finalr:1.7, cancelr:28.2, c:[[550,"2026-05-31",234,72.2,11.5,1.7,28.2]]}
+ {short:"Amazon Ops & People Analytics", ok:"Orientation", p1k:"Understand the Operational Challenge", fk:"Recommend a Pilot-Ready Intervention", enroll:2663, orientr:73.8, p1r:20.9, p17dr:9.3, finalr:7.2, cancelr:36.6, c:[[566,"2026-06-21",85,70.6,2.4,0.0,21.2],[541,"2026-05-24",338,78.7,11.8,0.6,24.3],[504,"2026-04-26",227,79.3,15.4,0.9,38.3],[480,"2026-03-29",334,75.4,25.1,5.4,35.6],[449,"2026-03-01",374,75.4,24.6,8.3,35.8],[420,"2026-02-01",588,68.9,21.8,6.1,41.0],[399,"2026-01-04",717,72.5,24.4,8.2,41.0]]},
+ {short:"Yinan Value Investing", ok:"Orientation", p1k:"Basics of Equity Research", fk:"Crafting and Presenting Your Final Investment Memo", enroll:1884, orientr:77.8, p1r:27.0, p17dr:8.2, finalr:9.9, cancelr:30.8, c:[[562,"2026-06-21",73,68.5,0.0,0.0,24.7],[539,"2026-05-24",189,74.1,0.0,0.0,19.6],[501,"2026-04-26",294,77.6,26.2,0.0,28.6],[478,"2026-03-29",255,74.1,25.5,0.0,27.1],[446,"2026-03-01",356,78.9,30.3,7.9,32.0],[422,"2026-02-01",379,80.5,36.7,10.3,34.8],[401,"2026-01-04",338,80.5,35.5,11.5,37.3]]},
+ {short:"TikTok Brand Strategy", ok:"Orientation", p1k:"Mini Brand Kit", fk:"Pitch Your ABU Brand Playbook", enroll:1786, orientr:70.5, p1r:14.3, p17dr:3.3, finalr:6.8, cancelr:43.7, c:[[570,"2026-06-21",70,52.9,0.0,0.0,21.4],[534,"2026-05-24",259,71.8,13.1,0.0,35.5],[506,"2026-04-26",183,76.0,17.5,3.3,45.4],[482,"2026-03-29",259,70.3,14.3,5.4,44.4],[445,"2026-03-01",225,72.0,13.8,5.3,44.4],[433,"2026-02-01",268,66.4,11.9,5.6,47.4],[393,"2026-01-04",522,71.8,17.0,8.8,47.5]]},
+ {short:"TruBridge Health Data", ok:"Orientation", p1k:"Build Foundations of Data Analytics", fk:"Build Your Data Dashboard", enroll:1512, orientr:71.2, p1r:24.6, p17dr:10.8, finalr:9.4, cancelr:38.2, c:[[574,"2026-06-28",17,0.0,0.0,0.0,29.4],[546,"2026-05-31",240,82.1,19.6,0.0,24.6],[522,"2026-05-03",215,76.3,22.3,0.0,37.2],[487,"2026-04-05",230,76.1,23.9,4.3,36.5],[451,"2026-03-08",228,74.6,23.7,7.9,43.9],[427,"2026-02-08",279,57.0,25.4,7.5,41.2],[410,"2026-01-11",303,69.6,32.0,12.2,44.2]]},
+ {short:"Hydroficient IoT Cyber", ok:"Orientation", p1k:"Understanding IoT Systems", fk:"Building a Real-Time Security Dashboard", enroll:1491, orientr:78.4, p1r:22.3, p17dr:5.0, finalr:15.3, cancelr:29.3, c:[[563,"2026-06-21",68,54.4,7.4,0.0,10.3],[538,"2026-05-24",244,80.3,15.6,0.0,15.2],[502,"2026-04-26",182,74.2,18.1,0.0,29.7],[477,"2026-03-29",227,80.6,23.3,11.9,33.0],[460,"2026-03-01",273,77.7,20.1,11.7,30.4],[436,"2026-02-01",497,81.7,29.8,18.9,36.4]]},
+ {short:"Outamation AI Workflow Automation", ok:"Orientation", p1k:"How AI Reads", fk:"Final Integration", enroll:1474, orientr:76.3, p1r:27.6, p17dr:11.2, finalr:4.2, cancelr:41.2, c:[[500,"2026-04-26",212,80.7,27.8,0.0,41.5],[481,"2026-03-29",261,75.5,26.1,1.1,42.1],[447,"2026-03-01",248,71.0,25.0,2.8,40.7],[421,"2026-02-01",308,78.6,27.6,4.5,41.6],[406,"2026-01-04",445,76.2,29.9,4.7,40.7]]},
+ {short:"HP Tech Ventures", ok:"Orientation", p1k:"Sourcing Startups", fk:"Creating an Investment Memo", enroll:1395, orientr:75.9, p1r:22.9, p17dr:10.5, finalr:7.8, cancelr:36.0, c:[[564,"2026-06-21",35,71.4,14.3,0.0,20.0],[540,"2026-05-24",145,82.8,26.2,0.0,24.1],[512,"2026-04-26",146,76.7,26.7,0.0,34.9],[479,"2026-03-29",265,73.2,21.9,1.9,40.8],[448,"2026-03-01",210,75.7,23.3,2.4,34.3],[423,"2026-02-01",257,74.3,24.1,12.1,38.5],[400,"2026-01-04",337,76.6,20.2,12.5,38.6]]},
+ {short:"Pfizer Advanced — Doc Insights", ok:"Orientation", p1k:"How AI Reads", fk:"Final Integration", enroll:1281, orientr:78.6, p1r:34.6, p17dr:16.9, finalr:5.9, cancelr:23.6, c:[[577,"2026-06-28",29,79.3,3.4,0.0,17.2],[545,"2026-05-31",554,81.0,33.6,0.2,13.7],[517,"2026-05-03",285,78.6,40.0,0.0,30.2],[485,"2026-04-05",191,75.4,34.0,1.0,35.1],[463,"2026-03-08",222,75.2,34.7,5.9,30.6]]},
+ {short:"Beats — Consumer Behavior", ok:"Orientation", p1k:"Create a Pain Point Chart", fk:"Synthesize Consumer Insights", enroll:1267, orientr:71.8, p1r:25.8, p17dr:17.6, finalr:7.1, cancelr:44.7, c:[[535,"2026-05-31",186,75.8,25.3,0.0,35.5],[523,"2026-05-03",197,79.7,25.4,0.0,48.7],[486,"2026-04-05",124,71.8,25.0,4.8,37.1],[424,"2026-02-08",505,68.7,24.6,5.0,48.3],[407,"2026-01-11",255,69.0,29.4,11.4,44.7]]},
+ {short:"Mangusta Capital", ok:"Orientation", p1k:"Sourcing Startups", fk:"Creating an Investment Memo", enroll:1139, orientr:72.6, p1r:14.0, p17dr:4.4, finalr:7.2, cancelr:38.7, c:[[554,"2026-06-14",134,68.7,3.7,0.0,21.6],[526,"2026-05-17",221,72.9,14.5,0.0,40.3],[496,"2026-04-19",143,76.2,16.1,0.0,39.9],[470,"2026-03-22",195,68.7,9.7,1.0,45.1],[442,"2026-02-22",232,73.7,18.1,8.2,37.1],[417,"2026-01-25",214,74.8,17.8,11.7,43.0]]},
+ {short:"BeReal Product Management", ok:"Orientation", p1k:"Map the End-to-End", fk:"Pitch Your App Feature Proposal", enroll:1068, orientr:77.0, p1r:20.9, p17dr:6.2, finalr:15.8, cancelr:35.9, c:[[556,"2026-06-14",117,69.2,4.3,0.0,16.2],[530,"2026-05-17",245,79.6,22.0,0.0,33.1],[498,"2026-04-19",137,73.0,18.2,0.0,31.4],[475,"2026-03-22",160,70.6,18.1,10.0,46.9],[444,"2026-02-22",166,75.9,21.1,12.7,41.6],[415,"2026-01-25",243,85.2,30.9,21.8,39.5]]},
+ {short:"Beats — Data Analytics Q&Q", ok:"Orientation", p1k:"Create a Pain Point Chart", fk:"Synthesize Consumer Insights", enroll:998, orientr:75.5, p1r:27.0, p17dr:17.4, finalr:6.2, cancelr:40.8, c:[[561,"2026-06-07",130,75.4,16.2,0.0,20.8],[531,"2026-05-10",148,75.7,29.7,0.0,39.9],[497,"2026-04-12",174,75.3,29.9,0.0,44.8],[439,"2026-02-08",368,73.9,26.4,6.0,43.2],[409,"2026-01-11",178,78.7,30.9,6.7,47.2]]},
+ {short:"Wayfair AI Agent", ok:"Orientation", p1k:"Getting Started with AI Agents", fk:"Bringing It All Together", enroll:684, orientr:74.7, p1r:24.3, p17dr:13.4, finalr:7.7, cancelr:33.6, c:[[576,"2026-06-28",26,65.4,0.0,0.0,19.2],[544,"2026-06-07",146,74.0,13.0,0.0,17.1],[519,"2026-05-03",184,73.9,31.0,0.0,34.2],[483,"2026-04-05",172,75.6,27.9,5.2,41.3],[450,"2026-03-08",156,76.9,26.9,7.7,42.3]]},
+ {short:"Energy Innovation Capital", ok:"Orientation", p1k:"Sourcing Startups", fk:"Creating an Investment Memo", enroll:674, orientr:68.5, p1r:14.8, p17dr:5.0, finalr:7.4, cancelr:38.0, c:[[553,"2026-06-07",92,72.8,6.5,0.0,31.5],[518,"2026-05-03",125,81.6,20.0,0.0,41.6],[484,"2026-04-05",63,71.4,22.2,7.9,30.2],[452,"2026-03-08",201,58.2,9.5,7.0,34.3],[426,"2026-02-08",68,60.3,20.6,10.3,48.5],[411,"2026-01-11",125,72.0,17.6,6.4,43.2]]},
+ {short:"Breaking Games eCommerce", ok:"Orientation", p1k:"Explore How Businesses Drive Online Sales", fk:"Turn Your Findings into a Growth Strategy", enroll:553, orientr:70.3, p1r:24.2, p17dr:13.7, finalr:2.7, cancelr:40.7, c:[[537,"2026-05-24",85,70.6,21.2,0.0,40.0],[503,"2026-04-26",51,86.3,51.0,0.0,37.3],[476,"2026-03-29",158,71.5,22.8,0.6,46.8],[458,"2026-03-01",189,61.9,15.3,1.6,33.3],[419,"2026-02-01",70,78.6,35.7,5.7,50.0]]},
+ {short:"NASCAR Sports Analytics", ok:"Orientation", p1k:"Sponsorship ROI Foundations", fk:"Strategy and Presentation", enroll:456, orientr:75.0, p1r:13.2, p17dr:3.8, finalr:2.3, cancelr:41.2, c:[[571,"2026-06-21",35,57.1,2.9,0.0,17.1],[536,"2026-05-24",131,78.6,13.0,0.0,32.8],[505,"2026-04-26",71,74.6,11.3,0.0,45.1],[466,"2026-03-29",78,79.5,21.8,2.6,48.7],[465,"2026-03-01",141,73.8,12.1,2.1,48.9]]},
+ {short:"Healthcare Ops & Consulting", ok:"Orientation", p1k:"Know How Business Processes", fk:"Work-Quantification Dashboard", enroll:427, orientr:73.1, p1r:18.0, p17dr:8.6, finalr:19.0, cancelr:36.0, c:[[555,"2026-06-14",71,59.2,2.8,0.0,19.7],[524,"2026-05-17",171,77.8,21.1,0.0,37.4],[488,"2026-04-19",127,74.0,20.5,8.7,41.7],[471,"2026-03-22",58,74.1,22.4,19.0,39.7]]},
+ {short:"Attronica FP&A", ok:"Orientation", p1k:"Diagnosing Attronica", fk:"Making the Case to a Buyer", enroll:373, orientr:71.8, p1r:19.6, p17dr:10.1, finalr:0, cancelr:20.6, c:[[565,"2026-06-14",104,59.6,2.9,0.0,10.6],[527,"2026-05-17",269,76.6,26.0,0.0,24.5]]},
+ {short:"Beats — Creative Advertising", ok:"Orientation", p1k:"Decode the Feed", fk:"Present Your Strategy", enroll:345, orientr:79.4, p1r:9.6, p17dr:0.7, finalr:3.7, cancelr:38.0, c:[[552,"2026-06-07",115,73.0,0.9,0.0,18.3],[491,"2026-05-10",96,84.4,16.7,0.0,49.0],[490,"2026-04-12",134,81.3,11.9,3.7,47.0]]},
+ {short:"Corporate Strategy (Eric Ries)", ok:"Orientation", p1k:"Week 1", fk:"Week 4", enroll:244, orientr:71.7, p1r:12.3, p17dr:8.8, finalr:0, cancelr:30.3, c:[[550,"2026-05-31",244,71.7,12.3,0.0,30.3]]},
 ];
 
-let DATA = [], sortKey="enroll", sortDir=-1, expanded=null;
+let DATA = [], sortKey="enroll", sortDir=-1, expanded=null, LIVE_MODULES=null;
 
+function safe(fn){ try{ fn(); }catch(e){ if(window.console&&console.error) console.error("render error:", e); } }
 function pct(n,d){ return d>0 ? 100*n/d : 0; }
 function fmt(x){ return Math.round(x).toLocaleString(); }
 function cls(v,hi,lo,inv){ let good=inv?v<=hi:v>=hi, bad=inv?v>lo:v<lo; return good?"g":(bad?"r":"a"); }
@@ -244,7 +296,56 @@ function cohortTable(p){
     }).join("")
   }</tbody></table>`;
 }
-function detailHTML(p){ return `<div class="inner">${cohortTable(p)}</div>`; }
+// Recompute project-by-project module completion live (closed cohorts) from the module-by-id data fetched in refresh()
+function computeLiveModules(modById){
+  const out={};
+  DATA.forEach(p=>{
+    const closed=p.cohorts.filter(c=>c.mat);
+    const ce=closed.reduce((a,c)=>a+c.enroll,0);
+    if(!ce){ out[p.short]=null; return; }
+    const groups={};
+    closed.forEach(co=>{ (modById[String(co.id)]||[]).forEach(([title,val])=>{
+      const base=title.replace(/^Project\s+\d+\s*\([^)]*\)\s*:?\s*/i,"").replace(/^Project\s+\d+\s*:?\s*/i,"").replace(/^Week\s+\d+\s*:?\s*/i,"").trim();
+      const key=base.toLowerCase();
+      const mm=title.match(/Project\s+(\d+)/i)||title.match(/Week\s+(\d+)/i);
+      let ord=/orientation/i.test(title)?0:(mm?parseInt(mm[1],10):null);
+      if(!groups[key]) groups[key]={sum:0,label:key==="orientation"?"Orientation":title,ord};
+      groups[key].sum+=val;
+      if(key!=="orientation" && /Project\s+\d+|Week\s+\d+/i.test(title) && !/Project\s+\d+|Week\s+\d+/i.test(groups[key].label)) groups[key].label=title;
+      if(groups[key].ord==null && ord!=null) groups[key].ord=ord;
+    }); });
+    const list=Object.keys(groups).map(k=>({n:groups[k].label, p:100*groups[k].sum/ce, ord:groups[k].ord}));
+    list.sort((a,b)=>{ const ao=a.ord==null?999:a.ord, bo=b.ord==null?999:b.ord; return ao!==bo?ao-bo:b.p-a.p; });
+    out[p.short]=list;
+  });
+  LIVE_MODULES=out;
+}
+function moduleFunnel(p){
+  const ms=(LIVE_MODULES&&LIVE_MODULES[p.short]!==undefined?LIVE_MODULES[p.short]:MODULES[p.short]);
+  if(!ms||!ms.length) return `<div class="modwrap"><div class="cohhead">Average project-by-project progress</div><div style="font-size:12px;color:#8a93a3;padding:4px 0;">No closed cohorts yet — available once a cohort ends.</div></div>`;
+  return `<div class="modwrap"><div class="cohhead">Average project-by-project progress <span class="cohsub">· closed cohorts · % of enrolled who completed each module</span></div>`+
+    ms.map((m,i)=>`<div class="modrow ${i===0?'orient':''}"><span class="mn" title="${m.n.replace(/"/g,'&quot;')}">${m.n}</span><span class="mbar"><i style="width:${Math.max(2,Math.min(100,m.p))}%"></i></span><span class="mp">${m.p.toFixed(1)}%</span></div>`).join("")+
+    `<div class="modnote">Module completion (reached each project) across closed cohorts — a looser measure than the certificate-based Program completion in the table above.</div></div>`;
+}
+function cancelDiag(p){
+  const w = (typeof WHENWHY!=="undefined") ? WHENWHY[p.short] : null;
+  if(!w || !w.total) return "";
+  const ms = MODULES[p.short];
+  const modName = (n)=> (ms && ms[n] && ms[n].n) ? ms[n].n : ("Project "+n);
+  const total = w.total;
+  const reasons = (w.reasons||[]).map(a=>({label:a[0], c:a[1], pct:100*a[1]/total}));
+  const when = (w.when||[]).map(a=>({label:modName(a[0]), c:a[1], pct:100*a[1]/total}));
+  function bars(items){
+    const mx = Math.max(1, ...items.map(i=>i.pct));
+    return items.map(i=>`<div class="cdrow"><span class="cdl" title="${i.label.replace(/"/g,"&quot;")}">${i.label}</span><span class="cdbar"><i style="width:${Math.max(3,i.pct/mx*100)}%"></i></span><span class="cdp">${i.pct.toFixed(0)}%</span></div>`).join("");
+  }
+  return `<div class="cdwrap"><div class="cohhead">Why &amp; when they cancelled <span class="cohsub">· ${total} cancellations</span></div>`+
+    `<div class="cdcols"><div class="cdcol"><div class="cdh">Why</div>${bars(reasons)}</div>`+
+    `<div class="cdcol mod"><div class="cdh">When — module at cancellation</div>${bars(when)}</div></div>`+
+    `<div class="modnote">Cancellation survey reason and the module a student was on when they cancelled, across all cancellations for this program.</div></div>`;
+}
+
+function detailHTML(p){ return `<div class="inner">${moduleFunnel(p)}${cancelDiag(p)}${cohortTable(p)}</div>`; }
 
 function renderTable(){
   const sv=(p,k)=> k==="finalr" ? (p.finalrM==null?-1:p.finalrM) : p[k];
@@ -301,7 +402,7 @@ function renderInsights(){
     grp("r","Watch-outs & recommended actions",[
       `Lowest completion: <b>${fmtList(bot)}</b> — check content/fit (and certificate-issuance lag).`,
       `Highest cancellation: <b>${fmtList(hiCancel)}</b> — review onboarding & expectation-setting.`,
-      `Biggest lever: recover a few points at the <b>Orientation→Project 1</b> step — it compounds across all 19 programs.`
+      `Biggest lever: recover a few points at the <b>Orientation→Project 1</b> step — it compounds across all 20 programs.`
     ]);
 }
 
@@ -380,25 +481,30 @@ async function refresh(){
       p.cohorts.forEach(co=>{
         const id=String(co.id);
         const e=eMap[id]!=null?eMap[id]:co.enroll;
-        const o=matchMax(id,p.ok), p1=matchMax(id,p.p1k), cn=cMap[id]!=null?cMap[id]:0;
+        const o=matchMax(id,p.ok), p1=matchMax(id,p.p1k), cnRaw=cMap[id]!=null?cMap[id]:0;
+        const cn=Math.max(0, cnRaw-(OVERLAP[id]||0)); // exclude certificate-earners who cancelled
         co.enroll=e; co.orientr=pct(o,e); co.p1r=pct(p1,e); co.finalr=pct(certOf(id),e); co.cancelr=pct(cn,e);
         E+=e; O+=o; P+=p1; Cn+=cn;
       });
       p.enroll=E; p.orientr=pct(O,E); p.p1r=pct(P,E); p.cancelr=pct(Cn,E);
       rollupMaturity(p); // program completion = matured cohorts only; p17dr stays baked
     });
-    renderKPIs(); renderTable(); renderInsights(); renderExperiments();
+    safe(()=>computeLiveModules(modById));
+    safe(renderTable); safe(renderKPIs); safe(renderInsights); safe(renderExperiments);
     setFresh("live","Live from Mixpanel · 2026 · refreshed "+new Date().toLocaleString()+" · P1≤7d = Jun 9 snapshot");
   }catch(err){
-    build(); renderKPIs(); renderTable(); renderInsights(); renderExperiments();
+    safe(build); safe(renderTable); safe(renderKPIs); safe(renderInsights); safe(renderExperiments);
     setFresh("","Showing Jun 9 2026 snapshot · live refresh unavailable");
   }
 }
 
-build(); renderKPIs();
+build();
 document.querySelectorAll("thead th").forEach(th=>{ if(th.dataset.k) th.addEventListener("click",()=>setSort(th.dataset.k)); });
-renderTable(); setSort("enroll");
-renderInsights(); renderExperiments();
+document.querySelectorAll(".tabbtn").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".tabbtn").forEach(x=>x.classList.toggle("active", x===b));
+  document.querySelectorAll(".tabpane").forEach(pane=>pane.classList.toggle("hidden", pane.id!=="tab-"+b.dataset.tab));
+}));
+safe(renderTable); safe(()=>setSort("enroll")); safe(renderKPIs); safe(renderInsights); safe(renderExperiments);
 if(window.cowork&&window.cowork.callMcpTool) refresh(); else setFresh("","2026 snapshot · Jun 9");
 </script>
 </body>
