@@ -371,6 +371,7 @@
                     <label for="studentName">Name</label>
                     <input type="text" id="studentName" placeholder="Your name" autocomplete="off">
                 </div>
+                <button class="btn btn-danger" id="resetAllBtn" type="button" title="Clear all personas and start a fresh audit">&#8635; Reset</button>
                 <button class="btn btn-primary" id="exportBtn" type="button">&#8593; Export</button>
             </div>
         </div>
@@ -669,6 +670,15 @@ $("#clearPersonaBtn").addEventListener("click", () => {
     if (confirm("Clear the entire " + cfg.label + " scorecard? This removes all its pages and scores. Your other personas stay intact.")) {
         state.data[state.activePersona] = blankPersona();
         save(); render(); toast(cfg.label + " scorecard cleared");
+    }
+});
+
+$("#resetAllBtn").addEventListener("click", () => {
+    if (confirm("Reset the entire tool? This clears all three scorecards (Member, Educator, Donor) and your name so you can start a fresh audit. This can't be undone.")) {
+        state = { studentName: "", activePersona: "member", data: {}, metadata: { version: CONFIG.version, timestamp: 0 } };
+        ["member", "educator", "donor"].forEach(p => ensurePersona(p));
+        ensurePersona("member").pages.push(newPage());
+        save(); render(); toast("Tool reset — ready for a fresh audit");
     }
 });
 
