@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Scorecard — DoSomething Platform Content Audit</title>
+    <style>
+        :root {
+            --bg-primary: #f7f7fb;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f1f2f8;
+            --accent-primary: #6c4bf4;   /* DoSomething-ish purple */
+            --accent-secondary: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #6c4bf4, #8b5cf6, #b14bf4);
+            --member: #6c4bf4;   /* purple */
+            --educator: #0ea5a4; /* teal   */
+            --donor: #f0428a;    /* pink   */
+            /* score colors */
+            --s1: #ef4444;  --s1-bg: rgba(239,68,68,.12);   /* broken   */
+            --s2: #f59e0b;  --s2-bg: rgba(245,158,11,.14);  /* weak     */
+            --s3: #3b82f6;  --s3-bg: rgba(59,130,246,.12);  /* adequate */
+            --s4: #10b981;  --s4-bg: rgba(16,185,129,.12);  /* strong   */
+            --text-primary: #1e2130;
+            --text-secondary: #4b5060;
+            --text-muted: #969bab;
+            --border: #e4e5ee;
+            --shadow-sm: 0 1px 2px rgba(20,20,50,0.06);
+            --shadow: 0 4px 6px -1px rgba(20,20,50,0.10), 0 2px 4px -2px rgba(20,20,50,0.08);
+            --shadow-lg: 0 12px 28px -8px rgba(30,20,80,0.22);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* ---------- Header ---------- */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .header-inner {
+            max-width: 1080px; margin: 0 auto;
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            width: 44px; height: 44px; flex-shrink: 0;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 23px;
+        }
+        .logo h1 { font-size: 1.05rem; font-weight: 800; line-height: 1.2; letter-spacing: -.01em; }
+        .logo p { font-size: 0.78rem; color: var(--text-muted); }
+        .header-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .name-field {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 9px; padding: 4px 10px;
+        }
+        .name-field label { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; }
+        .name-field input {
+            border: none; background: transparent; font-family: inherit;
+            font-size: 0.85rem; color: var(--text-primary); width: 120px; outline: none;
+        }
+
+        .btn {
+            font-family: inherit; font-size: 0.85rem; font-weight: 700;
+            border: 1px solid var(--border); background: var(--bg-secondary);
+            color: var(--text-secondary); padding: 9px 15px; border-radius: 9px;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+            min-height: 40px; transition: all .15s ease;
+        }
+        .btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .btn-primary {
+            background: var(--accent-gradient); color: #fff; border: none;
+            box-shadow: var(--shadow);
+        }
+        .btn-primary:hover { color: #fff; opacity: .93; }
+        .save-pill {
+            font-size: 0.72rem; color: var(--s4); font-weight: 700;
+            display: inline-flex; align-items: center; gap: 5px; opacity: 0;
+            transition: opacity .3s ease;
+        }
+        .save-pill.show { opacity: 1; }
+        .save-pill::before { content: "\25CF"; font-size: 0.6rem; }
+
+        /* ---------- Layout ---------- */
+        .main {
+            max-width: 1080px; margin: 0 auto; width: 100%;
+            padding: 20px; display: flex; flex-direction: column; gap: 18px;
+        }
+
+        /* ---------- Instruction banner ---------- */
+        .hint {
+            background: linear-gradient(135deg, rgba(108,75,244,.08), rgba(177,75,244,.06));
+            border: 1px solid rgba(108,75,244,.22);
+            border-radius: 12px; padding: 13px 16px; font-size: 0.85rem;
+            color: var(--text-secondary); display: flex; gap: 10px; align-items: flex-start;
+        }
+        .hint b { color: var(--text-primary); }
+
+        /* ---------- Persona selector ---------- */
+        .persona-bar {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 16px; box-shadow: var(--shadow-sm);
+            display: flex; flex-wrap: wrap; gap: 16px; align-items: center;
+        }
+        .persona-bar .pb-label { font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
+        .persona-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .persona-tab {
+            font-family: inherit; font-size: 0.85rem; font-weight: 700;
+            border: 1.5px solid var(--border); background: var(--bg-input);
+            color: var(--text-secondary); padding: 9px 16px; border-radius: 999px;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+            transition: all .15s ease;
+        }
+        .persona-tab .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .persona-tab[data-p="member"]   .dot { background: var(--member); }
+        .persona-tab[data-p="educator"] .dot { background: var(--educator); }
+        .persona-tab[data-p="donor"]    .dot { background: var(--donor); }
+        .persona-tab.active[data-p="member"]   { border-color: var(--member);   color: var(--member);   background: rgba(108,75,244,.08); }
+        .persona-tab.active[data-p="educator"] { border-color: var(--educator); color: var(--educator); background: rgba(14,165,164,.09); }
+        .persona-tab.active[data-p="donor"]    { border-color: var(--donor);    color: var(--donor);    background: rgba(240,66,138,.08); }
+        .persona-tab .badge {
+            font-size: 0.68rem; font-weight: 800; background: rgba(0,0,0,.06);
+            color: var(--text-secondary); border-radius: 999px; padding: 1px 7px; min-width: 18px; text-align: center;
+        }
+        .persona-note { margin-left: auto; font-size: 0.76rem; color: var(--text-muted); max-width: 320px; }
+
+        /* ---------- Summary strip ---------- */
+        .summary {
+            display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 14px 18px; box-shadow: var(--shadow-sm);
+        }
+        .summary .persona-chip {
+            font-size: 0.8rem; font-weight: 800; padding: 5px 12px; border-radius: 999px;
+            display: inline-flex; align-items: center; gap: 7px;
+        }
+        .summary .stat { display: flex; flex-direction: column; gap: 1px; }
+        .summary .stat .k { font-size: 0.68rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); font-weight: 700; }
+        .summary .stat .v { font-size: 1.15rem; font-weight: 800; }
+        .summary .divider { width: 1px; align-self: stretch; background: var(--border); }
+
+        /* ---------- Page cards ---------- */
+        .pages { display: flex; flex-direction: column; gap: 16px; }
+        .page-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-left: 5px solid var(--accent-primary);
+            border-radius: 14px; padding: 16px 18px; box-shadow: var(--shadow-sm);
+        }
+        .page-head { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+        .page-head .idx {
+            width: 28px; height: 28px; flex-shrink: 0; border-radius: 8px;
+            background: var(--bg-input); color: var(--text-secondary);
+            font-weight: 800; font-size: 0.82rem; display: flex; align-items: center; justify-content: center;
+        }
+        .page-fields { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 8px; }
+        .page-fields .row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .field-inp {
+            border: 1px solid var(--border); background: var(--bg-input);
+            border-radius: 8px; padding: 8px 11px; font-family: inherit; font-size: 0.88rem;
+            outline: none; color: var(--text-primary); width: 100%;
+        }
+        .field-inp:focus { border-color: var(--accent-primary); background: var(--bg-secondary); }
+        .field-inp.name { font-weight: 700; }
+        .page-fields .row .grow { flex: 1; min-width: 160px; }
+        .page-score-badge {
+            flex-shrink: 0; text-align: center; min-width: 78px;
+            border-radius: 11px; padding: 8px 10px; border: 1px solid var(--border);
+        }
+        .page-score-badge .num { font-size: 1.5rem; font-weight: 800; line-height: 1; }
+        .page-score-badge .lbl { font-size: 0.64rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; margin-top: 3px; }
+        .card-x {
+            border: none; background: transparent; color: var(--text-muted);
+            cursor: pointer; border-radius: 7px; font-size: 1.15rem; line-height: 1;
+            width: 30px; height: 30px; flex-shrink: 0;
+        }
+        .card-x:hover { background: rgba(239,68,68,.12); color: #ef4444; }
+
+        /* ---------- Dimensions ---------- */
+        .dims { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+        @media (max-width: 720px) { .dims { grid-template-columns: 1fr; } }
+        .dim { }
+        .dim-top { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .dim-name { font-size: 0.82rem; font-weight: 700; }
+        .info {
+            width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+            background: var(--bg-input); color: var(--text-muted);
+            font-size: 0.66rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;
+            cursor: help; position: relative; border: 1px solid var(--border);
+        }
+        .info:hover, .info:focus { color: var(--accent-primary); border-color: var(--accent-primary); }
+        .info .tip {
+            display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+            width: 230px; background: var(--text-primary); color: #fff; font-weight: 500;
+            font-size: 0.74rem; line-height: 1.4; border-radius: 8px; padding: 9px 11px;
+            box-shadow: var(--shadow-lg); z-index: 30; text-align: left;
+        }
+        .info .tip::after {
+            content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            border: 6px solid transparent; border-top-color: var(--text-primary);
+        }
+        .info:hover .tip, .info:focus .tip { display: block; }
+        .dim-score { margin-left: auto; font-size: 0.78rem; font-weight: 800; color: var(--text-muted); }
+
+        .scale { display: flex; gap: 6px; }
+        .scale button {
+            flex: 1; font-family: inherit; font-size: 0.8rem; font-weight: 700;
+            border: 1.5px solid var(--border); background: var(--bg-input);
+            color: var(--text-secondary); border-radius: 8px; padding: 8px 0; cursor: pointer;
+            transition: all .12s ease; position: relative;
+        }
+        .scale button:hover { border-color: var(--accent-primary); }
+        .scale button.on[data-v="1"] { background: var(--s1-bg); border-color: var(--s1); color: var(--s1); }
+        .scale button.on[data-v="2"] { background: var(--s2-bg); border-color: var(--s2); color: #b45309; }
+        .scale button.on[data-v="3"] { background: var(--s3-bg); border-color: var(--s3); color: var(--s3); }
+        .scale button.on[data-v="4"] { background: var(--s4-bg); border-color: var(--s4); color: #047857; }
+        .dim-bar { height: 6px; border-radius: 4px; background: var(--bg-input); margin-top: 7px; overflow: hidden; }
+        .dim-bar > i { display: block; height: 100%; width: 0; border-radius: 4px; transition: width .2s ease, background .2s ease; }
+
+        /* ---------- notes / screenshot ---------- */
+        .page-extra { margin-top: 14px; display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+        @media (max-width: 720px) { .page-extra { grid-template-columns: 1fr; } }
+        .page-extra label { display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px; }
+        .page-extra textarea {
+            width: 100%; border: 1px solid var(--border); background: var(--bg-input);
+            border-radius: 9px; padding: 9px 11px; font-family: inherit; font-size: 0.85rem;
+            resize: vertical; min-height: 62px; outline: none; color: var(--text-primary);
+        }
+        .page-extra textarea:focus { border-color: var(--accent-primary); background: var(--bg-secondary); }
+
+        /* ---------- add / footer controls ---------- */
+        .add-page-btn {
+            width: 100%; border: 2px dashed var(--border); background: transparent;
+            color: var(--text-secondary); font-family: inherit; font-weight: 700; font-size: 0.9rem;
+            padding: 14px; border-radius: 12px; cursor: pointer; transition: all .15s ease;
+        }
+        .add-page-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); background: rgba(108,75,244,.04); }
+        .empty {
+            text-align: center; color: var(--text-muted); font-style: italic;
+            padding: 20px; font-size: 0.9rem;
+        }
+
+        .footer-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+        .footer-actions .left, .footer-actions .right { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-danger:hover { border-color: #ef4444; color: #ef4444; }
+
+        .scale-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.72rem; color: var(--text-secondary); }
+        .scale-legend span { display: inline-flex; align-items: center; gap: 5px; }
+        .scale-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+        /* ---------- Export modal ---------- */
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            background: rgba(20,18,45,.42); align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-backdrop.show { display: flex; }
+        .modal {
+            background: #fff; border-radius: 16px; box-shadow: var(--shadow-lg);
+            width: 100%; max-width: 720px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .modal-head { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .modal-head h3 { font-size: 1.05rem; font-weight: 800; }
+        .modal-head .close { margin-left: auto; }
+        .modal-body { padding: 16px 20px; overflow: auto; }
+        .modal-body textarea {
+            width: 100%; min-height: 300px; border: 1px solid var(--border); border-radius: 10px;
+            padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.8rem; line-height: 1.55; resize: vertical; outline: none; color: var(--text-primary);
+            background: var(--bg-input); white-space: pre;
+        }
+        .modal-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: var(--text-primary); color: #fff; padding: 11px 20px; border-radius: 10px;
+            font-size: 0.85rem; font-weight: 700; box-shadow: var(--shadow-lg); opacity: 0;
+            transition: all .25s ease; pointer-events: none; z-index: 200;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ---------- Clean report (preview + print) ---------- */
+        .report { color: #1e2130; background: #fff; font-size: 0.86rem; line-height: 1.5; }
+        .report .r-head { border-bottom: 2px solid #e4e5ee; padding-bottom: 14px; margin-bottom: 18px; }
+        .report .r-badge {
+            display: inline-block; color: #fff; font-weight: 800; font-size: 0.72rem;
+            letter-spacing: .04em; text-transform: uppercase; padding: 4px 11px; border-radius: 999px; margin-bottom: 10px;
+        }
+        .report h2 { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 4px; }
+        .report .r-sub { font-size: 0.82rem; color: #4b5060; margin-bottom: 12px; }
+        .report .r-meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 0.8rem; color: #4b5060; }
+        .report .r-meta b { color: #1e2130; }
+        .report .r-overall {
+            display: inline-flex; align-items: baseline; gap: 6px; font-weight: 800;
+            padding: 3px 12px; border-radius: 9px; font-size: 0.95rem;
+        }
+        .report h3 { font-size: 0.95rem; font-weight: 800; margin: 22px 0 10px; letter-spacing: -.01em; }
+        .report table { border-collapse: collapse; width: 100%; font-size: 0.8rem; }
+        .report th, .report td { border: 1px solid #e4e5ee; padding: 7px 9px; text-align: center; vertical-align: middle; }
+        .report thead th { background: #f1f2f8; font-weight: 800; color: #4b5060; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .03em; }
+        .report td.page-cell, .report th.page-cell { text-align: left; font-weight: 700; }
+        .report .sc { display: inline-block; min-width: 30px; padding: 2px 7px; border-radius: 6px; font-weight: 800; font-size: 0.78rem; }
+        .report .sc0 { color: #969bab; }
+        .report .sc1 { color: #b91c1c; background: rgba(239,68,68,.14); }
+        .report .sc2 { color: #b45309; background: rgba(245,158,11,.16); }
+        .report .sc3 { color: #1d4ed8; background: rgba(59,130,246,.14); }
+        .report .sc4 { color: #047857; background: rgba(16,185,129,.14); }
+        .report .finding { border: 1px solid #e4e5ee; border-left: 4px solid #6c4bf4; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; page-break-inside: avoid; }
+        .report .finding .f-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+        .report .finding .f-name { font-weight: 800; font-size: 0.95rem; }
+        .report .finding .f-url { font-size: 0.74rem; color: #969bab; word-break: break-all; }
+        .report .finding .f-dims { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+        .report .finding .f-dim { font-size: 0.74rem; font-weight: 700; color: #4b5060; background: #f1f2f8; border-radius: 6px; padding: 3px 9px; }
+        .report .finding .f-note { font-size: 0.82rem; color: #1e2130; margin-top: 6px; }
+        .report .finding .f-note .lab, .report .finding .f-shot .lab { font-weight: 800; color: #4b5060; }
+        .report .finding .f-shot { font-size: 0.78rem; color: #4b5060; margin-top: 5px; }
+        .report .r-callout {
+            margin-top: 18px; border: 1px solid rgba(108,75,244,.25); background: rgba(108,75,244,.06);
+            border-radius: 10px; padding: 11px 14px; font-size: 0.82rem; color: #4b5060;
+        }
+        .report .r-callout b { color: #1e2130; }
+        .report .r-empty { color: #969bab; font-style: italic; padding: 16px 0; }
+        .report .r-foot { margin-top: 22px; padding-top: 12px; border-top: 1px solid #e4e5ee; font-size: 0.72rem; color: #969bab; }
+
+        #reportView { display: none; }
+
+        @media (max-width: 620px) {
+            .header-actions { width: 100%; }
+            .name-field { flex: 1; } .name-field input { width: 100%; }
+            .persona-note { display: none; }
+        }
+
+        /* ---------- Print: show only the clean report ---------- */
+        @media print {
+            .app, .modal-backdrop, .toast { display: none !important; }
+            body { background: #fff; }
+            #reportView { display: block !important; padding: 0; }
+            .report .finding { break-inside: avoid; }
+            @page { margin: 16mm; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">&#128203;</div>
+                <div>
+                    <h1>Content Scorecard</h1>
+                    <p>DoSomething Platform Content Audit &middot; Project 1</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="save-pill" id="savePill">Saved</span>
+                <div class="name-field">
+                    <label for="studentName">Name</label>
+                    <input type="text" id="studentName" placeholder="Your name" autocomplete="off">
+                </div>
+                <button class="btn btn-primary" id="exportBtn" type="button">&#8593; Export</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="hint">
+            <span style="font-size:1.15rem;">&#128161;</span>
+            <div><b>Score the pages you walked as this persona.</b> Pick a persona below, add each page you audited, and rate it on the four dimensions (1&ndash;4). Weak dimensions turn red so they stand out. When you finish a persona, hit <b>Export</b> to save a clean <b>PDF report</b> of that scorecard &mdash; you&rsquo;ll produce <b>three exports total</b> (Member, Educator, Donor). Your work auto-saves in this browser.</div>
+        </div>
+
+        <!-- Persona selector -->
+        <section class="persona-bar" aria-label="Persona selector">
+            <span class="pb-label">Auditing as:</span>
+            <div class="persona-tabs" id="personaTabs" role="tablist">
+                <button class="persona-tab" data-p="member"   role="tab" type="button"><span class="dot"></span>Member <span class="badge" id="badge-member">0</span></button>
+                <button class="persona-tab" data-p="educator" role="tab" type="button"><span class="dot"></span>Educator <span class="badge" id="badge-educator">0</span></button>
+                <button class="persona-tab" data-p="donor"    role="tab" type="button"><span class="dot"></span>Donor <span class="badge" id="badge-donor">0</span></button>
+            </div>
+            <p class="persona-note" id="personaNote"></p>
+        </section>
+
+        <!-- Summary strip -->
+        <section class="summary" id="summary" aria-live="polite"></section>
+
+        <!-- Page cards -->
+        <section class="pages" id="pages"></section>
+
+        <button class="add-page-btn" id="addPageBtn" type="button">+ Add a page to score</button>
+
+        <div class="scale-legend">
+            <b style="color:var(--text-secondary);font-weight:800;">Scale:</b>
+            <span><i style="background:var(--s1)"></i>1 &middot; Broken</span>
+            <span><i style="background:var(--s2)"></i>2 &middot; Weak</span>
+            <span><i style="background:var(--s3)"></i>3 &middot; Adequate</span>
+            <span><i style="background:var(--s4)"></i>4 &middot; Strong</span>
+        </div>
+
+        <div class="footer-actions">
+            <div class="left">
+                <button class="btn btn-danger" id="clearPersonaBtn" type="button">&#8635; New scorecard (clear this persona)</button>
+            </div>
+            <div class="right">
+                <button class="btn btn-primary" id="exportBtn2" type="button">&#8593; Export this scorecard</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Export modal -->
+<div class="modal-backdrop" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="exportTitle">
+    <div class="modal">
+        <div class="modal-head">
+            <h3 id="exportTitle">Export scorecard</h3>
+            <button class="btn close" id="exportClose" type="button">Close</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:12px;">A clean report of your <b id="exportPersonaName">Member</b> scorecard. Click <b>Save as PDF</b>, then in the print dialog choose <b>&ldquo;Save as PDF&rdquo;</b> as the destination and name the file <code id="exportFilename">MemberScorecard_Project1_YourName</code>.</p>
+            <div id="exportReport" class="report"></div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn" id="exportClose2" type="button">Close</button>
+            <button class="btn btn-primary" id="savePdfBtn" type="button">&#8595; Save as PDF</button>
+        </div>
+    </div>
+</div>
+
+<!-- Print-only clean report (rendered on export) -->
+<div id="reportView" class="report" aria-hidden="true"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+    storageKey: "dosomething-content-scorecard",
+    version: "1.0",
+    maxScore: 4,
+    personas: {
+        member:   { label: "Member",   color: "#6c4bf4", note: "The Gen Z activist looking to take action on an issue they care about." },
+        educator: { label: "Educator", color: "#0ea5a4", note: "The teacher or youth leader looking for classroom-ready campaigns and resources." },
+        donor:    { label: "Donor",    color: "#f0428a", note: "The funder or supporter deciding whether to give and where their money goes." }
+    },
+    dimensions: [
+        { key: "clarity",    name: "Clarity",          tip: "Is the page's purpose and message instantly understandable? Plain, jargon-free language? Would this persona 'get it' in 5 seconds?" },
+        { key: "relevance",  name: "Relevance",        tip: "Does the content match what THIS persona came to do? Does it speak to their goals and motivations, not a generic visitor?" },
+        { key: "conversion", name: "Conversion Path",  tip: "Is the next step obvious? Is there a clear, low-friction path to act — sign up, join a campaign, donate, download — without dead ends?" },
+        { key: "mobile",     name: "Mobile Experience", tip: "Does it work well on a phone? Readable text, tappable buttons, fast load, nothing broken or cut off. Assume a large share of this persona arrives on mobile." }
+    ],
+    scaleColors: { 1: "#ef4444", 2: "#f59e0b", 3: "#3b82f6", 4: "#10b981" }
+};
+
+/* ---------- State ---------- */
+// state.data[persona] = { pages: [ {id,name,url,scores:{},notes,screenshot} ] }
+let state = { studentName: "", activePersona: "member", data: {}, metadata: { version: CONFIG.version, timestamp: 0 } };
+let uidCounter = 1;
+
+const $ = (s, el = document) => el.querySelector(s);
+function uid() { return "pg-" + (uidCounter++) + "-" + (Date.now() % 100000); }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+function blankPersona() { return { pages: [] }; }
+function ensurePersona(p) { if (!state.data[p]) state.data[p] = blankPersona(); return state.data[p]; }
+function newPage() {
+    const scores = {}; CONFIG.dimensions.forEach(d => scores[d.key] = 0);
+    return { id: uid(), name: "", url: "", scores, notes: "", screenshot: "" };
+}
+
+/* ---------- Persistence ---------- */
+let saveTimer = null;
+function save(flash = true) {
+    state.metadata.timestamp = Date.now();
+    try {
+        localStorage.setItem(CONFIG.storageKey, JSON.stringify(state));
+        if (flash) showSaved();
+    } catch (e) { /* storage blocked/full — non-fatal */ }
+}
+function load() {
+    try {
+        const raw = localStorage.getItem(CONFIG.storageKey);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.data) { state = parsed; state.metadata = state.metadata || { version: CONFIG.version }; return true; }
+        }
+    } catch (e) { /* ignore corrupt */ }
+    return false;
+}
+function showSaved() {
+    const pill = $("#savePill");
+    pill.classList.add("show");
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => pill.classList.remove("show"), 1400);
+}
+
+/* ---------- Score math ---------- */
+function pageScored(page) { return CONFIG.dimensions.filter(d => page.scores[d.key] > 0); }
+function pageAvg(page) {
+    const scored = pageScored(page);
+    if (!scored.length) return 0;
+    const sum = scored.reduce((a, d) => a + page.scores[d.key], 0);
+    return sum / scored.length;
+}
+function avgColor(v) {
+    if (v <= 0) return { c: "#94a3b8", bg: "var(--bg-input)" };
+    if (v < 2)  return { c: "#ef4444", bg: "var(--s1-bg)" };
+    if (v < 2.75) return { c: "#f59e0b", bg: "var(--s2-bg)" };
+    if (v < 3.5) return { c: "#3b82f6", bg: "var(--s3-bg)" };
+    return { c: "#10b981", bg: "var(--s4-bg)" };
+}
+
+/* ---------- Rendering ---------- */
+function render() {
+    $("#studentName").value = state.studentName || "";
+    // persona tabs
+    document.querySelectorAll(".persona-tab").forEach(t => {
+        const p = t.dataset.p;
+        t.classList.toggle("active", p === state.activePersona);
+        t.setAttribute("aria-selected", p === state.activePersona ? "true" : "false");
+        $("#badge-" + p).textContent = (state.data[p]?.pages.length) || 0;
+    });
+    $("#personaNote").textContent = CONFIG.personas[state.activePersona].note;
+    renderSummary();
+    renderPages();
+}
+
+function renderSummary() {
+    const p = state.activePersona;
+    const pd = ensurePersona(p);
+    const cfg = CONFIG.personas[p];
+    const scoredPages = pd.pages.filter(pg => pageScored(pg).length === CONFIG.dimensions.length);
+    let overall = 0;
+    const rated = pd.pages.filter(pg => pageAvg(pg) > 0);
+    if (rated.length) overall = rated.reduce((a, pg) => a + pageAvg(pg), 0) / rated.length;
+    const oc = avgColor(overall);
+    $("#summary").innerHTML =
+        `<span class="persona-chip" style="color:${cfg.color};background:${cfg.color}18;">
+            <span style="width:9px;height:9px;border-radius:50%;background:${cfg.color};display:inline-block;"></span>${cfg.label} experience
+         </span>
+         <div class="divider"></div>
+         <div class="stat"><span class="k">Pages</span><span class="v">${pd.pages.length}</span></div>
+         <div class="stat"><span class="k">Fully scored</span><span class="v">${scoredPages.length}</span></div>
+         <div class="divider"></div>
+         <div class="stat"><span class="k">Avg score</span><span class="v" style="color:${oc.c}">${overall ? overall.toFixed(2) : "—"}<span style="font-size:.8rem;color:var(--text-muted);font-weight:600;">/4</span></span></div>`;
+}
+
+function renderPages() {
+    const wrap = $("#pages");
+    wrap.innerHTML = "";
+    const pd = ensurePersona(state.activePersona);
+    if (!pd.pages.length) {
+        wrap.innerHTML = `<div class="empty">No pages yet. Click &ldquo;Add a page to score&rdquo; to start auditing the ${escapeHtml(CONFIG.personas[state.activePersona].label)} experience.</div>`;
+        return;
+    }
+    pd.pages.forEach((page, i) => wrap.appendChild(makeCard(page, i)));
+}
+
+function makeCard(page, index) {
+    const card = document.createElement("div");
+    card.className = "page-card";
+    const cfg = CONFIG.personas[state.activePersona];
+    card.style.borderLeftColor = cfg.color;
+
+    const avg = pageAvg(page);
+    const ac = avgColor(avg);
+
+    card.innerHTML = `
+        <div class="page-head">
+            <div class="idx">${index + 1}</div>
+            <div class="page-fields">
+                <input class="field-inp name" data-f="name" placeholder="Page name (e.g. Homepage, Campaign Landing Page)" value="${escapeHtml(page.name)}">
+                <div class="row">
+                    <input class="field-inp grow" data-f="url" placeholder="URL or path (e.g. dosomething.org/us/campaigns/...)" value="${escapeHtml(page.url)}">
+                </div>
+            </div>
+            <div class="page-score-badge" style="background:${ac.bg};border-color:${ac.c}44;">
+                <div class="num" style="color:${ac.c}">${avg ? avg.toFixed(2) : "—"}</div>
+                <div class="lbl">avg /4</div>
+            </div>
+            <button class="card-x" data-act="remove" title="Remove this page" aria-label="Remove page">&times;</button>
+        </div>
+        <div class="dims">${CONFIG.dimensions.map(d => dimHtml(page, d)).join("")}</div>
+        <div class="page-extra">
+            <div>
+                <label>Friction points / notes</label>
+                <textarea data-f="notes" placeholder="What confused you, where you felt lost, what broke the flow, what pulled you in…">${escapeHtml(page.notes)}</textarea>
+            </div>
+            <div>
+                <label>Screenshot reference (optional)</label>
+                <textarea data-f="screenshot" placeholder="Loom timestamp, file name, or link to your screenshot">${escapeHtml(page.screenshot)}</textarea>
+            </div>
+        </div>`;
+
+    // field bindings
+    card.querySelectorAll("[data-f]").forEach(el => {
+        el.addEventListener("input", () => { page[el.dataset.f] = el.value; save(); if (el.dataset.f === "name") { /* no rerender to keep focus */ } });
+    });
+    // remove
+    card.querySelector('[data-act="remove"]').addEventListener("click", () => {
+        if (page.name || page.url || pageScored(page).length) {
+            if (!confirm("Remove “" + (page.name || "this page") + "” from the " + cfg.label + " scorecard?")) return;
+        }
+        const pd = ensurePersona(state.activePersona);
+        pd.pages = pd.pages.filter(p => p.id !== page.id);
+        save(); render();
+    });
+    // scale buttons
+    card.querySelectorAll(".scale button").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const dim = btn.dataset.dim, val = +btn.dataset.v;
+            page.scores[dim] = (page.scores[dim] === val) ? 0 : val; // click again to clear
+            save(); render();
+        });
+    });
+    return card;
+}
+
+function dimHtml(page, d) {
+    const val = page.scores[d.key] || 0;
+    const scaleBtns = [1, 2, 3, 4].map(v =>
+        `<button data-dim="${d.key}" data-v="${v}" class="${val === v ? "on" : ""}" aria-label="${d.name} score ${v}">${v}</button>`
+    ).join("");
+    const barColor = val ? CONFIG.scaleColors[val] : "transparent";
+    const barW = val ? (val / CONFIG.maxScore * 100) : 0;
+    return `
+        <div class="dim">
+            <div class="dim-top">
+                <span class="dim-name">${d.name}</span>
+                <span class="info" tabindex="0" role="button" aria-label="${escapeHtml(d.name)} description">i<span class="tip">${escapeHtml(d.tip)}</span></span>
+                <span class="dim-score">${val ? val + "/4" : "—"}</span>
+            </div>
+            <div class="scale">${scaleBtns}</div>
+            <div class="dim-bar"><i style="width:${barW}%;background:${barColor};"></i></div>
+        </div>`;
+}
+
+/* ---------- Add / persona switch / clear ---------- */
+function addPage() {
+    const pd = ensurePersona(state.activePersona);
+    pd.pages.push(newPage());
+    save(); render();
+    // focus the new card's name field
+    const cards = $("#pages").querySelectorAll(".page-card");
+    const last = cards[cards.length - 1];
+    if (last) { const nm = last.querySelector('[data-f="name"]'); nm && nm.focus(); last.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+}
+$("#addPageBtn").addEventListener("click", addPage);
+
+document.querySelectorAll(".persona-tab").forEach(tab => {
+    tab.addEventListener("click", () => { state.activePersona = tab.dataset.p; save(false); render(); });
+});
+
+$("#clearPersonaBtn").addEventListener("click", () => {
+    const cfg = CONFIG.personas[state.activePersona];
+    if (confirm("Clear the entire " + cfg.label + " scorecard? This removes all its pages and scores. Your other personas stay intact.")) {
+        state.data[state.activePersona] = blankPersona();
+        save(); render(); toast(cfg.label + " scorecard cleared");
+    }
+});
+
+$("#studentName").addEventListener("input", e => { state.studentName = e.target.value; save(); });
+
+/* ---------- Export: clean PDF report ---------- */
+function pdfFileName(persona) {
+    const safeName = (state.studentName || "").trim().replace(/[^a-z0-9]+/gi, "");
+    return CONFIG.personas[persona].label + "Scorecard_Project1" + (safeName ? "_" + safeName : "_YourName");
+}
+function scoreChip(v) {
+    if (!v) return `<span class="sc sc0">–</span>`;
+    return `<span class="sc sc${v}">${v}</span>`;
+}
+
+function buildReportHTML(persona) {
+    const cfg = CONFIG.personas[persona];
+    const pd = ensurePersona(persona);
+    const date = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    const rated = pd.pages.filter(pg => pageAvg(pg) > 0);
+    const overall = rated.length ? (rated.reduce((a, pg) => a + pageAvg(pg), 0) / rated.length) : 0;
+    const oc = avgColor(overall);
+    const scoredPages = pd.pages.filter(pg => pageScored(pg).length === CONFIG.dimensions.length);
+
+    let html = `
+        <div class="r-head">
+            <span class="r-badge" style="background:${cfg.color};">${escapeHtml(cfg.label)} Experience</span>
+            <h2>${escapeHtml(cfg.label)} Content Scorecard</h2>
+            <div class="r-sub">DoSomething — AI-Powered Content &amp; Communications Strategy Externship &middot; Project 1: Platform Content Audit</div>
+            <div class="r-meta">
+                <span><b>Auditor:</b> ${escapeHtml(state.studentName || "—")}</span>
+                <span><b>Persona:</b> ${escapeHtml(cfg.note)}</span>
+                <span><b>Date:</b> ${escapeHtml(date)}</span>
+                <span><b>Pages audited:</b> ${pd.pages.length}</span>
+                <span><b>Fully scored:</b> ${scoredPages.length} / ${pd.pages.length}</span>
+                <span class="r-overall" style="color:${oc.c};background:${oc.bg};"><b>Overall</b> ${overall ? overall.toFixed(2) + " / 4" : "—"}</span>
+            </div>
+        </div>`;
+
+    if (!pd.pages.length) {
+        html += `<p class="r-empty">No pages scored yet. Add and score your key ${escapeHtml(cfg.label)} pages, then export.</p>`;
+        return html;
+    }
+
+    // Score summary table
+    html += `<h3>Score Summary</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:26px;">#</th>
+                    <th class="page-cell">Page</th>
+                    <th>Clarity</th><th>Relevance</th><th>Conversion</th><th>Mobile</th><th>Avg</th>
+                </tr>
+            </thead>
+            <tbody>`;
+    pd.pages.forEach((pg, i) => {
+        const s = pg.scores, a = pageAvg(pg), ac = avgColor(a);
+        html += `<tr>
+            <td>${i + 1}</td>
+            <td class="page-cell">${escapeHtml(pg.name || "Untitled page")}</td>
+            <td>${scoreChip(s.clarity)}</td>
+            <td>${scoreChip(s.relevance)}</td>
+            <td>${scoreChip(s.conversion)}</td>
+            <td>${scoreChip(s.mobile)}</td>
+            <td><b style="color:${ac.c};">${a ? a.toFixed(2) : "–"}</b></td>
+        </tr>`;
+    });
+    html += `</tbody></table>`;
+
+    // Findings / page detail
+    html += `<h3>Findings by Page</h3>`;
+    pd.pages.forEach((pg, i) => {
+        const a = pageAvg(pg), ac = avgColor(a);
+        html += `<div class="finding" style="border-left-color:${cfg.color};">
+            <div class="f-head">
+                <span class="f-name">${i + 1}. ${escapeHtml(pg.name || "Untitled page")}</span>
+                <span class="r-overall" style="color:${ac.c};background:${ac.bg};font-size:.8rem;padding:2px 9px;">${a ? a.toFixed(2) + " / 4" : "not scored"}</span>
+                ${pg.url ? `<span class="f-url">${escapeHtml(pg.url)}</span>` : ""}
+            </div>
+            <div class="f-dims">
+                ${CONFIG.dimensions.map(d => {
+                    const v = pg.scores[d.key];
+                    return `<span class="f-dim">${escapeHtml(d.name)}: ${v ? v + "/4" : "—"}</span>`;
+                }).join("")}
+            </div>
+            ${pg.notes ? `<div class="f-note"><span class="lab">Finding / friction:</span> ${escapeHtml(pg.notes).replace(/\n/g, "<br>")}</div>` : ""}
+            ${pg.screenshot ? `<div class="f-shot"><span class="lab">Screenshot evidence:</span> ${escapeHtml(pg.screenshot).replace(/\n/g, " ")}</div>` : ""}
+        </div>`;
+    });
+
+    // Weakest dimension callout
+    const totals = {}; CONFIG.dimensions.forEach(d => totals[d.key] = { sum: 0, n: 0 });
+    pd.pages.forEach(pg => CONFIG.dimensions.forEach(d => { if (pg.scores[d.key]) { totals[d.key].sum += pg.scores[d.key]; totals[d.key].n++; } }));
+    const dimAvgs = CONFIG.dimensions.map(d => ({ name: d.name, avg: totals[d.key].n ? totals[d.key].sum / totals[d.key].n : null })).filter(x => x.avg !== null);
+    if (dimAvgs.length) {
+        dimAvgs.sort((a, b) => a.avg - b.avg);
+        html += `<div class="r-callout"><b>Weakest dimension across ${escapeHtml(cfg.label)} pages:</b> ${escapeHtml(dimAvgs[0].name)} (avg ${dimAvgs[0].avg.toFixed(2)}/4) — prioritize this in your recommendations.</div>`;
+    }
+
+    html += `<div class="r-foot">Export ${persona === "member" ? "1 of 3" : persona === "educator" ? "2 of 3" : "3 of 3"} &middot; Member Content Scorecard, Project 1 &middot; Generated with the Content Scorecard tool.</div>`;
+    return html;
+}
+
+function openExport() {
+    const persona = state.activePersona;
+    const reportHTML = buildReportHTML(persona);
+    $("#exportReport").innerHTML = reportHTML;
+    $("#reportView").innerHTML = reportHTML;
+    $("#exportPersonaName").textContent = CONFIG.personas[persona].label;
+    $("#exportFilename").textContent = pdfFileName(persona);
+    $("#exportModal").classList.add("show");
+}
+function closeExport() { $("#exportModal").classList.remove("show"); }
+$("#exportBtn").addEventListener("click", openExport);
+$("#exportBtn2").addEventListener("click", openExport);
+$("#exportClose").addEventListener("click", closeExport);
+$("#exportClose2").addEventListener("click", closeExport);
+$("#exportModal").addEventListener("click", e => { if (e.target === $("#exportModal")) closeExport(); });
+
+$("#savePdfBtn").addEventListener("click", () => {
+    const persona = state.activePersona;
+    // Ensure the print-only report is current, then hint the file name via the tab title.
+    $("#reportView").innerHTML = buildReportHTML(persona);
+    const prevTitle = document.title;
+    document.title = pdfFileName(persona);
+    window.print();
+    setTimeout(() => { document.title = prevTitle; }, 600);
+});
+
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("#exportModal").classList.contains("show")) closeExport(); });
+
+/* ---------- Toast ---------- */
+let toastTimer = null;
+function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ---------- Init ---------- */
+(function init() {
+    if (!load()) {
+        // seed each persona with one blank page to lower the barrier
+        ["member", "educator", "donor"].forEach(p => { ensurePersona(p); });
+        ensurePersona("member").pages.push(newPage());
+        state.activePersona = "member";
+        save(false);
+    }
+    ["member", "educator", "donor"].forEach(p => ensurePersona(p));
+    render();
+})();
+</script>
+</body>
+</html>
