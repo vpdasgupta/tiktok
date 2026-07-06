@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Priority Matrix — YouthBuild Global</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f1f5f9;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+            --p1: #10b981;   /* Priority 1 - green  */
+            --p1-bg: rgba(16, 185, 129, 0.10);
+            --p2: #3b82f6;   /* Priority 2 - blue   */
+            --p2-bg: rgba(59, 130, 246, 0.10);
+            --p3: #f59e0b;   /* Priority 3 - amber  */
+            --p3-bg: rgba(245, 158, 11, 0.10);
+            --dep: #94a3b8;  /* Deprioritize - gray */
+            --dep-bg: rgba(148, 163, 184, 0.12);
+            --institutional: #6366f1;
+            --individual: #ec4899;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+            --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.18);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* ---------- Header ---------- */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            width: 42px; height: 42px; flex-shrink: 0;
+            background: var(--accent-gradient);
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+        }
+        .logo h1 { font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
+        .logo p { font-size: 0.78rem; color: var(--text-muted); }
+        .header-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .name-field {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 9px; padding: 4px 10px;
+        }
+        .name-field label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
+        .name-field input {
+            border: none; background: transparent; font-family: inherit;
+            font-size: 0.85rem; color: var(--text-primary); width: 130px; outline: none;
+        }
+        .phase-field {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 9px; padding: 4px 6px 4px 10px;
+        }
+        .phase-field > label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
+        .phase-toggle { display: flex; gap: 4px; }
+        .phase-toggle button {
+            font-family: inherit; font-size: 0.72rem; font-weight: 600;
+            border: 1px solid var(--border); background: var(--bg-secondary);
+            border-radius: 7px; padding: 5px 9px; cursor: pointer; color: var(--text-secondary);
+        }
+        .phase-toggle button.active[data-phase="draft"] { border-color: var(--text-muted); color: var(--text-primary); background: rgba(148,163,184,.14); }
+        .phase-toggle button.active[data-phase="validated"] { border-color: #10b981; color: #10b981; background: rgba(16,185,129,.10); }
+
+        .btn {
+            font-family: inherit; font-size: 0.85rem; font-weight: 600;
+            border: 1px solid var(--border); background: var(--bg-secondary);
+            color: var(--text-secondary); padding: 9px 15px; border-radius: 9px;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+            min-height: 40px; transition: all .15s ease;
+        }
+        .btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .btn-primary {
+            background: var(--accent-gradient); color: #fff; border: none;
+            box-shadow: var(--shadow);
+        }
+        .btn-primary:hover { color: #fff; opacity: .93; }
+        .save-pill {
+            font-size: 0.72rem; color: var(--p1); font-weight: 600;
+            display: inline-flex; align-items: center; gap: 5px; opacity: 0;
+            transition: opacity .3s ease;
+        }
+        .save-pill.show { opacity: 1; }
+        .save-pill::before { content: "●"; font-size: 0.6rem; }
+
+        /* ---------- Layout ---------- */
+        .main {
+            max-width: 900px; margin: 0 auto; width: 100%;
+            padding: 16px; display: grid; gap: 12px;
+            grid-template-columns: 300px auto;
+            justify-content: center; align-items: start;
+        }
+        @media (max-width: 900px) {
+            .main { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 12px; box-shadow: var(--shadow-sm);
+        }
+        .panel-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+        .panel-sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px; }
+
+        /* ---------- Instruction banner ---------- */
+        .hint {
+            background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(168,85,247,.06));
+            border: 1px solid rgba(99,102,241,.22);
+            border-radius: 12px; padding: 12px 16px; font-size: 0.83rem;
+            color: var(--text-secondary); display: flex; gap: 10px; align-items: flex-start;
+            grid-column: 1 / -1;
+        }
+        .hint b { color: var(--text-primary); }
+
+        /* ---------- Segment tray ---------- */
+        .tray-list { display: flex; flex-direction: column; gap: 9px; min-height: 40px; }
+        .tray-list.drop-active { outline: 2px dashed var(--accent-primary); outline-offset: 4px; border-radius: 10px; }
+        .tray-empty { font-size: 0.8rem; color: var(--text-muted); font-style: italic; padding: 8px 4px; }
+
+        .chip {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-left: 4px solid var(--institutional);
+            border-radius: 10px; padding: 9px 10px; cursor: grab;
+            box-shadow: var(--shadow-sm); transition: box-shadow .15s, transform .1s, border-color .15s;
+            touch-action: none; user-select: none;
+        }
+        .chip:hover { box-shadow: var(--shadow); }
+        .chip:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+        .chip.individual { border-left-color: var(--individual); }
+        .chip.selected { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(99,102,241,.25); }
+        .chip.dragging { opacity: .4; }
+        .chip-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--institutional); flex-shrink: 0; }
+        .chip.individual .chip-dot { background: var(--individual); }
+        .chip-name {
+            flex: 1; font-size: 0.85rem; font-weight: 600; color: var(--text-primary);
+            border: none; background: transparent; font-family: inherit; outline: none;
+            min-width: 0; padding: 2px 3px; border-radius: 5px;
+        }
+        .chip-name:focus { background: var(--bg-input); }
+        .chip-x {
+            width: 22px; height: 22px; border: none; background: transparent;
+            color: var(--text-muted); cursor: pointer; border-radius: 6px;
+            font-size: 1rem; line-height: 1; flex-shrink: 0;
+        }
+        .chip-x:hover { background: rgba(239,68,68,.12); color: #ef4444; }
+
+        .tray-controls { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+        .family-toggle { display: flex; gap: 6px; }
+        .family-toggle button {
+            flex: 1; font-family: inherit; font-size: 0.72rem; font-weight: 600;
+            border: 1px solid var(--border); background: var(--bg-input);
+            border-radius: 8px; padding: 7px; cursor: pointer; color: var(--text-secondary);
+        }
+        .family-toggle button.active[data-fam="institutional"] { border-color: var(--institutional); color: var(--institutional); background: rgba(99,102,241,.08); }
+        .family-toggle button.active[data-fam="individual"] { border-color: var(--individual); color: var(--individual); background: rgba(236,72,153,.08); }
+        .add-row { display: flex; gap: 6px; }
+        .add-row input {
+            flex: 1; border: 1px solid var(--border); background: var(--bg-input);
+            border-radius: 8px; padding: 8px 10px; font-family: inherit; font-size: 0.82rem;
+            outline: none; min-width: 0;
+        }
+        .add-row input:focus { border-color: var(--accent-primary); }
+        .add-btn {
+            border: none; background: var(--accent-gradient); color: #fff;
+            border-radius: 8px; padding: 8px 12px; font-weight: 700; cursor: pointer; font-size: 0.9rem;
+        }
+        .add-btn:disabled { opacity: .4; cursor: not-allowed; }
+        .count-note { font-size: 0.72rem; color: var(--text-muted); text-align: center; }
+        .legend-key { display: flex; gap: 14px; margin-top: 10px; font-size: 0.72rem; color: var(--text-secondary); }
+        .legend-key span { display: inline-flex; align-items: center; gap: 5px; }
+        .legend-key i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+        /* ---------- Matrix / grid ---------- */
+        .board-wrap { position: relative; }
+        .grid-frame { display: flex; gap: 10px; }
+        .y-axis {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 34px; flex-shrink: 0;
+        }
+        .y-axis .axis-label {
+            writing-mode: vertical-rl; transform: rotate(180deg);
+            font-weight: 700; font-size: 0.9rem; letter-spacing: .02em;
+        }
+        .y-axis .axis-sub { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+        .grid-col { flex: 0 1 440px; min-width: 0; max-width: 440px; }
+
+        .grid {
+            position: relative; width: 100%; max-width: 440px; aspect-ratio: 1 / 1;
+            border-radius: 14px; overflow: hidden;
+            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+            border: 2px solid var(--border); background: var(--bg-secondary);
+            touch-action: none;
+        }
+        .grid.drop-active { border-color: var(--accent-primary); }
+        .quad {
+            position: relative; padding: 10px;
+            display: flex; flex-direction: column;
+            pointer-events: none; /* drops handled by .grid */
+        }
+        /* top-left = P3, top-right = P1, bottom-left = Deprioritize, bottom-right = P2 */
+        .quad.p3 { background: var(--p3-bg); border-right: 1px dashed var(--border); border-bottom: 1px dashed var(--border); }
+        .quad.p1 { background: var(--p1-bg); border-bottom: 1px dashed var(--border); }
+        .quad.dep { background: var(--dep-bg); border-right: 1px dashed var(--border); }
+        .quad.p2 { background: var(--p2-bg); }
+        .quad-tier { font-size: 0.72rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+        .quad.p1 .quad-tier { color: var(--p1); }
+        .quad.p2 .quad-tier { color: var(--p2); }
+        .quad.p3 .quad-tier { color: #d97706; }
+        .quad.dep .quad-tier { color: #64748b; }
+        .quad-desc { font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px; max-width: 90%; }
+        .quad.p1 { align-items: flex-end; text-align: right; }
+        .quad.p1 .quad-desc { margin-left: auto; }
+        .quad.p2 { align-items: flex-end; text-align: right; justify-content: flex-end; }
+        .quad.p2 .quad-desc { margin-left: auto; }
+        .quad.dep { justify-content: flex-end; }
+
+        /* placed tokens */
+        .token {
+            position: absolute; transform: translate(-50%, -50%);
+            background: #fff; border: 1.5px solid var(--institutional);
+            border-radius: 20px; padding: 5px 11px 5px 8px;
+            font-size: 0.78rem; font-weight: 600; color: var(--text-primary);
+            box-shadow: var(--shadow); cursor: grab; white-space: nowrap;
+            display: flex; align-items: center; gap: 6px; pointer-events: auto;
+            touch-action: none; user-select: none; z-index: 2;
+            max-width: 46%;
+        }
+        .token.individual { border-color: var(--individual); }
+        .token .tk-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--institutional); flex-shrink: 0; }
+        .token.individual .tk-dot { background: var(--individual); }
+        .token .tk-name { overflow: hidden; text-overflow: ellipsis; }
+        .token.dragging { opacity: .85; box-shadow: var(--shadow-lg); z-index: 10; cursor: grabbing; }
+        .token.has-note::after {
+            content: "📝"; font-size: 0.62rem; margin-left: 2px;
+        }
+        .token:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+        .x-axis { text-align: center; margin-top: 8px; margin-left: 44px; }
+        .x-axis .axis-label { font-weight: 700; font-size: 0.9rem; }
+        .x-axis .axis-sub { font-size: 0.7rem; color: var(--text-muted); }
+        .axis-ends { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); margin: 4px 6px 0 48px; }
+
+        /* place-mode banner */
+        .place-banner {
+            display: none; align-items: center; gap: 8px;
+            background: rgba(99,102,241,.10); border: 1px solid rgba(99,102,241,.3);
+            color: var(--accent-primary); font-size: 0.8rem; font-weight: 600;
+            border-radius: 10px; padding: 8px 12px; margin-bottom: 12px;
+        }
+        .place-banner.show { display: flex; }
+
+        /* ---------- Note popover ---------- */
+        .popover-backdrop {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            background: rgba(15,23,42,.35); align-items: center; justify-content: center; padding: 20px;
+        }
+        .popover-backdrop.show { display: flex; }
+        .popover {
+            background: #fff; border-radius: 16px; box-shadow: var(--shadow-lg);
+            width: 100%; max-width: 420px; padding: 20px;
+        }
+        .popover h3 { font-size: 1rem; margin-bottom: 3px; }
+        .popover .tier-badge {
+            display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: .04em;
+            text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin: 8px 0 12px;
+        }
+        .popover label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+        .popover textarea {
+            width: 100%; border: 1px solid var(--border); border-radius: 10px;
+            padding: 10px; font-family: inherit; font-size: 0.88rem; resize: vertical; min-height: 64px; outline: none;
+        }
+        .popover textarea:focus { border-color: var(--accent-primary); }
+        .popover-actions { display: flex; gap: 10px; margin-top: 16px; }
+        .popover-actions .btn { flex: 1; justify-content: center; }
+        .popover .remove-link {
+            background: none; border: none; color: #ef4444; font-family: inherit;
+            font-size: 0.78rem; font-weight: 600; cursor: pointer; margin-top: 12px; padding: 4px;
+        }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: var(--text-primary); color: #fff; padding: 11px 20px; border-radius: 10px;
+            font-size: 0.85rem; font-weight: 600; box-shadow: var(--shadow-lg); opacity: 0;
+            transition: all .25s ease; pointer-events: none; z-index: 200;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 880px) {
+            .header-actions { width: 100%; }
+            .name-field { flex: 1; }
+            .name-field input { width: 100%; }
+        }
+
+        /* ---------- Export modal ---------- */
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            background: rgba(15,23,42,.42); align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-backdrop.show { display: flex; }
+        .modal {
+            background: #fff; border-radius: 16px; box-shadow: var(--shadow-lg);
+            width: 100%; max-width: 640px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .modal-head { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .modal-head h3 { font-size: 1.05rem; font-weight: 800; }
+        .modal-head .close { margin-left: auto; }
+        .modal-body { padding: 16px 20px; overflow: auto; }
+        .modal-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+        /* ---------- Clean PDF report (modal preview + print) ---------- */
+        .report { color: #1e293b; background: #fff; font-size: 0.86rem; line-height: 1.5; }
+        .report .r-head { border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; }
+        .report .r-badge {
+            display: inline-block; background: var(--accent-primary); color: #fff; font-weight: 800;
+            font-size: 0.72rem; letter-spacing: .04em; text-transform: uppercase;
+            padding: 4px 11px; border-radius: 999px; margin-bottom: 10px;
+        }
+        .report h2 { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 4px; }
+        .report .r-sub { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px; }
+        .report .r-meta { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.8rem; color: var(--text-secondary); }
+        .report .r-meta b { color: var(--text-primary); }
+        .report h3 { font-size: 0.95rem; font-weight: 800; margin: 20px 0 10px; letter-spacing: -.01em; }
+
+        /* mini matrix in report */
+        .report .rm-ylab, .report .rm-xlab { font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); }
+        .report .rm-ylab { margin-bottom: 6px; }
+        .report .rm-xlab { margin-top: 6px; text-align: right; max-width: 420px; }
+        .report .rm-grid {
+            position: relative; width: 100%; max-width: 420px; aspect-ratio: 1 / 1;
+            border: 2px solid var(--border); border-radius: 12px; overflow: hidden;
+            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+        }
+        .report .rm-quad { position: relative; padding: 8px; }
+        .report .rm-quad.rm-p3 { background: var(--p3-bg); border-right: 1px dashed var(--border); border-bottom: 1px dashed var(--border); }
+        .report .rm-quad.rm-p1 { background: var(--p1-bg); border-bottom: 1px dashed var(--border); text-align: right; }
+        .report .rm-quad.rm-dep { background: var(--dep-bg); border-right: 1px dashed var(--border); display: flex; align-items: flex-end; }
+        .report .rm-quad.rm-p2 { background: var(--p2-bg); text-align: right; display: flex; align-items: flex-end; justify-content: flex-end; }
+        .report .rm-qt { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; }
+        .report .rm-token {
+            position: absolute; transform: translate(-50%, -50%);
+            background: #fff; border: 1.5px solid var(--institutional); border-radius: 20px;
+            padding: 3px 10px; font-size: 0.72rem; font-weight: 800; white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,.15); display: inline-flex; align-items: center; gap: 5px;
+        }
+        .report .rm-tdot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+        /* table */
+        .report table { border-collapse: collapse; width: 100%; font-size: 0.8rem; margin-top: 4px; }
+        .report th, .report td { border: 1px solid var(--border); padding: 7px 9px; text-align: center; vertical-align: top; }
+        .report th.l, .report td.l { text-align: left; }
+        .report thead th { background: var(--bg-input); font-weight: 800; color: var(--text-secondary); font-size: 0.72rem; text-transform: uppercase; letter-spacing: .03em; }
+        .report .r-tier { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 800; font-size: 0.72rem; }
+        .report .r-foot { margin-top: 20px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 0.72rem; color: var(--text-muted); }
+
+        #reportView { display: none; }
+        @media print {
+            .app, .modal-backdrop, .popover-backdrop, .toast { display: none !important; }
+            body { background: #fff; }
+            #reportView { display: block !important; }
+            .report .rm-grid, .report table { break-inside: avoid; }
+            @page { margin: 14mm; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">🎯</div>
+                <div>
+                    <h1>Donor Priority Matrix</h1>
+                    <p>YouthBuild Global — Project 1 · <span id="phaseLabelHeader">Draft</span></p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="save-pill" id="savePill">Saved</span>
+                <div class="phase-field">
+                    <label>Phase</label>
+                    <div class="phase-toggle" role="group" aria-label="Matrix phase">
+                        <button type="button" data-phase="draft" class="active">Draft</button>
+                        <button type="button" data-phase="validated">Validated</button>
+                    </div>
+                </div>
+                <div class="name-field">
+                    <label for="studentName">Name</label>
+                    <input type="text" id="studentName" placeholder="Your name" autocomplete="off">
+                </div>
+                <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+                <button class="btn btn-primary" id="exportBtn" type="button">⬇ Export PDF</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="hint">
+            <span style="font-size:1.1rem;">💡</span>
+            <div><b>Place every segment.</b> Drag a segment from the tray onto the grid — or tap it, then tap where it belongs. Higher = more <b>capacity</b> (can they give?), further right = more <b>affinity</b> (do they care?). Click a placed segment to add a one-line "why here" note. Don't agonize over exact spots — this is your draft.</div>
+        </div>
+
+        <!-- Segment tray -->
+        <section class="panel" aria-label="Segment tray">
+            <div class="panel-title">Your Segments</div>
+            <div class="panel-sub">Rename to match your refined list. Unplaced segments live here.</div>
+
+            <div class="place-banner" id="placeBanner">
+                <span>👆</span><span id="placeBannerText">Tap a spot on the grid to place this segment</span>
+            </div>
+
+            <div class="tray-list" id="trayList" aria-label="Unplaced segments"></div>
+
+            <div class="tray-controls">
+                <div class="family-toggle" role="group" aria-label="New segment type">
+                    <button type="button" data-fam="institutional" class="active">● Institutional</button>
+                    <button type="button" data-fam="individual">● Individual</button>
+                </div>
+                <div class="add-row">
+                    <input type="text" id="addInput" placeholder="Add a segment…" maxlength="40" aria-label="New segment name">
+                    <button class="add-btn" id="addBtn" type="button" aria-label="Add segment">+</button>
+                </div>
+                <div class="count-note" id="countNote"></div>
+                <div class="legend-key">
+                    <span><i style="background:var(--institutional)"></i>Institutional</span>
+                    <span><i style="background:var(--individual)"></i>Individual</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Matrix -->
+        <section class="panel" aria-label="Priority matrix">
+            <div class="panel-title">Capacity × Affinity Grid</div>
+            <div class="panel-sub">Each quadrant maps to a priority tier. Drag segments in; drag them out to the tray to un-place.</div>
+
+            <div class="board-wrap" id="captureRegion">
+                <div class="grid-frame">
+                    <div class="y-axis">
+                        <span class="axis-label">CAPACITY</span>
+                        <span class="axis-sub">Can they give?</span>
+                    </div>
+                    <div class="grid-col">
+                        <div class="grid" id="grid" aria-label="Drop grid: horizontal axis affinity, vertical axis capacity">
+                            <div class="quad p3">
+                                <span class="quad-tier">Priority 3</span>
+                                <span class="quad-desc">Requires education — money exists, connection doesn't yet</span>
+                            </div>
+                            <div class="quad p1">
+                                <span class="quad-tier">Priority 1</span>
+                                <span class="quad-desc">Cultivate immediately — your best prospects</span>
+                            </div>
+                            <div class="quad dep">
+                                <span class="quad-tier">Deprioritize</span>
+                                <span class="quad-desc">Not worth active investment right now</span>
+                            </div>
+                            <div class="quad p2">
+                                <span class="quad-tier">Priority 2</span>
+                                <span class="quad-desc">Nurture for the future — believers who can grow</span>
+                            </div>
+                            <!-- tokens injected here -->
+                        </div>
+                        <div class="axis-ends"><span>Lower affinity</span><span>Higher affinity</span></div>
+                        <div class="x-axis">
+                            <span class="axis-label">AFFINITY</span>
+                            <span class="axis-sub"> · do they care?</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Note popover -->
+<div class="popover-backdrop" id="popover" role="dialog" aria-modal="true" aria-labelledby="popTitle">
+    <div class="popover">
+        <h3 id="popTitle">Segment</h3>
+        <span class="tier-badge" id="popTier">—</span>
+        <label for="popNote">Why did you place it here? (one line)</label>
+        <textarea id="popNote" placeholder="e.g. High capacity (Toll Brothers has funded before), high affinity (talent pipeline overlap) → Priority 1."></textarea>
+        <button class="remove-link" id="popRemove" type="button">← Return this segment to the tray</button>
+        <div class="popover-actions">
+            <button class="btn" id="popCancel" type="button">Cancel</button>
+            <button class="btn btn-primary" id="popSave" type="button">Save note</button>
+        </div>
+    </div>
+</div>
+
+<!-- Export modal -->
+<div class="modal-backdrop" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="exportTitle">
+    <div class="modal">
+        <div class="modal-head">
+            <h3 id="exportTitle">Export priority matrix</h3>
+            <button class="btn close" id="exportClose" type="button">Close</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:12px;">A clean report of your matrix — the visual grid with your segments plotted, your “why here” notes, and each priority tier. Click <b>Save as PDF</b>, then choose <b>“Save as PDF”</b> as the destination in the print dialog.</p>
+            <p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:12px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:8px 11px;">💡 <b>Tip:</b> In the print dialog, turn on <b>“Background graphics”</b> (under “More settings”) so the quadrant colors and tier labels show up in your PDF.</p>
+            <div id="exportReport" class="report"></div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn" id="exportClose2" type="button">Close</button>
+            <button class="btn btn-primary" id="savePdfBtn" type="button">⬇ Save as PDF</button>
+        </div>
+    </div>
+</div>
+
+<!-- Print-only clean report (rendered on export) -->
+<div id="reportView" class="report" aria-hidden="true"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG — edit this block to fork the tool for other matrices
+   ============================================================ */
+const CONFIG = {
+    storageKey: "youthbuild-donor-matrix",
+    version: "1.0",
+    maxSegments: 8,
+    exportName: "Project1_PriorityMatrix",
+    seeds: [
+        { name: "Government Agencies",        family: "institutional" },
+        { name: "Private Foundations",        family: "institutional" },
+        { name: "Corporate Partners",         family: "institutional" },
+        { name: "Major Donors ($10K+)",       family: "individual" },
+        { name: "Mid-Tier Donors ($1K–$9,999)", family: "individual" },
+        { name: "Gen Z / Emerging Donors",    family: "individual" }
+    ],
+    // tier lookup by quadrant: x = affinity (0 lo, 1 hi), y = capacity (0 lo, 1 hi)
+    tiers: {
+        p1:  { label: "Priority 1", color: "#10b981", bg: "rgba(16,185,129,.12)", blurb: "Cultivate immediately" },
+        p2:  { label: "Priority 2", color: "#3b82f6", bg: "rgba(59,130,246,.12)", blurb: "Nurture for the future" },
+        p3:  { label: "Priority 3", color: "#d97706", bg: "rgba(245,158,11,.14)", blurb: "Requires education" },
+        dep: { label: "Deprioritize", color: "#64748b", bg: "rgba(148,163,184,.16)", blurb: "Not a current focus" }
+    }
+};
+
+/* ---------- State ---------- */
+let state = { studentName: "", phase: "draft", segments: [], metadata: { version: CONFIG.version, timestamp: 0 } };
+let uidCounter = 1;
+let selectedForPlacement = null; // chip id waiting for a tap-to-place
+let activePopoverId = null;
+
+const $ = (s, el = document) => el.querySelector(s);
+const grid = $("#grid");
+const trayList = $("#trayList");
+
+function uid() { return "seg-" + (uidCounter++) + "-" + (state.metadata.timestamp % 100000); }
+
+/* ---------- Tier math ---------- */
+function tierFor(x, y) {
+    const hiAff = x >= 0.5, hiCap = y >= 0.5;
+    if (hiCap && hiAff) return "p1";
+    if (hiCap && !hiAff) return "p3";
+    if (!hiCap && hiAff) return "p2";
+    return "dep";
+}
+
+/* ---------- Persistence ---------- */
+function save(flash = true) {
+    state.metadata.timestamp = Date.now();
+    try {
+        localStorage.setItem(CONFIG.storageKey, JSON.stringify(state));
+        if (flash) showSaved();
+    } catch (e) { /* storage full / blocked — non-fatal */ }
+}
+function load() {
+    try {
+        const raw = localStorage.getItem(CONFIG.storageKey);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && Array.isArray(parsed.segments)) {
+                state = parsed;
+                state.metadata = state.metadata || { version: CONFIG.version };
+                state.phase = state.phase === "validated" ? "validated" : "draft";
+                return true;
+            }
+        }
+    } catch (e) { /* ignore corrupt */ }
+    return false;
+}
+function seed() {
+    state.metadata.timestamp = Date.now();
+    state.segments = CONFIG.seeds.map(s => ({
+        id: uid(), name: s.name, family: s.family, placed: false, x: 0.5, y: 0.5, note: ""
+    }));
+    state.studentName = "";
+    state.phase = "draft";
+}
+
+let saveTimer = null;
+function showSaved() {
+    const pill = $("#savePill");
+    pill.classList.add("show");
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => pill.classList.remove("show"), 1400);
+}
+
+/* ---------- Rendering ---------- */
+function phaseLabel() { return state.phase === "validated" ? "Validated" : "Draft"; }
+
+function render() {
+    renderTray();
+    renderTokens();
+    updateCount();
+    $("#studentName").value = state.studentName || "";
+    $("#phaseLabelHeader").textContent = phaseLabel();
+    document.querySelectorAll(".phase-toggle button").forEach(b =>
+        b.classList.toggle("active", b.dataset.phase === state.phase));
+}
+
+function renderTray() {
+    trayList.innerHTML = "";
+    const unplaced = state.segments.filter(s => !s.placed);
+    if (unplaced.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "tray-empty";
+        empty.textContent = "All segments placed. Drag any back here to reconsider.";
+        trayList.appendChild(empty);
+        return;
+    }
+    unplaced.forEach(seg => trayList.appendChild(makeChip(seg)));
+}
+
+function makeChip(seg) {
+    const chip = document.createElement("div");
+    chip.className = "chip " + seg.family;
+    chip.dataset.id = seg.id;
+    chip.tabIndex = 0;
+    chip.setAttribute("role", "button");
+    chip.setAttribute("aria-label", seg.name + " — press Enter to place on grid");
+
+    const dot = document.createElement("span");
+    dot.className = "chip-dot";
+
+    const name = document.createElement("input");
+    name.className = "chip-name";
+    name.value = seg.name;
+    name.setAttribute("aria-label", "Segment name");
+    name.addEventListener("input", () => { seg.name = name.value; save(); });
+    name.addEventListener("keydown", e => { if (e.key === "Enter") name.blur(); });
+    // prevent drag when editing text
+    name.addEventListener("pointerdown", e => e.stopPropagation());
+
+    const x = document.createElement("button");
+    x.className = "chip-x";
+    x.innerHTML = "×";
+    x.title = "Delete segment";
+    x.setAttribute("aria-label", "Delete " + seg.name);
+    x.addEventListener("pointerdown", e => e.stopPropagation());
+    x.addEventListener("click", () => deleteSegment(seg.id));
+
+    chip.append(dot, name, x);
+
+    attachDragSource(chip, seg.id);
+
+    // tap-to-place + keyboard
+    chip.addEventListener("click", e => {
+        if (e.target === name || e.target === x) return;
+        toggleSelectForPlacement(seg.id);
+    });
+    chip.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+            if (document.activeElement === name) return;
+            e.preventDefault();
+            toggleSelectForPlacement(seg.id);
+        }
+    });
+    if (selectedForPlacement === seg.id) chip.classList.add("selected");
+    return chip;
+}
+
+function renderTokens() {
+    grid.querySelectorAll(".token").forEach(t => t.remove());
+    state.segments.filter(s => s.placed).forEach(seg => {
+        const tk = document.createElement("div");
+        tk.className = "token " + seg.family + (seg.note ? " has-note" : "");
+        tk.dataset.id = seg.id;
+        tk.tabIndex = 0;
+        tk.style.left = (seg.x * 100) + "%";
+        tk.style.top = ((1 - seg.y) * 100) + "%"; // y=1 (hi capacity) at top
+        tk.setAttribute("role", "button");
+        tk.setAttribute("aria-label", seg.name + ", " + CONFIG.tiers[tierFor(seg.x, seg.y)].label + ". Enter to edit note, arrow keys to move.");
+
+        const dot = document.createElement("span");
+        dot.className = "tk-dot";
+        const nm = document.createElement("span");
+        nm.className = "tk-name";
+        nm.textContent = seg.name;
+        tk.append(dot, nm);
+
+        attachTokenDrag(tk, seg.id);
+        tk.addEventListener("keydown", e => tokenKeydown(e, seg.id));
+        grid.appendChild(tk);
+    });
+}
+
+function updateCount() {
+    const n = state.segments.length;
+    const placed = state.segments.filter(s => s.placed).length;
+    $("#countNote").textContent = `${n} segment${n !== 1 ? "s" : ""} · ${placed} placed` +
+        (n >= CONFIG.maxSegments ? " · max reached" : "");
+    $("#addBtn").disabled = n >= CONFIG.maxSegments;
+    $("#addInput").disabled = n >= CONFIG.maxSegments;
+}
+
+/* ---------- Add / delete ---------- */
+let newFamily = "institutional";
+function addSegment() {
+    const input = $("#addInput");
+    const name = input.value.trim();
+    if (!name || state.segments.length >= CONFIG.maxSegments) return;
+    state.segments.push({ id: uid(), name, family: newFamily, placed: false, x: 0.5, y: 0.5, note: "" });
+    input.value = "";
+    save(); render();
+    toast("Added “" + name + "”");
+}
+function deleteSegment(id) {
+    state.segments = state.segments.filter(s => s.id !== id);
+    if (selectedForPlacement === id) clearPlacement();
+    save(); render();
+}
+
+/* ---------- Placement selection (tap-to-place) ---------- */
+function toggleSelectForPlacement(id) {
+    selectedForPlacement = (selectedForPlacement === id) ? null : id;
+    const banner = $("#placeBanner");
+    if (selectedForPlacement) {
+        const seg = getSeg(id);
+        $("#placeBannerText").textContent = `Tap a spot on the grid to place “${seg.name}”`;
+        banner.classList.add("show");
+        grid.classList.add("drop-active");
+    } else {
+        clearPlacement();
+    }
+    renderTray();
+}
+function clearPlacement() {
+    selectedForPlacement = null;
+    $("#placeBanner").classList.remove("show");
+    grid.classList.remove("drop-active");
+}
+function getSeg(id) { return state.segments.find(s => s.id === id); }
+
+/* place from a client (px) point inside the grid */
+function placeAtPoint(id, clientX, clientY) {
+    const r = grid.getBoundingClientRect();
+    let x = (clientX - r.left) / r.width;
+    let y = 1 - (clientY - r.top) / r.height; // invert: top = hi capacity
+    x = Math.max(0.04, Math.min(0.96, x));
+    y = Math.max(0.04, Math.min(0.96, y));
+    const seg = getSeg(id);
+    seg.placed = true; seg.x = x; seg.y = y;
+    clearPlacement();
+    save(); render();
+}
+
+/* grid tap handler for tap-to-place */
+grid.addEventListener("click", e => {
+    if (!selectedForPlacement) return;
+    if (e.target.closest(".token")) return;
+    placeAtPoint(selectedForPlacement, e.clientX, e.clientY);
+});
+
+/* ---------- Drag from tray (Pointer Events, touch-safe) ---------- */
+function attachDragSource(chip, id) {
+    let ghost = null, moved = false, startX = 0, startY = 0;
+    chip.addEventListener("pointerdown", e => {
+        if (e.button !== undefined && e.button !== 0) return;
+        if (e.target.classList.contains("chip-name") || e.target.classList.contains("chip-x")) return;
+        startX = e.clientX; startY = e.clientY; moved = false;
+        const move = ev => {
+            const dx = ev.clientX - startX, dy = ev.clientY - startY;
+            if (!moved && Math.hypot(dx, dy) < 6) return;
+            if (!moved) {
+                moved = true;
+                chip.classList.add("dragging");
+                grid.classList.add("drop-active");
+                ghost = makeGhost(getSeg(id).name, getSeg(id).family);
+            }
+            positionGhost(ghost, ev.clientX, ev.clientY);
+        };
+        const up = ev => {
+            document.removeEventListener("pointermove", move);
+            document.removeEventListener("pointerup", up);
+            chip.classList.remove("dragging");
+            grid.classList.remove("drop-active");
+            if (ghost) { ghost.remove(); ghost = null; }
+            if (moved && overGrid(ev.clientX, ev.clientY)) {
+                placeAtPoint(id, ev.clientX, ev.clientY);
+            }
+        };
+        document.addEventListener("pointermove", move);
+        document.addEventListener("pointerup", up);
+    });
+}
+
+/* ---------- Drag a placed token ---------- */
+function attachTokenDrag(tk, id) {
+    let moved = false, startX = 0, startY = 0, offX = 0, offY = 0;
+    tk.addEventListener("pointerdown", e => {
+        if (e.button !== undefined && e.button !== 0) return;
+        e.preventDefault();
+        startX = e.clientX; startY = e.clientY; moved = false;
+        const r = tk.getBoundingClientRect();
+        offX = e.clientX - (r.left + r.width / 2);
+        offY = e.clientY - (r.top + r.height / 2);
+        tk.setPointerCapture && tk.setPointerCapture(e.pointerId);
+
+        const move = ev => {
+            const dx = ev.clientX - startX, dy = ev.clientY - startY;
+            if (!moved && Math.hypot(dx, dy) < 5) return;
+            moved = true;
+            tk.classList.add("dragging");
+            const gr = grid.getBoundingClientRect();
+            let x = (ev.clientX - offX - gr.left) / gr.width;
+            let y = 1 - (ev.clientY - offY - gr.top) / gr.height;
+            const overTray = overElement(ev.clientX, ev.clientY, trayList.closest(".panel"));
+            tk.style.opacity = overTray ? "0.3" : "0.85";
+            x = Math.max(0.04, Math.min(0.96, x));
+            y = Math.max(0.04, Math.min(0.96, y));
+            const seg = getSeg(id);
+            seg.x = x; seg.y = y;
+            tk.style.left = (x * 100) + "%";
+            tk.style.top = ((1 - y) * 100) + "%";
+        };
+        const up = ev => {
+            document.removeEventListener("pointermove", move);
+            document.removeEventListener("pointerup", up);
+            tk.classList.remove("dragging");
+            tk.style.opacity = "";
+            if (!moved) { openNote(id); return; }
+            // drop onto tray => unplace
+            if (overElement(ev.clientX, ev.clientY, trayList.closest(".panel"))) {
+                getSeg(id).placed = false;
+            }
+            save(); render();
+        };
+        document.addEventListener("pointermove", move);
+        document.addEventListener("pointerup", up);
+    });
+}
+
+function tokenKeydown(e, id) {
+    const seg = getSeg(id);
+    const step = e.shiftKey ? 0.12 : 0.04;
+    let handled = true;
+    switch (e.key) {
+        case "ArrowLeft":  seg.x = Math.max(0.04, seg.x - step); break;
+        case "ArrowRight": seg.x = Math.min(0.96, seg.x + step); break;
+        case "ArrowUp":    seg.y = Math.min(0.96, seg.y + step); break;
+        case "ArrowDown":  seg.y = Math.max(0.04, seg.y - step); break;
+        case "Enter": case " ": openNote(id); handled = true; break;
+        case "Backspace": case "Delete": seg.placed = false; break;
+        default: handled = false;
+    }
+    if (handled) {
+        e.preventDefault();
+        save(false); render();
+        const again = grid.querySelector(`.token[data-id="${id}"]`);
+        if (again) again.focus();
+    }
+}
+
+/* ---------- Drag ghost helpers ---------- */
+function makeGhost(name, family) {
+    const g = document.createElement("div");
+    g.className = "token " + family + " dragging";
+    g.style.position = "fixed";
+    g.style.pointerEvents = "none";
+    g.style.zIndex = "999";
+    g.innerHTML = `<span class="tk-dot"></span><span class="tk-name">${escapeHtml(name)}</span>`;
+    document.body.appendChild(g);
+    return g;
+}
+function positionGhost(g, x, y) { if (g) { g.style.left = x + "px"; g.style.top = y + "px"; } }
+function overGrid(x, y) { return overElement(x, y, grid); }
+function overElement(x, y, el) {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+}
+function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+/* ---------- Note popover ---------- */
+function openNote(id) {
+    activePopoverId = id;
+    const seg = getSeg(id);
+    const tier = CONFIG.tiers[tierFor(seg.x, seg.y)];
+    $("#popTitle").textContent = seg.name;
+    const badge = $("#popTier");
+    badge.textContent = tier.label + " — " + tier.blurb;
+    badge.style.color = tier.color;
+    badge.style.background = tier.bg;
+    $("#popNote").value = seg.note || "";
+    $("#popover").classList.add("show");
+    setTimeout(() => $("#popNote").focus(), 40);
+}
+function closeNote() { $("#popover").classList.remove("show"); activePopoverId = null; }
+$("#popSave").addEventListener("click", () => {
+    if (activePopoverId) { getSeg(activePopoverId).note = $("#popNote").value.trim(); save(); render(); }
+    closeNote();
+});
+$("#popCancel").addEventListener("click", closeNote);
+$("#popRemove").addEventListener("click", () => {
+    if (activePopoverId) { getSeg(activePopoverId).placed = false; save(); render(); }
+    closeNote();
+});
+$("#popover").addEventListener("click", e => { if (e.target === $("#popover")) closeNote(); });
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") {
+        if ($("#exportModal").classList.contains("show")) closeExport();
+        else if ($("#popover").classList.contains("show")) closeNote();
+        else clearPlacement();
+    }
+});
+
+/* ---------- Header controls ---------- */
+$("#studentName").addEventListener("input", e => { state.studentName = e.target.value; save(); });
+document.querySelectorAll(".phase-toggle button").forEach(b => {
+    b.addEventListener("click", () => {
+        state.phase = b.dataset.phase === "validated" ? "validated" : "draft";
+        save(); render();
+    });
+});
+$("#addBtn").addEventListener("click", addSegment);
+$("#addInput").addEventListener("keydown", e => { if (e.key === "Enter") addSegment(); });
+document.querySelectorAll(".family-toggle button").forEach(b => {
+    b.addEventListener("click", () => {
+        document.querySelectorAll(".family-toggle button").forEach(x => x.classList.remove("active"));
+        b.classList.add("active");
+        newFamily = b.dataset.fam;
+    });
+});
+$("#resetBtn").addEventListener("click", () => {
+    if (confirm("Reset the matrix back to the 6 starting segments? This clears your placements and notes.")) {
+        seed(); save(); render(); toast("Reset to starting segments");
+    }
+});
+
+/* ---------- Export: clean PDF report ---------- */
+function tierRank(seg) {
+    const order = { p1: 0, p2: 1, p3: 2, dep: 3 };
+    return order[tierFor(seg.x, seg.y)];
+}
+function affinityWord(x) { return x >= 0.5 ? "Higher affinity" : "Lower affinity"; }
+function capacityWord(y) { return y >= 0.5 ? "Higher capacity" : "Lower capacity"; }
+function familyColor(fam) { return fam === "individual" ? "#ec4899" : "#6366f1"; }
+function pdfFileName() {
+    const safe = (state.studentName || "").trim().replace(/[^a-z0-9]+/gi, "");
+    return CONFIG.exportName + "_" + phaseLabel() + (safe ? "_" + safe : "_YourName");
+}
+
+function buildReportHTML() {
+    const date = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    const placed = state.segments.filter(s => s.placed);
+
+    // segments plotted on the mini-grid at their saved x/y
+    let tokens = "";
+    placed.forEach(seg => {
+        const color = familyColor(seg.family);
+        const left = Math.max(4, Math.min(96, seg.x * 100)).toFixed(1);
+        const top = Math.max(4, Math.min(96, (1 - seg.y) * 100)).toFixed(1);
+        tokens += `<span class="rm-token" style="left:${left}%;top:${top}%;border-color:${color};color:${color};">
+            <span class="rm-tdot" style="background:${color};"></span>${escapeHtml(seg.name)}</span>`;
+    });
+
+    let html = `
+        <div class="r-head">
+            <span class="r-badge">Donor Priority Matrix</span>
+            <h2>Donor Prioritization</h2>
+            <div class="r-sub">YouthBuild Global — AI-Powered Content &amp; Communications Strategy Externship &middot; Project 1: Donor Mapping</div>
+            <div class="r-meta">
+                <span><b>Prepared by:</b> ${escapeHtml(state.studentName || "—")}</span>
+                <span><b>Phase:</b> ${escapeHtml(phaseLabel())}</span>
+                <span><b>Date:</b> ${escapeHtml(date)}</span>
+                <span><b>Placed:</b> ${placed.length} of ${state.segments.length}</span>
+            </div>
+        </div>`;
+
+    // Visual matrix
+    html += `<h3>The Matrix</h3>
+        <div class="rm-ylab">&#9650; CAPACITY — higher = can give more</div>
+        <div class="rm-grid">
+            <div class="rm-quad rm-p3"><span class="rm-qt" style="color:#d97706;">Priority 3</span></div>
+            <div class="rm-quad rm-p1"><span class="rm-qt" style="color:var(--p1);">Priority 1</span></div>
+            <div class="rm-quad rm-dep"><span class="rm-qt" style="color:#64748b;">Deprioritize</span></div>
+            <div class="rm-quad rm-p2"><span class="rm-qt" style="color:var(--p2);">Priority 2</span></div>
+            ${tokens}
+        </div>
+        <div class="rm-xlab">AFFINITY — right = cares more &#9654;</div>`;
+
+    // Placements & notes table
+    html += `<h3>Placements &amp; Notes</h3>
+        <table>
+            <thead><tr>
+                <th class="l">Segment</th><th>Affinity</th><th>Capacity</th><th>Priority</th><th class="l">Why here</th>
+            </tr></thead>
+            <tbody>`;
+    const sorted = state.segments.slice().sort((a, b) => {
+        if (a.placed !== b.placed) return a.placed ? -1 : 1;
+        return tierRank(a) - tierRank(b);
+    });
+    sorted.forEach(seg => {
+        if (!seg.placed) {
+            html += `<tr><td class="l"><b>${escapeHtml(seg.name)}</b></td><td>—</td><td>—</td><td><span class="r-tier" style="color:#94a3b8;">not placed</span></td><td class="l">—</td></tr>`;
+        } else {
+            const tier = CONFIG.tiers[tierFor(seg.x, seg.y)];
+            const note = seg.note ? escapeHtml(seg.note).replace(/\n/g, "<br>") : "—";
+            html += `<tr>
+                <td class="l"><b>${escapeHtml(seg.name)}</b></td>
+                <td>${escapeHtml(affinityWord(seg.x))}</td>
+                <td>${escapeHtml(capacityWord(seg.y))}</td>
+                <td><span class="r-tier" style="color:${tier.color};background:${tier.bg};">${escapeHtml(tier.label)}</span></td>
+                <td class="l">${note}</td>
+            </tr>`;
+        }
+    });
+    html += `</tbody></table>`;
+
+    html += `<div class="r-foot">Generated with the Donor Priority Matrix tool &middot; Project 1: Donor Mapping</div>`;
+    return html;
+}
+
+function openExport() {
+    const html = buildReportHTML();
+    $("#exportReport").innerHTML = html;
+    $("#reportView").innerHTML = html;
+    $("#exportModal").classList.add("show");
+}
+function closeExport() { $("#exportModal").classList.remove("show"); }
+$("#exportBtn").addEventListener("click", openExport);
+$("#exportClose").addEventListener("click", closeExport);
+$("#exportClose2").addEventListener("click", closeExport);
+$("#exportModal").addEventListener("click", e => { if (e.target === $("#exportModal")) closeExport(); });
+
+$("#savePdfBtn").addEventListener("click", () => {
+    $("#reportView").innerHTML = buildReportHTML();
+    const prevTitle = document.title;
+    document.title = pdfFileName();
+    window.print();
+    setTimeout(() => { document.title = prevTitle; }, 600);
+});
+
+/* ---------- Toast ---------- */
+let toastTimer = null;
+function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ---------- Init ---------- */
+(function init() {
+    if (!load()) { seed(); save(false); }
+    render();
+})();
+</script>
+</body>
+</html>
