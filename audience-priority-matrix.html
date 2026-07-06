@@ -337,6 +337,64 @@
             .header-actions { width: 100%; }
             .name-field { flex: 1; } .name-field input { width: 100%; }
         }
+
+        /* ---------- Clean PDF report (modal preview + print) ---------- */
+        .report { color: #1e2130; background: #fff; font-size: 0.86rem; line-height: 1.5; }
+        .report .r-head { border-bottom: 2px solid #e4e5ee; padding-bottom: 12px; margin-bottom: 16px; }
+        .report .r-badge {
+            display: inline-block; background: var(--accent-primary); color: #fff; font-weight: 800;
+            font-size: 0.72rem; letter-spacing: .04em; text-transform: uppercase;
+            padding: 4px 11px; border-radius: 999px; margin-bottom: 10px;
+        }
+        .report h2 { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 4px; }
+        .report .r-sub { font-size: 0.82rem; color: #4b5060; margin-bottom: 12px; }
+        .report .r-meta { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.8rem; color: #4b5060; }
+        .report .r-meta b { color: #1e2130; }
+        .report h3 { font-size: 0.95rem; font-weight: 800; margin: 20px 0 10px; letter-spacing: -.01em; }
+
+        /* mini matrix in report */
+        .report .rm-ylab, .report .rm-xlab { font-size: 0.74rem; font-weight: 700; color: #4b5060; }
+        .report .rm-ylab { margin-bottom: 6px; }
+        .report .rm-xlab { margin-top: 6px; text-align: right; max-width: 420px; }
+        .report .rm-grid {
+            position: relative; width: 100%; max-width: 420px; aspect-ratio: 1 / 1;
+            border: 2px solid #e4e5ee; border-radius: 12px; overflow: hidden;
+            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+        }
+        .report .rm-quad { position: relative; padding: 8px; }
+        .report .rm-quad.rm-p2 { background: var(--p2-bg); border-right: 1px dashed #e4e5ee; border-bottom: 1px dashed #e4e5ee; }
+        .report .rm-quad.rm-p1 { background: var(--p1-bg); border-bottom: 1px dashed #e4e5ee; text-align: right; }
+        .report .rm-quad.rm-dep { background: var(--dep-bg); border-right: 1px dashed #e4e5ee; display: flex; align-items: flex-end; }
+        .report .rm-quad.rm-p3 { background: var(--p3-bg); text-align: right; display: flex; align-items: flex-end; justify-content: flex-end; }
+        .report .rm-qt { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; }
+        .report .rm-token {
+            position: absolute; transform: translate(-50%, -50%);
+            background: #fff; border: 1.5px solid #6c4bf4; border-radius: 20px;
+            padding: 3px 10px; font-size: 0.72rem; font-weight: 800; white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(20,20,50,.15); display: inline-flex; align-items: center; gap: 5px;
+        }
+        .report .rm-tdot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+        /* table */
+        .report table { border-collapse: collapse; width: 100%; font-size: 0.8rem; margin-top: 4px; }
+        .report th, .report td { border: 1px solid #e4e5ee; padding: 7px 9px; text-align: center; vertical-align: top; }
+        .report th.l, .report td.l { text-align: left; }
+        .report thead th { background: #f1f2f8; font-weight: 800; color: #4b5060; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .03em; }
+        .report .r-tier { display: inline-block; padding: 2px 8px; border-radius: 6px; font-weight: 800; font-size: 0.72rem; }
+
+        .report .r-carry { font-size: 0.86rem; margin-bottom: 8px; }
+        .report .r-quote { border-left: 4px solid var(--accent-primary); background: rgba(108,75,244,.06); border-radius: 0 8px 8px 0; padding: 10px 12px; font-size: 0.84rem; color: #1e2130; }
+        .report .r-quote.r-empty { color: #969bab; font-style: italic; }
+        .report .r-foot { margin-top: 20px; padding-top: 10px; border-top: 1px solid #e4e5ee; font-size: 0.72rem; color: #969bab; }
+
+        #reportView { display: none; }
+        @media print {
+            .app, .modal-backdrop, .popover-backdrop, .toast { display: none !important; }
+            body { background: #fff; }
+            #reportView { display: block !important; }
+            .report .rm-grid, .report table { break-inside: avoid; }
+            @page { margin: 14mm; }
+        }
     </style>
 </head>
 <body>
@@ -365,7 +423,7 @@
     <main class="main">
         <div class="hint">
             <span style="font-size:1.15rem;">&#128161;</span>
-            <div><b>Plot all three personas to decide which two you carry into Project 2.</b> Drag each persona from the tray onto the grid &mdash; or tap it, then tap where it belongs. Higher = bigger <b>Gap</b> (how underserved by current content), further right = bigger <b>Reach</b> (how many users / traffic). Click a placed persona to add a one-line &ldquo;why here&rdquo; note. Then lock in your <b>two personas to carry forward</b> and explain why. This is your draft &mdash; don&rsquo;t agonize over exact spots.</div>
+            <div><b>Plot all three personas to decide which one you&rsquo;ll work on for the rest of the program.</b> Drag each persona from the tray onto the grid &mdash; or tap it, then tap where it belongs. Higher = bigger <b>Gap</b> (how underserved by current content), further right = bigger <b>Reach</b> (how many users / traffic). Click a placed persona to add a one-line &ldquo;why here&rdquo; note. Then lock in your <b>one persona to carry forward</b> and explain why. This is your draft &mdash; don&rsquo;t agonize over exact spots.</div>
         </div>
 
         <!-- Persona tray -->
@@ -440,11 +498,11 @@
 
         <!-- Decision panel -->
         <section class="decision" aria-label="Carry-forward decision">
-            <h2>Which 2 personas are you carrying into Project 2?</h2>
-            <p class="sub">Pick exactly two. Your grid placements should justify the choice &mdash; the two you pick are usually the ones nearest &ldquo;Carry Forward.&rdquo;</p>
+            <h2>Which one persona will you work on for the rest of the program?</h2>
+            <p class="sub">Pick exactly one. Your grid placement should justify the choice &mdash; the one you pick is usually the persona nearest &ldquo;Carry Forward.&rdquo;</p>
             <div class="carry-picks" id="carryPicks"></div>
-            <label class="field-label" for="carrySummary">Which 2 personas I&rsquo;m carrying into Project 2 &mdash; and why</label>
-            <textarea id="carrySummary" placeholder="e.g. Members (highest reach AND biggest content gap) and Donors (smaller reach but a large, high-impact gap on the Donate page). Educators are already served reasonably well relative to their traffic, so I&rsquo;m deprioritizing them for deep strategy work."></textarea>
+            <label class="field-label" for="carrySummary">The one persona I&rsquo;m working on for the rest of the program &mdash; and why</label>
+            <textarea id="carrySummary" placeholder="e.g. Members &mdash; highest reach AND biggest content gap, so improving their strategy moves the most people. Donors have a high-impact gap but a smaller audience, and Educators are already served reasonably well relative to their traffic, so I&rsquo;m focusing my deep strategy work on Members."></textarea>
         </section>
 
         <!-- Footer actions -->
@@ -478,15 +536,19 @@
             <button class="btn close" id="exportClose" type="button">Close</button>
         </div>
         <div class="modal-body">
-            <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:10px;">Markdown summary of your persona prioritization. Copy it into your Annotated Audit Summary to justify your Project 2 persona selection, or download the <code>.md</code> file.</p>
-            <textarea id="exportText" readonly spellcheck="false"></textarea>
+            <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:12px;">A clean report of your matrix &mdash; the visual grid with your personas plotted, your &ldquo;why here&rdquo; notes, and your carry-forward decision. Click <b>Save as PDF</b>, then choose <b>&ldquo;Save as PDF&rdquo;</b> as the destination in the print dialog.</p>
+            <p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:12px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:8px 11px;">&#128161; <b>Tip:</b> In the print dialog, turn on <b>&ldquo;Background graphics&rdquo;</b> (under &ldquo;More settings&rdquo;) so the quadrant colors and tier labels show up in your PDF.</p>
+            <div id="exportReport" class="report"></div>
         </div>
         <div class="modal-foot">
-            <button class="btn" id="copyBtn" type="button">&#128203; Copy to clipboard</button>
-            <button class="btn btn-primary" id="downloadBtn" type="button">&#8595; Download .md</button>
+            <button class="btn" id="exportClose2" type="button">Close</button>
+            <button class="btn btn-primary" id="savePdfBtn" type="button">&#8595; Save as PDF</button>
         </div>
     </div>
 </div>
+
+<!-- Print-only clean report (rendered on export) -->
+<div id="reportView" class="report" aria-hidden="true"></div>
 
 <div class="toast" id="toast"></div>
 
@@ -496,7 +558,7 @@
    ============================================================ */
 const CONFIG = {
     storageKey: "dosomething-audience-matrix",
-    version: "1.0",
+    version: "2.0",
     personas: [
         { id: "member",   name: "Members",   color: "#6c4bf4", desc: "Gen Z activists (13–25) seeking ways to take action" },
         { id: "educator", name: "Educators", color: "#0ea5a4", desc: "Teachers & youth workers seeking classroom-ready resources" },
@@ -540,7 +602,7 @@ let state = {
     studentName: "",
     framing: "reachgap",
     personas: [],          // { id, placed, x, y, note }
-    carry: [],             // persona ids selected to carry forward (max 2)
+    carry: [],             // persona ids selected to carry forward (max 1)
     carrySummary: "",
     metadata: { version: CONFIG.version, timestamp: 0 }
 };
@@ -582,7 +644,7 @@ function load() {
                 state = parsed;
                 state.metadata = state.metadata || { version: CONFIG.version };
                 state.framing = state.framing || "reachgap";
-                state.carry = state.carry || [];
+                state.carry = Array.isArray(state.carry) ? state.carry.slice(0, 1) : [];
                 return true;
             }
         }
@@ -724,19 +786,18 @@ function renderCarryPicks() {
     });
     const hint = document.createElement("span");
     hint.className = "carry-hint";
-    hint.textContent = state.carry.length + " of 2 selected";
+    hint.textContent = state.carry.length + " of 1 selected";
     wrap.appendChild(hint);
 }
 
 function toggleCarry(id) {
     const i = state.carry.indexOf(id);
-    if (i >= 0) { state.carry.splice(i, 1); }
-    else {
-        if (state.carry.length >= 2) {
-            toast("Pick exactly two — deselect one first");
-            return;
-        }
-        state.carry.push(id);
+    if (i >= 0) {
+        // clicking the selected persona deselects it
+        state.carry.splice(i, 1);
+    } else {
+        // only one persona may be selected — picking a new one replaces the current
+        state.carry = [id];
     }
     save(); renderCarryPicks();
 }
@@ -950,72 +1011,113 @@ function resetMatrix() {
 $("#resetBtn").addEventListener("click", resetMatrix);
 $("#resetBtn2").addEventListener("click", resetMatrix);
 
-/* ---------- Export (markdown) ---------- */
+/* ---------- Export: clean PDF report ---------- */
 function axisWord(v, axis) { return v >= 0.5 ? axis.hi : axis.lo; }
-function buildMarkdown() {
-    const f = CONFIG.framings[state.framing];
-    const date = new Date().toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-    let md = `# Audience Priority Matrix\n\n`;
-    md += `**Program:** DoSomething — AI-Powered Content Communications Strategy Externship (Project 1: Platform Content Audit)\n`;
-    if (state.studentName) md += `**Auditor:** ${state.studentName}\n`;
-    md += `**Framing:** ${f.label}  (X = ${f.x.name.toLowerCase()}, Y = ${f.y.name.toLowerCase()})\n`;
-    md += `**Date:** ${date}\n\n---\n\n`;
+function cap(s) { return s.charAt(0) + s.slice(1).toLowerCase(); }
+function pdfFileName() {
+    const safeName = (state.studentName || "").trim().replace(/[^a-z0-9]+/gi, "");
+    return "AudiencePriorityMatrix_Project1" + (safeName ? "_" + safeName : "_YourName");
+}
 
-    md += `## Persona Placements\n\n`;
-    md += `| Persona | ${cap(f.x.name)} | ${cap(f.y.name)} | Priority | Why here |\n`;
-    md += `|---------|--------|--------|----------|----------|\n`;
+function buildReportHTML() {
+    const f = CONFIG.framings[state.framing];
+    const date = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    const placed = state.personas.filter(p => p.placed);
+
+    // personas plotted on the mini-grid at their saved x/y
+    let tokens = "";
+    placed.forEach(p => {
+        const cfg = personaCfg(p.id);
+        const left = Math.max(4, Math.min(96, p.x * 100)).toFixed(1);
+        const top = Math.max(4, Math.min(96, (1 - p.y) * 100)).toFixed(1);
+        tokens += `<span class="rm-token" style="left:${left}%;top:${top}%;border-color:${cfg.color};color:${cfg.color};">
+            <span class="rm-tdot" style="background:${cfg.color};"></span>${escapeHtml(cfg.name)}</span>`;
+    });
+
+    let html = `
+        <div class="r-head">
+            <span class="r-badge">Audience Priority Matrix</span>
+            <h2>Persona Prioritization</h2>
+            <div class="r-sub">DoSomething — AI-Powered Content &amp; Communications Strategy Externship &middot; Project 1: Platform Content Audit</div>
+            <div class="r-meta">
+                <span><b>Auditor:</b> ${escapeHtml(state.studentName || "—")}</span>
+                <span><b>Framing:</b> ${escapeHtml(f.label)}</span>
+                <span><b>Date:</b> ${escapeHtml(date)}</span>
+                <span><b>Placed:</b> ${placed.length} of 3</span>
+            </div>
+        </div>`;
+
+    // Visual matrix
+    html += `<h3>The Matrix</h3>
+        <div class="rm-ylab">&#9650; ${escapeHtml(f.y.name)} — higher = ${escapeHtml(f.y.hi.toLowerCase())}</div>
+        <div class="rm-grid">
+            <div class="rm-quad rm-p2"><span class="rm-qt" style="color:var(--p2);">Strong Candidate</span></div>
+            <div class="rm-quad rm-p1"><span class="rm-qt" style="color:var(--p1);">Carry Forward</span></div>
+            <div class="rm-quad rm-dep"><span class="rm-qt" style="color:#64748b;">Deprioritize</span></div>
+            <div class="rm-quad rm-p3"><span class="rm-qt" style="color:#d97706;">Maintain</span></div>
+            ${tokens}
+        </div>
+        <div class="rm-xlab">${escapeHtml(f.x.name)} — right = ${escapeHtml(f.x.hi.toLowerCase())} &#9654;</div>`;
+
+    // Placements & notes table
+    html += `<h3>Placements &amp; Notes</h3>
+        <table>
+            <thead><tr>
+                <th class="l">Persona</th><th>${escapeHtml(cap(f.x.name))}</th><th>${escapeHtml(cap(f.y.name))}</th><th>Priority</th><th class="l">Why here</th>
+            </tr></thead>
+            <tbody>`;
     CONFIG.personas.forEach(cfg => {
         const p = getP(cfg.id);
         if (!p.placed) {
-            md += `| ${cfg.name} | — | — | _not placed_ | — |\n`;
+            html += `<tr><td class="l"><b>${escapeHtml(cfg.name)}</b></td><td>—</td><td>—</td><td><span class="r-tier" style="color:#94a3b8;">not placed</span></td><td class="l">—</td></tr>`;
         } else {
             const tier = CONFIG.tiers[tierFor(p.x, p.y)];
-            const note = (p.note || "").replace(/\|/g, "\\|").replace(/\n/g, " ") || "—";
-            md += `| ${cfg.name} | ${axisWord(p.x, f.x)} | ${axisWord(p.y, f.y)} | ${tier.label} | ${note} |\n`;
+            const note = p.note ? escapeHtml(p.note).replace(/\n/g, "<br>") : "—";
+            html += `<tr>
+                <td class="l"><b>${escapeHtml(cfg.name)}</b></td>
+                <td>${escapeHtml(axisWord(p.x, f.x))}</td>
+                <td>${escapeHtml(axisWord(p.y, f.y))}</td>
+                <td><span class="r-tier" style="color:${tier.color};background:${tier.bg};">${escapeHtml(tier.label)}</span></td>
+                <td class="l">${note}</td>
+            </tr>`;
         }
     });
-    md += `\n---\n\n## Carrying Into Project 2\n\n`;
-    if (state.carry.length) {
-        md += `**Personas selected (${state.carry.length} of 2):** ` +
-            state.carry.map(id => personaCfg(id).name).join(" + ") + `\n\n`;
-    } else {
-        md += `**Personas selected:** _none yet_\n\n`;
-    }
-    md += (state.carrySummary && state.carrySummary.trim())
-        ? `> ${state.carrySummary.replace(/\n/g, "\n> ")}\n`
-        : `> _Add your rationale for which two personas you are carrying forward and why._\n`;
-    return md;
-}
-function cap(s) { return s.charAt(0) + s.slice(1).toLowerCase(); }
+    html += `</tbody></table>`;
 
-let currentExport = "";
+    // Carry-forward decision
+    html += `<h3>My persona for the rest of the program</h3>`;
+    if (state.carry.length) {
+        html += `<p class="r-carry"><b>Persona selected:</b> ${escapeHtml(personaCfg(state.carry[0]).name)}</p>`;
+    } else {
+        html += `<p class="r-carry"><b>Persona selected:</b> <i>none yet</i></p>`;
+    }
+    html += (state.carrySummary && state.carrySummary.trim())
+        ? `<div class="r-quote">${escapeHtml(state.carrySummary).replace(/\n/g, "<br>")}</div>`
+        : `<div class="r-quote r-empty">Add your rationale for which one persona you are working on for the rest of the program and why.</div>`;
+
+    html += `<div class="r-foot">Generated with the Audience Priority Matrix tool &middot; Project 1: Platform Content Audit</div>`;
+    return html;
+}
+
 function openExport() {
-    currentExport = buildMarkdown();
-    $("#exportText").value = currentExport;
+    const html = buildReportHTML();
+    $("#exportReport").innerHTML = html;
+    $("#reportView").innerHTML = html;
     $("#exportModal").classList.add("show");
 }
 function closeExport() { $("#exportModal").classList.remove("show"); }
 $("#exportBtn").addEventListener("click", openExport);
 $("#exportBtn2").addEventListener("click", openExport);
 $("#exportClose").addEventListener("click", closeExport);
+$("#exportClose2").addEventListener("click", closeExport);
 $("#exportModal").addEventListener("click", e => { if (e.target === $("#exportModal")) closeExport(); });
 
-$("#copyBtn").addEventListener("click", () => {
-    const ta = $("#exportText");
-    const done = () => toast("Copied to clipboard ✓");
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(ta.value).then(done).catch(() => { ta.select(); document.execCommand("copy"); done(); });
-    } else { ta.select(); document.execCommand("copy"); done(); }
-});
-$("#downloadBtn").addEventListener("click", () => {
-    const safeName = (state.studentName || "").trim().replace(/[^a-z0-9]+/gi, "");
-    const fname = "AudiencePriorityMatrix" + (safeName ? "_" + safeName : "") + ".md";
-    const blob = new Blob([$("#exportText").value], { type: "text/markdown;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = fname; a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 500);
-    toast("Downloaded " + fname);
+$("#savePdfBtn").addEventListener("click", () => {
+    $("#reportView").innerHTML = buildReportHTML();
+    const prevTitle = document.title;
+    document.title = pdfFileName();
+    window.print();
+    setTimeout(() => { document.title = prevTitle; }, 600);
 });
 
 /* ---------- Toast ---------- */
