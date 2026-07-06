@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audience Priority Matrix — DoSomething Platform Content Audit</title>
+    <style>
+        :root {
+            --bg-primary: #f7f7fb;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f1f2f8;
+            --accent-primary: #6c4bf4;   /* DoSomething-ish purple */
+            --accent-secondary: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #6c4bf4, #8b5cf6, #b14bf4);
+            --member: #6c4bf4;   /* purple */
+            --educator: #0ea5a4; /* teal   */
+            --donor: #f0428a;    /* pink   */
+            /* priority tier colors */
+            --p1: #10b981;   --p1-bg: rgba(16, 185, 129, 0.10);   /* carry forward */
+            --p2: #3b82f6;   --p2-bg: rgba(59, 130, 246, 0.10);   /* strong candidate */
+            --p3: #f59e0b;   --p3-bg: rgba(245, 158, 11, 0.12);   /* maintain */
+            --dep: #94a3b8;  --dep-bg: rgba(148, 163, 184, 0.12);  /* deprioritize */
+            --text-primary: #1e2130;
+            --text-secondary: #4b5060;
+            --text-muted: #969bab;
+            --border: #e4e5ee;
+            --shadow-sm: 0 1px 2px rgba(20,20,50,0.06);
+            --shadow: 0 4px 6px -1px rgba(20,20,50,0.10), 0 2px 4px -2px rgba(20,20,50,0.08);
+            --shadow-lg: 0 12px 28px -8px rgba(30,20,80,0.22);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* ---------- Header ---------- */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            width: 44px; height: 44px; flex-shrink: 0;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 23px;
+        }
+        .logo h1 { font-size: 1.05rem; font-weight: 800; line-height: 1.2; letter-spacing: -.01em; }
+        .logo p { font-size: 0.78rem; color: var(--text-muted); }
+        .header-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .name-field {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 9px; padding: 4px 10px;
+        }
+        .name-field label { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; }
+        .name-field input {
+            border: none; background: transparent; font-family: inherit;
+            font-size: 0.85rem; color: var(--text-primary); width: 120px; outline: none;
+        }
+
+        .btn {
+            font-family: inherit; font-size: 0.85rem; font-weight: 700;
+            border: 1px solid var(--border); background: var(--bg-secondary);
+            color: var(--text-secondary); padding: 9px 15px; border-radius: 9px;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+            min-height: 40px; transition: all .15s ease;
+        }
+        .btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .btn-primary {
+            background: var(--accent-gradient); color: #fff; border: none;
+            box-shadow: var(--shadow);
+        }
+        .btn-primary:hover { color: #fff; opacity: .93; }
+        .btn-danger:hover { border-color: #ef4444; color: #ef4444; }
+
+        .footer-actions {
+            grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap;
+            justify-content: space-between; align-items: center;
+        }
+        .save-pill {
+            font-size: 0.72rem; color: var(--p1); font-weight: 700;
+            display: inline-flex; align-items: center; gap: 5px; opacity: 0;
+            transition: opacity .3s ease;
+        }
+        .save-pill.show { opacity: 1; }
+        .save-pill::before { content: "\25CF"; font-size: 0.6rem; }
+
+        /* ---------- Layout ---------- */
+        .main {
+            max-width: 900px; margin: 0 auto; width: 100%;
+            padding: 16px; display: grid; gap: 12px;
+            grid-template-columns: 300px auto;
+            justify-content: center; align-items: start;
+        }
+        @media (max-width: 900px) {
+            .main { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 12px; box-shadow: var(--shadow-sm);
+        }
+        .panel-title { font-size: 0.95rem; font-weight: 800; margin-bottom: 3px; }
+        .panel-sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
+
+        /* ---------- Instruction banner ---------- */
+        .hint {
+            background: linear-gradient(135deg, rgba(108,75,244,.08), rgba(177,75,244,.06));
+            border: 1px solid rgba(108,75,244,.22);
+            border-radius: 12px; padding: 10px 14px; font-size: 0.85rem;
+            color: var(--text-secondary); display: flex; gap: 10px; align-items: flex-start;
+            grid-column: 1 / -1;
+        }
+        .hint b { color: var(--text-primary); }
+
+        /* ---------- Persona tray ---------- */
+        .tray-list { display: flex; flex-direction: column; gap: 10px; min-height: 40px; }
+        .tray-list.drop-active { outline: 2px dashed var(--accent-primary); outline-offset: 4px; border-radius: 10px; }
+        .tray-empty { font-size: 0.8rem; color: var(--text-muted); font-style: italic; padding: 8px 4px; }
+
+        .chip {
+            display: flex; align-items: flex-start; gap: 10px;
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-left: 4px solid var(--member);
+            border-radius: 10px; padding: 10px 11px; cursor: grab;
+            box-shadow: var(--shadow-sm); transition: box-shadow .15s, transform .1s, border-color .15s;
+            touch-action: none; user-select: none;
+        }
+        .chip:hover { box-shadow: var(--shadow); }
+        .chip:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+        .chip.selected { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(108,75,244,.22); }
+        .chip.dragging { opacity: .4; }
+        .chip-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--member); flex-shrink: 0; margin-top: 3px; }
+        .chip-body { flex: 1; min-width: 0; }
+        .chip-name { font-size: 0.9rem; font-weight: 800; color: var(--text-primary); }
+        .chip-desc { font-size: 0.74rem; color: var(--text-secondary); margin-top: 2px; line-height: 1.35; }
+
+        .tray-controls { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .count-note { font-size: 0.74rem; color: var(--text-muted); text-align: center; font-weight: 600; }
+        .legend-key { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; font-size: 0.74rem; color: var(--text-secondary); }
+        .legend-key span { display: inline-flex; align-items: center; gap: 7px; }
+        .legend-key i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+        /* ---------- Framing toggle ---------- */
+        .framing-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+        .framing-label { font-size: 0.76rem; font-weight: 700; color: var(--text-secondary); }
+        .framing-toggle { display: flex; gap: 6px; }
+        .framing-toggle button {
+            font-family: inherit; font-size: 0.76rem; font-weight: 700;
+            border: 1.5px solid var(--border); background: var(--bg-input);
+            border-radius: 999px; padding: 7px 14px; cursor: pointer; color: var(--text-secondary);
+            transition: all .15s ease;
+        }
+        .framing-toggle button.active {
+            border-color: var(--accent-primary); color: var(--accent-primary); background: rgba(108,75,244,.08);
+        }
+
+        /* ---------- Matrix / grid ---------- */
+        .board-wrap { position: relative; }
+        .grid-frame { display: flex; gap: 10px; }
+        .y-axis {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 34px; flex-shrink: 0;
+        }
+        .y-axis .axis-label {
+            writing-mode: vertical-rl; transform: rotate(180deg);
+            font-weight: 800; font-size: 0.88rem; letter-spacing: .03em;
+        }
+        .y-axis .axis-sub { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+        .grid-col { flex: 0 1 440px; min-width: 0; max-width: 440px; }
+
+        .grid {
+            position: relative; width: 100%; max-width: 440px; aspect-ratio: 1 / 1;
+            border-radius: 14px; overflow: hidden;
+            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+            border: 2px solid var(--border); background: var(--bg-secondary);
+            touch-action: none;
+        }
+        .grid.drop-active { border-color: var(--accent-primary); }
+        .quad {
+            position: relative; padding: 11px;
+            display: flex; flex-direction: column;
+            pointer-events: none; /* drops handled by .grid */
+        }
+        .quad.p2 { background: var(--p2-bg); border-right: 1px dashed var(--border); border-bottom: 1px dashed var(--border); }
+        .quad.p1 { background: var(--p1-bg); border-bottom: 1px dashed var(--border); }
+        .quad.dep { background: var(--dep-bg); border-right: 1px dashed var(--border); }
+        .quad.p3 { background: var(--p3-bg); }
+        .quad-tier { font-size: 0.72rem; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+        .quad.p1 .quad-tier { color: var(--p1); }
+        .quad.p2 .quad-tier { color: var(--p2); }
+        .quad.p3 .quad-tier { color: #d97706; }
+        .quad.dep .quad-tier { color: #64748b; }
+        .quad-desc { font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px; max-width: 92%; }
+        .quad.p1 { align-items: flex-end; text-align: right; }
+        .quad.p1 .quad-desc { margin-left: auto; }
+        .quad.p3 { align-items: flex-end; text-align: right; justify-content: flex-end; }
+        .quad.p3 .quad-desc { margin-left: auto; }
+        .quad.dep { justify-content: flex-end; }
+
+        /* placed tokens */
+        .token {
+            position: absolute; transform: translate(-50%, -50%);
+            background: #fff; border: 1.5px solid var(--member);
+            border-radius: 20px; padding: 5px 12px 5px 9px;
+            font-size: 0.8rem; font-weight: 700; color: var(--text-primary);
+            box-shadow: var(--shadow); cursor: grab; white-space: nowrap;
+            display: flex; align-items: center; gap: 6px; pointer-events: auto;
+            touch-action: none; user-select: none; z-index: 2;
+            max-width: 48%;
+        }
+        .token .tk-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--member); flex-shrink: 0; }
+        .token .tk-name { overflow: hidden; text-overflow: ellipsis; }
+        .token.dragging { opacity: .85; box-shadow: var(--shadow-lg); z-index: 10; cursor: grabbing; }
+        .token.has-note::after { content: "\1F4DD"; font-size: 0.62rem; margin-left: 2px; }
+        .token:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+        .x-axis { text-align: center; margin-top: 8px; margin-left: 44px; }
+        .x-axis .axis-label { font-weight: 800; font-size: 0.88rem; letter-spacing: .03em; }
+        .x-axis .axis-sub { font-size: 0.7rem; color: var(--text-muted); }
+        .axis-ends { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); margin: 4px 6px 0 48px; }
+
+        /* place-mode banner */
+        .place-banner {
+            display: none; align-items: center; gap: 8px;
+            background: rgba(108,75,244,.10); border: 1px solid rgba(108,75,244,.3);
+            color: var(--accent-primary); font-size: 0.8rem; font-weight: 700;
+            border-radius: 10px; padding: 8px 12px; margin-bottom: 12px;
+        }
+        .place-banner.show { display: flex; }
+
+        /* ---------- Decision panel ---------- */
+        .decision {
+            grid-column: 1 / -1;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-left: 5px solid var(--accent-primary);
+            border-radius: 14px; padding: 12px 16px; box-shadow: var(--shadow-sm);
+        }
+        .decision h2 { font-size: 0.98rem; font-weight: 800; margin-bottom: 3px; }
+        .decision p.sub { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; }
+        .carry-picks { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+        .carry-toggle {
+            font-family: inherit; font-size: 0.85rem; font-weight: 800;
+            border: 1.5px solid var(--border); background: var(--bg-input);
+            color: var(--text-secondary); padding: 9px 16px; border-radius: 999px;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+            transition: all .15s ease;
+        }
+        .carry-toggle .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .carry-toggle.on { color: #fff; border-color: transparent; }
+        .carry-hint { font-size: 0.74rem; color: var(--text-muted); font-weight: 600; align-self: center; }
+        .decision label.field-label { display: block; font-size: 0.76rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+        .decision textarea {
+            width: 100%; border: 1px solid var(--border); background: var(--bg-input);
+            border-radius: 10px; padding: 11px 13px; font-family: inherit; font-size: 0.88rem;
+            resize: vertical; min-height: 90px; outline: none; color: var(--text-primary);
+        }
+        .decision textarea:focus { border-color: var(--accent-primary); background: var(--bg-secondary); }
+
+        /* ---------- Note popover ---------- */
+        .popover-backdrop {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            background: rgba(20,18,45,.42); align-items: center; justify-content: center; padding: 20px;
+        }
+        .popover-backdrop.show { display: flex; }
+        .popover {
+            background: #fff; border-radius: 16px; box-shadow: var(--shadow-lg);
+            width: 100%; max-width: 440px; padding: 20px;
+        }
+        .popover h3 { font-size: 1rem; margin-bottom: 3px; }
+        .popover .tier-badge {
+            display: inline-block; font-size: 0.72rem; font-weight: 800; letter-spacing: .03em;
+            text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin: 8px 0 12px;
+        }
+        .popover label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; }
+        .popover textarea {
+            width: 100%; border: 1px solid var(--border); border-radius: 10px;
+            padding: 10px; font-family: inherit; font-size: 0.88rem; resize: vertical; min-height: 70px; outline: none;
+        }
+        .popover textarea:focus { border-color: var(--accent-primary); }
+        .popover-actions { display: flex; gap: 10px; margin-top: 16px; }
+        .popover-actions .btn { flex: 1; justify-content: center; }
+        .popover .remove-link {
+            background: none; border: none; color: #ef4444; font-family: inherit;
+            font-size: 0.78rem; font-weight: 700; cursor: pointer; margin-top: 12px; padding: 4px;
+        }
+
+        /* ---------- Export modal ---------- */
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            background: rgba(20,18,45,.42); align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-backdrop.show { display: flex; }
+        .modal {
+            background: #fff; border-radius: 16px; box-shadow: var(--shadow-lg);
+            width: 100%; max-width: 640px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .modal-head { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .modal-head h3 { font-size: 1.05rem; font-weight: 800; }
+        .modal-head .close { margin-left: auto; }
+        .modal-body { padding: 16px 20px; overflow: auto; }
+        .modal-body textarea {
+            width: 100%; min-height: 320px; border: 1px solid var(--border); border-radius: 10px;
+            padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.8rem; line-height: 1.55; resize: vertical; outline: none; color: var(--text-primary);
+            background: var(--bg-input); white-space: pre;
+        }
+        .modal-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: var(--text-primary); color: #fff; padding: 11px 20px; border-radius: 10px;
+            font-size: 0.85rem; font-weight: 700; box-shadow: var(--shadow-lg); opacity: 0;
+            transition: all .25s ease; pointer-events: none; z-index: 200;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 620px) {
+            .header-actions { width: 100%; }
+            .name-field { flex: 1; } .name-field input { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">&#127919;</div>
+                <div>
+                    <h1>Audience Priority Matrix</h1>
+                    <p>DoSomething Platform Content Audit &middot; Project 1 &middot; Page 13</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="save-pill" id="savePill">Saved</span>
+                <div class="name-field">
+                    <label for="studentName">Name</label>
+                    <input type="text" id="studentName" placeholder="Your name" autocomplete="off">
+                </div>
+                <button class="btn" id="resetBtn" type="button">&#8635; Reset</button>
+                <button class="btn btn-primary" id="exportBtn" type="button">&#8593; Export</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="hint">
+            <span style="font-size:1.15rem;">&#128161;</span>
+            <div><b>Plot all three personas to decide which two you carry into Project 2.</b> Drag each persona from the tray onto the grid &mdash; or tap it, then tap where it belongs. Higher = bigger <b>Gap</b> (how underserved by current content), further right = bigger <b>Reach</b> (how many users / traffic). Click a placed persona to add a one-line &ldquo;why here&rdquo; note. Then lock in your <b>two personas to carry forward</b> and explain why. This is your draft &mdash; don&rsquo;t agonize over exact spots.</div>
+        </div>
+
+        <!-- Persona tray -->
+        <section class="panel" aria-label="Persona tray">
+            <div class="panel-title">The Three Personas</div>
+            <div class="panel-sub">Unplaced personas live here. Drag each onto the grid.</div>
+
+            <div class="place-banner" id="placeBanner">
+                <span>&#128072;</span><span id="placeBannerText">Tap a spot on the grid to place this persona</span>
+            </div>
+
+            <div class="tray-list" id="trayList" aria-label="Unplaced personas"></div>
+
+            <div class="tray-controls">
+                <div class="count-note" id="countNote"></div>
+                <div class="legend-key">
+                    <span><i style="background:var(--member)"></i>Members &middot; Gen Z activists (13&ndash;25)</span>
+                    <span><i style="background:var(--educator)"></i>Educators &middot; teachers &amp; youth workers</span>
+                    <span><i style="background:var(--donor)"></i>Donors &middot; individuals, corporations, foundations</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Matrix -->
+        <section class="panel" aria-label="Priority matrix">
+            <div class="panel-title">Prioritization Grid</div>
+            <div class="panel-sub" id="gridSub">Each quadrant maps to a carry-forward priority. Drag personas in; drag them back to the tray to un-place.</div>
+
+            <div class="framing-row">
+                <span class="framing-label">Framing:</span>
+                <div class="framing-toggle" role="group" aria-label="Axis framing">
+                    <button type="button" data-framing="reachgap" class="active">Reach &times; Gap</button>
+                    <button type="button" data-framing="capacityfit">Capacity &times; Fit</button>
+                </div>
+            </div>
+
+            <div class="board-wrap" id="captureRegion">
+                <div class="grid-frame">
+                    <div class="y-axis">
+                        <span class="axis-label" id="yAxisLabel">GAP</span>
+                        <span class="axis-sub" id="yAxisSub">how underserved</span>
+                    </div>
+                    <div class="grid-col">
+                        <div class="grid" id="grid" aria-label="Drop grid">
+                            <div class="quad p2" data-tier="p2">
+                                <span class="quad-tier">Strong Candidate</span>
+                                <span class="quad-desc" data-tier-desc="p2"></span>
+                            </div>
+                            <div class="quad p1" data-tier="p1">
+                                <span class="quad-tier">Carry Forward</span>
+                                <span class="quad-desc" data-tier-desc="p1"></span>
+                            </div>
+                            <div class="quad dep" data-tier="dep">
+                                <span class="quad-tier">Deprioritize</span>
+                                <span class="quad-desc" data-tier-desc="dep"></span>
+                            </div>
+                            <div class="quad p3" data-tier="p3">
+                                <span class="quad-tier">Maintain</span>
+                                <span class="quad-desc" data-tier-desc="p3"></span>
+                            </div>
+                            <!-- tokens injected here -->
+                        </div>
+                        <div class="axis-ends"><span id="xAxisLo">Lower reach</span><span id="xAxisHi">Higher reach</span></div>
+                        <div class="x-axis">
+                            <span class="axis-label" id="xAxisLabel">REACH</span>
+                            <span class="axis-sub" id="xAxisSub"> &middot; how many users / traffic</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Decision panel -->
+        <section class="decision" aria-label="Carry-forward decision">
+            <h2>Which 2 personas are you carrying into Project 2?</h2>
+            <p class="sub">Pick exactly two. Your grid placements should justify the choice &mdash; the two you pick are usually the ones nearest &ldquo;Carry Forward.&rdquo;</p>
+            <div class="carry-picks" id="carryPicks"></div>
+            <label class="field-label" for="carrySummary">Which 2 personas I&rsquo;m carrying into Project 2 &mdash; and why</label>
+            <textarea id="carrySummary" placeholder="e.g. Members (highest reach AND biggest content gap) and Donors (smaller reach but a large, high-impact gap on the Donate page). Educators are already served reasonably well relative to their traffic, so I&rsquo;m deprioritizing them for deep strategy work."></textarea>
+        </section>
+
+        <!-- Footer actions -->
+        <div class="footer-actions">
+            <button class="btn btn-danger" id="resetBtn2" type="button" title="Clear all placements, notes, and picks to start over">&#8635; Reset matrix</button>
+            <button class="btn btn-primary" id="exportBtn2" type="button">&#8593; Export</button>
+        </div>
+    </main>
+</div>
+
+<!-- Note popover -->
+<div class="popover-backdrop" id="popover" role="dialog" aria-modal="true" aria-labelledby="popTitle">
+    <div class="popover">
+        <h3 id="popTitle">Persona</h3>
+        <span class="tier-badge" id="popTier">&mdash;</span>
+        <label for="popNote">Why did you place it here? (one line)</label>
+        <textarea id="popNote" placeholder="e.g. Highest traffic on the platform AND the Take Action Hub underserves first-time visitors &rarr; biggest reach, biggest gap."></textarea>
+        <button class="remove-link" id="popRemove" type="button">&larr; Return this persona to the tray</button>
+        <div class="popover-actions">
+            <button class="btn" id="popCancel" type="button">Cancel</button>
+            <button class="btn btn-primary" id="popSave" type="button">Save note</button>
+        </div>
+    </div>
+</div>
+
+<!-- Export modal -->
+<div class="modal-backdrop" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="exportTitle">
+    <div class="modal">
+        <div class="modal-head">
+            <h3 id="exportTitle">Export priority matrix</h3>
+            <button class="btn close" id="exportClose" type="button">Close</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:10px;">Markdown summary of your persona prioritization. Copy it into your Annotated Audit Summary to justify your Project 2 persona selection, or download the <code>.md</code> file.</p>
+            <textarea id="exportText" readonly spellcheck="false"></textarea>
+        </div>
+        <div class="modal-foot">
+            <button class="btn" id="copyBtn" type="button">&#128203; Copy to clipboard</button>
+            <button class="btn btn-primary" id="downloadBtn" type="button">&#8595; Download .md</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+    storageKey: "dosomething-audience-matrix",
+    version: "1.0",
+    personas: [
+        { id: "member",   name: "Members",   color: "#6c4bf4", desc: "Gen Z activists (13–25) seeking ways to take action" },
+        { id: "educator", name: "Educators", color: "#0ea5a4", desc: "Teachers & youth workers seeking classroom-ready resources" },
+        { id: "donor",    name: "Donors",    color: "#f0428a", desc: "Individuals, corporations & foundations weighing impact" }
+    ],
+    // tier lookup by quadrant. x = horizontal axis (0 lo, 1 hi), y = vertical axis (0 lo, 1 hi)
+    tiers: {
+        p1:  { label: "Carry Forward",    color: "#10b981", bg: "rgba(16,185,129,.12)" },
+        p2:  { label: "Strong Candidate", color: "#3b82f6", bg: "rgba(59,130,246,.12)" },
+        p3:  { label: "Maintain",         color: "#d97706", bg: "rgba(245,158,11,.16)" },
+        dep: { label: "Deprioritize",     color: "#64748b", bg: "rgba(148,163,184,.16)" }
+    },
+    framings: {
+        reachgap: {
+            label: "Reach × Gap",
+            x: { name: "REACH", sub: " · how many users / traffic", lo: "Lower reach", hi: "Higher reach" },
+            y: { name: "GAP", sub: "how underserved", lo: "Smaller gap", hi: "Bigger gap" },
+            quads: {
+                p1: "Biggest audience AND biggest content gap",
+                p2: "Underserved — high impact per user, smaller audience",
+                p3: "Large audience already served fairly well",
+                dep: "Smaller audience, few content gaps"
+            }
+        },
+        capacityfit: {
+            label: "Capacity × Fit",
+            x: { name: "CAPACITY", sub: " · room to improve their content", lo: "Lower capacity", hi: "Higher capacity" },
+            y: { name: "FIT", sub: "fit with your focus", lo: "Weaker fit", hi: "Stronger fit" },
+            quads: {
+                p1: "Strong strategic fit AND room to improve",
+                p2: "Strong fit, but less room to move right now",
+                p3: "Room to improve, but weaker strategic fit",
+                dep: "Weak fit and little room to improve"
+            }
+        }
+    }
+};
+
+/* ---------- State ---------- */
+let state = {
+    studentName: "",
+    framing: "reachgap",
+    personas: [],          // { id, placed, x, y, note }
+    carry: [],             // persona ids selected to carry forward (max 2)
+    carrySummary: "",
+    metadata: { version: CONFIG.version, timestamp: 0 }
+};
+let selectedForPlacement = null; // persona id waiting for tap-to-place
+let activePopoverId = null;
+
+const $ = (s, el = document) => el.querySelector(s);
+const grid = $("#grid");
+const trayList = $("#trayList");
+
+function personaCfg(id) { return CONFIG.personas.find(p => p.id === id); }
+function getP(id) { return state.personas.find(p => p.id === id); }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+/* ---------- Tier math ---------- */
+function tierFor(x, y) {
+    const hiX = x >= 0.5, hiY = y >= 0.5;
+    if (hiX && hiY) return "p1";
+    if (!hiX && hiY) return "p2";
+    if (hiX && !hiY) return "p3";
+    return "dep";
+}
+
+/* ---------- Persistence ---------- */
+let saveTimer = null;
+function save(flash = true) {
+    state.metadata.timestamp = Date.now();
+    try {
+        localStorage.setItem(CONFIG.storageKey, JSON.stringify(state));
+        if (flash) showSaved();
+    } catch (e) { /* storage blocked/full — non-fatal */ }
+}
+function load() {
+    try {
+        const raw = localStorage.getItem(CONFIG.storageKey);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && Array.isArray(parsed.personas)) {
+                state = parsed;
+                state.metadata = state.metadata || { version: CONFIG.version };
+                state.framing = state.framing || "reachgap";
+                state.carry = state.carry || [];
+                return true;
+            }
+        }
+    } catch (e) { /* ignore corrupt */ }
+    return false;
+}
+function seed() {
+    state.metadata.timestamp = Date.now();
+    state.personas = CONFIG.personas.map(p => ({ id: p.id, placed: false, x: 0.5, y: 0.5, note: "" }));
+    state.carry = [];
+    state.carrySummary = "";
+    state.framing = "reachgap";
+}
+function showSaved() {
+    const pill = $("#savePill");
+    pill.classList.add("show");
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => pill.classList.remove("show"), 1400);
+}
+
+/* ---------- Rendering ---------- */
+function render() {
+    $("#studentName").value = state.studentName || "";
+    $("#carrySummary").value = state.carrySummary || "";
+    renderFraming();
+    renderTray();
+    renderTokens();
+    renderCarryPicks();
+    updateCount();
+}
+
+function renderFraming() {
+    const f = CONFIG.framings[state.framing];
+    $("#yAxisLabel").textContent = f.y.name;
+    $("#yAxisSub").textContent = f.y.sub;
+    $("#xAxisLabel").textContent = f.x.name;
+    $("#xAxisSub").textContent = f.x.sub;
+    $("#xAxisLo").textContent = f.x.lo;
+    $("#xAxisHi").textContent = f.x.hi;
+    document.querySelectorAll("[data-tier-desc]").forEach(el => {
+        el.textContent = f.quads[el.dataset.tierDesc];
+    });
+    document.querySelectorAll(".framing-toggle button").forEach(b => {
+        b.classList.toggle("active", b.dataset.framing === state.framing);
+    });
+    $("#gridSub").textContent = "Framing: " + f.label + ". Each quadrant maps to a carry-forward priority. Drag personas in; drag them back to the tray to un-place.";
+}
+
+function renderTray() {
+    trayList.innerHTML = "";
+    const unplaced = state.personas.filter(p => !p.placed);
+    if (unplaced.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "tray-empty";
+        empty.textContent = "All three personas placed. Drag any back here to reconsider.";
+        trayList.appendChild(empty);
+        return;
+    }
+    unplaced.forEach(p => trayList.appendChild(makeChip(p)));
+}
+
+function makeChip(p) {
+    const cfg = personaCfg(p.id);
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.dataset.id = p.id;
+    chip.tabIndex = 0;
+    chip.style.borderLeftColor = cfg.color;
+    chip.setAttribute("role", "button");
+    chip.setAttribute("aria-label", cfg.name + " — press Enter to place on grid");
+
+    const dot = document.createElement("span");
+    dot.className = "chip-dot";
+    dot.style.background = cfg.color;
+
+    const body = document.createElement("div");
+    body.className = "chip-body";
+    const name = document.createElement("div");
+    name.className = "chip-name";
+    name.textContent = cfg.name;
+    const desc = document.createElement("div");
+    desc.className = "chip-desc";
+    desc.textContent = cfg.desc;
+    body.append(name, desc);
+
+    chip.append(dot, body);
+
+    attachDragSource(chip, p.id);
+
+    chip.addEventListener("click", () => toggleSelectForPlacement(p.id));
+    chip.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSelectForPlacement(p.id); }
+    });
+    if (selectedForPlacement === p.id) chip.classList.add("selected");
+    return chip;
+}
+
+function renderTokens() {
+    grid.querySelectorAll(".token").forEach(t => t.remove());
+    state.personas.filter(p => p.placed).forEach(p => {
+        const cfg = personaCfg(p.id);
+        const tk = document.createElement("div");
+        tk.className = "token" + (p.note ? " has-note" : "");
+        tk.dataset.id = p.id;
+        tk.tabIndex = 0;
+        tk.style.left = (p.x * 100) + "%";
+        tk.style.top = ((1 - p.y) * 100) + "%"; // y=1 (hi) at top
+        tk.style.borderColor = cfg.color;
+        tk.setAttribute("role", "button");
+        tk.setAttribute("aria-label", cfg.name + ", " + CONFIG.tiers[tierFor(p.x, p.y)].label + ". Enter to edit note, arrow keys to move.");
+
+        const dot = document.createElement("span");
+        dot.className = "tk-dot";
+        dot.style.background = cfg.color;
+        const nm = document.createElement("span");
+        nm.className = "tk-name";
+        nm.textContent = cfg.name;
+        tk.append(dot, nm);
+
+        attachTokenDrag(tk, p.id);
+        tk.addEventListener("keydown", e => tokenKeydown(e, p.id));
+        grid.appendChild(tk);
+    });
+}
+
+function renderCarryPicks() {
+    const wrap = $("#carryPicks");
+    wrap.innerHTML = "";
+    CONFIG.personas.forEach(cfg => {
+        const on = state.carry.includes(cfg.id);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "carry-toggle" + (on ? " on" : "");
+        btn.dataset.id = cfg.id;
+        if (on) { btn.style.background = cfg.color; }
+        btn.innerHTML = `<span class="dot" style="background:${on ? "#fff" : cfg.color}"></span>${escapeHtml(cfg.name)}`;
+        btn.addEventListener("click", () => toggleCarry(cfg.id));
+        wrap.appendChild(btn);
+    });
+    const hint = document.createElement("span");
+    hint.className = "carry-hint";
+    hint.textContent = state.carry.length + " of 2 selected";
+    wrap.appendChild(hint);
+}
+
+function toggleCarry(id) {
+    const i = state.carry.indexOf(id);
+    if (i >= 0) { state.carry.splice(i, 1); }
+    else {
+        if (state.carry.length >= 2) {
+            toast("Pick exactly two — deselect one first");
+            return;
+        }
+        state.carry.push(id);
+    }
+    save(); renderCarryPicks();
+}
+
+function updateCount() {
+    const placed = state.personas.filter(p => p.placed).length;
+    $("#countNote").textContent = `${placed} of 3 personas placed`;
+}
+
+/* ---------- Placement selection (tap-to-place) ---------- */
+function toggleSelectForPlacement(id) {
+    selectedForPlacement = (selectedForPlacement === id) ? null : id;
+    const banner = $("#placeBanner");
+    if (selectedForPlacement) {
+        $("#placeBannerText").textContent = `Tap a spot on the grid to place "${personaCfg(id).name}"`;
+        banner.classList.add("show");
+        grid.classList.add("drop-active");
+    } else {
+        clearPlacement();
+    }
+    renderTray();
+}
+function clearPlacement() {
+    selectedForPlacement = null;
+    $("#placeBanner").classList.remove("show");
+    grid.classList.remove("drop-active");
+}
+
+function placeAtPoint(id, clientX, clientY) {
+    const r = grid.getBoundingClientRect();
+    let x = (clientX - r.left) / r.width;
+    let y = 1 - (clientY - r.top) / r.height; // invert: top = hi
+    x = Math.max(0.04, Math.min(0.96, x));
+    y = Math.max(0.04, Math.min(0.96, y));
+    const p = getP(id);
+    p.placed = true; p.x = x; p.y = y;
+    clearPlacement();
+    save(); render();
+}
+
+grid.addEventListener("click", e => {
+    if (!selectedForPlacement) return;
+    if (e.target.closest(".token")) return;
+    placeAtPoint(selectedForPlacement, e.clientX, e.clientY);
+});
+
+/* ---------- Drag from tray (Pointer Events, touch-safe) ---------- */
+function attachDragSource(chip, id) {
+    let ghost = null, moved = false, startX = 0, startY = 0;
+    chip.addEventListener("pointerdown", e => {
+        if (e.button !== undefined && e.button !== 0) return;
+        startX = e.clientX; startY = e.clientY; moved = false;
+        const move = ev => {
+            const dx = ev.clientX - startX, dy = ev.clientY - startY;
+            if (!moved && Math.hypot(dx, dy) < 6) return;
+            if (!moved) {
+                moved = true;
+                chip.classList.add("dragging");
+                grid.classList.add("drop-active");
+                ghost = makeGhost(id);
+            }
+            positionGhost(ghost, ev.clientX, ev.clientY);
+        };
+        const up = ev => {
+            document.removeEventListener("pointermove", move);
+            document.removeEventListener("pointerup", up);
+            chip.classList.remove("dragging");
+            grid.classList.remove("drop-active");
+            if (ghost) { ghost.remove(); ghost = null; }
+            if (moved && overGrid(ev.clientX, ev.clientY)) {
+                placeAtPoint(id, ev.clientX, ev.clientY);
+            }
+        };
+        document.addEventListener("pointermove", move);
+        document.addEventListener("pointerup", up);
+    });
+}
+
+/* ---------- Drag a placed token ---------- */
+function attachTokenDrag(tk, id) {
+    let moved = false, startX = 0, startY = 0, offX = 0, offY = 0;
+    tk.addEventListener("pointerdown", e => {
+        if (e.button !== undefined && e.button !== 0) return;
+        e.preventDefault();
+        startX = e.clientX; startY = e.clientY; moved = false;
+        const r = tk.getBoundingClientRect();
+        offX = e.clientX - (r.left + r.width / 2);
+        offY = e.clientY - (r.top + r.height / 2);
+        tk.setPointerCapture && tk.setPointerCapture(e.pointerId);
+
+        const move = ev => {
+            const dx = ev.clientX - startX, dy = ev.clientY - startY;
+            if (!moved && Math.hypot(dx, dy) < 5) return;
+            moved = true;
+            tk.classList.add("dragging");
+            const gr = grid.getBoundingClientRect();
+            let x = (ev.clientX - offX - gr.left) / gr.width;
+            let y = 1 - (ev.clientY - offY - gr.top) / gr.height;
+            const overTray = overElement(ev.clientX, ev.clientY, trayList.closest(".panel"));
+            tk.style.opacity = overTray ? "0.3" : "0.85";
+            x = Math.max(0.04, Math.min(0.96, x));
+            y = Math.max(0.04, Math.min(0.96, y));
+            const p = getP(id);
+            p.x = x; p.y = y;
+            tk.style.left = (x * 100) + "%";
+            tk.style.top = ((1 - y) * 100) + "%";
+        };
+        const up = ev => {
+            document.removeEventListener("pointermove", move);
+            document.removeEventListener("pointerup", up);
+            tk.classList.remove("dragging");
+            tk.style.opacity = "";
+            if (!moved) { openNote(id); return; }
+            if (overElement(ev.clientX, ev.clientY, trayList.closest(".panel"))) {
+                getP(id).placed = false;
+            }
+            save(); render();
+        };
+        document.addEventListener("pointermove", move);
+        document.addEventListener("pointerup", up);
+    });
+}
+
+function tokenKeydown(e, id) {
+    const p = getP(id);
+    const step = e.shiftKey ? 0.12 : 0.04;
+    let handled = true;
+    switch (e.key) {
+        case "ArrowLeft":  p.x = Math.max(0.04, p.x - step); break;
+        case "ArrowRight": p.x = Math.min(0.96, p.x + step); break;
+        case "ArrowUp":    p.y = Math.min(0.96, p.y + step); break;
+        case "ArrowDown":  p.y = Math.max(0.04, p.y - step); break;
+        case "Enter": case " ": openNote(id); handled = true; break;
+        case "Backspace": case "Delete": p.placed = false; break;
+        default: handled = false;
+    }
+    if (handled) {
+        e.preventDefault();
+        save(false); render();
+        const again = grid.querySelector(`.token[data-id="${id}"]`);
+        if (again) again.focus();
+    }
+}
+
+/* ---------- Drag ghost helpers ---------- */
+function makeGhost(id) {
+    const cfg = personaCfg(id);
+    const g = document.createElement("div");
+    g.className = "token dragging";
+    g.style.position = "fixed";
+    g.style.pointerEvents = "none";
+    g.style.zIndex = "999";
+    g.style.borderColor = cfg.color;
+    g.innerHTML = `<span class="tk-dot" style="background:${cfg.color}"></span><span class="tk-name">${escapeHtml(cfg.name)}</span>`;
+    document.body.appendChild(g);
+    return g;
+}
+function positionGhost(g, x, y) { if (g) { g.style.left = x + "px"; g.style.top = y + "px"; } }
+function overGrid(x, y) { return overElement(x, y, grid); }
+function overElement(x, y, el) {
+    if (!el) return false;
+    const r = el.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+}
+
+/* ---------- Note popover ---------- */
+function openNote(id) {
+    activePopoverId = id;
+    const p = getP(id), cfg = personaCfg(id);
+    const tier = CONFIG.tiers[tierFor(p.x, p.y)];
+    const f = CONFIG.framings[state.framing];
+    $("#popTitle").textContent = cfg.name;
+    const badge = $("#popTier");
+    badge.textContent = tier.label + " — " + f.quads[tierFor(p.x, p.y)];
+    badge.style.color = tier.color;
+    badge.style.background = tier.bg;
+    $("#popNote").value = p.note || "";
+    $("#popover").classList.add("show");
+    setTimeout(() => $("#popNote").focus(), 40);
+}
+function closeNote() { $("#popover").classList.remove("show"); activePopoverId = null; }
+$("#popSave").addEventListener("click", () => {
+    if (activePopoverId) { getP(activePopoverId).note = $("#popNote").value.trim(); save(); render(); }
+    closeNote();
+});
+$("#popCancel").addEventListener("click", closeNote);
+$("#popRemove").addEventListener("click", () => {
+    if (activePopoverId) { getP(activePopoverId).placed = false; save(); render(); }
+    closeNote();
+});
+$("#popover").addEventListener("click", e => { if (e.target === $("#popover")) closeNote(); });
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape") {
+        if ($("#exportModal").classList.contains("show")) closeExport();
+        else if ($("#popover").classList.contains("show")) closeNote();
+        else clearPlacement();
+    }
+});
+
+/* ---------- Header + framing + decision controls ---------- */
+$("#studentName").addEventListener("input", e => { state.studentName = e.target.value; save(); });
+$("#carrySummary").addEventListener("input", e => { state.carrySummary = e.target.value; save(); });
+document.querySelectorAll(".framing-toggle button").forEach(b => {
+    b.addEventListener("click", () => { state.framing = b.dataset.framing; save(); renderFraming(); });
+});
+function resetMatrix() {
+    if (confirm("Reset the matrix? This clears your placements, notes, carry-forward picks, and summary.")) {
+        seed(); save(); render(); toast("Reset to starting personas");
+    }
+}
+$("#resetBtn").addEventListener("click", resetMatrix);
+$("#resetBtn2").addEventListener("click", resetMatrix);
+
+/* ---------- Export (markdown) ---------- */
+function axisWord(v, axis) { return v >= 0.5 ? axis.hi : axis.lo; }
+function buildMarkdown() {
+    const f = CONFIG.framings[state.framing];
+    const date = new Date().toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    let md = `# Audience Priority Matrix\n\n`;
+    md += `**Program:** DoSomething — AI-Powered Content Communications Strategy Externship (Project 1: Platform Content Audit)\n`;
+    if (state.studentName) md += `**Auditor:** ${state.studentName}\n`;
+    md += `**Framing:** ${f.label}  (X = ${f.x.name.toLowerCase()}, Y = ${f.y.name.toLowerCase()})\n`;
+    md += `**Date:** ${date}\n\n---\n\n`;
+
+    md += `## Persona Placements\n\n`;
+    md += `| Persona | ${cap(f.x.name)} | ${cap(f.y.name)} | Priority | Why here |\n`;
+    md += `|---------|--------|--------|----------|----------|\n`;
+    CONFIG.personas.forEach(cfg => {
+        const p = getP(cfg.id);
+        if (!p.placed) {
+            md += `| ${cfg.name} | — | — | _not placed_ | — |\n`;
+        } else {
+            const tier = CONFIG.tiers[tierFor(p.x, p.y)];
+            const note = (p.note || "").replace(/\|/g, "\\|").replace(/\n/g, " ") || "—";
+            md += `| ${cfg.name} | ${axisWord(p.x, f.x)} | ${axisWord(p.y, f.y)} | ${tier.label} | ${note} |\n`;
+        }
+    });
+    md += `\n---\n\n## Carrying Into Project 2\n\n`;
+    if (state.carry.length) {
+        md += `**Personas selected (${state.carry.length} of 2):** ` +
+            state.carry.map(id => personaCfg(id).name).join(" + ") + `\n\n`;
+    } else {
+        md += `**Personas selected:** _none yet_\n\n`;
+    }
+    md += (state.carrySummary && state.carrySummary.trim())
+        ? `> ${state.carrySummary.replace(/\n/g, "\n> ")}\n`
+        : `> _Add your rationale for which two personas you are carrying forward and why._\n`;
+    return md;
+}
+function cap(s) { return s.charAt(0) + s.slice(1).toLowerCase(); }
+
+let currentExport = "";
+function openExport() {
+    currentExport = buildMarkdown();
+    $("#exportText").value = currentExport;
+    $("#exportModal").classList.add("show");
+}
+function closeExport() { $("#exportModal").classList.remove("show"); }
+$("#exportBtn").addEventListener("click", openExport);
+$("#exportBtn2").addEventListener("click", openExport);
+$("#exportClose").addEventListener("click", closeExport);
+$("#exportModal").addEventListener("click", e => { if (e.target === $("#exportModal")) closeExport(); });
+
+$("#copyBtn").addEventListener("click", () => {
+    const ta = $("#exportText");
+    const done = () => toast("Copied to clipboard ✓");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value).then(done).catch(() => { ta.select(); document.execCommand("copy"); done(); });
+    } else { ta.select(); document.execCommand("copy"); done(); }
+});
+$("#downloadBtn").addEventListener("click", () => {
+    const safeName = (state.studentName || "").trim().replace(/[^a-z0-9]+/gi, "");
+    const fname = "AudiencePriorityMatrix" + (safeName ? "_" + safeName : "") + ".md";
+    const blob = new Blob([$("#exportText").value], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = fname; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+    toast("Downloaded " + fname);
+});
+
+/* ---------- Toast ---------- */
+let toastTimer = null;
+function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ---------- Init ---------- */
+(function init() {
+    if (!load()) { seed(); save(false); }
+    render();
+})();
+</script>
+</body>
+</html>
