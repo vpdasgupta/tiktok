@@ -372,6 +372,7 @@
                     <input type="text" id="studentName" placeholder="Your name" autocomplete="off">
                 </div>
                 <button class="btn btn-danger" id="resetAllBtn" type="button" title="Clear all personas and start a fresh audit">&#8635; Reset</button>
+                <button class="btn" id="copyAiBtn" type="button" title="Copy all three scorecards as text you can paste into Claude">&#129302; Copy for AI</button>
                 <button class="btn btn-primary" id="exportBtn" type="button">&#8593; Export</button>
             </div>
         </div>
@@ -415,6 +416,7 @@
                 <button class="btn btn-danger" id="clearPersonaBtn" type="button">&#8635; New scorecard (clear this persona)</button>
             </div>
             <div class="right">
+                <button class="btn" id="copyAiBtn2" type="button" title="Copy all three scorecards as text you can paste into Claude">&#129302; Copy all scorecards for AI</button>
                 <button class="btn btn-primary" id="exportBtn2" type="button">&#8593; Export this scorecard</button>
             </div>
         </div>
@@ -809,6 +811,64 @@ $("#savePdfBtn").addEventListener("click", () => {
 });
 
 document.addEventListener("keydown", e => { if (e.key === "Escape" && $("#exportModal").classList.contains("show")) closeExport(); });
+
+/* ---------- Copy for AI: plain-text dump of all three scorecards ---------- */
+function buildAIExport() {
+    const lines = [];
+    lines.push("# DoSomething Content Audit — Scorecard Findings");
+    lines.push("Auditor: " + (state.studentName || "(unnamed)"));
+    lines.push("");
+    lines.push("Source: my own platform audit, scored on four dimensions (1=Broken, 2=Weak, 3=Adequate, 4=Strong).");
+    lines.push("These are MY recorded observations — do not add pages, scores, or facts that are not below.");
+    lines.push("");
+
+    let anyPages = false;
+    ["member", "educator", "donor"].forEach(p => {
+        const pd = ensurePersona(p);
+        const cfg = CONFIG.personas[p];
+        if (!pd.pages.length) return;
+        anyPages = true;
+        lines.push("## " + cfg.label + " Experience");
+        lines.push("Persona goal: " + cfg.note);
+        lines.push("");
+        pd.pages.forEach((pg, i) => {
+            const a = pageAvg(pg);
+            lines.push((i + 1) + ". " + (pg.name || "Untitled page") + (pg.url ? "  [" + pg.url + "]" : ""));
+            CONFIG.dimensions.forEach(d => {
+                const v = pg.scores[d.key];
+                lines.push("   - " + d.name + ": " + (v ? v + "/4" : "not scored"));
+            });
+            lines.push("   - Average: " + (a ? a.toFixed(2) + "/4" : "not scored"));
+            if (pg.notes) lines.push("   - Friction / notes: " + pg.notes.replace(/\s*\n\s*/g, " "));
+            if (pg.screenshot) lines.push("   - Screenshot evidence: " + pg.screenshot.replace(/\s*\n\s*/g, " "));
+            lines.push("");
+        });
+    });
+
+    if (!anyPages) lines.push("(No pages scored yet — add and score your pages first, then copy.)");
+    return lines.join("\n");
+}
+
+function copyAIExport() {
+    const text = buildAIExport();
+    const done = () => toast("All scorecards copied — paste into Claude");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+        fallbackCopy(text, done);
+    }
+}
+function fallbackCopy(text, done) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed"; ta.style.top = "-1000px";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand("copy"); done(); }
+    catch (e) { toast("Copy failed — select the text manually"); }
+    document.body.removeChild(ta);
+}
+$("#copyAiBtn").addEventListener("click", copyAIExport);
+$("#copyAiBtn2").addEventListener("click", copyAIExport);
 
 /* ---------- Toast ---------- */
 let toastTimer = null;
