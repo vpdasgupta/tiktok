@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Emphasis Mapper — YouthBuild Global</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f1f5f9;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+            --institutional: #6366f1;
+            --individual: #ec4899;
+            --ok: #10b981;
+            --bad: #ef4444;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+            --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.18);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* ---------- Header ---------- */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            width: 42px; height: 42px; flex-shrink: 0;
+            background: var(--accent-gradient);
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+        }
+        .logo h1 { font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
+        .logo p { font-size: 0.78rem; color: var(--text-muted); }
+        .header-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .name-field {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 9px; padding: 4px 10px;
+        }
+        .name-field label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
+        .name-field input {
+            border: none; background: transparent; font-family: inherit;
+            font-size: 0.85rem; color: var(--text-primary); width: 130px; outline: none;
+        }
+
+        .btn {
+            font-family: inherit; font-size: 0.85rem; font-weight: 600;
+            border: 1px solid var(--border); background: var(--bg-secondary);
+            color: var(--text-secondary); padding: 9px 15px; border-radius: 9px;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+            min-height: 40px; transition: all .15s ease;
+        }
+        .btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+        .btn:disabled { opacity: .4; cursor: not-allowed; }
+        .btn-primary {
+            background: var(--accent-gradient); color: #fff; border: none;
+            box-shadow: var(--shadow);
+        }
+        .btn-primary:hover { color: #fff; opacity: .93; }
+        .btn-primary:disabled { opacity: .5; }
+        .save-pill {
+            font-size: 0.72rem; color: var(--ok); font-weight: 600;
+            display: inline-flex; align-items: center; gap: 5px; opacity: 0;
+            transition: opacity .3s ease;
+        }
+        .save-pill.show { opacity: 1; }
+        .save-pill::before { content: "●"; font-size: 0.6rem; }
+
+        /* ---------- Layout ---------- */
+        .main {
+            max-width: 760px; margin: 0 auto; width: 100%;
+            padding: 16px; display: flex; flex-direction: column; gap: 14px;
+            flex: 1;
+        }
+
+        .panel {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow-sm);
+        }
+        .panel-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+        .panel-sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px; }
+
+        /* ---------- Progress stepper ---------- */
+        .stepper { display: flex; flex-direction: column; gap: 8px; }
+        .stepper-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .stepper-label { font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); }
+        .stepper-count { font-size: 0.74rem; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+        .stepper-track {
+            display: flex; gap: 4px; width: 100%;
+        }
+        .stepper-seg {
+            flex: 1; height: 6px; border-radius: 4px; background: var(--bg-input);
+            transition: background .2s ease;
+        }
+        .stepper-seg.done { background: var(--accent-primary); }
+        .stepper-seg.current { background: var(--accent-secondary); }
+
+        /* ---------- Step body ---------- */
+        .step-body { display: flex; flex-direction: column; gap: 14px; animation: fade .18s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+        .step-head { padding: 2px 2px; }
+        .step-eyebrow {
+            font-size: 0.7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+            color: var(--accent-primary); margin-bottom: 6px;
+        }
+        .step-title { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 6px; }
+        .step-lead { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* ---------- Intro ---------- */
+        .intro-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+        .intro-list li { display: flex; gap: 12px; align-items: flex-start; font-size: 0.86rem; color: var(--text-secondary); }
+        .intro-num {
+            width: 26px; height: 26px; flex-shrink: 0; border-radius: 8px;
+            background: rgba(99,102,241,.1); color: var(--accent-primary);
+            font-weight: 800; font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+        }
+        .intro-list li b { color: var(--text-primary); }
+        .intro-name {
+            display: flex; flex-direction: column; gap: 6px; margin-top: 4px;
+        }
+        .intro-name label { font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); }
+        .intro-name input {
+            border: 1px solid var(--border); background: var(--bg-input); border-radius: 9px;
+            padding: 10px 12px; font-family: inherit; font-size: 0.9rem; color: var(--text-primary); outline: none;
+        }
+        .intro-name input:focus { border-color: var(--accent-primary); }
+
+        /* ---------- Instruction banner ---------- */
+        .hint {
+            background: linear-gradient(135deg, rgba(99,102,241,.08), rgba(168,85,247,.06));
+            border: 1px solid rgba(99,102,241,.22);
+            border-radius: 12px; padding: 12px 16px; font-size: 0.83rem;
+            color: var(--text-secondary); display: flex; gap: 10px; align-items: flex-start;
+        }
+        .hint b { color: var(--text-primary); }
+
+        /* ---------- Shared add / legend controls ---------- */
+        .add-row { display: flex; gap: 6px; }
+        .add-row input {
+            flex: 1; border: 1px solid var(--border); background: var(--bg-input);
+            border-radius: 8px; padding: 8px 10px; font-family: inherit; font-size: 0.82rem;
+            outline: none; min-width: 0;
+        }
+        .add-row input:focus { border-color: var(--accent-primary); }
+        .add-btn {
+            border: none; background: var(--accent-gradient); color: #fff;
+            border-radius: 8px; padding: 8px 12px; font-weight: 700; cursor: pointer; font-size: 0.9rem;
+        }
+        .add-btn:disabled { opacity: .4; cursor: not-allowed; }
+        .count-note { font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 8px; }
+        .family-toggle { display: flex; gap: 6px; margin-bottom: 8px; }
+        .family-toggle button {
+            flex: 1; font-family: inherit; font-size: 0.72rem; font-weight: 600;
+            border: 1px solid var(--border); background: var(--bg-input);
+            border-radius: 8px; padding: 7px; cursor: pointer; color: var(--text-secondary);
+        }
+        .family-toggle button.active[data-fam="institutional"] { border-color: var(--institutional); color: var(--institutional); background: rgba(99,102,241,.08); }
+        .family-toggle button.active[data-fam="individual"] { border-color: var(--individual); color: var(--individual); background: rgba(236,72,153,.08); }
+        .legend-key { display: flex; gap: 14px; margin-top: 10px; font-size: 0.72rem; color: var(--text-secondary); }
+        .legend-key span { display: inline-flex; align-items: center; gap: 5px; }
+        .legend-key i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+        /* ---------- Pillars panel ---------- */
+        .pillar-list { display: flex; flex-direction: column; gap: 8px; }
+        .pillar-item {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: 10px; padding: 8px 10px;
+        }
+        .pill-swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+        .pill-name {
+            font-size: 0.85rem; font-weight: 700; border: none; background: transparent;
+            font-family: inherit; color: var(--text-primary); outline: none;
+            width: 130px; flex-shrink: 0; padding: 2px 4px; border-radius: 5px;
+        }
+        .pill-name:focus { background: var(--bg-input); }
+        .pill-desc {
+            flex: 1; min-width: 0; font-size: 0.78rem; border: none; background: transparent;
+            font-family: inherit; color: var(--text-secondary); outline: none;
+            padding: 2px 4px; border-radius: 5px;
+        }
+        .pill-desc:focus { background: var(--bg-input); }
+        .pill-x {
+            width: 24px; height: 24px; border: none; background: transparent;
+            color: var(--text-muted); cursor: pointer; border-radius: 6px;
+            font-size: 1rem; line-height: 1; flex-shrink: 0;
+        }
+        .pill-x:hover { background: rgba(239,68,68,.12); color: var(--bad); }
+        .pill-x:disabled { opacity: .3; cursor: not-allowed; }
+
+        /* ---------- Segment setup rows ---------- */
+        .setup-list { display: flex; flex-direction: column; gap: 8px; }
+        .setup-item {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-left: 4px solid var(--institutional);
+            border-radius: 10px; padding: 8px 10px;
+        }
+        .setup-item.individual { border-left-color: var(--individual); }
+        .setup-name {
+            flex: 1; min-width: 0; font-size: 0.88rem; font-weight: 700; border: none; background: transparent;
+            font-family: inherit; color: var(--text-primary); outline: none; padding: 2px 4px; border-radius: 5px;
+        }
+        .setup-name:focus { background: var(--bg-input); }
+        .setup-fam { display: flex; gap: 4px; flex-shrink: 0; }
+        .setup-fam button {
+            font-family: inherit; font-size: 0.66rem; font-weight: 700;
+            border: 1px solid var(--border); background: var(--bg-input);
+            border-radius: 7px; padding: 5px 8px; cursor: pointer; color: var(--text-secondary);
+        }
+        .setup-fam button.active[data-fam="institutional"] { border-color: var(--institutional); color: var(--institutional); background: rgba(99,102,241,.08); }
+        .setup-fam button.active[data-fam="individual"] { border-color: var(--individual); color: var(--individual); background: rgba(236,72,153,.08); }
+        .setup-x {
+            width: 24px; height: 24px; border: none; background: transparent;
+            color: var(--text-muted); cursor: pointer; border-radius: 6px;
+            font-size: 1.05rem; line-height: 1; flex-shrink: 0;
+        }
+        .setup-x:hover { background: rgba(239,68,68,.12); color: var(--bad); }
+        .setup-x:disabled { opacity: .3; cursor: not-allowed; }
+
+        /* ---------- Segment card (weighting) ---------- */
+        .seg-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-left: 4px solid var(--institutional);
+            border-radius: 14px; padding: 16px 18px; box-shadow: var(--shadow-sm);
+        }
+        .seg-card.individual { border-left-color: var(--individual); }
+        .seg-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+        .seg-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--institutional); flex-shrink: 0; }
+        .seg-card.individual .seg-dot { background: var(--individual); }
+        .seg-title { font-size: 1.05rem; font-weight: 800; }
+        .seg-fam-tag {
+            font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+            padding: 3px 9px; border-radius: 20px; margin-left: auto;
+            color: var(--institutional); background: rgba(99,102,241,.1);
+        }
+        .seg-card.individual .seg-fam-tag { color: var(--individual); background: rgba(236,72,153,.1); }
+        .seg-caption { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px; }
+
+        .slider-row {
+            display: grid; grid-template-columns: 150px 1fr 46px;
+            align-items: center; gap: 10px; margin-bottom: 9px;
+        }
+        .slider-label {
+            display: flex; align-items: center; gap: 7px;
+            font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); min-width: 0;
+        }
+        .slider-label span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .pill-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+        .slider { width: 100%; height: 6px; cursor: pointer; }
+        .slider:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; }
+        .slider-val { font-size: 0.82rem; font-weight: 700; text-align: right; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+        @media (max-width: 560px) {
+            .slider-row { grid-template-columns: 104px 1fr 40px; }
+            .slider-label { font-size: 0.76rem; }
+        }
+
+        .stack-bar {
+            display: flex; width: 100%; height: 16px; border-radius: 6px;
+            overflow: hidden; background: var(--bg-input); margin-top: 12px; border: 1px solid var(--border);
+        }
+        .stack-seg { display: flex; align-items: center; justify-content: center; min-width: 0; transition: width .12s ease; }
+        .stack-lbl { font-size: 0.62rem; font-weight: 700; color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.35); }
+
+        .seg-foot { display: flex; align-items: center; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+        .seg-total {
+            font-size: 0.9rem; font-weight: 800; display: inline-flex; align-items: baseline; gap: 6px;
+            padding: 4px 10px; border-radius: 8px; font-variant-numeric: tabular-nums;
+        }
+        .seg-total.ok { color: #059669; background: rgba(16,185,129,.12); }
+        .seg-total.bad { color: #dc2626; background: rgba(239,68,68,.10); }
+        .tot-msg { font-size: 0.7rem; font-weight: 600; }
+        .normalize-btn {
+            font-family: inherit; font-size: 0.76rem; font-weight: 600;
+            border: 1px solid var(--border); background: var(--bg-secondary);
+            color: var(--text-secondary); border-radius: 8px; padding: 6px 11px; cursor: pointer;
+        }
+        .normalize-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .normalize-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+        .warn {
+            display: none; margin-top: 10px; font-size: 0.76rem; color: #b45309;
+            background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.3);
+            border-radius: 8px; padding: 7px 10px;
+        }
+        .warn.show { display: block; }
+        .rationale-label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin: 16px 0 6px; }
+        .rationale {
+            width: 100%; border: 1px solid var(--border); background: var(--bg-input);
+            border-radius: 9px; padding: 10px 12px; font-family: inherit; font-size: 0.83rem;
+            color: var(--text-primary); outline: none;
+        }
+        .rationale:focus { border-color: var(--accent-primary); }
+
+        /* ---------- Review step ---------- */
+        .review-matrix { overflow-x: auto; }
+        .review-matrix table { border-collapse: collapse; width: 100%; font-size: 0.78rem; }
+        .review-matrix th, .review-matrix td { border: 1px solid var(--border); padding: 6px 8px; text-align: center; white-space: nowrap; }
+        .review-matrix th.l, .review-matrix td.l { text-align: left; }
+        .review-matrix thead th { background: var(--bg-input); font-weight: 800; color: var(--text-secondary); font-size: 0.7rem; }
+        .review-matrix tr.r-total td { background: var(--bg-input); font-weight: 800; }
+        .r-hdot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+        .r-psw { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+        .review-status { display: flex; flex-direction: column; gap: 6px; }
+        .rev-seg {
+            display: flex; align-items: center; gap: 10px; font-size: 0.82rem;
+            padding: 8px 10px; border: 1px solid var(--border); border-radius: 9px; background: var(--bg-secondary);
+        }
+        .rev-seg .rev-name { font-weight: 700; }
+        .rev-badge { margin-left: auto; font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+        .rev-badge.ok { color: #059669; background: rgba(16,185,129,.12); }
+        .rev-badge.bad { color: #dc2626; background: rgba(239,68,68,.10); }
+
+        /* ---------- Step nav footer ---------- */
+        .step-nav {
+            position: sticky; bottom: 0;
+            background: var(--bg-secondary); border-top: 1px solid var(--border);
+            padding: 12px 16px; margin-top: auto;
+        }
+        .step-nav-inner {
+            max-width: 760px; margin: 0 auto; display: flex; align-items: center; gap: 12px;
+        }
+        .step-nav .spacer { flex: 1; }
+        .nav-hint { font-size: 0.74rem; color: var(--text-muted); }
+
+        .toast {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: var(--text-primary); color: #fff; padding: 11px 20px; border-radius: 10px;
+            font-size: 0.85rem; font-weight: 600; box-shadow: var(--shadow-lg); opacity: 0;
+            transition: all .25s ease; pointer-events: none; z-index: 200;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        @media (max-width: 880px) {
+            .header-actions { width: 100%; }
+            .name-field { flex: 1; }
+            .name-field input { width: 100%; }
+        }
+
+        /* ---------- Export modal ---------- */
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            background: rgba(15,23,42,.42); align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-backdrop.show { display: flex; }
+        .modal {
+            background: #fff; border-radius: 16px; box-shadow: var(--shadow-lg);
+            width: 100%; max-width: 720px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .modal-head { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .modal-head h3 { font-size: 1.05rem; font-weight: 800; }
+        .modal-head .close { margin-left: auto; }
+        .modal-body { padding: 16px 20px; overflow: auto; }
+        .modal-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+        /* ---------- Clean PDF report (modal preview + print) ---------- */
+        /* force pillar colors + emphasis bars into the PDF even if the
+           browser's "Background graphics" toggle is off */
+        .report, .report * { -webkit-print-color-adjust: exact; print-color-adjust: exact; color-adjust: exact; }
+        .report { color: #1e293b; background: #fff; font-size: 0.86rem; line-height: 1.5; }
+        .report .r-head { border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; }
+        .report .r-badge {
+            display: inline-block; background: var(--accent-primary); color: #fff; font-weight: 800;
+            font-size: 0.72rem; letter-spacing: .04em; text-transform: uppercase;
+            padding: 4px 11px; border-radius: 999px; margin-bottom: 10px;
+        }
+        .report h2 { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 4px; }
+        .report .r-sub { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px; }
+        .report .r-meta { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.8rem; color: var(--text-secondary); }
+        .report .r-meta b { color: var(--text-primary); }
+        .report h3 { font-size: 0.95rem; font-weight: 800; margin: 20px 0 10px; letter-spacing: -.01em; }
+
+        .report table { border-collapse: collapse; width: 100%; font-size: 0.78rem; margin-top: 4px; }
+        .report th, .report td { border: 1px solid var(--border); padding: 6px 8px; text-align: center; vertical-align: middle; }
+        .report th.l, .report td.l { text-align: left; }
+        .report thead th { background: var(--bg-input); font-weight: 800; color: var(--text-secondary); font-size: 0.7rem; }
+        .report tr.r-total td { background: var(--bg-input); font-weight: 800; }
+        .report .r-hdot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+        .report .r-psw { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+        .report .r-seg { margin-bottom: 13px; }
+        .report .r-seg-head { font-size: 0.85rem; margin-bottom: 4px; }
+        .report .r-chip { display: inline-block; font-size: 0.68rem; font-weight: 800; color: #fff; padding: 2px 8px; border-radius: 20px; margin-left: 4px; }
+        .report .r-bar { display: flex; width: 100%; max-width: 340px; height: 12px; border-radius: 5px; overflow: hidden; border: 1px solid var(--border); margin: 4px 0; }
+        .report .r-bar span { display: block; height: 100%; }
+        .report .r-rat { font-size: 0.8rem; color: var(--text-secondary); }
+        .report .r-foot { margin-top: 20px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 0.72rem; color: var(--text-muted); }
+
+        #reportView { display: none; }
+        @media print {
+            .app, .modal-backdrop, .toast { display: none !important; }
+            body { background: #fff; }
+            #reportView { display: block !important; }
+            .report table, .report .r-seg { break-inside: avoid; }
+            @page { margin: 14mm; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">🎯</div>
+                <div>
+                    <h1>Message Emphasis Mapper</h1>
+                    <p>YouthBuild Global — Project 2</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="save-pill" id="savePill">Saved</span>
+                <div class="name-field">
+                    <label for="studentName">Name</label>
+                    <input type="text" id="studentName" placeholder="Your name" autocomplete="off">
+                </div>
+                <button class="btn" id="resetBtn" type="button">↺ Reset</button>
+                <button class="btn btn-primary" id="exportBtn" type="button">⬇ Export PDF</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Progress stepper -->
+        <div class="stepper" aria-label="Progress">
+            <div class="stepper-top">
+                <span class="stepper-label" id="stepperLabel">Getting started</span>
+                <span class="stepper-count" id="stepperCount">Step 1 of 1</span>
+            </div>
+            <div class="stepper-track" id="stepperTrack"></div>
+        </div>
+
+        <!-- Active step renders here -->
+        <div id="stepBody" class="step-body"></div>
+    </main>
+
+    <!-- Step navigation -->
+    <div class="step-nav">
+        <div class="step-nav-inner">
+            <button class="btn" id="backBtn" type="button">← Back</button>
+            <span class="nav-hint" id="navHint"></span>
+            <span class="spacer"></span>
+            <button class="btn btn-primary" id="nextBtn" type="button">Next →</button>
+        </div>
+    </div>
+</div>
+
+<!-- Export modal -->
+<div class="modal-backdrop" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="exportTitle">
+    <div class="modal">
+        <div class="modal-head">
+            <h3 id="exportTitle">Export message emphasis map</h3>
+            <button class="btn close" id="exportClose" type="button">Close</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:12px;">A clean report of your emphasis map — the segment &times; pillar matrix, the leading pillar per segment, and your rationale notes. Click <b>Save as PDF</b>, then choose <b>&ldquo;Save as PDF&rdquo;</b> as the destination in the print dialog.</p>
+            <p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:12px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:8px;padding:8px 11px;">🎨 Your map exports <b>in full color</b>. If the pillar colors ever look faint, turn on <b>&ldquo;Background graphics&rdquo;</b> in the print dialog (under &ldquo;More settings&rdquo;) to restore them.</p>
+            <div id="exportReport" class="report"></div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn" id="exportClose2" type="button">Close</button>
+            <button class="btn btn-primary" id="savePdfBtn" type="button">⬇ Save as PDF</button>
+        </div>
+    </div>
+</div>
+
+<!-- Print-only clean report (rendered on export) -->
+<div id="reportView" class="report" aria-hidden="true"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG — edit this block to fork the tool for other maps
+   ============================================================ */
+const CONFIG = {
+    storageKey: "youthbuild-message-emphasis",
+    version: "2.0",
+    exportName: "Project2_MessageEmphasis",
+    maxSegments: 6,
+    minSegments: 3,
+    maxPillars: 6,
+    minPillars: 4,
+    // categorical palette derived from the program accent hues, kept legible in light mode
+    pillarColors: ["#6366f1", "#ec4899", "#10b981", "#f59e0b", "#8b5cf6", "#06b6d4"],
+    seedPillars: [
+        { name: "Impact",         desc: "Documented, measurable results — job placements, credentials earned, recidivism reduced." },
+        { name: "Urgency",        desc: "Why now — young people disconnected from school and work today; every year of delay costs a cohort." },
+        { name: "Community",      desc: "Young people rebuilding the neighborhoods they live in, alongside peers and mentors." },
+        { name: "Innovation",     desc: "The dual model — earn a credential while constructing affordable housing — as a proven, scalable approach." },
+        { name: "Transformation", desc: "The personal arc — one young person moving from a stalled start to a career and credential." }
+    ],
+    // segment seed weights align to seedPillars order above (each sums to 100)
+    seedSegments: [
+        { name: "Government Agencies",          family: "institutional", weights: [40, 25, 10, 20, 5] },
+        { name: "Private Foundations",          family: "institutional", weights: [30, 15, 10, 30, 15] },
+        { name: "Corporate Partners",           family: "institutional", weights: [25, 10, 15, 35, 15] },
+        { name: "Major Donors ($10K+)",         family: "individual",    weights: [25, 15, 10, 15, 35] },
+        { name: "Mid-Tier Donors ($1K–$9,999)", family: "individual",    weights: [20, 20, 20, 10, 30] },
+        { name: "Gen Z / Emerging Donors",      family: "individual",    weights: [15, 30, 25, 5, 25] }
+    ],
+    evenThreshold: 25 // if no pillar exceeds this %, nudge the user
+};
+
+/* ---------- State ---------- */
+let state = { studentName: "", pillars: [], segments: [], metadata: { version: CONFIG.version, timestamp: 0 } };
+let uidCounter = 1;
+let newFamily = "institutional";
+let currentStep = 0;
+
+const $ = (s, el = document) => el.querySelector(s);
+const stepBody = $("#stepBody");
+
+function uid(prefix) { return prefix + "-" + (uidCounter++) + "-" + (Date.now() % 100000); }
+function escapeHtml(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+/* ---------- Helpers ---------- */
+function getSeg(id) { return state.segments.find(s => s.id === id); }
+function getPillar(id) { return state.pillars.find(p => p.id === id); }
+function weightOf(seg, pid) { return Number(seg.weights[pid]) || 0; }
+function totalFor(seg) { return state.pillars.reduce((a, p) => a + weightOf(seg, p.id), 0); }
+function maxWeight(seg) { return state.pillars.reduce((m, p) => Math.max(m, weightOf(seg, p.id)), 0); }
+function familyColor(fam) { return fam === "individual" ? "#ec4899" : "#6366f1"; }
+function nextColor() {
+    const used = new Set(state.pillars.map(p => p.color));
+    for (const c of CONFIG.pillarColors) { if (!used.has(c)) return c; }
+    return CONFIG.pillarColors[state.pillars.length % CONFIG.pillarColors.length];
+}
+
+/* ---------- Persistence ---------- */
+let saveTimer = null;
+function showSaved() {
+    const pill = $("#savePill");
+    pill.classList.add("show");
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => pill.classList.remove("show"), 1400);
+}
+function save(flash = true) {
+    state.metadata.timestamp = Date.now();
+    try {
+        localStorage.setItem(CONFIG.storageKey, JSON.stringify(state));
+        if (flash) showSaved();
+    } catch (e) { /* storage full / blocked — non-fatal */ }
+}
+let debTimer = null;
+function saveSoon() { clearTimeout(debTimer); debTimer = setTimeout(() => save(true), 400); }
+
+function load() {
+    try {
+        const raw = localStorage.getItem(CONFIG.storageKey);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && Array.isArray(parsed.pillars) && Array.isArray(parsed.segments)
+                && parsed.pillars.length && parsed.segments.length) {
+                state = parsed;
+                state.metadata = state.metadata || { version: CONFIG.version };
+                // repair: ensure every segment has a numeric weight for every pillar
+                state.segments.forEach(s => {
+                    s.weights = s.weights || {};
+                    s.rationale = s.rationale || "";
+                    state.pillars.forEach(p => { s.weights[p.id] = Number(s.weights[p.id]) || 0; });
+                    if (s.family !== "individual") s.family = s.family || "institutional";
+                });
+                return true;
+            }
+        }
+    } catch (e) { /* ignore corrupt */ }
+    return false;
+}
+function seed() {
+    state.studentName = "";
+    state.metadata.timestamp = Date.now();
+    state.pillars = CONFIG.seedPillars.map((p, i) => ({
+        id: uid("pil"), name: p.name, desc: p.desc, color: CONFIG.pillarColors[i % CONFIG.pillarColors.length]
+    }));
+    state.segments = CONFIG.seedSegments.map(s => {
+        const weights = {};
+        state.pillars.forEach((p, i) => { weights[p.id] = s.weights[i] != null ? s.weights[i] : 0; });
+        return { id: uid("seg"), name: s.name, family: s.family, weights, rationale: "" };
+    });
+}
+
+/* ============================================================
+   WIZARD — one block per screen
+   ============================================================ */
+
+/* Build the ordered list of steps. Weighting steps are generated
+   from the current segments, so adding/removing a segment reshapes
+   the wizard automatically. */
+function buildSteps() {
+    const steps = [
+        { type: "intro",    label: "Getting started" },
+        { type: "pillars",  label: "Your messaging pillars" },
+        { type: "segments", label: "Your donor segments" }
+    ];
+    state.segments.forEach((seg, i) => {
+        steps.push({ type: "weight", segId: seg.id, label: "Weighting: " + seg.name, segIndex: i });
+    });
+    steps.push({ type: "review", label: "Review & export" });
+    return steps;
+}
+
+function renderStepper(steps) {
+    const track = $("#stepperTrack");
+    track.innerHTML = "";
+    steps.forEach((s, i) => {
+        const seg = document.createElement("div");
+        seg.className = "stepper-seg" + (i < currentStep ? " done" : (i === currentStep ? " current" : ""));
+        track.appendChild(seg);
+    });
+    $("#stepperLabel").textContent = steps[currentStep].label;
+    $("#stepperCount").textContent = `Step ${currentStep + 1} of ${steps.length}`;
+}
+
+function goTo(i, steps) {
+    steps = steps || buildSteps();
+    currentStep = Math.max(0, Math.min(i, steps.length - 1));
+    renderStep();
+}
+
+/* Master render: draws stepper, the active step body, and the nav footer. */
+function renderStep() {
+    const steps = buildSteps();
+    currentStep = Math.max(0, Math.min(currentStep, steps.length - 1));
+    const step = steps[currentStep];
+
+    renderStepper(steps);
+    stepBody.innerHTML = "";
+
+    if (step.type === "intro") renderIntroStep();
+    else if (step.type === "pillars") renderPillarsStep();
+    else if (step.type === "segments") renderSegmentsStep();
+    else if (step.type === "weight") renderWeightStep(getSeg(step.segId), step.segIndex);
+    else if (step.type === "review") renderReviewStep();
+
+    renderNav(steps);
+    stepBody.scrollIntoView({ block: "start", behavior: "smooth" });
+}
+
+function renderNav(steps) {
+    const back = $("#backBtn");
+    const next = $("#nextBtn");
+    const hint = $("#navHint");
+    const step = steps[currentStep];
+
+    back.disabled = currentStep === 0;
+
+    if (step.type === "review") {
+        next.style.display = "none";
+    } else {
+        next.style.display = "";
+        next.textContent = (currentStep === steps.length - 2) ? "Review →" : "Next →";
+    }
+
+    // contextual hint on weighting steps
+    if (step.type === "weight") {
+        const seg = getSeg(step.segId);
+        const t = totalFor(seg);
+        const idx = steps.filter(s => s.type === "weight").findIndex(s => s.segId === step.segId) + 1;
+        const cnt = state.segments.length;
+        hint.textContent = t === 100
+            ? `Segment ${idx} of ${cnt} · balanced ✓`
+            : `Segment ${idx} of ${cnt} · ${t}% (aim for 100%)`;
+    } else {
+        hint.textContent = "";
+    }
+}
+
+/* ---------- Step: intro ---------- */
+function renderIntroStep() {
+    const wrap = document.createElement("div");
+    wrap.innerHTML = `
+        <div class="step-head">
+            <div class="step-eyebrow">Project 2 · Message Architecture</div>
+            <h2 class="step-title">Map your message emphasis, one segment at a time</h2>
+            <p class="step-lead">Your case for support stays the same for every donor — what changes is which pillars you <b>lead</b> with. You'll work through one screen at a time: review your pillars, set up your segments, then weight each segment on its own screen and export the finished map.</p>
+        </div>
+        <div class="panel">
+            <ul class="intro-list">
+                <li><span class="intro-num">1</span><div>Review the <b>five messaging pillars</b> — rename or edit them if your org needs it.</div></li>
+                <li><span class="intro-num">2</span><div>Set up your <b>4–6 priority segments</b> from the Project 1 donor map.</div></li>
+                <li><span class="intro-num">3</span><div>Weight <b>each segment on its own screen</b> so the pillars sum to exactly 100%.</div></li>
+                <li><span class="intro-num">4</span><div>Add a one-line <b>rationale</b> for each, then review and <b>export your map</b>.</div></li>
+            </ul>
+        </div>
+        <div class="panel">
+            <div class="intro-name">
+                <label for="introName">First, add your name (it appears on your exported map)</label>
+                <input type="text" id="introName" placeholder="Your name" autocomplete="off" maxlength="60">
+            </div>
+        </div>`;
+    stepBody.appendChild(wrap);
+
+    const introName = $("#introName");
+    introName.value = state.studentName || "";
+    introName.addEventListener("input", () => {
+        state.studentName = introName.value;
+        $("#studentName").value = introName.value;
+        saveSoon();
+    });
+}
+
+/* ---------- Step: pillars ---------- */
+function renderPillarsStep() {
+    const wrap = document.createElement("div");
+    wrap.innerHTML = `
+        <div class="step-head">
+            <div class="step-eyebrow">Step 1 · Review</div>
+            <h2 class="step-title">Your five messaging pillars</h2>
+            <p class="step-lead">These are the levers you'll weight for every segment. Make sure each is clear in your head. Rename a pillar or edit its description if your organization has a strength these don't capture.</p>
+        </div>
+        <section class="panel" aria-label="Messaging pillars">
+            <div class="panel-title">Messaging Pillars</div>
+            <div class="panel-sub">Rename pillars or edit their descriptions (4–6 pillars).</div>
+            <div class="pillar-list" id="pillarList"></div>
+            <div class="add-row" style="margin-top:12px;">
+                <input type="text" id="addPillInput" placeholder="Add a pillar…" maxlength="28" aria-label="New pillar name">
+                <button class="add-btn" id="addPillBtn" type="button" aria-label="Add pillar">+</button>
+            </div>
+            <div class="count-note" id="pillCount"></div>
+        </section>`;
+    stepBody.appendChild(wrap);
+
+    renderPillars();
+
+    $("#addPillBtn").addEventListener("click", addPillar);
+    $("#addPillInput").addEventListener("keydown", e => { if (e.key === "Enter") addPillar(); });
+}
+
+function renderPillars() {
+    const pillarList = $("#pillarList");
+    if (!pillarList) return;
+    pillarList.innerHTML = "";
+    const canDelete = state.pillars.length > CONFIG.minPillars;
+    state.pillars.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "pillar-item";
+
+        const sw = document.createElement("span");
+        sw.className = "pill-swatch";
+        sw.style.background = p.color;
+
+        const name = document.createElement("input");
+        name.className = "pill-name";
+        name.value = p.name;
+        name.maxLength = 28;
+        name.setAttribute("aria-label", "Pillar name");
+        name.addEventListener("input", () => { p.name = name.value; saveSoon(); });
+        name.addEventListener("keydown", e => { if (e.key === "Enter") name.blur(); });
+
+        const desc = document.createElement("input");
+        desc.className = "pill-desc";
+        desc.value = p.desc || "";
+        desc.placeholder = "Add a short description…";
+        desc.setAttribute("aria-label", "Pillar description");
+        desc.addEventListener("input", () => { p.desc = desc.value; saveSoon(); });
+        desc.addEventListener("keydown", e => { if (e.key === "Enter") desc.blur(); });
+
+        const x = document.createElement("button");
+        x.className = "pill-x";
+        x.innerHTML = "×";
+        x.title = "Delete pillar";
+        x.setAttribute("aria-label", "Delete pillar " + p.name);
+        x.disabled = !canDelete;
+        x.addEventListener("click", () => deletePillar(p.id));
+
+        item.append(sw, name, desc, x);
+        pillarList.appendChild(item);
+    });
+
+    const n = state.pillars.length;
+    $("#pillCount").textContent = `${n} pillar${n !== 1 ? "s" : ""}` +
+        (n >= CONFIG.maxPillars ? " · max reached" : (n <= CONFIG.minPillars ? " · min reached" : ""));
+    $("#addPillBtn").disabled = n >= CONFIG.maxPillars;
+    $("#addPillInput").disabled = n >= CONFIG.maxPillars;
+}
+
+/* ---------- Step: segments setup ---------- */
+function renderSegmentsStep() {
+    const wrap = document.createElement("div");
+    wrap.innerHTML = `
+        <div class="step-head">
+            <div class="step-eyebrow">Step 2 · Set up</div>
+            <h2 class="step-title">Your donor segments</h2>
+            <p class="step-lead">These are the audiences you'll weight — use <b>your</b> 4–6 priority segments from the Project 1 donor map. Rename them, tag each institutional or individual, or add your own. Each becomes its own screen next.</p>
+        </div>
+        <section class="panel" aria-label="Your segments">
+            <div class="panel-title">Segments</div>
+            <div class="panel-sub">Rename, retag, or remove (3–6 segments).</div>
+            <div class="setup-list" id="setupList"></div>
+        </section>
+        <section class="panel" aria-label="Add a segment">
+            <div class="panel-title">Add a Segment</div>
+            <div class="panel-sub">Tag it institutional or individual.</div>
+            <div class="family-toggle" role="group" aria-label="New segment type">
+                <button type="button" data-fam="institutional" class="active">● Institutional</button>
+                <button type="button" data-fam="individual">● Individual</button>
+            </div>
+            <div class="add-row">
+                <input type="text" id="addSegInput" placeholder="Add a segment…" maxlength="40" aria-label="New segment name">
+                <button class="add-btn" id="addSegBtn" type="button" aria-label="Add segment">+</button>
+            </div>
+            <div class="count-note" id="segCount"></div>
+            <div class="legend-key">
+                <span><i style="background:var(--institutional)"></i>Institutional</span>
+                <span><i style="background:var(--individual)"></i>Individual</span>
+            </div>
+        </section>`;
+    stepBody.appendChild(wrap);
+
+    renderSetupList();
+
+    // reflect current newFamily selection
+    wrap.querySelectorAll(".family-toggle button").forEach(b => {
+        b.classList.toggle("active", b.dataset.fam === newFamily);
+        b.addEventListener("click", () => {
+            newFamily = b.dataset.fam;
+            wrap.querySelectorAll(".family-toggle button").forEach(x => x.classList.toggle("active", x.dataset.fam === newFamily));
+        });
+    });
+    $("#addSegBtn").addEventListener("click", addSegment);
+    $("#addSegInput").addEventListener("keydown", e => { if (e.key === "Enter") addSegment(); });
+}
+
+function renderSetupList() {
+    const list = $("#setupList");
+    if (!list) return;
+    list.innerHTML = "";
+    const canDelete = state.segments.length > CONFIG.minSegments;
+    state.segments.forEach(seg => {
+        const item = document.createElement("div");
+        item.className = "setup-item " + seg.family;
+
+        const name = document.createElement("input");
+        name.className = "setup-name";
+        name.value = seg.name;
+        name.maxLength = 40;
+        name.setAttribute("aria-label", "Segment name");
+        name.addEventListener("input", () => { seg.name = name.value; saveSoon(); });
+        name.addEventListener("keydown", e => { if (e.key === "Enter") name.blur(); });
+
+        const fam = document.createElement("div");
+        fam.className = "setup-fam";
+        fam.setAttribute("role", "group");
+        fam.setAttribute("aria-label", "Segment type");
+        ["institutional", "individual"].forEach(f => {
+            const b = document.createElement("button");
+            b.type = "button";
+            b.dataset.fam = f;
+            b.textContent = f === "institutional" ? "Inst." : "Indiv.";
+            b.title = f === "institutional" ? "Institutional" : "Individual";
+            if (seg.family === f) b.classList.add("active");
+            b.addEventListener("click", () => {
+                seg.family = f;
+                item.classList.toggle("individual", f === "individual");
+                fam.querySelectorAll("button").forEach(bb => bb.classList.toggle("active", bb.dataset.fam === f));
+                save();
+            });
+            fam.appendChild(b);
+        });
+
+        const x = document.createElement("button");
+        x.className = "setup-x";
+        x.innerHTML = "×";
+        x.title = "Remove segment";
+        x.setAttribute("aria-label", "Remove segment " + seg.name);
+        x.disabled = !canDelete;
+        x.addEventListener("click", () => deleteSegment(seg.id));
+
+        item.append(name, fam, x);
+        list.appendChild(item);
+    });
+
+    const n = state.segments.length;
+    $("#segCount").textContent = `${n} segment${n !== 1 ? "s" : ""}` +
+        (n >= CONFIG.maxSegments ? " · max reached" : (n <= CONFIG.minSegments ? " · min reached" : ""));
+    $("#addSegBtn").disabled = n >= CONFIG.maxSegments;
+    $("#addSegInput").disabled = n >= CONFIG.maxSegments;
+}
+
+/* ---------- Step: weight one segment ---------- */
+function renderWeightStep(seg, segIndex) {
+    if (!seg) { goTo(2); return; }
+    const total = state.segments.length;
+    const wrap = document.createElement("div");
+    wrap.innerHTML = `
+        <div class="step-head">
+            <div class="step-eyebrow">Step 3 · Weight (${segIndex + 1} of ${total})</div>
+            <h2 class="step-title">How should we weight ${escapeHtml(seg.name)}?</h2>
+            <p class="step-lead">Move the sliders so the pillars sum to <b>exactly 100%</b>. Lead with the pillar this audience cares about most — resist spreading the weight evenly. Then note <b>why</b> in one line.</p>
+        </div>`;
+    const card = document.createElement("section");
+    card.className = "seg-card " + seg.family;
+    card.dataset.id = seg.id;
+
+    /* head */
+    const head = document.createElement("div");
+    head.className = "seg-head";
+    const dot = document.createElement("span");
+    dot.className = "seg-dot";
+    const title = document.createElement("span");
+    title.className = "seg-title";
+    title.textContent = seg.name;
+    const tag = document.createElement("span");
+    tag.className = "seg-fam-tag";
+    tag.textContent = seg.family === "individual" ? "Individual" : "Institutional";
+    head.append(dot, title, tag);
+    card.appendChild(head);
+
+    const caption = document.createElement("div");
+    caption.className = "seg-caption";
+    caption.textContent = "Set each pillar's share of the message for this audience.";
+    card.appendChild(caption);
+
+    /* slider rows */
+    state.pillars.forEach(p => {
+        const row = document.createElement("div");
+        row.className = "slider-row";
+
+        const label = document.createElement("span");
+        label.className = "slider-label";
+        const pdot = document.createElement("i");
+        pdot.className = "pill-dot";
+        pdot.style.background = p.color;
+        const pname = document.createElement("span");
+        pname.textContent = p.name;
+        label.append(pdot, pname);
+
+        const slider = document.createElement("input");
+        slider.type = "range";
+        slider.className = "slider";
+        slider.min = "0"; slider.max = "100"; slider.step = "1";
+        slider.value = String(weightOf(seg, p.id));
+        slider.dataset.pid = p.id;
+        slider.style.accentColor = p.color;
+        slider.setAttribute("aria-label", p.name + " weight for " + seg.name);
+
+        const val = document.createElement("span");
+        val.className = "slider-val";
+        val.dataset.val = p.id;
+        val.textContent = weightOf(seg, p.id) + "%";
+
+        slider.addEventListener("input", () => {
+            const v = parseInt(slider.value, 10) || 0;
+            seg.weights[p.id] = v;
+            val.textContent = v + "%";
+            refreshMetrics(seg, card);
+            saveSoon();
+        });
+
+        row.append(label, slider, val);
+        card.appendChild(row);
+    });
+
+    /* stacked bar */
+    const bar = document.createElement("div");
+    bar.className = "stack-bar";
+    bar.dataset.bar = "1";
+    bar.setAttribute("aria-hidden", "true");
+    card.appendChild(bar);
+
+    /* footer: total + normalize */
+    const foot = document.createElement("div");
+    foot.className = "seg-foot";
+    const totalEl = document.createElement("span");
+    totalEl.className = "seg-total";
+    totalEl.dataset.total = "1";
+    const norm = document.createElement("button");
+    norm.className = "normalize-btn";
+    norm.type = "button";
+    norm.textContent = "Normalize to 100%";
+    norm.addEventListener("click", () => {
+        normalize(seg);
+        save();
+        state.pillars.forEach(p => {
+            const s = card.querySelector(`.slider[data-pid="${p.id}"]`);
+            const v = card.querySelector(`.slider-val[data-val="${p.id}"]`);
+            if (s) s.value = String(weightOf(seg, p.id));
+            if (v) v.textContent = weightOf(seg, p.id) + "%";
+        });
+        refreshMetrics(seg, card);
+        toast("Rescaled to 100%");
+    });
+    foot.append(totalEl, norm);
+    card.appendChild(foot);
+
+    /* soft warning */
+    const warn = document.createElement("div");
+    warn.className = "warn";
+    warn.dataset.warn = "1";
+    card.appendChild(warn);
+
+    /* rationale */
+    const ratLabel = document.createElement("label");
+    ratLabel.className = "rationale-label";
+    ratLabel.textContent = "Why this mix for this audience?";
+    const rat = document.createElement("input");
+    rat.type = "text";
+    rat.className = "rationale";
+    rat.value = seg.rationale || "";
+    rat.maxLength = 160;
+    rat.placeholder = "e.g. Foundations fund proof — lead with Impact + Innovation.";
+    rat.setAttribute("aria-label", "Rationale for " + seg.name);
+    rat.addEventListener("input", () => { seg.rationale = rat.value; saveSoon(); });
+
+    wrap.appendChild(card);
+    wrap.appendChild(ratLabel);
+    wrap.appendChild(rat);
+    stepBody.appendChild(wrap);
+
+    refreshMetrics(seg, card);
+}
+
+/* update total, stacked bar and warning for one card without a full re-render */
+function refreshMetrics(seg, card) {
+    const total = totalFor(seg);
+    const tEl = card.querySelector("[data-total]");
+    if (tEl) {
+        const ok = total === 100;
+        tEl.className = "seg-total " + (ok ? "ok" : "bad");
+        tEl.innerHTML = `Total: ${total}% <span class="tot-msg">` +
+            (ok ? "Balanced ✓" : (total < 100 ? `${100 - total} to go` : `${total - 100} over`)) + `</span>`;
+    }
+    const bar = card.querySelector("[data-bar]");
+    if (bar) bar.innerHTML = barHTML(seg);
+    const warn = card.querySelector("[data-warn]");
+    if (warn) {
+        const show = total > 0 && maxWeight(seg) <= CONFIG.evenThreshold;
+        warn.classList.toggle("show", show);
+        warn.innerHTML = show ? "⚠️ Emphasis means something leads — no pillar tops " + CONFIG.evenThreshold + "%. Consider raising one so the message has a clear headline." : "";
+    }
+    // keep the footer hint in sync while sliding
+    const steps = buildSteps();
+    renderNav(steps);
+}
+
+function barHTML(seg) {
+    return state.pillars.map(p => {
+        const w = weightOf(seg, p.id);
+        if (w <= 0) return "";
+        const lbl = w >= 12 ? `<span class="stack-lbl">${w}</span>` : "";
+        return `<span class="stack-seg" style="width:${w}%;background:${p.color}" title="${escapeHtml(p.name)}: ${w}%">${lbl}</span>`;
+    }).join("");
+}
+
+/* ---------- Step: review & export ---------- */
+function renderReviewStep() {
+    const balanced = state.segments.filter(s => totalFor(s) === 100).length;
+    const wrap = document.createElement("div");
+    wrap.innerHTML = `
+        <div class="step-head">
+            <div class="step-eyebrow">Step 4 · Review</div>
+            <h2 class="step-title">Review &amp; export your map</h2>
+            <p class="step-lead">Here's your full emphasis map. ${balanced} of ${state.segments.length} segments are balanced to 100%. When it looks right, export it to your strategy folder.</p>
+        </div>`;
+
+    // balance status list
+    const statusPanel = document.createElement("section");
+    statusPanel.className = "panel";
+    statusPanel.innerHTML = `<div class="panel-title">Segment status</div><div class="panel-sub">Jump back to fix any segment that isn't at 100%.</div>`;
+    const statusList = document.createElement("div");
+    statusList.className = "review-status";
+    const steps = buildSteps();
+    state.segments.forEach(seg => {
+        const t = totalFor(seg);
+        const ok = t === 100;
+        const lead = leadPillarId(seg);
+        const rev = document.createElement("div");
+        rev.className = "rev-seg";
+        rev.innerHTML = `
+            <span class="r-hdot" style="background:${familyColor(seg.family)};"></span>
+            <span class="rev-name">${escapeHtml(seg.name)}</span>
+            <span style="color:var(--text-muted);font-size:.76rem;">${lead ? "leads with " + escapeHtml(lead.name) : "no lead yet"}</span>
+            <span class="rev-badge ${ok ? "ok" : "bad"}">${t}%${ok ? " ✓" : ""}</span>`;
+        rev.style.cursor = "pointer";
+        const stepIdx = steps.findIndex(s => s.type === "weight" && s.segId === seg.id);
+        rev.addEventListener("click", () => goTo(stepIdx, steps));
+        statusList.appendChild(rev);
+    });
+    statusPanel.appendChild(statusList);
+    wrap.appendChild(statusPanel);
+
+    // matrix preview
+    const matrixPanel = document.createElement("section");
+    matrixPanel.className = "panel";
+    matrixPanel.innerHTML = `<div class="panel-title">Emphasis matrix</div><div class="panel-sub">Bold = the leading pillar for that segment.</div><div class="review-matrix">${reviewMatrixHTML()}</div>`;
+    wrap.appendChild(matrixPanel);
+
+    // export CTA
+    const cta = document.createElement("section");
+    cta.className = "panel";
+    cta.style.textAlign = "center";
+    cta.innerHTML = `<div class="panel-title" style="margin-bottom:8px;">Ready to export?</div>
+        <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:12px;">Save your map as a PDF and drop it into your Donor Communication Strategy working folder.</p>`;
+    const exportCta = document.createElement("button");
+    exportCta.className = "btn btn-primary";
+    exportCta.style.margin = "0 auto";
+    exportCta.textContent = "⬇ Export your Emphasis Map";
+    exportCta.addEventListener("click", openExport);
+    cta.appendChild(exportCta);
+    wrap.appendChild(cta);
+
+    stepBody.appendChild(wrap);
+}
+
+function reviewMatrixHTML() {
+    let html = `<table><thead><tr><th class="l">Pillar</th>`;
+    state.segments.forEach(seg => {
+        html += `<th><span class="r-hdot" style="background:${familyColor(seg.family)};"></span>${escapeHtml(seg.name)}</th>`;
+    });
+    html += `</tr></thead><tbody>`;
+    const colMax = state.segments.map(seg => maxWeight(seg));
+    state.pillars.forEach(p => {
+        html += `<tr><td class="l"><span class="r-psw" style="background:${p.color};"></span>${escapeHtml(p.name)}</td>`;
+        state.segments.forEach((seg, ci) => {
+            const w = weightOf(seg, p.id);
+            const lead = colMax[ci] > 0 && w === colMax[ci];
+            html += `<td>${lead ? "<b>" + w + "%</b>" : w + "%"}</td>`;
+        });
+        html += `</tr>`;
+    });
+    html += `<tr class="r-total"><td class="l">Total</td>`;
+    state.segments.forEach(seg => {
+        const t = totalFor(seg);
+        const col = t === 100 ? "#059669" : "#dc2626";
+        html += `<td style="color:${col};">${t}%</td>`;
+    });
+    html += `</tr></tbody></table>`;
+    return html;
+}
+
+/* ---------- Normalize ---------- */
+function normalize(seg) {
+    const ids = state.pillars.map(p => p.id);
+    if (ids.length === 0) return;
+    const total = totalFor(seg);
+    if (total === 0) {
+        const base = Math.floor(100 / ids.length);
+        let rem = 100 - base * ids.length;
+        ids.forEach((id, i) => { seg.weights[id] = base + (i < rem ? 1 : 0); });
+        return;
+    }
+    const scaled = ids.map(id => weightOf(seg, id) / total * 100);
+    const ints = scaled.map(v => Math.floor(v));
+    let rem = 100 - ints.reduce((a, b) => a + b, 0);
+    const fracs = ids.map((id, i) => ({ i, f: scaled[i] - ints[i] })).sort((a, b) => b.f - a.f);
+    for (let k = 0; k < rem; k++) { ints[fracs[k % fracs.length].i]++; }
+    ids.forEach((id, i) => { seg.weights[id] = ints[i]; });
+}
+
+/* ---------- Add / delete ---------- */
+function addPillar() {
+    const input = $("#addPillInput");
+    if (!input) return;
+    const name = input.value.trim();
+    if (!name || state.pillars.length >= CONFIG.maxPillars) return;
+    const p = { id: uid("pil"), name, desc: "", color: nextColor() };
+    state.pillars.push(p);
+    state.segments.forEach(s => { s.weights[p.id] = 0; });
+    input.value = "";
+    save();
+    renderPillars();
+    toast("Added pillar “" + name + "”");
+}
+function deletePillar(id) {
+    if (state.pillars.length <= CONFIG.minPillars) return;
+    state.pillars = state.pillars.filter(p => p.id !== id);
+    state.segments.forEach(s => { delete s.weights[id]; });
+    save();
+    renderPillars();
+}
+function addSegment() {
+    const input = $("#addSegInput");
+    if (!input) return;
+    const name = input.value.trim();
+    if (!name || state.segments.length >= CONFIG.maxSegments) return;
+    const weights = {};
+    state.pillars.forEach(p => { weights[p.id] = 0; });
+    state.segments.push({ id: uid("seg"), name, family: newFamily, weights, rationale: "" });
+    input.value = "";
+    save();
+    renderSetupList();
+    renderStepper(buildSteps());
+    toast("Added “" + name + "”");
+}
+function deleteSegment(id) {
+    if (state.segments.length <= CONFIG.minSegments) return;
+    state.segments = state.segments.filter(s => s.id !== id);
+    save();
+    renderSetupList();
+    renderStepper(buildSteps());
+}
+
+/* ---------- Header controls ---------- */
+$("#studentName").addEventListener("input", e => {
+    state.studentName = e.target.value;
+    const intro = $("#introName");
+    if (intro) intro.value = e.target.value;
+    saveSoon();
+});
+$("#resetBtn").addEventListener("click", () => {
+    if (confirm("Reset back to the starting pillars and segments? This clears your weights and rationales.")) {
+        seed(); save(); currentStep = 0; renderStep(); toast("Reset to starting map");
+    }
+});
+$("#backBtn").addEventListener("click", () => goTo(currentStep - 1));
+$("#nextBtn").addEventListener("click", () => goTo(currentStep + 1));
+
+/* ---------- Export: clean PDF report ---------- */
+function pdfFileName() {
+    const safe = (state.studentName || "").trim().replace(/[^a-z0-9]+/gi, "");
+    return CONFIG.exportName + (safe ? "_" + safe : "_YourName");
+}
+function leadPillarId(seg) {
+    let best = null, bestW = -1;
+    state.pillars.forEach(p => { const w = weightOf(seg, p.id); if (w > bestW) { bestW = w; best = p; } });
+    return bestW > 0 ? best : null;
+}
+
+function buildReportHTML() {
+    const date = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    const balanced = state.segments.filter(s => totalFor(s) === 100).length;
+
+    let html = `
+        <div class="r-head">
+            <span class="r-badge">Message Emphasis Mapper</span>
+            <h2>Message Emphasis Map</h2>
+            <div class="r-sub">YouthBuild Global — AI-Powered Content &amp; Communications Strategy Externship &middot; Project 2: Message Architecture</div>
+            <div class="r-meta">
+                <span><b>Prepared by:</b> ${escapeHtml(state.studentName || "—")}</span>
+                <span><b>Date:</b> ${escapeHtml(date)}</span>
+                <span><b>Segments:</b> ${state.segments.length}</span>
+                <span><b>Pillars:</b> ${state.pillars.length}</span>
+                <span><b>Balanced to 100%:</b> ${balanced} of ${state.segments.length}</span>
+            </div>
+        </div>`;
+
+    /* matrix: rows = pillars, columns = segments */
+    html += `<h3>Emphasis Matrix</h3><table><thead><tr><th class="l">Pillar</th>`;
+    state.segments.forEach(seg => {
+        html += `<th><span class="r-hdot" style="background:${familyColor(seg.family)};"></span>${escapeHtml(seg.name)}</th>`;
+    });
+    html += `</tr></thead><tbody>`;
+
+    const colMax = state.segments.map(seg => maxWeight(seg));
+    state.pillars.forEach(p => {
+        html += `<tr><td class="l"><span class="r-psw" style="background:${p.color};"></span>${escapeHtml(p.name)}</td>`;
+        state.segments.forEach((seg, ci) => {
+            const w = weightOf(seg, p.id);
+            const lead = colMax[ci] > 0 && w === colMax[ci];
+            html += `<td>${lead ? "<b>" + w + "%</b>" : w + "%"}</td>`;
+        });
+        html += `</tr>`;
+    });
+
+    html += `<tr class="r-total"><td class="l">Total</td>`;
+    state.segments.forEach(seg => {
+        const t = totalFor(seg);
+        const col = t === 100 ? "#059669" : "#dc2626";
+        html += `<td style="color:${col};">${t}%</td>`;
+    });
+    html += `</tr></tbody></table>`;
+
+    /* rationale by segment */
+    html += `<h3>Rationale by Segment</h3>`;
+    state.segments.forEach(seg => {
+        const lead = leadPillarId(seg);
+        const leadChip = lead
+            ? `<span class="r-chip" style="background:${lead.color};">Leads with ${escapeHtml(lead.name)}</span>`
+            : `<span class="r-chip" style="background:#94a3b8;">No lead yet</span>`;
+        const rat = seg.rationale ? escapeHtml(seg.rationale) : "—";
+        html += `<div class="r-seg">
+            <div class="r-seg-head"><span class="r-hdot" style="background:${familyColor(seg.family)};"></span><b>${escapeHtml(seg.name)}</b>${leadChip}</div>
+            <div class="r-bar">${barHTML(seg)}</div>
+            <div class="r-rat">${rat}</div>
+        </div>`;
+    });
+
+    html += `<div class="r-foot">Generated with the Message Emphasis Mapper tool &middot; Project 2: Message Architecture</div>`;
+    return html;
+}
+
+function openExport() {
+    const html = buildReportHTML();
+    $("#exportReport").innerHTML = html;
+    $("#reportView").innerHTML = html;
+    $("#exportModal").classList.add("show");
+}
+function closeExport() { $("#exportModal").classList.remove("show"); }
+$("#exportBtn").addEventListener("click", openExport);
+$("#exportClose").addEventListener("click", closeExport);
+$("#exportClose2").addEventListener("click", closeExport);
+$("#exportModal").addEventListener("click", e => { if (e.target === $("#exportModal")) closeExport(); });
+
+$("#savePdfBtn").addEventListener("click", () => {
+    $("#reportView").innerHTML = buildReportHTML();
+    const prevTitle = document.title;
+    document.title = pdfFileName();
+    window.print();
+    setTimeout(() => { document.title = prevTitle; }, 600);
+});
+
+document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && $("#exportModal").classList.contains("show")) closeExport();
+});
+
+/* ---------- Toast ---------- */
+let toastTimer = null;
+function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ---------- Init ---------- */
+(function init() {
+    if (!load()) { seed(); save(false); }
+    $("#studentName").value = state.studentName || "";
+    currentStep = 0;
+    renderStep();
+})();
+</script>
+</body>
+</html>
