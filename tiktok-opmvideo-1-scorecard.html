@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post 1 Scorecard - Pro Crew Gear</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2a1a2e 0%, #1a1226 100%);
+            color: #fff;
+            padding: 12px;
+            font-size: 13px;
+        }
+        .container { max-width: 400px; margin: 0 auto; }
+
+        /* Compact Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .post-badge {
+            background: linear-gradient(135deg, #833AB4, #E1306C, #F77737);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+        .header-info h1 {
+            font-size: 13px;
+            color: #fff;
+            font-weight: 600;
+        }
+        .header-info .brand { font-size: 10px; color: #888; }
+        .ig-link {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #F77737;
+            text-decoration: none;
+            font-size: 10px;
+            padding: 6px 10px;
+            background: rgba(247,119,55,0.12);
+            border-radius: 12px;
+        }
+        .ig-link svg { width: 13px; height: 13px; }
+
+        /* Which post */
+        .post-meta { margin-bottom: 10px; }
+        .post-meta label {
+            display: block;
+            font-size: 9px;
+            color: #888;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .post-meta input {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 7px 10px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 11px;
+        }
+        .post-meta input:focus { outline: none; border-color: #E1306C; }
+        .post-meta input::placeholder { color: #555; }
+
+        /* Editable Stats Row */
+        .engagement-stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+            padding: 8px 10px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .stat { text-align: center; flex: 1; }
+        .stat input {
+            width: 100%;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            color: #F77737;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: inherit;
+            padding: 2px 0;
+        }
+        .stat input:focus { outline: none; border-bottom-color: #E1306C; }
+        .stat input::placeholder { color: #F77737; opacity: 0.5; }
+        .stat-label { font-size: 8px; color: #888; text-transform: uppercase; margin-top: 3px; }
+
+        /* Compact Evaluation */
+        .evaluation-section {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 14px;
+        }
+        .evaluation-title {
+            font-size: 11px;
+            color: #F77737;
+            text-align: center;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .rating-category { margin-bottom: 12px; }
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+        .category-title { font-weight: 600; font-size: 12px; }
+        .category-score {
+            background: rgba(247,119,55,0.18);
+            color: #F77737;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .category-hint { font-size: 9px; color: #666; margin-bottom: 4px; }
+        .rating-stars {
+            display: flex;
+            gap: 4px;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        .rating-stars input { display: none; }
+        .rating-stars label {
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;
+            transition: color 0.15s;
+            line-height: 1;
+            text-shadow: 0 0 2px rgba(255,255,255,0.2);
+        }
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label,
+        .rating-stars input:checked ~ label {
+            color: #fee440;
+        }
+
+        /* Compact Notes */
+        .notes-section { margin-top: 12px; }
+        .notes-section label { display: block; margin-bottom: 4px; color: #888; font-size: 10px; }
+        .notes-section textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 8px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 11px;
+            resize: none;
+            height: 60px;
+        }
+        .notes-section textarea:focus { outline: none; border-color: #E1306C; }
+        .notes-section textarea::placeholder { color: #444; }
+
+        /* Compact Footer */
+        .footer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+            gap: 10px;
+        }
+        .total-score {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: rgba(247,119,55,0.12);
+            border-radius: 10px;
+        }
+        .total-score .label { font-size: 10px; color: #888; }
+        .total-score .score { font-size: 20px; font-weight: 700; color: #F77737; }
+        .total-score .max { font-size: 12px; color: #555; }
+        .export-btn {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, #833AB4, #E1306C, #F77737);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .export-btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <div class="post-badge">1 of 3</div>
+                <div class="header-info">
+                    <h1>@opmtshirts</h1>
+                    <span class="brand">Pro Crew Gear on Instagram</span>
+                </div>
+            </div>
+            <a href="https://www.instagram.com/opmtshirts/" target="_blank" class="ig-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.03.084c-1.277.06-2.148.264-2.91.563a5.874 5.874 0 0 0-2.124 1.388 5.878 5.878 0 0 0-1.38 2.127C.321 4.926.12 5.797.064 7.075.008 8.354-.005 8.764.001 12.023c.007 3.259.021 3.667.083 4.947.061 1.277.264 2.149.563 2.911.31.789.72 1.457 1.388 2.123a5.872 5.872 0 0 0 2.129 1.38c.763.295 1.634.496 2.911.552 1.279.056 1.69.069 4.948.063 3.257-.007 3.668-.021 4.947-.082 1.28-.06 2.147-.265 2.91-.563a5.881 5.881 0 0 0 2.123-1.388 5.87 5.87 0 0 0 1.38-2.129c.295-.763.496-1.634.551-2.91.056-1.283.07-1.692.063-4.951-.006-3.258-.02-3.667-.081-4.947-.06-1.28-.264-2.148-.564-2.911a5.892 5.892 0 0 0-1.387-2.123 5.857 5.857 0 0 0-2.128-1.38C19.074.322 18.203.12 16.926.066 15.647.009 15.238-.006 11.979 0 8.72.008 8.31.021 7.03.084m.14 21.693c-1.17-.05-1.805-.245-2.228-.408a3.736 3.736 0 0 1-1.382-.895 3.695 3.695 0 0 1-.9-1.378c-.165-.423-.363-1.058-.417-2.228-.06-1.264-.072-1.644-.08-4.848-.006-3.204.006-3.583.061-4.848.05-1.169.246-1.805.408-2.228.216-.561.477-.96.895-1.382a3.705 3.705 0 0 1 1.379-.9c.423-.165 1.057-.361 2.227-.417 1.265-.06 1.644-.072 4.848-.08 3.203-.006 3.583.006 4.85.062 1.168.05 1.804.244 2.227.408.56.216.96.475 1.382.895.421.42.681.817.9 1.378.165.422.362 1.056.417 2.227.06 1.265.074 1.645.08 4.848.005 3.203-.006 3.583-.061 4.848-.051 1.17-.245 1.805-.408 2.229-.216.56-.477.96-.896 1.381a3.705 3.705 0 0 1-1.378.9c-.422.165-1.058.362-2.226.418-1.266.06-1.645.072-4.85.079-3.204.007-3.582-.006-4.848-.06m9.783-16.192a1.44 1.44 0 1 0 1.437-1.442 1.44 1.44 0 0 0-1.437 1.442M5.839 12.012a6.161 6.161 0 1 0 12.323-.024 6.161 6.161 0 0 0-12.323.024M8 12.008A4 4 0 1 1 12.008 16 4 4 0 0 1 8 12.008"/></svg>
+                View Profile
+            </a>
+        </header>
+
+        <div class="post-meta">
+            <label>Which post are you rating?</label>
+            <input type="text" id="post-url" placeholder="Paste the Instagram post link (or a short description)">
+        </div>
+
+        <div class="engagement-stats">
+            <div class="stat"><input type="number" id="stat-likes" placeholder="0" min="0"><div class="stat-label">Likes</div></div>
+            <div class="stat"><input type="number" id="stat-comments" placeholder="0" min="0"><div class="stat-label">Comments</div></div>
+            <div class="stat"><input type="number" id="stat-shares" placeholder="0" min="0"><div class="stat-label">Shares</div></div>
+            <div class="stat"><input type="number" id="stat-saves" placeholder="0" min="0"><div class="stat-label">Saves</div></div>
+            <div class="stat"><input type="number" id="stat-plays" placeholder="0" min="0"><div class="stat-label">Plays</div></div>
+        </div>
+
+        <div class="evaluation-section">
+            <div class="evaluation-title">Rate This Post</div>
+
+            <div class="rating-category">
+                <div class="category-header">
+                    <span class="category-title">Content Quality</span>
+                    <span class="category-score" data-category="content">0/5</span>
+                </div>
+                <div class="category-hint">Hook, first frame, visuals, pacing</div>
+                <div class="rating-stars">
+                    <input type="radio" name="content" id="content-5" value="5"><label for="content-5">&#9733;</label>
+                    <input type="radio" name="content" id="content-4" value="4"><label for="content-4">&#9733;</label>
+                    <input type="radio" name="content" id="content-3" value="3"><label for="content-3">&#9733;</label>
+                    <input type="radio" name="content" id="content-2" value="2"><label for="content-2">&#9733;</label>
+                    <input type="radio" name="content" id="content-1" value="1"><label for="content-1">&#9733;</label>
+                </div>
+            </div>
+
+            <div class="rating-category">
+                <div class="category-header">
+                    <span class="category-title">Strategic Elements</span>
+                    <span class="category-score" data-category="strategic">0/5</span>
+                </div>
+                <div class="category-hint">Authenticity, CTA, save-worthiness</div>
+                <div class="rating-stars">
+                    <input type="radio" name="strategic" id="strategic-5" value="5"><label for="strategic-5">&#9733;</label>
+                    <input type="radio" name="strategic" id="strategic-4" value="4"><label for="strategic-4">&#9733;</label>
+                    <input type="radio" name="strategic" id="strategic-3" value="3"><label for="strategic-3">&#9733;</label>
+                    <input type="radio" name="strategic" id="strategic-2" value="2"><label for="strategic-2">&#9733;</label>
+                    <input type="radio" name="strategic" id="strategic-1" value="1"><label for="strategic-1">&#9733;</label>
+                </div>
+            </div>
+
+            <div class="rating-category">
+                <div class="category-header">
+                    <span class="category-title">Platform Fit</span>
+                    <span class="category-score" data-category="platform">0/5</span>
+                </div>
+                <div class="category-hint">Format (Reel/carousel/post), caption, hashtags</div>
+                <div class="rating-stars">
+                    <input type="radio" name="platform" id="platform-5" value="5"><label for="platform-5">&#9733;</label>
+                    <input type="radio" name="platform" id="platform-4" value="4"><label for="platform-4">&#9733;</label>
+                    <input type="radio" name="platform" id="platform-3" value="3"><label for="platform-3">&#9733;</label>
+                    <input type="radio" name="platform" id="platform-2" value="2"><label for="platform-2">&#9733;</label>
+                    <input type="radio" name="platform" id="platform-1" value="1"><label for="platform-1">&#9733;</label>
+                </div>
+            </div>
+
+            <div class="rating-category">
+                <div class="category-header">
+                    <span class="category-title">Brand Fit</span>
+                    <span class="category-score" data-category="brand">0/5</span>
+                </div>
+                <div class="category-hint">Voice, value, community</div>
+                <div class="rating-stars">
+                    <input type="radio" name="brand" id="brand-5" value="5"><label for="brand-5">&#9733;</label>
+                    <input type="radio" name="brand" id="brand-4" value="4"><label for="brand-4">&#9733;</label>
+                    <input type="radio" name="brand" id="brand-3" value="3"><label for="brand-3">&#9733;</label>
+                    <input type="radio" name="brand" id="brand-2" value="2"><label for="brand-2">&#9733;</label>
+                    <input type="radio" name="brand" id="brand-1" value="1"><label for="brand-1">&#9733;</label>
+                </div>
+            </div>
+
+            <div class="notes-section">
+                <label>Notes & Recommendations</label>
+                <textarea id="notes" placeholder="What worked? What could improve? What would translate to TikTok?"></textarea>
+            </div>
+
+            <div class="footer-row">
+                <div class="total-score">
+                    <span class="label">Total</span>
+                    <span class="score" id="total-score">0</span>
+                    <span class="max">/ 20</span>
+                </div>
+                <button class="export-btn" onclick="copyResults()">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const POST_NUM = 1;
+
+        function updateTotal() {
+            let total = 0;
+            ['content', 'strategic', 'platform', 'brand'].forEach(cat => {
+                const checked = document.querySelector(`input[name="${cat}"]:checked`);
+                if (checked) total += parseInt(checked.value);
+            });
+            document.getElementById('total-score').textContent = total;
+        }
+
+        document.querySelectorAll('.rating-stars input').forEach(input => {
+            input.addEventListener('change', function() {
+                document.querySelector(`[data-category="${this.name}"]`).textContent = `${this.value}/5`;
+                updateTotal();
+            });
+        });
+
+        function copyResults() {
+            let scores = ['content', 'strategic', 'platform', 'brand'].map(cat => {
+                const checked = document.querySelector(`input[name="${cat}"]:checked`);
+                return checked ? parseInt(checked.value) : 0;
+            });
+            const total = scores.reduce((a, b) => a + b, 0);
+            const notes = document.getElementById('notes').value;
+            const postUrl = document.getElementById('post-url').value || '(post not specified)';
+            const g = id => document.getElementById(id).value || '0';
+
+            let text = `Instagram Post ${POST_NUM} Evaluation
+================================
+@opmtshirts (Pro Crew Gear)
+Post: ${postUrl}
+
+STATS: ${g('stat-likes')} likes | ${g('stat-comments')} comments | ${g('stat-shares')} shares | ${g('stat-saves')} saves | ${g('stat-plays')} plays
+
+RATINGS
+Content Quality: ${scores[0]}/5
+Strategic Elements: ${scores[1]}/5
+Platform Fit: ${scores[2]}/5
+Brand Fit: ${scores[3]}/5
+
+TOTAL: ${total}/20
+
+NOTES
+${notes || '(No notes)'}`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.export-btn');
+                const original = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'linear-gradient(135deg, #00c853, #00e676)';
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.style.background = 'linear-gradient(135deg, #833AB4, #E1306C, #F77737)';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
