@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Scout's Glossary — Interactive Terms | PFNYC Environmental Tech Lab</title>
+<title>Scout's Glossary — Learn &amp; Self-Check | PFNYC Environmental Tech Lab</title>
 <style>
   :root {
     --bg: #ffffff;
@@ -204,6 +204,125 @@
     clip: rect(0 0 0 0); clip-path: inset(50%);
     overflow: hidden; white-space: nowrap;
   }
+
+  /* ---- Check Your Understanding (self-check quiz) ---- */
+  .quiz {
+    --ok: #137a3b;     --ok-bd: #137a3b;
+    --warn: #dc2626;   --warn-bd: #dc2626;
+    --btn-bg: #4338ca; --btn-bg-hover: #372cae;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  @media (prefers-color-scheme: dark) {
+    .quiz { --ok: #34d399; --ok-bd: #22c55e; --warn: #f87171; --warn-bd: #ef4444; --btn-bg: #5b52e6; --btn-bg-hover: #645ae8; }
+  }
+  :root[data-theme="light"] .quiz { --ok: #137a3b; --ok-bd: #137a3b; --warn: #dc2626; --warn-bd: #dc2626; --btn-bg: #4338ca; --btn-bg-hover: #372cae; }
+  :root[data-theme="dark"]  .quiz { --ok: #34d399; --ok-bd: #22c55e; --warn: #f87171; --warn-bd: #ef4444; --btn-bg: #5b52e6; --btn-bg-hover: #645ae8; }
+
+  .quiz h2 { font-size: 1.02rem; font-weight: 800; letter-spacing: -0.2px; }
+  .quiz__intro { font-size: 0.84rem; color: var(--muted); margin-top: 5px; }
+
+  .q {
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    border-radius: 12px;
+    background: var(--card);
+    padding: 14px 16px;
+    margin-top: 12px;
+    min-inline-size: 0;
+  }
+  .q legend {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    padding: 0;
+    line-height: 1.45;
+  }
+  .q__num {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .q__opts { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    font-size: 0.85rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .opt:hover { background: var(--card-hover); }
+  .opt:focus-within {
+    outline: 3px solid var(--ring);
+    outline-offset: 1px;
+    box-shadow: 0 0 0 4px var(--ring-halo);
+  }
+  .opt input {
+    margin: 2px 0 0;
+    flex: 0 0 auto;
+    width: 16px; height: 16px;
+    accent-color: var(--accent);
+    scroll-margin-top: 20px;
+  }
+  .opt span { flex: 1 1 auto; }
+  .btn { scroll-margin-top: 16px; }
+
+  .q__fb {
+    margin-top: 11px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .q[data-state="correct"] { border-left-color: var(--ok-bd); }
+  .q[data-state="correct"] .q__fb { color: var(--ok); }
+  .q[data-state="wrong"]   { border-left-color: var(--warn-bd); }
+  .q[data-state="wrong"] .q__fb { color: var(--warn); }
+  .q[data-state="invalid"] { border-left-color: var(--warn-bd); }
+  .q[data-state="invalid"] .q__fb { color: var(--warn); }
+
+  .quiz__actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    font-family: inherit;
+    font-size: 0.86rem;
+    font-weight: 700;
+    border-radius: 9px;
+    padding: 9px 16px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .btn:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--ring-halo);
+  }
+  .btn-primary { background: var(--btn-bg); color: #ffffff; }
+  .btn-primary:hover { background: var(--btn-bg-hover); }
+  .btn-reset { background: transparent; color: var(--text); border-color: var(--border); }
+  .btn-reset:hover { background: var(--card-hover); }
+
+  .quiz__score {
+    margin-top: 13px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .quiz__score:empty { margin: 0; }
+
+  @media (forced-colors: active) {
+    .q, .opt, .btn { border-color: ButtonText; }
+    .opt:focus-within, .btn:focus-visible { outline-color: Highlight; box-shadow: none; }
+    .q[data-state="correct"] .q__fb, .q[data-state="wrong"] .q__fb { color: CanvasText; }
+    .btn-primary { background: ButtonFace; color: ButtonText; }
+  }
 </style>
 </head>
 <body>
@@ -211,11 +330,11 @@
     <div class="frame__head">
       <p class="kicker">PFNYC · Environmental Tech Lab</p>
       <h1>Scout's Glossary of Key Terms</h1>
-      <p class="instruction">Select a term to reveal what it means &mdash; and why a scout cares.</p>
+      <p class="instruction">Select a term to see what it means &mdash; and why a scout cares. Then test yourself with the quick check at the bottom.</p>
     </div>
 
     <main class="grid-scroll" aria-labelledby="glossary-h1-note">
-      <p id="glossary-h1-note" class="visually-hidden">Interactive glossary. Fourteen terms; select any term to expand its definition.</p>
+      <p id="glossary-h1-note" class="visually-hidden">Interactive glossary and self-check. Fourteen terms to expand, followed by a four-question comprehension quiz.</p>
       <ul class="cards" role="list">
 
         <li class="card">
@@ -415,6 +534,64 @@
         </li>
 
       </ul>
+
+      <section class="quiz">
+        <h2 id="quiz-h">Check Your Understanding</h2>
+        <p class="quiz__intro" id="quiz-intro">Four quick questions on the calls a scout actually makes. Answer all four, then select <strong>Check my answers</strong>. Nothing is graded or saved &mdash; this is just for you.</p>
+
+        <form id="quiz-form" aria-labelledby="quiz-h" aria-describedby="quiz-intro" novalidate>
+          <fieldset class="q">
+            <legend><span class="q__num">Question 1 of 4</span> You find a promising water-sensor company, but it turns out to be a wholly-owned subsidiary of a large, publicly-traded utility. What&rsquo;s the right first-pass call for ETL eligibility?</legend>
+            <div class="q__opts">
+              <label class="opt" for="q1a"><input type="radio" name="q1" id="q1a" value="a" aria-describedby="fb-q1"><span>Rate it highly &mdash; the technology clearly fits DEP&rsquo;s needs.</span></label>
+              <label class="opt" for="q1b"><input type="radio" name="q1" id="q1b" value="b" aria-describedby="fb-q1"><span>Cut it &mdash; ETL takes independent, private companies, and a subsidiary of a public parent fails the eligibility gate.</span></label>
+              <label class="opt" for="q1c"><input type="radio" name="q1" id="q1c" value="c" aria-describedby="fb-q1"><span>Flag it as M/WBE and keep it in the running.</span></label>
+              <label class="opt" for="q1d"><input type="radio" name="q1" id="q1d" value="d" aria-describedby="fb-q1"><span>It still qualifies, as long as the subsidiary itself isn&rsquo;t traded.</span></label>
+            </div>
+            <p class="q__fb" id="fb-q1" hidden></p>
+          </fieldset>
+
+          <fieldset class="q">
+            <legend><span class="q__num">Question 2 of 4</span> A startup&rsquo;s site has a polished product page and a &ldquo;Join the waitlist&rdquo; button, but no sign anyone is using the product yet. How does that read against ETL&rsquo;s &ldquo;working beta with active users&rdquo; bar?</legend>
+            <div class="q__opts">
+              <label class="opt" for="q2a"><input type="radio" name="q2" id="q2a" value="a" aria-describedby="fb-q2"><span>It clears the bar &mdash; a real product page is proof enough.</span></label>
+              <label class="opt" for="q2b"><input type="radio" name="q2" id="q2b" value="b" aria-describedby="fb-q2"><span>Waitlist sign-ups count as active users, so it passes.</span></label>
+              <label class="opt" for="q2c"><input type="radio" name="q2" id="q2c" value="c" aria-describedby="fb-q2"><span>It hasn&rsquo;t cleared the bar yet &mdash; a waitlist is a promise, not proof of active users.</span></label>
+              <label class="opt" for="q2d"><input type="radio" name="q2" id="q2d" value="d" aria-describedby="fb-q2"><span>It&rsquo;s an automatic cut &mdash; a waitlist disqualifies a company.</span></label>
+            </div>
+            <p class="q__fb" id="fb-q2" hidden></p>
+          </fieldset>
+
+          <fieldset class="q">
+            <legend><span class="q__num">Question 3 of 4</span> You want the fastest, most definitive free check of whether a company (or its parent) is publicly traded. Which source do you reach for?</legend>
+            <div class="q__opts">
+              <label class="opt" for="q3a"><input type="radio" name="q3" id="q3a" value="a" aria-describedby="fb-q3"><span>SEC EDGAR &mdash; if the company or its parent files there, it&rsquo;s public.</span></label>
+              <label class="opt" for="q3b"><input type="radio" name="q3" id="q3b" value="b" aria-describedby="fb-q3"><span>Crunchbase, because it lists a company&rsquo;s funding rounds.</span></label>
+              <label class="opt" for="q3c"><input type="radio" name="q3" id="q3c" value="c" aria-describedby="fb-q3"><span>The company&rsquo;s own homepage and &ldquo;About&rdquo; page.</span></label>
+              <label class="opt" for="q3d"><input type="radio" name="q3" id="q3d" value="d" aria-describedby="fb-q3"><span>An M/WBE certification directory.</span></label>
+            </div>
+            <p class="q__fb" id="fb-q3" hidden></p>
+          </fieldset>
+
+          <fieldset class="q">
+            <legend><span class="q__num">Question 4 of 4</span> A strong, otherwise-eligible company is <em>not</em> an M/WBE. How should that affect your call?</legend>
+            <div class="q__opts">
+              <label class="opt" for="q4a"><input type="radio" name="q4" id="q4a" value="a" aria-describedby="fb-q4"><span>Down-rate it &mdash; ETL requires M/WBE companies.</span></label>
+              <label class="opt" for="q4b"><input type="radio" name="q4" id="q4b" value="b" aria-describedby="fb-q4"><span>Cut it &mdash; non-M/WBE companies don&rsquo;t qualify.</span></label>
+              <label class="opt" for="q4c"><input type="radio" name="q4" id="q4c" value="c" aria-describedby="fb-q4"><span>It doesn&rsquo;t change eligibility &mdash; M/WBE is a plus to flag, never a requirement.</span></label>
+              <label class="opt" for="q4d"><input type="radio" name="q4" id="q4d" value="d" aria-describedby="fb-q4"><span>Only keep it if there are no M/WBE options in your pipeline.</span></label>
+            </div>
+            <p class="q__fb" id="fb-q4" hidden></p>
+          </fieldset>
+
+          <div class="quiz__actions">
+            <button type="submit" class="btn btn-primary">Check my answers</button>
+            <button type="button" class="btn btn-reset" id="quiz-reset" hidden>Try again</button>
+          </div>
+
+          <p class="quiz__score" id="quiz-score" role="status" aria-live="polite" aria-atomic="true"></p>
+        </form>
+      </section>
     </main>
   </div>
 
@@ -430,6 +607,120 @@
           btn.setAttribute('aria-expanded', String(!expanded));
           panel.hidden = expanded;
         });
+      });
+    })();
+
+    (function () {
+      var form = document.getElementById('quiz-form');
+      if (!form) return;
+
+      var QUESTIONS = [
+        {
+          name: 'q1', correct: 'b',
+          ok: 'Correct — a subsidiary of a public parent fails ETL’s independence gate, however good the product is.',
+          no: 'Not quite — the right call is to cut it. ETL takes independent, private companies, so a subsidiary of a public parent fails the eligibility gate no matter how well the tech fits.'
+        },
+        {
+          name: 'q2', correct: 'c',
+          ok: 'Correct — a waitlist is a promise, not traction. You’d note “no evidence of active users yet,” rather than treat sign-ups as proof.',
+          no: 'Not quite — it hasn’t cleared the bar yet. Active users means people using it now; a waitlist is only a promise, so the bar isn’t met. (It’s not an automatic cut — just unproven.)'
+        },
+        {
+          name: 'q3', correct: 'a',
+          ok: 'Correct — EDGAR is the U.S. government’s public-filing database: filings there mean public, no filings suggests private. Crunchbase is great for stage and funding, but EDGAR is the definitive public/private check.',
+          no: 'Not quite — the answer is SEC EDGAR. If a company or its parent files there, it’s public; no filings signals it’s likely private. Crunchbase is useful for stage and funding, but not the definitive independence check.'
+        },
+        {
+          name: 'q4', correct: 'c',
+          ok: 'Correct — ETL especially encourages M/WBE companies, so you flag it as a plus, but you never gate on it. A non-M/WBE company still fully qualifies.',
+          no: 'Not quite — it doesn’t change eligibility. M/WBE is a plus you flag, never a gate; a non-M/WBE company still qualifies on its merits.'
+        }
+      ];
+
+      var scoreEl = document.getElementById('quiz-score');
+      var resetBtn = document.getElementById('quiz-reset');
+
+      function fbEl(name) { return document.getElementById('fb-' + name); }
+      function fieldsetOf(name) { return fbEl(name).closest('fieldset'); }
+      function radiosOf(name) { return form.querySelectorAll('input[name="' + name + '"]'); }
+
+      function clearInvalid(name) {
+        var fs = fieldsetOf(name);
+        if (fs.getAttribute('data-state') === 'invalid') {
+          fs.removeAttribute('data-state');
+          var fb = fbEl(name);
+          fb.hidden = true;
+          fb.textContent = '';
+        }
+        Array.prototype.forEach.call(radiosOf(name), function (r) { r.removeAttribute('aria-invalid'); });
+      }
+
+      // Clear a question's "unanswered" flag the moment the user answers it.
+      QUESTIONS.forEach(function (q) {
+        Array.prototype.forEach.call(radiosOf(q.name), function (r) {
+          r.addEventListener('change', function () { clearInvalid(q.name); });
+        });
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Validate: flag every unanswered question; focus the first one.
+        // The focus move self-voices the legend + error via aria-describedby —
+        // deliberately NO live region here (that would double-announce).
+        var firstUnanswered = null;
+        QUESTIONS.forEach(function (q) {
+          var picked = form.querySelector('input[name="' + q.name + '"]:checked');
+          if (!picked) {
+            var fs = fieldsetOf(q.name);
+            var fb = fbEl(q.name);
+            fs.setAttribute('data-state', 'invalid');
+            fb.textContent = 'Select an answer to this question before checking.';
+            fb.hidden = false;
+            Array.prototype.forEach.call(radiosOf(q.name), function (r) { r.setAttribute('aria-invalid', 'true'); });
+            if (!firstUnanswered) firstUnanswered = radiosOf(q.name)[0];
+          }
+        });
+        if (firstUnanswered) {
+          scoreEl.textContent = '';
+          firstUnanswered.focus();
+          return;
+        }
+
+        // All answered — grade. One announcement, via the polite score region.
+        var correctCount = 0;
+        QUESTIONS.forEach(function (q) {
+          var picked = form.querySelector('input[name="' + q.name + '"]:checked');
+          var fb = fbEl(q.name);
+          var fs = fieldsetOf(q.name);
+          var isCorrect = picked.value === q.correct;
+          if (isCorrect) correctCount++;
+          Array.prototype.forEach.call(radiosOf(q.name), function (r) { r.removeAttribute('aria-invalid'); });
+          fs.setAttribute('data-state', isCorrect ? 'correct' : 'wrong');
+          fb.textContent = isCorrect ? q.ok : q.no;
+          fb.hidden = false;
+        });
+
+        var tail = correctCount === 4
+          ? 'Nailed it — that’s the scout’s eye.'
+          : 'Review the questions marked “Not quite,” then select Try again to have another go.';
+        scoreEl.textContent = 'You got ' + correctCount + ' of 4. ' + tail;
+        resetBtn.hidden = false;
+      });
+
+      resetBtn.addEventListener('click', function () {
+        form.reset();
+        QUESTIONS.forEach(function (q) {
+          var fb = fbEl(q.name);
+          fb.hidden = true;
+          fb.textContent = '';
+          fieldsetOf(q.name).removeAttribute('data-state');
+          Array.prototype.forEach.call(radiosOf(q.name), function (r) { r.removeAttribute('aria-invalid'); });
+        });
+        scoreEl.textContent = '';
+        resetBtn.hidden = true;
+        var first = form.querySelector('input[type="radio"]');
+        if (first) first.focus();
       });
     })();
   </script>
