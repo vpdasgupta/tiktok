@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Challenge 3 tour: Resource &amp; Energy Recovery</title>
+<style>
+  :root{
+    --highlight:#DCE1FF;--on-highlight:#001D69;--bg:#FDF8F8;--body:#484646;--title:#1C1B1B;
+    --ok:#0F6D3D;--no:#8A1C2B;
+    --t-fast:160ms;--t-frame:300ms;
+    --ease-out:cubic-bezier(.2,.7,.3,1);--ease-io:cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--body);display:flex;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased}
+  .vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  #stage{width:960px;height:540px;position:relative;transform-origin:center center;flex:0 0 auto}
+  #frame{position:absolute;inset:0;padding:26px 46px 22px;display:flex;flex-direction:column}
+  .head{flex:0 0 auto;margin-bottom:12px}
+  .progress{font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--on-highlight)}
+  .mhead{font-size:15px;line-height:1.35;color:var(--body);margin-top:2px}
+  .mhead strong{color:var(--title);font-weight:600}
+  .seg{display:flex;gap:5px;margin-top:9px}
+  .seg span{height:4px;flex:1 1 auto;border-radius:3px;background:var(--highlight)}
+  .seg span.on{background:var(--on-highlight)}
+  .deck{position:relative;flex:1 1 auto;min-height:0}
+  .card{position:absolute;inset:0;display:none;flex-direction:column;background:var(--highlight);border-radius:14px;padding:22px 26px;overflow-y:auto}
+  .card.on{display:flex}
+  .card.anim{animation:fin var(--t-frame) var(--ease-io) both}
+  @keyframes fin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .ttl{display:flex;align-items:center;gap:13px;flex:0 0 auto}
+  .ico-tile{flex:0 0 auto;width:46px;height:46px;border-radius:11px;background:var(--bg);display:flex;align-items:center;justify-content:center}
+  .ico-tile svg{width:26px;height:26px}
+  .ttl h2{font-size:21px;line-height:1.15;font-weight:600;color:var(--title)}
+  .ttl .aname{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--on-highlight);display:block;margin-bottom:1px}
+  .desc{font-size:15.5px;line-height:1.45;color:var(--body);margin-top:12px;flex:0 0 auto}
+  .desc strong{color:var(--title);font-weight:600}
+  .needs{margin-top:12px;flex:0 0 auto}
+  .needs h3{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--body);margin-bottom:7px}
+  .needs ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .needs li{display:flex;gap:9px;font-size:14px;line-height:1.4;color:var(--title)}
+  .needs li::before{content:"";flex:0 0 auto;width:7px;height:7px;margin-top:6px;border-radius:2px;background:var(--on-highlight)}
+  .needs li strong{font-weight:600}
+  .exp{margin-top:14px;align-self:flex-start;flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;
+    background:var(--bg);border:1.5px solid var(--on-highlight);border-radius:8px;padding:8px 13px;cursor:pointer;
+    font-family:inherit;font-size:13.5px;font-weight:600;color:var(--on-highlight)}
+  .exp:focus-visible{outline:3px solid var(--on-highlight);outline-offset:3px}
+  .exp svg{width:16px;height:16px;transition:transform var(--t-fast) var(--ease-out)}
+  .exp[aria-expanded="true"] svg{transform:rotate(45deg)}
+  .ev{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--t-frame) var(--ease-io);flex:0 0 auto}
+  .exp[aria-expanded="true"] + .ev{grid-template-rows:1fr}
+  .ev-in{overflow:hidden;min-height:0}
+  .ev p{font-size:14px;line-height:1.5;color:var(--title);padding-top:11px;max-width:74ch}
+  .ev p strong{font-weight:600;color:var(--on-highlight)}
+  .terms{margin-top:12px;flex:0 0 auto;background:var(--bg);border-radius:9px;padding:11px 14px}
+  .terms h3{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--on-highlight);margin-bottom:5px}
+  .terms p{font-size:13px;line-height:1.5;color:var(--title)}
+  .terms strong{font-weight:600}
+  .q-ttl{font-size:20px;line-height:1.2;font-weight:600;color:var(--title);flex:0 0 auto}
+  .q-sub{font-size:14px;line-height:1.4;color:var(--body);margin-top:5px;flex:0 0 auto}
+  .q-grid{margin-top:13px;display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:0 0 auto}
+  .q-opt{display:flex;align-items:flex-start;gap:10px;text-align:left;background:var(--bg);border:2px solid transparent;border-radius:10px;
+    padding:11px 13px;cursor:pointer;font-family:inherit;font-size:13.5px;line-height:1.35;font-weight:500;color:var(--title);
+    transition:border-color var(--t-fast) var(--ease-out),background var(--t-fast) var(--ease-out)}
+  .q-opt:hover{border-color:var(--on-highlight)}
+  .q-opt:focus-visible{outline:3px solid var(--on-highlight);outline-offset:2px}
+  .q-mark{flex:0 0 auto;width:20px;height:20px;border-radius:6px;background:#c3cbf0;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .q-mark svg{width:14px;height:14px;display:none}
+  .q-opt[aria-pressed="true"][data-a="1"]{border-color:var(--ok)}
+  .q-opt[aria-pressed="true"][data-a="1"] .q-mark{background:var(--ok)}
+  .q-opt[aria-pressed="true"][data-a="1"] .q-mark .tick{display:block}
+  .q-opt[aria-pressed="true"][data-a="0"]{border-color:var(--no)}
+  .q-opt[aria-pressed="true"][data-a="0"] .q-mark{background:var(--no)}
+  .q-opt[aria-pressed="true"][data-a="0"] .q-mark .cross{display:block}
+  .q-strip{min-height:52px;margin-top:11px;flex:0 0 auto;display:flex;align-items:flex-start;gap:10px}
+  .q-strip.on{background:var(--bg);border-left:3px solid var(--no);border-radius:8px;padding:10px 13px}
+  .q-strip p{font-size:13.5px;line-height:1.4;color:var(--title)}
+  .q-strip .qx{flex:0 0 auto;width:18px;height:18px;border-radius:5px;background:var(--no);display:none;align-items:center;justify-content:center}
+  .q-strip.on .qx{display:flex}
+  .q-strip .qx svg{width:12px;height:12px}
+  .q-foot{margin-top:auto;flex:0 0 auto;padding-top:8px}
+  .q-more{display:inline-flex;align-items:center;gap:8px;background:transparent;border:0;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--on-highlight);padding:4px 0}
+  .q-more:focus-visible{outline:3px solid var(--on-highlight);outline-offset:3px}
+  .q-more svg{width:17px;height:17px}
+  .q-done{display:none;align-items:center;gap:9px;font-size:14px;font-weight:600;color:var(--title)}
+  .q-done.on{display:flex}
+  .q-done .qt{flex:0 0 auto;width:20px;height:20px;border-radius:6px;background:var(--ok);display:flex;align-items:center;justify-content:center}
+  .q-done .qt svg{width:14px;height:14px}
+  .bar{margin-top:14px;flex:0 0 auto;display:flex;align-items:center;gap:11px}
+  button.nav{font-family:inherit;font-size:14.5px;font-weight:600;padding:10px 17px;border-radius:8px;cursor:pointer;
+    border:2px solid var(--on-highlight);background:var(--on-highlight);color:var(--bg);display:inline-flex;align-items:center;gap:7px;
+    transition:opacity var(--t-fast) var(--ease-out)}
+  button.nav.ghost{background:transparent;color:var(--on-highlight)}
+  button.nav:disabled{opacity:.35;cursor:not-allowed}
+  button.nav:focus-visible{outline:3px solid var(--on-highlight);outline-offset:3px}
+  button.nav svg{width:17px;height:17px}
+  .hint{font-size:12.5px;color:var(--body)}
+  @media (max-width:599px){
+    body{display:block;align-items:initial;justify-content:initial;overflow-x:hidden}
+    #stage{width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;transform:none!important}
+    #frame{position:relative;inset:auto;padding:20px 16px 24px;min-height:100vh}
+    .deck{min-height:60vh}.card{position:relative;inset:auto}.card:not(.on){display:none}
+    .q-grid{grid-template-columns:1fr}.ttl h2{font-size:19px}.bar{flex-wrap:wrap}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<noscript><style>
+  body{display:block;align-items:initial;justify-content:initial;height:auto;overflow-x:hidden}
+  #stage{display:none}#fallback{display:block!important}
+</style></noscript>
+</head>
+<body>
+<main id="stage">
+  <h1 class="vh">Challenge 3 tour: Resource and Energy Recovery — two in-scope areas and a relevance check</h1>
+  <div id="frame">
+    <div class="head">
+      <div class="progress" id="prog" aria-hidden="true">1 of 3</div>
+      <div class="mhead"><strong>Two areas make up Challenge 3</strong> — the newest, least-crowded challenge. Move through both, then test your eye.</div>
+      <div class="seg" id="seg" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+    </div>
+    <div class="deck" id="deck">
+
+      <!-- CARD 1 -->
+      <section class="card on" data-i="1" tabindex="-1" aria-label="Card 1 of 3: Area 1, Measurement and Planning">
+        <div class="ttl">
+          <span class="ico-tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#001D69" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 20h16"/><path d="M8 16v-3M12 16V9M16 16v-5"/></svg></span>
+          <div><span class="aname">Area 1</span><h2>Measurement &amp; Planning</h2></div>
+        </div>
+        <p class="desc"><strong>You can't recover what you can't measure.</strong> The tools that tell DEP how much energy, heat, or material is even there to capture.</p>
+        <div class="needs"><h3>Named needs DEP called out</h3><ul>
+          <li><strong>Flow &amp; temperature monitoring</strong> — non-invasive tech to validate real flow rates and temperatures in sewers (temperature sets the ceiling on recoverable heat).</li>
+          <li><strong>Energy &amp; decarbonization planning tools</strong> — calculating carbon impact and running lifecycle-carbon assessments at the design phase.</li>
+        </ul></div>
+        <button class="exp" type="button" aria-expanded="false" aria-controls="c5-e1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#001D69" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>What counts as a fit here</span>
+        </button>
+        <div class="ev" id="c5-e1"><div class="ev-in"><p>A strong fit <strong>measures or plans for recovery from wastewater or sewers</strong> — sewer flow/temperature, or lifecycle-carbon planning tied to water infrastructure. A generic carbon-accounting dashboard with no wastewater tie is Out.</p></div></div>
+      </section>
+
+      <!-- CARD 2 -->
+      <section class="card" data-i="2" tabindex="-1" aria-label="Card 2 of 3: Area 2, Recovery and Conversion">
+        <div class="ttl">
+          <span class="ico-tile" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#001D69" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a8 3 0 0 0 16 0M4 8a8 3 0 0 1 16 0v8a8 3 0 0 1-16 0z"/><path d="M9 20l3-4 3 4"/></svg></span>
+          <div><span class="aname">Area 2</span><h2>Recovery &amp; Conversion</h2></div>
+        </div>
+        <p class="desc"><strong>The actual value capture</strong> — pulling heat, energy, and materials out of what used to be pure waste.</p>
+        <div class="needs"><h3>Named needs DEP called out</h3><ul>
+          <li><strong>On-site dewatering</strong> — low-cost, low-maintenance drying of wastewater solids.</li>
+          <li><strong>Nutrient recovery</strong> — recovering struvite (a phosphorus fertilizer) and volatile fatty acids (chemical feedstocks).</li>
+          <li><strong>Non-invasive sewer heat recovery</strong> — capturing heat from sewer flow without shutting the line down.</li>
+          <li><strong>Alternative biogas use</strong> — upgrading the methane-rich gas wastewater produces beyond flaring.</li>
+        </ul></div>
+        <button class="exp" type="button" aria-expanded="false" aria-controls="c5-e2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#001D69" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>What counts as a fit here</span>
+        </button>
+        <div class="ev" id="c5-e2"><div class="ev-in"><p>A strong fit <strong>physically recovers energy, heat, or material from wastewater or sewers</strong>. The trap is the opposite of the other challenges: this is the <em>least</em> "sensor on a pipe." Generic clean-energy or recycling with no wastewater tie is Out.</p></div></div>
+        <div class="terms"><h3>A few terms</h3><p><strong>Biogas</strong> = methane-rich gas from breaking-down solids. <strong>Struvite</strong> = a recoverable phosphorus fertilizer. <strong>VFAs</strong> = volatile fatty acids, useful feedstocks. <strong>Dewatering</strong> = removing water from sludge. <strong>Lifecycle carbon</strong> = total emissions across a choice's whole life.</p></div>
+      </section>
+
+      <!-- CARD 3 — QUIZ -->
+      <section class="card q" data-i="3" tabindex="-1" aria-label="Card 3 of 3: relevance check">
+        <h2 class="q-ttl" id="c5-qttl">Now test your eye. Which of these is a real fit for Challenge 3?</h2>
+        <p class="q-sub">Tap every company you think recovers value from wastewater or sewers. Nothing here is scored — this is to build your instinct.</p>
+        <div class="q-grid" id="c5-qgrid" role="group" aria-labelledby="c5-qttl">
+          <button type="button" class="q-opt" aria-pressed="false" data-a="1"><span class="q-mark" aria-hidden="true"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><svg class="cross" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span>Recovers struvite fertilizer from a treatment plant's flow</span><span class="vh" data-fb></span></button>
+          <button type="button" class="q-opt" aria-pressed="false" data-a="1"><span class="q-mark" aria-hidden="true"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><svg class="cross" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span>Captures heat from sewer flow to warm a building, line still running</span><span class="vh" data-fb></span></button>
+          <button type="button" class="q-opt" aria-pressed="false" data-a="1"><span class="q-mark" aria-hidden="true"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><svg class="cross" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span>Measures real sewer flow and temperature non-invasively</span><span class="vh" data-fb></span></button>
+          <button type="button" class="q-opt" aria-pressed="false" data-a="1"><span class="q-mark" aria-hidden="true"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><svg class="cross" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span>Upgrades biogas into a higher-value fuel instead of flaring it</span><span class="vh" data-fb></span></button>
+          <button type="button" class="q-opt" aria-pressed="false" data-a="0" data-x="Clean energy, but no wastewater or sewer tie. Rooftop solar recovers nothing from DEP's flow — it's the generic clean-energy trap."><span class="q-mark" aria-hidden="true"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><svg class="cross" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span>Sells rooftop solar panels to homeowners</span><span class="vh" data-fb></span></button>
+          <button type="button" class="q-opt" aria-pressed="false" data-a="0" data-x="Recycling, but not from wastewater or sewers. Optimizing curbside bin routes has no tie to recovering energy, heat, or material from DEP's flow."><span class="q-mark" aria-hidden="true"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><svg class="cross" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span>A municipal recycling-bin route optimizer</span><span class="vh" data-fb></span></button>
+          <button type="button" class="q-opt" aria-pressed="false" data-a="0" data-x="Carbon accounting with no wastewater recovery. A corporate ESG dashboard reports emissions; it doesn't measure, plan for, or recover value from sewers."><span class="q-mark" aria-hidden="true"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><svg class="cross" viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><span>A carbon-accounting dashboard for corporate ESG reports</span><span class="vh" data-fb></span></button>
+        </div>
+        <div class="q-strip" id="c5-qstrip" aria-hidden="true"><span class="qx"><svg viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></span><p id="c5-qtext"></p></div>
+        <div class="q-foot">
+          <button type="button" class="q-more" id="c5-qmore"><svg viewBox="0 0 24 24" fill="none" stroke="#001D69" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.6"/></svg><span>Show me the answers</span></button>
+          <p class="q-done" id="c5-qdone" tabindex="-1"><span class="qt"><svg viewBox="0 0 24 24" fill="none" stroke="#FDF8F8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Four are real fits. Three are not — each is a clean-energy or recycling look-alike with no wastewater tie.</span></p>
+        </div>
+        <p class="vh" id="c5-qlive" role="status" aria-live="polite" aria-atomic="true"></p>
+      </section>
+
+    </div>
+    <div class="bar">
+      <button class="nav ghost" id="prev" disabled aria-label="Previous card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>Back</span></button>
+      <button class="nav" id="next" aria-label="Next card"><span>Next</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <span class="hint">Arrow keys and swipe work too.</span>
+    </div>
+  </div>
+</main>
+
+<div id="fallback" style="display:none;max-width:760px;padding:28px;font-size:16px;line-height:1.55">
+  <h1 style="font-size:24px;color:#1C1B1B;margin-bottom:6px">Challenge 3: Resource &amp; Energy Recovery</h1>
+  <p style="margin-bottom:14px"><em>How can DEP capture more value from its wastewater and sewers — recovering energy, heat, and materials?</em> The newest, least-crowded challenge. Two named areas define "relevant." The strong fits are recovery/conversion tech, not sensors.</p>
+  <h2 style="font-size:18px;margin:12px 0 3px">Area 1 — Measurement &amp; Planning</h2><p>Non-invasive sewer flow &amp; temperature monitoring; energy and decarbonization planning tools (lifecycle carbon at the design phase).</p>
+  <h2 style="font-size:18px;margin:12px 0 3px">Area 2 — Recovery &amp; Conversion</h2><p>On-site dewatering; nutrient recovery (struvite, VFAs); non-invasive sewer heat recovery; alternative biogas use. Terms: biogas = methane-rich gas from solids; struvite = a phosphorus fertilizer; VFAs = volatile fatty acids; dewatering = removing water from sludge; lifecycle carbon = total emissions across a choice's whole life.</p>
+  <h2 style="font-size:18px;margin:16px 0 3px">Relevance check — answer key</h2>
+  <p><strong>Real fits:</strong> struvite recovery (Area 2); sewer heat recovery (Area 2); non-invasive sewer flow/temperature measurement (Area 1); biogas upgrading (Area 2). <strong>Not fits:</strong> rooftop solar (clean energy, no wastewater tie); a recycling-bin route optimizer (recycling, not sewer recovery); a corporate ESG carbon dashboard (accounting, not recovery).</p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var PFX="c5-";
+  var deck=document.getElementById("deck"),
+      cards=Array.prototype.slice.call(deck.querySelectorAll(".card")),
+      seg=Array.prototype.slice.call(document.querySelectorAll("#seg span")),
+      prog=document.getElementById("prog"),prev=document.getElementById("prev"),next=document.getElementById("next"),
+      N=cards.length,cur=0,reduce=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  function show(i,moveFocus){
+    i=Math.max(0,Math.min(N-1,i));
+    cards.forEach(function(c,k){c.classList.toggle("on",k===i);});
+    seg.forEach(function(s,k){s.classList.toggle("on",k<=i);});
+    prog.textContent=(i+1)+" of "+N;prev.disabled=(i===0);next.disabled=(i===N-1);
+    next.style.visibility=(i===N-1)?"hidden":"visible";cur=i;
+    var card=cards[i];
+    if(!reduce){card.classList.remove("anim");void card.offsetWidth;card.classList.add("anim");}
+    if(moveFocus!==false)card.focus();
+  }
+  next.addEventListener("click",function(){show(cur+1,true);});
+  prev.addEventListener("click",function(){show(cur-1,true);});
+  document.addEventListener("keydown",function(e){
+    if(e.key!=="ArrowLeft"&&e.key!=="ArrowRight")return;
+    var t=e.target;
+    if(t.closest&&t.closest(".q-grid, input, textarea, select, [contenteditable]"))return;
+    if(cur===N-1&&e.key==="ArrowRight")return;
+    if(!(t.closest&&(t.closest(".card")||t.closest(".bar"))||t===document.body))return;
+    e.preventDefault();show(e.key==="ArrowRight"?cur+1:cur-1,true);
+  });
+  var x0=null;
+  deck.addEventListener("touchstart",function(e){x0=e.touches[0].clientX;},{passive:true});
+  deck.addEventListener("touchend",function(e){
+    if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;
+    if(Math.abs(dx)<45)return;show(dx<0?cur+1:cur-1,false);
+  },{passive:true});
+  Array.prototype.slice.call(document.querySelectorAll(".exp")).forEach(function(btn){
+    var panel=document.getElementById(btn.getAttribute("aria-controls")),pin=panel.querySelector(".ev-in");
+    pin.setAttribute("inert","");
+    btn.addEventListener("click",function(){
+      var open=btn.getAttribute("aria-expanded")==="true";
+      btn.setAttribute("aria-expanded",open?"false":"true");
+      if(open)pin.setAttribute("inert","");else pin.removeAttribute("inert");
+    });
+  });
+  var qgrid=document.getElementById(PFX+"qgrid"),
+      qopts=Array.prototype.slice.call(qgrid.querySelectorAll(".q-opt")),
+      qstrip=document.getElementById(PFX+"qstrip"),qtext=document.getElementById(PFX+"qtext"),
+      qmore=document.getElementById(PFX+"qmore"),qdone=document.getElementById(PFX+"qdone"),
+      qlive=document.getElementById(PFX+"qlive"),revealed=false;
+  function label(btn){return btn.querySelector("span:nth-child(2)").textContent.trim();}
+  qopts.forEach(function(btn){
+    btn.addEventListener("click",function(){
+      if(btn.getAttribute("aria-disabled")==="true")return;
+      var pressed=btn.getAttribute("aria-pressed")==="true";
+      btn.setAttribute("aria-pressed",pressed?"false":"true");
+      var isFit=btn.getAttribute("data-a")==="1",name=label(btn);
+      if(pressed){qstrip.classList.remove("on");qtext.textContent="";qlive.textContent=name+" — cleared.";btn.querySelector("[data-fb]").textContent="";}
+      else if(isFit){qstrip.classList.remove("on");qtext.textContent="";qlive.textContent=name+" — correct, a real fit for Challenge 3.";btn.querySelector("[data-fb]").textContent="Correct — a real fit.";}
+      else{var x=btn.getAttribute("data-x");qstrip.classList.add("on");qtext.textContent=x;qlive.textContent=name+" — not a fit. "+x;btn.querySelector("[data-fb]").textContent="Not a fit. "+x;}
+    });
+  });
+  qmore.addEventListener("click",function(){
+    if(revealed)return;revealed=true;
+    qopts.forEach(function(btn){
+      btn.setAttribute("aria-pressed","true");btn.setAttribute("aria-disabled","true");
+      var isFit=btn.getAttribute("data-a")==="1";
+      btn.querySelector("[data-fb]").textContent=isFit?"Correct — a real fit.":("Not a fit. "+btn.getAttribute("data-x"));
+    });
+    qstrip.classList.remove("on");qtext.textContent="";qmore.style.display="none";qdone.classList.add("on");
+    qdone.focus();
+    qlive.textContent="Answers shown. Four are real fits for Challenge 3; three are look-alikes with no wastewater tie — rooftop solar, a recycling-route optimizer, and a corporate ESG carbon dashboard.";
+  });
+  show(0,false);
+  var stage=document.getElementById("stage");
+  function fit(){if(window.matchMedia("(max-width:599px)").matches){stage.style.transform="";return;}var s=Math.min(window.innerWidth/960,window.innerHeight/540,1);stage.style.transform="scale("+s+")";}
+  window.addEventListener("resize",fit);fit();
+})();
+</script>
+</body>
+</html>
