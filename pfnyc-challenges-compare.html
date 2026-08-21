@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare DEP's three 2026 challenges</title>
+<style>
+  /* ---------------------------------------------------------------
+     Extern design system. These five values are the entire palette.
+     Do not add a sixth.
+     --------------------------------------------------------------- */
+  :root{
+    --highlight:#DCE1FF;    /* cards, panels, highlighted blocks   */
+    --on-highlight:#001D69; /* accents, the challenge you opened   */
+    --bg:#FDF8F8;           /* canvas background, negative space   */
+    --body:#484646;         /* body copy, captions                 */
+    --title:#1C1B1B;        /* headings, primary text              */
+
+    --t-fast:160ms;
+    --t-frame:300ms;
+    --ease-out:cubic-bezier(.2,.7,.3,1);
+    --ease-io:cubic-bezier(.4,0,.2,1);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--body);
+    display:flex;align-items:center;justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---- 960x540 canvas, scaled down only, never up ---- */
+  #stage{
+    width:960px;height:540px;position:relative;transform-origin:center center;
+    flex:0 0 auto;
+  }
+  #frame{
+    position:absolute;inset:0;
+    padding:30px 52px 26px;
+    display:flex;flex-direction:column;
+  }
+
+  .kicker{
+    font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--on-highlight);margin-bottom:6px;flex:0 0 auto;
+  }
+  h1{
+    font-size:26px;line-height:1.2;font-weight:600;color:var(--title);
+    margin-bottom:6px;flex:0 0 auto;
+  }
+  .sub{font-size:16px;line-height:1.45;max-width:70ch;flex:0 0 auto}
+  .sub strong{color:var(--title);font-weight:600}
+
+  /* ---- three-card compare accordion ---- */
+  .list{
+    margin-top:16px;display:flex;flex-direction:column;gap:10px;
+    flex:1 1 auto;min-height:0;
+  }
+  .ch{
+    background:var(--highlight);
+    border:2px solid transparent;border-radius:12px;
+    overflow:hidden;transition:border-color var(--t-fast) var(--ease-out);
+  }
+  .ch.open{border-color:var(--on-highlight)}
+
+  .trig{
+    width:100%;background:transparent;border:0;cursor:pointer;
+    font-family:inherit;text-align:left;
+    padding:13px 16px;display:flex;align-items:center;gap:14px;
+    transition:background var(--t-fast) var(--ease-out);
+  }
+  .trig:hover{background:#cfd6fb}                 /* tint of --highlight, not a new hue */
+  .trig:focus-visible{outline:3px solid var(--on-highlight);outline-offset:-3px}
+
+  .num{
+    flex:0 0 auto;width:30px;height:30px;border-radius:8px;
+    background:var(--on-highlight);color:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:700;
+  }
+  .heads{flex:1 1 auto;min-width:0}
+  .name{font-size:17px;font-weight:600;color:var(--title);line-height:1.2}
+  .one{font-size:14px;color:var(--body);line-height:1.3;margin-top:2px}
+  .toggle{
+    flex:0 0 auto;display:flex;align-items:center;gap:6px;
+    font-size:13px;font-weight:600;color:var(--on-highlight);
+  }
+  .chev{width:16px;height:16px;transition:transform var(--t-fast) var(--ease-out)}
+  .ch.open .chev{transform:rotate(180deg)}
+
+  /* detail panel — plain text only (no focusable children), so collapsing
+     it can never eject focus to <body>. */
+  .panel{
+    display:grid;grid-template-rows:0fr;
+    transition:grid-template-rows var(--t-frame) var(--ease-io);
+  }
+  .ch.open .panel{grid-template-rows:1fr}
+  .panel-in{overflow:hidden;min-height:0}
+  .panel-pad{padding:0 16px 16px 60px}
+
+  .qrow{
+    font-size:15px;line-height:1.4;color:var(--title);
+    border-left:3px solid var(--on-highlight);padding-left:12px;margin-bottom:12px;
+  }
+  .qrow .qlab{display:block;font-size:12px;font-weight:700;letter-spacing:.03em;
+    text-transform:uppercase;color:var(--on-highlight);margin-bottom:3px}
+
+  .metagrid{display:flex;gap:22px;flex-wrap:wrap}
+  .meta{min-width:0}
+  .meta .mh{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
+    color:var(--body);margin-bottom:5px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{
+    background:var(--bg);border:1px solid #c3cbf0;border-radius:999px;
+    padding:3px 10px;font-size:12.5px;font-weight:500;color:var(--title);
+  }
+  .likes{font-size:13.5px;line-height:1.4;color:var(--body);max-width:40ch}
+  .likes strong{color:var(--title);font-weight:600}
+
+  /* collapsed cards show a compact chip strip so you can compare without opening */
+  .peek{
+    padding:0 16px 12px 60px;margin-top:-2px;
+    display:flex;flex-wrap:wrap;gap:6px;
+  }
+  .ch.open .peek{display:none}
+  .peek .chip{font-size:12px;padding:2px 9px}
+
+  .foot{
+    margin-top:14px;flex:0 0 auto;
+    font-size:14px;line-height:1.45;color:var(--title);
+    background:var(--highlight);border-radius:8px;padding:11px 14px;
+  }
+  .foot strong{font-weight:600}
+  .foot .lock{color:var(--on-highlight);font-weight:700}
+
+  @media (max-width:599px){
+    body{display:block;align-items:initial;justify-content:initial;overflow-x:hidden}
+    #stage{width:100%!important;max-width:100%!important;min-width:0!important;
+           height:auto!important;transform:none!important}
+    #frame{position:relative;inset:auto;padding:22px 18px 26px;min-height:100vh}
+    h1{font-size:22px}
+    .sub{font-size:15px}
+    .panel-pad,.peek{padding-left:16px}
+    .metagrid{flex-direction:column;gap:12px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+<noscript><style>
+  body{display:block;align-items:initial;justify-content:initial;height:auto;overflow-x:hidden}
+  #stage{display:none}
+  #fallback{display:block!important}
+</style></noscript>
+</head>
+<body>
+
+<main id="stage">
+  <div id="frame">
+    <p class="kicker">DEP's 2026 challenges</p>
+    <h1>Three challenges. You'll own one for a month.</h1>
+    <p class="sub">Open each to compare the question it asks, the areas inside it, and who tends to enjoy it. <strong>There's no best one</strong> — pick the problem you'd most want to live in.</p>
+
+    <div class="list" id="list">
+
+      <!-- ============ CHALLENGE 1 ============ -->
+      <div class="ch" data-i="1">
+        <button class="trig" type="button" aria-expanded="false" aria-controls="c2-p1">
+          <span class="num" aria-hidden="true">1</span>
+          <span class="heads">
+            <span class="name">Planning, Data &amp; Field Operations</span>
+            <span class="one">The planning &amp; paperwork side of a giant utility</span>
+          </span>
+          <span class="toggle"><span class="tlabel">Compare</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="#001D69" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="peek" aria-hidden="true">
+          <span class="chip">Extreme Heat</span><span class="chip">Field Ops</span><span class="chip">Cybersecurity</span><span class="chip">Modelling</span><span class="chip">Capital Planning &amp; Data</span>
+        </div>
+        <div class="panel" id="c2-p1"><div class="panel-in"><div class="panel-pad">
+          <p class="qrow"><span class="qlab">The "how can we…"</span>How can DEP make planning, cost estimation, field data collection, and administrative review <strong>faster and more data-driven?</strong></p>
+          <div class="metagrid">
+            <div class="meta">
+              <p class="mh">The five areas inside it</p>
+              <div class="chips"><span class="chip">Extreme Heat &amp; Crew Safety</span><span class="chip">Field Ops &amp; Imagery</span><span class="chip">Cybersecurity (OT/SCADA)</span><span class="chip">Modelling</span><span class="chip">Capital Planning &amp; Data</span></div>
+            </div>
+            <div class="meta">
+              <p class="mh">Good pick if you like…</p>
+              <p class="likes">data, software, planning, cost, security, worker safety. <strong>The widest menu</strong> — five areas, lots of corners to make your own.</p>
+            </div>
+          </div>
+        </div></div></div>
+      </div>
+
+      <!-- ============ CHALLENGE 2 ============ -->
+      <div class="ch" data-i="2">
+        <button class="trig" type="button" aria-expanded="false" aria-controls="c2-p2">
+          <span class="num" aria-hidden="true">2</span>
+          <span class="heads">
+            <span class="name">Asset Condition &amp; Failure Prevention</span>
+            <span class="one">Catching failure before it happens</span>
+          </span>
+          <span class="toggle"><span class="tlabel">Compare</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="#001D69" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="peek" aria-hidden="true">
+          <span class="chip">Pipe/Main Integrity</span><span class="chip">Treatment-Plant Health</span><span class="chip">Coastal Resilience</span><span class="chip">Water-Supply &amp; Env. Monitoring</span>
+        </div>
+        <div class="panel" id="c2-p2"><div class="panel-in"><div class="panel-pad">
+          <p class="qrow"><span class="qlab">The "how can we…"</span>How can DEP detect problems in its pipes, equipment, and infrastructure <strong>earlier — before failures, breaks, or downtime?</strong></p>
+          <div class="metagrid">
+            <div class="meta">
+              <p class="mh">The four areas inside it</p>
+              <div class="chips"><span class="chip">Pipe, Main &amp; Aqueduct Integrity</span><span class="chip">Treatment-Plant &amp; Process Health</span><span class="chip">Coastal Resilience</span><span class="chip">Water Supply &amp; Env. Monitoring</span></div>
+            </div>
+            <div class="meta">
+              <p class="mh">Good pick if you like…</p>
+              <p class="likes">sensors, inspection, prediction, structural / condition monitoring. <strong>Condition prediction counts as much as a physical sensor.</strong></p>
+            </div>
+          </div>
+        </div></div></div>
+      </div>
+
+      <!-- ============ CHALLENGE 3 ============ -->
+      <div class="ch" data-i="3">
+        <button class="trig" type="button" aria-expanded="false" aria-controls="c2-p3">
+          <span class="num" aria-hidden="true">3</span>
+          <span class="heads">
+            <span class="name">Resource &amp; Energy Recovery</span>
+            <span class="one">Getting value <em>out</em> of wastewater</span>
+          </span>
+          <span class="toggle"><span class="tlabel">Compare</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="#001D69" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="peek" aria-hidden="true">
+          <span class="chip">Measurement &amp; Planning</span><span class="chip">Recovery &amp; Conversion</span><span class="chip">Newest · least-crowded</span>
+        </div>
+        <div class="panel" id="c2-p3"><div class="panel-in"><div class="panel-pad">
+          <p class="qrow"><span class="qlab">The "how can we…"</span>How can DEP capture more <strong>value</strong> from its wastewater and sewers — recovering <strong>energy, heat, and materials?</strong></p>
+          <div class="metagrid">
+            <div class="meta">
+              <p class="mh">The two areas inside it</p>
+              <div class="chips"><span class="chip">Measurement &amp; Planning</span><span class="chip">Recovery &amp; Conversion</span></div>
+            </div>
+            <div class="meta">
+              <p class="mh">Good pick if you like…</p>
+              <p class="likes">clean energy, chemistry, sustainability, novel hardware. <strong>Newest and least-crowded</strong> — great for finding companies nobody else has surfaced.</p>
+            </div>
+          </div>
+        </div></div></div>
+      </div>
+
+    </div>
+
+    <p class="foot"><span class="lock">🔒 You choose one, and it's locked for the whole program.</span> You're not locked yet — the next three pages take each challenge in depth. Read them, <strong>then</strong> claim yours in the final step of Week&nbsp;1.</p>
+  </div>
+</main>
+
+<!-- Static fallback: every challenge, fully open, no tapping. -->
+<div id="fallback" style="display:none;max-width:720px;padding:28px;font-size:16px;line-height:1.55">
+  <h1 style="font-size:24px;color:#1C1B1B;margin-bottom:8px">DEP's three 2026 challenges</h1>
+  <p style="margin-bottom:16px">You'll choose <strong>one</strong> challenge and keep it for the whole program. Meet all three, then claim yours in the final step of Week 1. There is no best one — pick the problem you'd most want to live in.</p>
+
+  <h2 style="font-size:19px;color:#1C1B1B;margin:14px 0 4px">1. Planning, Data &amp; Field Operations</h2>
+  <p>The planning &amp; paperwork side of a giant utility. <em>How can DEP make planning, cost estimation, field data collection, and administrative review faster and more data-driven?</em> Five areas: Extreme Heat &amp; Crew Safety, Field Ops &amp; Imagery, Cybersecurity (OT/SCADA), Modelling, Capital Planning &amp; Data. Good pick if you like data, software, planning, cost, security, or worker safety — the widest menu.</p>
+
+  <h2 style="font-size:19px;color:#1C1B1B;margin:14px 0 4px">2. Asset Condition &amp; Failure Prevention</h2>
+  <p>Catching failure before it happens. <em>How can DEP detect problems in its pipes, equipment, and infrastructure earlier — before failures, breaks, or downtime?</em> Four areas: Pipe/Main/Aqueduct Integrity, Treatment-Plant &amp; Process Health, Coastal Resilience, Water Supply &amp; Environmental Monitoring. Good pick if you like sensors, inspection, prediction, or condition monitoring.</p>
+
+  <h2 style="font-size:19px;color:#1C1B1B;margin:14px 0 4px">3. Resource &amp; Energy Recovery</h2>
+  <p>Getting value out of wastewater. <em>How can DEP capture more value from its wastewater and sewers — recovering energy, heat, and materials?</em> Two areas: Measurement &amp; Planning, Recovery &amp; Conversion. Good pick if you like clean energy, chemistry, sustainability, or novel hardware — the newest and least-crowded challenge.</p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".ch"));
+
+  function setOpen(card, open){
+    var trig  = card.querySelector(".trig"),
+        panel = card.querySelector(".panel"),
+        pin   = card.querySelector(".panel-in"),
+        lab   = card.querySelector(".tlabel");
+    card.classList.toggle("open", open);
+    trig.setAttribute("aria-expanded", open ? "true" : "false");
+    lab.textContent = open ? "Close" : "Compare";
+    /* inert collapsed panels so nothing inside is reachable. Panels hold
+       plain text only, so this can never strand focus. */
+    if (open){ pin.removeAttribute("inert"); }
+    else     { pin.setAttribute("inert",""); }
+  }
+
+  function openOnly(card){
+    cards.forEach(function(c){ setOpen(c, c === card); });
+  }
+
+  cards.forEach(function(card){
+    var trig = card.querySelector(".trig");
+    setOpen(card, false);                       // start collapsed + inert
+    trig.addEventListener("click", function(){
+      var isOpen = card.classList.contains("open");
+      if (isOpen) setOpen(card, false); else openOnly(card);
+      /* focus stays on the trigger; the aria-expanded change is the
+         announcement. No live region here on purpose. */
+    });
+    trig.addEventListener("keydown", function(e){
+      if (e.key === "Escape" && card.classList.contains("open")){
+        setOpen(card, false); trig.focus();
+      }
+    });
+  });
+
+  /* ---- scale the fixed canvas down to fit, never up ---- */
+  var stage = document.getElementById("stage");
+  function fit(){
+    if (window.matchMedia("(max-width:599px)").matches){ stage.style.transform = ""; return; }
+    var s = Math.min(window.innerWidth / 960, window.innerHeight / 540, 1);
+    stage.style.transform = "scale(" + s + ")";
+  }
+  window.addEventListener("resize", fit);
+  fit();
+})();
+</script>
+</body>
+</html>
