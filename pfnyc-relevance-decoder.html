@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- title is set from DECK.title by script; this is the no-JS fallback -->
+<title>What Counts as Relevant? — Interactive Slide Game</title>
+
+<!--
+================================================================================
+CONCEPT DECODER TEMPLATE  (progressive-reveal riddle deck)
+================================================================================
+A self-contained, embeddable HTML game that teaches learners that a set of
+familiar EXAMPLES all share the same underlying PARTS, then flips them into a
+second PERSPECTIVE (attacker / investor / critic / designer …) with stakes
+that escalate example to example.
+
+Origin pattern: "The Anatomy of an IoT Device" (Hydroficient externship) — a
+fitness tracker, smart speaker, and smart lock, each decomposed into Sensor /
+Broker / Subscriber / Actuator, then viewed through an attacker's eyes.
+
+WHAT THIS TEMPLATE IS GOOD FOR
+  - "Every X is really the same N-part machine" lessons
+  - Teaching a reusable framework/vocabulary through 2-4 concrete examples
+  - Pairing a "how it works" view with a consequence / second-perspective view
+  Examples you could build with it:
+    - Marketing: every ad = Hook / Value / Proof / CTA, viewed as the skeptic
+    - Finance: every deal = Revenue / Cost / Risk / Moat, viewed as the investor
+    - Data: every chart = Question / Encoding / Story / Action, viewed as the reader
+    - Product: every feature = Trigger / Action / Reward / Investment (Hooked)
+
+HOW TO CUSTOMISE  (you only touch the DECK object — search "EDIT BELOW")
+  1. Set deckId (unique, kebab-case) — namespaces every id + the save key.
+  2. Set title / emoji / intro copy.
+  3. Define PARTS: the 3-4 shared components (name, color, definition, icon).
+  4. Define ROUNDS: one per example (clues, answers, part mapping, the second
+     perspective's prompt + per-part feedback + escalating stake line).
+  5. Set the finale copy + the "bridge" line into the next lesson.
+  6. (Optional) retheme via the CSS custom properties in :root.
+  Nothing below the "DO NOT EDIT" banner needs changing for normal use.
+
+DEPLOY  (matches this repo's Notion workflow)
+  - Host the finished file on GitHub Pages (github-pages-deployer agent).
+  - Embed in Notion:  <embed src="https://…/your-file.html"></embed>
+  - Always add the "If you can't see the interactive, click here" fallback link
+    beneath the embed (see existing IoT step for the exact wording).
+  - NOTE: Notion's embed block does not expose an iframe `title`. The in-page
+    <title> partially mitigates; treat the missing iframe title as a known,
+    platform-level residual gap (WCAG 2.4.1 / 4.1.2).
+
+ACCESSIBILITY  (WCAG 2.2 AA — reviewed by the accessibility-lead team)
+  Baked in: focus moves to each slide's heading on change; inactive slides are
+  `hidden` (out of tab order + a11y tree); polite/assertive live regions announce
+  clue reveals, guess results, gate state and slide position; the guess field has
+  a real label and submits via <form> without advancing; the Next gate uses
+  aria-disabled (discoverable) + a described reason; the four options are a real
+  radiogroup with aria-checked (not color-only); decorative SVGs are aria-hidden;
+  the focus ring is an ink outline offset onto the dark surface; --red-text is a
+  contrast-safe red for body text; at ≤640px / 400% zoom the fixed canvas is
+  abandoned for a fluid, scrolling, ungated stack (reflow-safe); reduced-motion
+  is honored. Keep these intact when editing — they are requirements, not polish.
+================================================================================
+-->
+
+<style>
+  :root{
+    /* ---- THEME TOKENS (safe to retheme; all pass WCAG AA on bg & panel2) ---- */
+    --bg:#0B1D2A; --panel:#10283A; --panel2:#0E2334; --line:#1E3A4F;
+    --teal:#2EC4B6; --amber:#F5A623; --red:#E4573D; --good:#3ECF8E;
+    --ink:#EAF4F4; --muted:#8FB0BC; --violet:#9B8CFF; --act:#FF7849;
+    /* contrast-safe red for NORMAL-SIZE body text (raw --red fails 4.5:1 on panel2) */
+    --red-text:#EA6B52;
+    /* focus ring: ink outline, offset, on a dark halo so it shows on light buttons too */
+    --focus-ink:#EAF4F4;
+    /* fluid type baseline */
+    font-size:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg)}
+  body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink)}
+
+  /* visually-hidden but available to assistive tech */
+  .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+  /* universal focus ring — ink outline offset onto the dark bg, dark halo separates it from light button faces */
+  a:focus-visible,button:focus-visible,input:focus-visible,
+  [role="radio"]:focus-visible,[tabindex]:focus{
+    outline:2px solid var(--focus-ink);outline-offset:2px;
+    box-shadow:0 0 0 4px var(--bg);border-radius:8px}
+
+  #deck-wrapper{width:960px;height:540px;overflow:hidden;position:relative;flex-shrink:0;background:var(--bg)}
+  .slide{width:960px;height:540px;padding:34px 60px 58px;position:absolute;inset:0;display:none;flex-direction:column}
+  .slide.active{display:flex}
+
+  h1{font-size:2.125rem;font-weight:800;line-height:1.15}
+  h2{font-size:1.44rem;font-weight:800}
+  .muted{color:var(--muted)}
+  .btn{appearance:none;border:0;border-radius:10px;padding:11px 19px;font-size:.94rem;font-weight:800;cursor:pointer;
+    background:var(--teal);color:#062421;transition:transform .12s,filter .12s}
+  .btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted)}
+
+  .roundtag{display:inline-block;width:fit-content;font-size:.75rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--teal);background:rgba(46,196,182,.12);border:1px solid rgba(46,196,182,.35);padding:4px 11px;border-radius:20px}
+
+  /* ---- bottom nav ---- */
+  #nav{position:absolute;left:24px;right:24px;bottom:10px;display:flex;align-items:center;gap:14px;z-index:5}
+  .navbtn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);
+    border-radius:9px;padding:7px 16px;font-size:.81rem;font-weight:800;cursor:pointer}
+  .navbtn[aria-disabled="true"]{opacity:.4;cursor:not-allowed}
+  .navbtn.ready{background:var(--teal);color:#062421;border-color:var(--teal);animation:pu 1.2s infinite}
+  @keyframes pu{50%{box-shadow:0 0 14px rgba(46,196,182,.6)}}
+  #pos{font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:.03em}
+  #dots{display:flex;gap:6px;margin:0 auto}
+  .dt{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .dt.on{background:var(--teal)}
+
+  /* ---- title slide ---- */
+  .s-title{justify-content:center;gap:16px}
+  .s-title .emoji{font-size:2.75rem}
+  .stakes{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px}
+  .stake{font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    padding:5px 12px;border-radius:20px;border:1px solid var(--line);color:var(--muted);background:var(--panel2)}
+  .stake.on0{border-color:var(--teal);color:var(--teal)}
+  .stake.on1{border-color:var(--amber);color:var(--amber)}
+  .stake.on2{border-color:var(--red);color:var(--red)}
+  .stake.on3{border-color:var(--violet);color:var(--violet)}
+  .arrow{color:var(--line);font-size:.75rem}
+
+  /* ---- guess slide ---- */
+  .qtitle{font-size:1.125rem;font-weight:700;margin:8px 0 12px}
+  .clues{display:flex;flex-direction:column;gap:9px;flex:1;min-height:0;list-style:none}
+  .clue{position:relative;border:1px solid var(--line);border-radius:10px;padding:11px 15px 11px 62px;
+    background:var(--panel2);font-size:.94rem;line-height:1.4;display:none}
+  .clue.shown{display:block;animation:in .3s ease}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+  .clue .cnum{position:absolute;top:10px;left:12px;font-size:.72rem;font-weight:800;color:var(--muted);
+    border:1px solid var(--line);padding:1px 7px;border-radius:9px}
+  .guessrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .guessrow input{flex:1 1 220px;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:9px;
+    padding:10px 13px;font-size:.94rem;color:var(--ink);outline:none}
+  .guessrow input:focus{border-color:var(--teal)}
+  .hint{font-size:.81rem;margin-top:8px;min-height:16px;color:var(--muted)}
+  .hint.nope{color:var(--red-text)} .hint.yes{color:var(--good);font-weight:800}
+
+  /* ---- parts slide ---- */
+  .parts-head{margin-bottom:12px}
+  .parts-head .sub{font-size:.875rem;color:var(--muted);margin-top:4px;line-height:1.45}
+  .parts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;flex:1;list-style:none}
+  .part{border:1px solid var(--line);border-radius:13px;padding:14px 13px;display:flex;flex-direction:column;gap:7px;background:var(--panel2)}
+  .part .pic{height:66px;display:flex;align-items:center;justify-content:center}
+  .part .pic svg{width:60px;height:60px}
+  .part .pname{font-size:.94rem;font-weight:800;letter-spacing:.02em}
+  .part .pdef{font-size:.78rem;color:var(--muted);line-height:1.4}
+  .part .pmap{font-size:.78rem;line-height:1.4;margin-top:auto;padding-top:7px;border-top:1px solid var(--line)}
+  .part .pmap b{color:var(--ink)}
+
+  /* ---- second-perspective slide ---- */
+  .a-esc{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:10px}
+  .a-esc .stake{font-size:.72rem;padding:4px 10px}
+  .a-prompt{font-size:1.06rem;font-weight:700;line-height:1.35;margin-bottom:6px}
+  .a-prompt b{color:var(--red-text)}
+  .a-hint{font-size:.81rem;color:var(--muted);margin:0 0 12px}
+  .a-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .a-opt{border:1.5px solid var(--line);background:var(--panel2);border-radius:11px;padding:12px 14px;
+    font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:9px;transition:border-color .15s,background .15s;text-align:left;color:var(--ink)}
+  .a-opt:hover{border-color:var(--muted)}
+  .a-opt .ic{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .a-opt .ic svg{width:24px;height:24px}
+  .a-opt .chk{margin-left:auto;font-weight:800;opacity:0}          /* text cue, not color-only */
+  .a-opt[aria-checked="true"] .chk{opacity:1}
+  .a-opt[aria-checked="true"]{background:rgba(46,196,182,.10);border-color:var(--muted)}
+  .a-fb{margin-top:12px;border-radius:11px;padding:13px 16px;font-size:.9rem;line-height:1.5;display:none;
+    background:linear-gradient(135deg,#2A1520,#1C1023);border:1px solid rgba(228,87,61,.4)}
+  .a-fb.show{display:block;animation:in .3s ease}
+  .a-fb .stakeline{margin-top:9px;font-size:.84rem;font-weight:800;color:var(--amber)}
+  .a-fb .verdict.key{color:var(--red-text)} .a-fb .verdict.nokey{color:var(--amber)}
+
+  /* ---- finale ---- */
+  .s-fin{justify-content:center;gap:13px}
+  .s-fin h2{color:var(--teal)}
+  .s-fin p{font-size:.94rem;line-height:1.6;max-width:820px}
+  .bridge{font-size:1.06rem;font-weight:800;padding:14px 18px;border-left:4px solid var(--amber);
+    background:rgba(245,166,35,.07);border-radius:0 10px 10px 0;line-height:1.5}
+
+  /* ================= REFLOW / MOBILE FALLBACK (≤640px CSS width, ≈400% zoom) =================
+     Abandon the fixed 960x540 scaled canvas: fluid, vertically-scrolling, ALL slides visible,
+     no transform, no gating. Content parity with desktop; nothing dropped. ---------------- */
+  @media (max-width:640px){
+    html,body{overflow:auto;height:auto}
+    #deck-wrapper{width:100%;height:auto;overflow:visible;transform:none!important}
+    .slide{position:relative;inset:auto;width:100%;height:auto;min-height:auto;padding:20px 16px 30px;
+      display:flex!important;border-bottom:1px solid var(--line)}
+    .parts-grid{grid-template-columns:1fr 1fr;gap:10px;flex:none}
+    .part .pic{height:48px}.part .pic svg{width:44px;height:44px}
+    .a-opts{grid-template-columns:1fr}
+    .clues{flex:none}
+    .clue{display:block}          /* in scroll mode all clues are readable up front */
+    #nav{display:none}            /* no deck nav in scroll mode */
+  }
+
+  /* ================= REDUCED MOTION ================= */
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    .navbtn.ready{animation:none;outline:2px solid var(--good);outline-offset:2px}  /* static ready cue */
+  }
+</style>
+</head>
+<body>
+
+<!-- persistent live regions: present + empty at load, OUTSIDE the swappable slide DOM -->
+<div id="lr-polite" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="lr-alert"  class="sr-only" role="alert"  aria-live="assertive" aria-atomic="true"></div>
+
+<div id="deck-wrapper">
+
+  <!-- S0 TITLE (built by JS, but heading present for no-JS) -->
+  <section class="slide s-title active" id="sl0" aria-roledescription="slide"></section>
+
+  <!-- round + finale shells are generated by JS into #deck-wrapper -->
+
+  <div id="nav">
+    <button class="navbtn" id="prevb" type="button">← Back</button>
+    <span id="pos" aria-hidden="true"></span>
+    <div id="dots" aria-hidden="true"></div>
+    <button class="navbtn" id="nextb" type="button">Next →</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   EDIT BELOW — this DECK object is the only thing you change per program.
+   ============================================================================ */
+const DECK = {
+  /* Unique per embed. Namespaces every id + the localStorage save key.
+     Kebab-case, no spaces. If two decks live on one Notion page, give them
+     different deckIds. */
+  deckId: 'pfnyc-relevance',
+
+  /* ---- title slide ---- */
+  emoji: '🎯',
+  title: 'What Counts as Relevant?',
+  intro: "You've learned all three challenge maps. Time to use them. I'll describe "
+       + "four real-style companies in clues — you tag each one to a challenge, then "
+       + "we take the call apart to find the one move that makes relevance a decision "
+       + "instead of a <b style=\"color:var(--red-text)\">vibe</b>. Two of them are traps.",
+  startLabel: 'Start with company 1 →',
+
+  /* The word for the second-perspective persona (lowercase). Used in headings. */
+  perspective: 'partner',
+
+  /* ---- THE SHARED PARTS (3-4 recommended; grid handles either) ----
+     key   : internal id, referenced by ROUNDS[].map and ROUNDS[].options
+     name  : shown on the card + option button
+     alt   : optional muted sub-label after the name (e.g. "(the network)")
+     color : a --css-var name for the part's accent (from :root palette)
+     def   : one-line definition of the part in general
+     icon  : a key from the ICONS library below, OR set `svg:'<svg …>'` for custom art */
+  parts: [
+    { key:'signal',    name:'Signal',      color:'--teal',   def:'What the company actually does — the verb and the thing it acts on.', icon:'eye'    },
+    { key:'need',      name:'Named Need',  color:'--amber',  def:'The one specific DEP area it maps to. Name it, or the tag does not count.', icon:'target' },
+    { key:'challenge', name:'Challenge',   color:'--violet', def:'Which of the three challenges owns that named need.', icon:'chart'  },
+    { key:'verdict',   name:'Verdict',     color:'--good',   def:'In scope (High/Medium) or Not relevant — the keep-or-cut call.', icon:'shield' },
+  ],
+
+  /* ---- ONE ROUND PER EXAMPLE ----
+     device      : the answer, shown after a correct/revealed guess
+     answers     : accepted guesses (lowercased; a guess matches if it CONTAINS any entry)
+     guessTitle  : the teaser line above the clues
+     clues       : revealed one at a time; order them vague → obvious
+     headline/sub: heading + subhead on the parts slide
+     map         : { partKey: "how THIS example expresses that part" }
+     stake       : one line summarising what's at risk this round (escalates each round)
+     prompt      : the second-perspective question (may include <b>…</b>)
+     hint        : sub-instruction under the prompt
+     options     : { partKey: { fb:"feedback text", key:true|false } }
+                   key:true  → "Sharp target." (this part is the high-value one)
+                   key:false → "Fair pick." (reasonable but not the prize) */
+  rounds: [
+    {
+      device:'Challenge 2 — HydroSense',
+      answers:['challenge 2','challenge two','c2','2','asset','condition','failure','pipe','main','break'],
+      guessTitle:'First rep. This one plays it straight — which challenge does it belong to?',
+      clues:[
+        "A company that works with a water utility's maintenance records.",
+        "It digs through years of work orders and customer complaints.",
+        "From that history, it predicts which parts of the system are about to fail.",
+        "Specifically: which water mains will break next."
+      ],
+      headline:'HydroSense, decoded',
+      sub:'Run it through the four-part machine. Same machine, every company.',
+      map:{
+        signal:'Predicts water-main breaks from work-order and complaint history.',
+        need:'Challenge 2, Area 1 — pipe / main integrity.',
+        challenge:'Challenge 2 — Asset Condition & Failure Prevention.',
+        verdict:'In scope. A clean, High fit — catching failure before it happens.'
+      },
+      stake:'STAKES: an easy keep. Miss this one and you are not reading the blurbs.',
+      prompt:"Now you're the partner at the desk screen — 8 seconds a company, 70 of 100 cut. Which part actually decides keep-or-cut?",
+      hint:'Pick the part you would screen on, then click the rest. Each shows what it does — and does not — settle.',
+      options:{
+        signal:{fb:"Knowing what it does is the start — but 'predicts breaks' only helps once you tie it to a named need.",key:false},
+        need:{fb:"This is the call. 'Pipe/main integrity' is a named Challenge 2 need — point to it and the keep is automatic.",key:true},
+        challenge:{fb:"The challenge bucket falls out of the need. Name the need first; the challenge names itself.",key:false},
+        verdict:{fb:"'In scope' is the output, not the reason. Without the named need behind it, it is just a vibe.",key:false}
+      }
+    },
+    {
+      device:'Challenge 3 — StruviCorp',
+      answers:['challenge 3','challenge three','c3','3','recovery','resource','energy','struvite','nutrient','conversion'],
+      guessTitle:"The least 'sensor-on-a-pipe' one in the set. Which challenge?",
+      clues:[
+        "This company does not monitor anything or catch failures.",
+        "It works at the tail end of a treatment plant, on the wastewater itself.",
+        "It pulls valuable material back out of that wastewater instead of dumping it.",
+        "Specifically, it recovers struvite — a fertilizer — and other nutrients."
+      ],
+      headline:'StruviCorp, decoded',
+      sub:'No sensors here. The machine still fits — watch.',
+      map:{
+        signal:"Recovers struvite fertilizer and nutrients from a plant's wastewater.",
+        need:'Challenge 3, Area 2 — Recovery & Conversion.',
+        challenge:'Challenge 3 — Resource & Energy Recovery.',
+        verdict:'In scope. The newest, least-crowded challenge — a find your peers may miss.'
+      },
+      stake:'STAKES: a hidden gem. Screen for the word "sensor" and you would wrongly cut the whole recovery category.',
+      prompt:"Partner's desk again. This one has no sensor, no alarm. Which part keeps you from tossing it?",
+      hint:'Pick your screen part, then explore the rest.',
+      options:{
+        signal:{fb:"'Recovers nutrients from wastewater' sounds odd for a water utility — until you map it.",key:false},
+        need:{fb:"Nailed it. 'Recovery & Conversion' is a named Challenge 3 need. Named = in, no matter how novel it sounds.",key:true},
+        challenge:{fb:"Right challenge, but you got there by naming the need. That's the order that scales.",key:false},
+        verdict:{fb:"'In scope' — but only because you can point to the named recovery need. Drop the need and this reads as random green-tech.",key:false}
+      }
+    },
+    {
+      device:'Challenge 1 — GridGuard OT',
+      answers:['challenge 1','challenge one','c1','1','planning','data','field','ot','scada'],
+      guessTitle:'Careful — the obvious read is the wrong one. Which challenge?',
+      clues:[
+        "This one is a cybersecurity company. Hold your instinct.",
+        "It does not protect laptops, email, or office networks.",
+        "It protects the control systems that physically run water-treatment pumps and valves.",
+        "Those are OT/SCADA systems — the machinery of the plant itself."
+      ],
+      headline:'GridGuard OT, decoded',
+      sub:"'Cybersecurity' almost got it cut. The named need saves it.",
+      map:{
+        signal:'Protects the OT/SCADA systems running water-treatment pumps and valves.',
+        need:'Challenge 1, Area 3 — Cybersecurity (OT/SCADA).',
+        challenge:'Challenge 1 — Planning, Data & Field Operations.',
+        verdict:"In scope — a High fit. Not an exclude, despite the word 'cybersecurity.'"
+      },
+      stake:'STAKES: a High fit you would cut by reflex. This is the miss the pros warn about.',
+      prompt:"Partner's desk. Your gut says 'cyber — pass.' Which part overrides the gut?",
+      hint:'Pick the part that flips your call, then read the rest.',
+      options:{
+        signal:{fb:"'Protects water-plant control systems' is the tell — but only if you translate it into a named need.",key:false},
+        need:{fb:"Exactly. 'OT/SCADA cyber' is a named Challenge 1 need and a High fit. The named need beats the gut every time.",key:true},
+        challenge:{fb:"Challenge 1 — right, but you only trust it because a named need sits under it. Vibe alone would have cut this.",key:false},
+        verdict:{fb:"'In, High' — but the reason is the named OT/SCADA need. Without it, 'cybersecurity' reads as an auto-cut.",key:false}
+      }
+    },
+    {
+      device:'Not relevant — LockDesk IT',
+      answers:['not relevant','not','none','irrelevant','out','exclude','skip','no fit'],
+      guessTitle:'Same word as last time — opposite answer. Prove it. Which challenge, or none?',
+      clues:[
+        "Another cybersecurity company. You have been warned once already.",
+        "This one protects corporate office networks.",
+        "Employee laptops. Email inboxes. The back office.",
+        "Nothing it touches runs a pump, a valve, or any piece of the water system."
+      ],
+      headline:'LockDesk IT, decoded',
+      sub:'The twin of GridGuard. Same word, opposite verdict — because the need is different.',
+      map:{
+        signal:'Protects office IT — laptops, email, corporate networks.',
+        need:'None. No critical-infrastructure or OT tie to any DEP need.',
+        challenge:'No challenge owns it. There is no named need to point to.',
+        verdict:'Not relevant. IT-only cyber — the mirror image of GridGuard.'
+      },
+      stake:'STAKES: an afternoon wasted. Tag it "in" on the word "cyber" and you chase a dud.',
+      prompt:"Last one. GridGuard was in; this is out. Which part told you the difference?",
+      hint:'Pick the deciding part, then read why the twin flips.',
+      options:{
+        signal:{fb:"'Protects office laptops' is the clue — it never touches the plant. But you confirm that by hunting for a named need.",key:false},
+        need:{fb:"That's the whole lesson. You searched for a named DEP need and found none — so it's out. GridGuard had one; this doesn't.",key:true},
+        challenge:{fb:"No challenge fits — correct — because no named need sits under it. That's the same test, run in reverse.",key:false},
+        verdict:{fb:"'Out' is right, but 'it's cyber so it's out' is the wrong reason — that logic would have cut GridGuard too. The need is the reason.",key:false}
+      }
+    }
+  ],
+
+  /* Short label per round for the escalating "stakes" chips on the title + perspective slides.
+     One entry per round, in order. */
+  stakeChips:['drop an easy fit','miss a hidden gem','cut a High fit by reflex','chase an out-of-scope dud'],
+
+  /* ---- finale ---- */
+  finale:{
+    heading:'You can tag a company on sight now.',
+    body:"Every company you decoded ran the same four-part machine: a <b>Signal</b> "
+       + "(what it does), a <b>Named Need</b> (the one DEP area it maps to), a "
+       + "<b>Challenge</b> (the bucket that owns that need), and a <b>Verdict</b> "
+       + "(keep or cut). One part does the real work: the <b>Named Need</b>. A tag "
+       + "without a named need is a vibe — and vibes are how scouts miss OT/SCADA "
+       + "vendors and waste afternoons on office IT. GridGuard and LockDesk proved it: "
+       + "<b>same word, opposite verdicts, because the need was different.</b>",
+    bridge:"You know <b>what</b> counts as relevant.<br>Next: what a <b>qualified</b> company looks like — beta, traction, funding stage, and who really owns it."
+  }
+};
+
+/* ============================================================================
+   ICON LIBRARY — reference by key in parts[].icon, or supply parts[].svg directly.
+   Icons are DECORATIVE (part name sits beside them) → rendered aria-hidden.
+   `C` is replaced with the part's resolved color at build time.
+   ============================================================================ */
+const ICONS = {
+  eye:`<svg viewBox="0 0 64 64" fill="none" stroke="C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M6 32 C 18 16, 46 16, 58 32 C 46 48, 18 48, 6 32 Z"/><circle cx="32" cy="32" r="8" fill="C" stroke="none"/>
+    <path d="M50 12 q 5 4 0 8" opacity=".8"/><path d="M56 8 q 8 6 0 12" opacity=".5"/></svg>`,
+  signal:`<svg viewBox="0 0 64 64" fill="none" stroke="C" stroke-width="3" stroke-linecap="round" aria-hidden="true" focusable="false">
+    <circle cx="32" cy="48" r="4" fill="C" stroke="none"/><path d="M20 42 a 17 17 0 0 1 24 0"/>
+    <path d="M13 35 a 27 27 0 0 1 38 0"/><path d="M6 28 a 37 37 0 0 1 52 0"/></svg>`,
+  screen:`<svg viewBox="0 0 64 64" fill="none" stroke="C" stroke-width="3" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <rect x="19" y="7" width="26" height="50" rx="5"/><polyline points="24,42 30,33 36,38 42,26" stroke-linecap="round"/>
+    <line x1="28" y1="51" x2="36" y2="51"/></svg>`,
+  bolt:`<svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M37 5 L17 37 H30 L27 59 L48 27 H34 Z" fill="C"/></svg>`,
+  /* extra generic icons you can swap in */
+  gear:`<svg viewBox="0 0 64 64" fill="none" stroke="C" stroke-width="3" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <circle cx="32" cy="32" r="9"/><path d="M32 6v8M32 50v8M6 32h8M50 32h8M14 14l6 6M44 44l6 6M50 14l-6 6M20 44l-6 6"/></svg>`,
+  brain:`<svg viewBox="0 0 64 64" fill="none" stroke="C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M26 14a8 8 0 0 0-8 8 7 7 0 0 0-4 12 7 7 0 0 0 6 10 7 7 0 0 0 6 6V14z"/><path d="M38 14a8 8 0 0 1 8 8 7 7 0 0 1 4 12 7 7 0 0 1-6 10 7 7 0 0 1-6 6V14z"/></svg>`,
+  shield:`<svg viewBox="0 0 64 64" fill="none" stroke="C" stroke-width="3" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M32 6 54 14v18c0 14-10 22-22 26C20 54 10 46 10 32V14z"/><polyline points="24,32 30,38 42,26" stroke-linecap="round"/></svg>`,
+  dollar:`<svg viewBox="0 0 64 64" fill="none" stroke="C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M32 8v48M42 18c0-5-5-8-10-8s-10 3-10 8 5 7 10 8 10 3 10 8-5 8-10 8-10-3-10-8"/></svg>`,
+  chart:`<svg viewBox="0 0 64 64" fill="none" stroke="C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M10 10v44h44"/><rect x="20" y="34" width="7" height="14" fill="C" stroke="none"/><rect x="33" y="24" width="7" height="24" fill="C" stroke="none"/><rect x="46" y="14" width="7" height="34" fill="C" stroke="none"/></svg>`,
+  person:`<svg viewBox="0 0 64 64" fill="none" stroke="C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <circle cx="32" cy="22" r="11"/><path d="M12 54c0-11 9-18 20-18s20 7 20 18"/></svg>`,
+  target:`<svg viewBox="0 0 64 64" fill="none" stroke="C" stroke-width="3" aria-hidden="true" focusable="false">
+    <circle cx="32" cy="32" r="24"/><circle cx="32" cy="32" r="14"/><circle cx="32" cy="32" r="4" fill="C" stroke="none"/></svg>`
+};
+
+/* ============================================================================
+   ================= DO NOT EDIT BELOW — generic engine =======================
+   ============================================================================ */
+(function(){
+  'use strict';
+  const NS = DECK.deckId;                       // namespace for every id
+  const id = s => NS + '-' + s;                  // build a namespaced id
+  const R  = DECK.rounds;
+  const RN = R.length;
+  const N  = 2 + RN * 3;                         // total slides: title + 3/round + finale
+  const FIN = N - 1;
+  const P  = DECK.parts;
+  const ORDER = P.map(p => p.key);
+  const META = Object.fromEntries(P.map(p => [p.key, p]));
+  const colorOf = k => `var(${META[k].color})`;
+
+  const wrapper = document.getElementById('deck-wrapper');
+  const nav = document.getElementById('nav');
+  const polite = document.getElementById('lr-polite');
+  const alertRegion = document.getElementById('lr-alert');
+  const isStacked = () => window.matchMedia('(max-width:640px)').matches;
+
+  document.title = DECK.title + ' — Interactive Slide Game';
+
+  /* ---- announcements (textContent only; never re-create the node) ---- */
+  let annT;
+  function announce(msg, assertive){
+    const region = assertive ? alertRegion : polite;
+    clearTimeout(annT);
+    annT = setTimeout(() => { region.textContent = ''; region.textContent = msg; }, 60);
+  }
+
+  function iconFor(k){
+    const p = META[k];
+    if (p.svg) return p.svg;
+    const tpl = ICONS[p.icon] || ICONS.target;
+    return tpl.replaceAll('C', colorOf(k));
+  }
+  function nameHTML(k){
+    const p = META[k];
+    return p.name + (p.alt ? ' <span style="color:var(--muted);font-weight:400;font-size:.75rem">'+p.alt+'</span>' : '');
+  }
+  const esc = s => String(s);   // DECK copy is trusted author content (allows inline <b>)
+
+  /* ---- per-round state ---- */
+  const revealed = R.map(() => false);
+  const picked   = R.map(() => null);
+  let cur = 0;
+
+  /* ---- optional progress persistence (safe if storage is blocked) ---- */
+  const SKEY = 'concept-decoder:' + NS;
+  function save(){
+    try{ localStorage.setItem(SKEY, JSON.stringify({revealed,picked,cur})); }catch(e){}
+  }
+  function load(){
+    try{
+      const s = JSON.parse(localStorage.getItem(SKEY) || 'null');
+      if(!s || !Array.isArray(s.revealed) || s.revealed.length !== RN) return;
+      s.revealed.forEach((v,i)=>revealed[i]=!!v);
+      s.picked.forEach((v,i)=>picked[i]=v);
+      cur = Math.min(Math.max(0, s.cur|0), N-1);
+    }catch(e){}
+  }
+
+  /* ---- slide index helpers ---- */
+  const guessIdx = r => 1 + r*3;
+  const partsIdx = r => 2 + r*3;
+  const lensIdx  = r => 3 + r*3;
+  const roundOfGuess = i => (i-1)%3===0 ? (i-1)/3 : -1;
+  const roundOfLens  = i => (i-3)%3===0 && i<=lensIdx(RN-1) ? (i-3)/3 : -1;
+
+  /* ---- build shells ---- */
+  function buildShells(){
+    // title
+    const t = document.getElementById('sl0');
+    const chips = DECK.stakeChips.map((c,i)=>
+      `<span class="stake" id="${id('st'+i)}">Round ${i+1} · ${esc(c)}</span>`+
+      (i<DECK.stakeChips.length-1?'<span class="arrow" aria-hidden="true">▸</span>':'')
+    ).join('');
+    t.innerHTML = `
+      <div class="emoji" aria-hidden="true">${esc(DECK.emoji)}</div>
+      <h1 id="${id('h-0')}" tabindex="-1">${esc(DECK.title)}</h1>
+      <p class="muted" style="font-size:1rem;max-width:660px;line-height:1.55">${esc(DECK.intro)}</p>
+      <div class="stakes" role="list" aria-label="What's at stake, round by round">${chips}</div>
+      <div><button class="btn" id="${id('start')}" type="button">${esc(DECK.startLabel||'Start →')}</button></div>`;
+    t.querySelectorAll('.stake').forEach(s=>s.setAttribute('role','listitem'));
+    t.querySelector('#'+id('start')).addEventListener('click', ()=>go(1));
+
+    // rounds
+    for(let r=0;r<RN;r++){
+      wrapper.insertBefore(shell(guessIdx(r), buildGuess(r)), nav);
+      wrapper.insertBefore(shell(partsIdx(r), buildParts(r)), nav);
+      wrapper.insertBefore(shell(lensIdx(r),  buildLens(r)),  nav);
+    }
+    // finale
+    const f = shell(FIN, `
+      <h2 id="${id('h-'+FIN)}" tabindex="-1">${esc(DECK.finale.heading)}</h2>
+      <p>${esc(DECK.finale.body)}</p>
+      <div class="bridge">${esc(DECK.finale.bridge)}</div>`);
+    f.classList.add('s-fin');
+    wrapper.insertBefore(f, nav);
+  }
+  function shell(i, html){
+    const s = document.createElement('section');
+    s.className = 'slide';
+    s.id = 'sl'+i;
+    s.setAttribute('aria-roledescription','slide');
+    s.hidden = true;
+    s.innerHTML = html;
+    return s;
+  }
+
+  function buildGuess(r){
+    const d = R[r];
+    const clues = d.clues.map((c,i)=>
+      `<li class="clue ${i===0?'shown':''}" id="${id('cl'+r+'-'+i)}"><span class="cnum">CLUE ${i+1}</span>${esc(c)}</li>`).join('');
+    return `
+      <div class="roundtag">Round ${r+1} of ${RN} · guess the device</div>
+      <h2 id="${id('h-'+guessIdx(r))}" tabindex="-1" class="qtitle">${esc(d.guessTitle)}</h2>
+      <ul class="clues" id="${id('clues'+r)}" aria-label="Clues">${clues}</ul>
+      <form class="guessrow" id="${id('gr'+r)}" autocomplete="off">
+        <label class="sr-only" for="${id('g'+r)}">Type your guess for what this device is</label>
+        <input id="${id('g'+r)}" type="text" placeholder="What device am I? Type your guess…"
+               autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+               aria-describedby="${id('h'+r)}">
+        <button class="btn" type="submit">Guess</button>
+        <button class="btn ghost" type="button" id="${id('mc'+r)}">Another clue</button>
+      </form>
+      <p class="hint" id="${id('h'+r)}" role="status" aria-live="polite"></p>`;
+  }
+
+  function buildParts(r){
+    const d = R[r];
+    const cards = ORDER.map(k=>`
+      <li class="part">
+        <div class="pic">${iconFor(k)}</div>
+        <div class="pname" style="color:${colorOf(k)}">${nameHTML(k)}</div>
+        <div class="pdef">${esc(META[k].def)}</div>
+        <div class="pmap">In this device: <b>${esc(d.map[k])}</b></div>
+      </li>`).join('');
+    return `
+      <div class="parts-head">
+        <div class="roundtag">Round ${r+1} of ${RN} · ${esc(d.device)}</div>
+        <h2 id="${id('h-'+partsIdx(r))}" tabindex="-1" style="margin-top:9px">${esc(d.headline)}</h2>
+        <div class="sub">${esc(d.sub)}</div>
+      </div>
+      <ul class="parts-grid" aria-label="The four shared parts, mapped to this device">${cards}</ul>`;
+  }
+
+  function buildLens(r){
+    const d = R[r];
+    const chips = DECK.stakeChips.map((c,i)=>
+      `<span class="stake ${i<=r?('on'+(i%4)):''}" >${esc(c)}</span>`+
+      (i<DECK.stakeChips.length-1?'<span class="arrow" aria-hidden="true">▸</span>':'')
+    ).join('');
+    const opts = ORDER.map(k=>`
+      <button class="a-opt" role="radio" aria-checked="false" id="${id('ao'+r+'-'+k)}"
+              data-k="${k}" tabindex="-1">
+        <span class="ic">${iconFor(k)}</span>${esc(META[k].name)}<span class="chk" aria-hidden="true">✓ picked</span></button>`).join('');
+    return `
+      <div class="a-esc" aria-hidden="true">${chips}</div>
+      <div class="roundtag">Round ${r+1} of ${RN} · ${esc(DECK.perspective)}'s turn</div>
+      <h2 id="${id('h-'+lensIdx(r))}" tabindex="-1" class="a-prompt" style="margin-top:9px">${esc(d.prompt)}</h2>
+      <p class="a-hint" id="${id('ah'+r)}">${esc(d.hint)}</p>
+      <div class="a-opts" role="radiogroup" id="${id('rg'+r)}" aria-labelledby="${id('h-'+lensIdx(r))}">${opts}</div>
+      <div class="a-fb" id="${id('afb'+r)}" role="status" aria-live="polite"></div>`;
+  }
+
+  /* ---- guess mechanics ---- */
+  function clueList(r){ return document.getElementById(id('clues'+r)).querySelectorAll('.clue'); }
+  function shownCount(r){ return document.getElementById(id('clues'+r)).querySelectorAll('.clue.shown').length; }
+  function moreClue(r, silent){
+    const clues = clueList(r), n = shownCount(r);
+    if(n < clues.length){
+      clues[n].classList.add('shown');
+      if(!silent) announce('Clue ' + (n+1) + ' of ' + clues.length + ': ' + R[r].clues[n]);
+    }
+    if(shownCount(r) >= clues.length){
+      const b = document.getElementById(id('mc'+r));
+      b.textContent = 'Reveal the answer';
+      b.onclick = () => reveal(r,false);
+      setHint(r, "That's all the clues. Guess, or reveal.", '');
+    }
+  }
+  function setHint(r, txt, cls){
+    const h = document.getElementById(id('h'+r));
+    h.className = 'hint ' + (cls||'');
+    h.textContent = txt;
+  }
+  function normalize(s){ return s.trim().toLowerCase().replace(/\s+/g,' '); }
+  function tryGuess(r){
+    if(revealed[r]) return;
+    const inp = document.getElementById(id('g'+r));
+    const v = normalize(inp.value);
+    if(!v) return;
+    if(R[r].answers.some(a => v.includes(a))){ reveal(r,true); }
+    else{
+      const more = shownCount(r) < R[r].clues.length;
+      setHint(r, more ? 'Not quite — here is another clue.' : 'Not quite. Guess again, or reveal.', 'nope');
+      if(more) moreClue(r);
+      inp.select();
+    }
+  }
+  function reveal(r, guessed){
+    if(revealed[r]) return;
+    revealed[r] = true;
+    clueList(r).forEach(el => el.classList.add('shown'));
+    setHint(r, '✓ ' + R[r].device + (guessed?' — nice.':'') + ' Select Next to take it apart.', 'yes');
+    document.getElementById(id('gr'+r)).style.display = 'none';
+    save(); updateNav();
+    announce('Correct. The device is ' + R[r].device + '. Next is now available.');
+  }
+
+  /* ---- second-perspective (radiogroup) mechanics ---- */
+  function pickLens(r, k){
+    picked[r] = k;
+    const grp = document.getElementById(id('rg'+r));
+    grp.querySelectorAll('.a-opt').forEach(b=>{
+      const on = b.dataset.k === k;
+      b.setAttribute('aria-checked', on ? 'true':'false');
+      b.tabIndex = on ? 0 : -1;
+    });
+    const o = R[r].options[k];
+    const fb = document.getElementById(id('afb'+r));
+    fb.className = 'a-fb show';
+    fb.innerHTML =
+      '<span class="verdict '+(o.key?'key':'nokey')+'"><b>'+(o.key?'Sharp target.':'Fair pick.')+'</b></span> '
+      + esc(o.fb) + '<div class="stakeline">' + esc(R[r].stake) + '</div>';
+    // reveal the matching stake chip color already handled at build; announce result
+    announce((o.key?'Sharp target. ':'Fair pick. ') + o.fb + ' ' + R[r].stake);
+    save(); updateNav();
+  }
+  function setupRadiogroup(r){
+    const grp = document.getElementById(id('rg'+r));
+    const opts = [...grp.querySelectorAll('.a-opt')];
+    // restore persisted pick
+    if(picked[r]) pickLens(r, picked[r]);
+    else opts[0].tabIndex = 0;   // first is the tab stop until a pick is made
+    grp.addEventListener('click', e=>{
+      const b = e.target.closest('.a-opt'); if(b) pickLens(r, b.dataset.k);
+    });
+    grp.addEventListener('keydown', e=>{
+      const i = opts.indexOf(document.activeElement);
+      if(i<0) return;
+      let n = -1;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown') n = (i+1)%opts.length;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp') n = (i-1+opts.length)%opts.length;
+      else if(e.key===' '||e.key==='Enter'){ e.preventDefault(); pickLens(r, opts[i].dataset.k); return; }
+      if(n>=0){ e.preventDefault(); opts[n].focus(); pickLens(r, opts[n].dataset.k); }
+    });
+  }
+
+  /* ---- gating ---- */
+  function canLeave(i){
+    const rg = roundOfGuess(i); if(rg>=0) return revealed[rg];
+    const rl = roundOfLens(i);  if(rl>=0) return picked[rl]!==null;
+    return true;
+  }
+  function gateReason(i){
+    if(roundOfGuess(i)>=0) return 'Guess or reveal the device to continue.';
+    if(roundOfLens(i)>=0)  return 'Make your pick to continue.';
+    return '';
+  }
+
+  /* ---- deck navigation ---- */
+  const dots = document.getElementById('dots');
+  for(let i=0;i<N;i++){ const d=document.createElement('div'); d.className='dt'; dots.appendChild(d); }
+
+  function showSlide(i){
+    document.querySelectorAll('#deck-wrapper .slide').forEach(s=>{
+      const on = s.id === 'sl'+i;
+      s.classList.toggle('active', on);
+      s.hidden = !on;
+    });
+  }
+  function focusHeading(i){
+    const h = document.getElementById(id('h-'+i));
+    if(h){ h.focus({preventScroll:true}); }
+    // position is not conveyed by focusing the heading — announce it separately
+    setTimeout(()=>announce('Slide ' + (i+1) + ' of ' + N), 200);
+  }
+  function go(n){
+    if(isStacked()) return;                     // stacked mode: native scrolling, no deck nav
+    if(n<0 || n>=N) return;
+    if(n>cur && !canLeave(cur)){ announce(gateReason(cur)); return; }
+    cur = n;
+    showSlide(cur);
+    if(roundOfLens(cur)>=0) setupRadiogroup(roundOfLens(cur));
+    updateNav();
+    focusHeading(cur);
+    save();
+  }
+  function updateNav(){
+    [...dots.children].forEach((d,i)=>d.classList.toggle('on', i===cur));
+    document.getElementById('pos').textContent = 'Slide ' + (cur+1) + ' of ' + N;
+    const prev = document.getElementById('prevb');
+    prev.setAttribute('aria-disabled', cur===0 ? 'true':'false');
+    const nb = document.getElementById('nextb');
+    const locked = !canLeave(cur);
+    const atEnd = cur===N-1;
+    nb.setAttribute('aria-disabled', (atEnd||locked) ? 'true':'false');
+    if(locked){ nb.setAttribute('aria-describedby', id('gatereason')); ensureGateReason(); document.getElementById(id('gatereason')).textContent = gateReason(cur); }
+    else nb.removeAttribute('aria-describedby');
+    nb.classList.toggle('ready', !atEnd && !locked && (roundOfGuess(cur)>=0 || roundOfLens(cur)>=0));
+  }
+  function ensureGateReason(){
+    if(document.getElementById(id('gatereason'))) return;
+    const s = document.createElement('span');
+    s.id = id('gatereason'); s.className='sr-only';
+    document.body.appendChild(s);
+  }
+
+  /* ---- wire nav buttons ---- */
+  document.getElementById('prevb').addEventListener('click', ()=>go(cur-1));
+  document.getElementById('nextb').addEventListener('click', ()=>go(cur+1));
+
+  /* ---- keyboard: arrows advance, but never hijack typing or bypass the gate ---- */
+  window.addEventListener('keydown', e=>{
+    if(isStacked()) return;
+    const t = e.target;
+    if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable)) return;
+    if(t && t.closest && t.closest('[role="radiogroup"]')) return;   // radiogroup owns its arrows
+    if(e.altKey||e.ctrlKey||e.metaKey) return;
+    if(e.key==='ArrowRight') go(cur+1);
+    else if(e.key==='ArrowLeft') go(cur-1);
+  });
+
+  /* ---- guess forms (delegated after build) ---- */
+  function wireGuessForms(){
+    for(let r=0;r<RN;r++){
+      const form = document.getElementById(id('gr'+r));
+      form.addEventListener('submit', e=>{ e.preventDefault(); tryGuess(r); });
+      document.getElementById(id('mc'+r)).addEventListener('click', ()=>moreClue(r,false));
+      // restore reveal state after a reload
+      if(revealed[r]) reveal(r, false);
+    }
+  }
+
+  /* ---- scale-to-fit (desktop only; stacked mode is fully fluid via CSS) ---- */
+  function scaleDeck(){
+    if(isStacked()){ wrapper.style.transform='none'; return; }
+    const s = Math.min(window.innerWidth/960, window.innerHeight/540, 1);
+    const ox = Math.max(0,(window.innerWidth-960*s)/2), oy = Math.max(0,(window.innerHeight-540*s)/2);
+    wrapper.style.transformOrigin='top left';
+    wrapper.style.transform='translate('+ox+'px,'+oy+'px) scale('+s+')';
+  }
+
+  /* ---- when crossing the stacked/desktop boundary, reset slide visibility ---- */
+  function syncMode(){
+    if(isStacked()){
+      // show everything, ungated, no active-only logic
+      document.querySelectorAll('#deck-wrapper .slide').forEach(s=>{ s.hidden=false; s.classList.remove('active'); });
+      for(let r=0;r<RN;r++) if(document.getElementById(id('rg'+r))) setupRadiogroup(r);
+    }else{
+      showSlide(cur);
+      if(roundOfLens(cur)>=0) setupRadiogroup(roundOfLens(cur));
+      updateNav();
+    }
+    scaleDeck();
+  }
+
+  /* ---- boot ---- */
+  buildShells();
+  load();
+  wireGuessForms();
+  ensureGateReason();
+  if(isStacked()){ syncMode(); }
+  else{ showSlide(cur); if(roundOfLens(cur)>=0) setupRadiogroup(roundOfLens(cur)); updateNav(); }
+  window.addEventListener('resize', syncMode);
+  window.addEventListener('orientationchange', syncMode);
+})();
+</script>
+</body>
+</html>
