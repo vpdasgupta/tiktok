@@ -55,6 +55,7 @@
   #deck-title{
     font-size:17px;line-height:1.25;font-weight:600;color:var(--title);
     flex:0 0 auto;margin-bottom:10px;
+    padding-right:150px;   /* leave room for the top-right Download PDF button */
   }
 
   /* ---- slides ---- */
@@ -140,6 +141,14 @@
   }
   .navbtn .chev{width:16px;height:16px;flex:0 0 auto}
 
+  /* ---- Download-as-PDF button: navy .navbtn, pinned top-right of the deck.
+     Sibling of #slides (never inside it) so it isn't read as an implied slide.
+     Inherits the navy fill, hover-underline, and inset focus ring from .navbtn. */
+  .printbtn{
+    position:absolute;top:22px;right:46px;z-index:3;
+    min-width:0;padding:0 14px;   /* override .navbtn's 112px min-width for a compact control */
+  }
+
   .dots{display:flex;align-items:center;gap:6px}
   .dot{
     flex:0 0 auto;width:44px;height:44px;padding:0;
@@ -167,9 +176,42 @@
     .name{font-size:20px}
     .cats{grid-template-columns:1fr}
     .nav{display:none}          /* no-JS / mobile: every screen already shows, no nav needed */
+    #deck-title{padding-right:165px}   /* clear the 154px-wide button pinned top-right */
+    .printbtn{top:18px;right:18px}     /* align with the tighter mobile padding */
   }
   @media (prefers-reduced-motion:reduce){
     *{animation:none!important;transition:none!important}
+  }
+
+  /* ---- print / Save-as-PDF: flow all three challenges as clean vector pages ---- */
+  @media print{
+    .nav, .printbtn{display:none!important}          /* controls are useless on paper */
+
+    /* neutralize the scaled fixed canvas so nothing clips */
+    #stage{width:auto!important;height:auto!important;transform:none!important}
+    #deck{position:relative!important;inset:auto!important;padding:16px 0!important}
+    #slides{flex:none!important}
+    body{display:block!important}
+    #deck-title{padding-right:0!important}
+
+    /* reveal every slide (deck mode hides 2 of 3) — one clean page each */
+    .screen[hidden]{display:flex!important}
+    .screen{height:auto!important;overflow:visible!important;
+            page-break-before:always;page-break-inside:avoid;margin-bottom:18px}
+    .screen:first-of-type{page-break-before:auto}
+
+    /* the number badge is white-on-navy; browsers drop the navy fill in print,
+       so restate it as navy text + navy border to stay legible on white */
+    .num{
+      background:transparent!important;color:var(--on-highlight)!important;
+      border:2px solid var(--on-highlight);
+      -webkit-print-color-adjust:exact;print-color-adjust:exact;
+    }
+    /* bullet markers are background pseudo-elements — likeliest to drop silently */
+    .cat li::before{
+      -webkit-print-color-adjust:exact;print-color-adjust:exact;
+      background:var(--on-highlight);
+    }
   }
 </style>
 <noscript><style>
@@ -187,6 +229,10 @@
 
 <main id="stage">
   <section id="deck" role="group" aria-roledescription="carousel" aria-labelledby="deck-title">
+    <button class="navbtn printbtn" type="button" id="printpdf">
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V4h12v5"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v6H6z"/></svg>
+      Download PDF
+    </button>
     <p class="kicker">DEP's 2026 challenges</p>
     <h2 id="deck-title">Three challenges — you'll own one for the whole program. Meet each one.</h2>
 
@@ -440,6 +486,12 @@
   }
   window.addEventListener("resize", fit);
   fit();
+
+  /* ---- Download PDF: native print -> browser's Save-as-PDF. No focus juggling
+     (the print stylesheet reveals all slides in CSS), so focus returns here. ---- */
+  document.getElementById("printpdf").addEventListener("click", function(){
+    window.print();
+  });
 })();
 </script>
 </body>
