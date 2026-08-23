@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Scout's Glossary — Learn &amp; Self-Check | PFNYC Environmental Tech Lab</title>
+<title>Sourcing Glossary — Learn &amp; Self-Check | PFNYC Environmental Tech Lab</title>
 <style>
   :root {
     --bg: #ffffff;
@@ -69,7 +69,7 @@
     max-width: 980px;
     aspect-ratio: 16 / 9;
     max-height: calc(100vh - 24px);
-    min-height: 320px;
+    min-height: 340px;
     background: var(--frame);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -79,8 +79,15 @@
     overflow: hidden;
   }
 
+  .deck {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
+
   .frame__head {
-    padding: 16px 20px 12px;
+    padding: 15px 20px 11px;
     border-bottom: 1px solid var(--border);
     flex: 0 0 auto;
   }
@@ -95,40 +102,146 @@
   h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.2px; }
   .instruction { font-size: 0.82rem; color: var(--muted); margin-top: 3px; }
 
-  .grid-scroll {
+  /* ---------- Group navigation (tabs + stepper) ---------- */
+  .deck__nav {
+    flex: 0 0 auto;
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px 0;
+  }
+  .stepper {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .nav-arrow {
+    flex: 0 0 auto;
+    width: 40px;
+    min-height: 40px;
+    display: grid;
+    place-items: center;
+    font-size: 1.15rem;
+    line-height: 1;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    cursor: pointer;
+    align-self: center;
+  }
+  .nav-arrow:hover { background: var(--card-hover); }
+  .nav-arrow[aria-disabled="true"] { opacity: 0.4; cursor: default; }
+  .nav-arrow[aria-disabled="true"]:hover { background: var(--card); }
+  .nav-arrow:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--ring-halo);
+  }
+  .nav-arrow svg { width: 18px; height: 18px; }
+
+  .tablist {
+    display: flex;
+    gap: 6px;
     flex: 1 1 auto;
-    overflow-y: auto;
-    padding: 14px 20px 20px;
-    scrollbar-gutter: stable;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .tab {
+    flex: 0 0 auto;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-bottom: 3px solid transparent;
+    border-radius: 9px 9px 0 0;
+    padding: 8px 12px;
+    min-height: 40px;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .tab:hover { background: var(--card-hover); color: var(--text); }
+  .tab[aria-selected="true"] {
+    color: var(--text);
+    font-weight: 700;
+    border-bottom-color: var(--accent);
+  }
+  .tab:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--ring-halo);
+    border-radius: 9px;
   }
 
+  /* ---------- Slide body ---------- */
+  .deck__body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 16px 20px 22px;
+    scrollbar-gutter: stable;
+  }
+  .panel:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+    border-radius: 10px;
+  }
+  .panel__meta {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .panel__title { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.2px; }
+  .panel__sub { font-size: 0.82rem; color: var(--muted); margin-top: 3px; margin-bottom: 14px; }
+
+  /* ---------- Flip cards ---------- */
   ul.cards {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 10px;
-    align-items: start;
+    grid-template-columns: repeat(auto-fill, minmax(212px, 1fr));
+    gap: 12px;
+    align-items: stretch;
   }
+  .card { perspective: 1200px; height: 208px; }
+  .card__inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+  }
+  .card__inner[data-flipped="true"] { transform: rotateY(180deg); }
 
-  .card {
+  .card__face {
+    position: absolute;
+    inset: 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
+  .card__back { transform: rotateY(180deg); }
 
-  .card__term { margin: 0; }
+  .card__term { margin: 0; height: 100%; display: flex; }
   .card__btn {
     all: unset;
     box-sizing: border-box;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
     gap: 10px;
     width: 100%;
-    padding: 12px 14px;
+    height: 100%;
+    padding: 14px;
     cursor: pointer;
-    font-family: inherit;
     color: var(--text);
+    font-family: inherit;
   }
   .card__btn:hover { background: var(--card-hover); }
   .card__btn:focus-visible {
@@ -136,15 +249,9 @@
     outline-offset: -3px;
     box-shadow: inset 0 0 0 6px var(--ring-halo);
   }
-
-  .card__name {
-    flex: 1 1 auto;
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: -0.1px;
-  }
+  .card__head { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+  .card__name { font-size: 1rem; font-weight: 700; letter-spacing: -0.1px; }
   .chip {
-    flex: 0 0 auto;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.4px;
@@ -155,63 +262,72 @@
     border-radius: 999px;
     white-space: nowrap;
   }
-  .chev {
-    flex: 0 0 auto;
-    width: 16px;
-    height: 16px;
+  .card__affordance {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
     color: var(--muted);
   }
+  .chev { width: 16px; height: 16px; flex: 0 0 auto; color: var(--muted); }
 
-  .card__def {
-    padding: 0 14px 14px;
-    border-top: 1px solid var(--border);
-    margin-top: -1px;
+  .card__back { padding: 13px 14px; }
+  .card__back-term {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
   }
-  .card__def .plain {
-    font-size: 0.85rem;
+  .card__back .scrolls { flex: 1 1 auto; overflow-y: auto; min-height: 0; }
+  .card__back .scrolls:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: -2px;
+    border-radius: 6px;
+  }
+  .card__back .plain { font-size: 0.84rem; color: var(--text); }
+  .card__back .why { font-size: 0.8rem; color: var(--muted); margin-top: 7px; }
+  .card__back .why b { color: var(--accent); font-weight: 700; }
+  .card__flipback {
+    align-self: flex-start;
+    margin-top: 10px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-size: 0.76rem;
+    font-weight: 700;
     color: var(--text);
-    padding-top: 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 11px;
+    min-height: 32px;
+    cursor: pointer;
   }
-  .card__def .why {
-    font-size: 0.82rem;
-    color: var(--muted);
-    margin-top: 8px;
+  .card__flipback:hover { background: var(--card-hover); }
+  .card__flipback:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--ring-halo);
   }
-  .card__def .why b { color: var(--accent); font-weight: 700; }
+  .card__flipback svg { width: 15px; height: 15px; }
 
   @media (prefers-reduced-motion: no-preference) {
-    .card__btn, .chev { transition: background 0.15s ease, transform 0.2s ease; }
-    .card__btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
-    .card__def:not([hidden]) { animation: reveal 0.22s ease both; }
-  }
-  .card__btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
-  @keyframes reveal {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: translateY(0); }
+    .card__inner { transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1); }
+    .nav-arrow, .tab { transition: background 0.15s ease, color 0.15s ease; }
   }
 
-  @media (forced-colors: active) {
-    .card, .card__btn:focus-visible, .frame { border-color: ButtonText; }
-    .chip { color: ButtonText; background: ButtonFace; border: 1px solid ButtonText; }
-    .card__btn:focus-visible { outline-color: Highlight; box-shadow: none; }
-    .chev { color: CanvasText; }
-  }
-
-  .visually-hidden {
-    position: absolute !important;
-    width: 1px; height: 1px;
-    margin: -1px; padding: 0; border: 0;
-    clip: rect(0 0 0 0); clip-path: inset(50%);
-    overflow: hidden; white-space: nowrap;
-  }
-
-  /* ---- Check Your Understanding (self-check quiz) ---- */
+  /* ---------- Per-slide self-check ---------- */
   .quiz {
     --ok: #137a3b;     --ok-bd: #137a3b;
     --warn: #dc2626;   --warn-bd: #dc2626;
     --btn-bg: #4338ca; --btn-bg-hover: #372cae;
-    margin-top: 24px;
-    padding-top: 18px;
+    margin-top: 22px;
+    padding-top: 16px;
     border-top: 1px solid var(--border);
   }
   @media (prefers-color-scheme: dark) {
@@ -220,8 +336,13 @@
   :root[data-theme="light"] .quiz { --ok: #137a3b; --ok-bd: #137a3b; --warn: #dc2626; --warn-bd: #dc2626; --btn-bg: #4338ca; --btn-bg-hover: #372cae; }
   :root[data-theme="dark"]  .quiz { --ok: #34d399; --ok-bd: #22c55e; --warn: #f87171; --warn-bd: #ef4444; --btn-bg: #5b52e6; --btn-bg-hover: #645ae8; }
 
-  .quiz h2 { font-size: 1.02rem; font-weight: 800; letter-spacing: -0.2px; }
-  .quiz__intro { font-size: 0.84rem; color: var(--muted); margin-top: 5px; }
+  .quiz__title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
 
   .q {
     border: 1px solid var(--border);
@@ -229,7 +350,7 @@
     border-radius: 12px;
     background: var(--card);
     padding: 14px 16px;
-    margin-top: 12px;
+    margin-top: 10px;
     min-inline-size: 0;
   }
   .q legend {
@@ -238,15 +359,6 @@
     color: var(--text);
     padding: 0;
     line-height: 1.45;
-  }
-  .q__num {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 4px;
   }
   .q__opts { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
   .opt {
@@ -274,7 +386,6 @@
     scroll-margin-top: 20px;
   }
   .opt span { flex: 1 1 auto; }
-  .btn { scroll-margin-top: 16px; }
 
   .q__fb {
     margin-top: 11px;
@@ -289,7 +400,7 @@
   .q[data-state="invalid"] { border-left-color: var(--warn-bd); }
   .q[data-state="invalid"] .q__fb { color: var(--warn); }
 
-  .quiz__actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .quiz__actions { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
   .btn {
     font-family: inherit;
     font-size: 0.86rem;
@@ -298,6 +409,7 @@
     padding: 9px 16px;
     cursor: pointer;
     border: 1px solid transparent;
+    scroll-margin-top: 16px;
   }
   .btn:focus-visible {
     outline: 3px solid var(--ring);
@@ -310,417 +422,813 @@
   .btn-reset:hover { background: var(--card-hover); }
 
   .quiz__score {
-    margin-top: 13px;
+    margin-top: 12px;
     font-size: 0.9rem;
     font-weight: 700;
     color: var(--text);
   }
   .quiz__score:empty { margin: 0; }
 
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    clip: rect(0 0 0 0); clip-path: inset(50%);
+    overflow: hidden; white-space: nowrap;
+  }
+
   @media (forced-colors: active) {
-    .q, .opt, .btn { border-color: ButtonText; }
-    .opt:focus-within, .btn:focus-visible { outline-color: Highlight; box-shadow: none; }
-    .q[data-state="correct"] .q__fb, .q[data-state="wrong"] .q__fb { color: CanvasText; }
+    .frame, .card__face, .tab, .nav-arrow, .card__flipback, .q, .opt, .btn { border-color: ButtonText; }
+    .tab[aria-selected="true"] { border-bottom: 3px solid Highlight; }
+    .chip { color: ButtonText; background: ButtonFace; border: 1px solid ButtonText; }
+    .chev, .card__affordance svg, .nav-arrow svg, .card__flipback svg { color: CanvasText; }
+    .nav-arrow[aria-disabled="true"] { opacity: 1; color: GrayText; }
+    .card__btn:focus-visible, .tab:focus-visible, .nav-arrow:focus-visible,
+    .card__flipback:focus-visible, .card__back .scrolls:focus-visible,
+    .opt:focus-within, .btn:focus-visible, .panel:focus-visible {
+      outline-color: Highlight; box-shadow: none;
+    }
+    .q[data-state="correct"] .q__fb, .q[data-state="wrong"] .q__fb, .q[data-state="invalid"] .q__fb { color: CanvasText; }
     .btn-primary { background: ButtonFace; color: ButtonText; }
   }
 </style>
 </head>
 <body>
   <div class="frame">
-    <div class="frame__head">
-      <p class="kicker">PFNYC · Environmental Tech Lab</p>
-      <h1>Scout's Glossary of Key Terms</h1>
-      <p class="instruction">Select a term to see what it means &mdash; and why a scout cares. Then test yourself with the quick check at the bottom.</p>
-    </div>
+    <main class="deck" aria-labelledby="glossary-h1">
+      <div class="frame__head">
+        <p class="kicker">PFNYC · Environmental Tech Lab</p>
+        <h1 id="glossary-h1">Sourcing Glossary of Key Terms</h1>
+        <p class="instruction">Flip a card to reveal what each term means &mdash; and why a scout cares. Each group ends with a quick knowledge check.</p>
+        <p id="glossary-intro" class="visually-hidden">Interactive glossary organized into five topic groups. Each group has flip cards that reveal a definition, followed by a one-question knowledge check. Use the group tabs, or the previous and next buttons, to move between groups.</p>
+      </div>
 
-    <main class="grid-scroll" aria-labelledby="glossary-h1-note">
-      <p id="glossary-h1-note" class="visually-hidden">Interactive glossary and self-check. Fourteen terms to expand, followed by a four-question comprehension quiz.</p>
-      <ul class="cards" role="list">
-
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-1">
-              <span class="card__name">Startup</span>
-              <span class="chip">Stage</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-1" hidden>
-            <p class="plain">A young company built to grow fast, usually around a new product or technology.</p>
-            <p class="why"><b>Why a scout cares:</b> Almost everything you source is a startup &mdash; reading how far along it is, is half the job.</p>
+      <div class="deck__nav">
+        <div class="stepper">
+          <button type="button" class="nav-arrow" id="prev-btn" aria-label="Previous group">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="tablist" role="tablist" aria-label="Glossary topic groups" aria-describedby="glossary-intro">
+            <button type="button" class="tab" role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true"  tabindex="0">Company Stage</button>
+            <button type="button" class="tab" role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Signals to Weigh</button>
+            <button type="button" class="tab" role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1">Ownership &amp; Eligibility</button>
+            <button type="button" class="tab" role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1">Research Tools</button>
+            <button type="button" class="tab" role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1">Working the Pipeline</button>
           </div>
-        </li>
+          <button type="button" class="nav-arrow" id="next-btn" aria-label="Next group">
+            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M8 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div id="slide-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+      </div>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-2">
-              <span class="card__name">Beta</span>
-              <span class="chip">Stage</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-2" hidden>
-            <p class="plain">A working early version of a product that real users can actually try, before it&rsquo;s fully finished.</p>
-            <p class="why"><b>Why a scout cares:</b> ETL&rsquo;s gate requires at least a working beta with active users &mdash; so &ldquo;beta or better&rdquo; is a pass/fail signal you check on every company.</p>
-          </div>
-        </li>
+      <div class="deck__body">
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-3">
-              <span class="card__name">Active users</span>
-              <span class="chip">Signal</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-3" hidden>
-            <p class="plain">Real people or organizations using the product right now &mdash; not just names on a waitlist.</p>
-            <p class="why"><b>Why a scout cares:</b> Proof the product works in the real world, not only on a slide. A waitlist is a promise; active users are traction.</p>
-          </div>
-        </li>
+        <!-- ============ GROUP 1 — Company Stage ============ -->
+        <div class="panel" role="tabpanel" id="panel-1" aria-labelledby="tab-1" tabindex="0">
+          <p class="panel__meta">Group 1 of 5</p>
+          <h2 class="panel__title">Company Stage</h2>
+          <p class="panel__sub">How far along a company is &mdash; and how you read it at a glance.</p>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-4">
-              <span class="card__name">Traction</span>
-              <span class="chip">Signal</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-4" hidden>
-            <p class="plain">Evidence a product is catching on: real customers, deployments, usage, or revenue.</p>
-            <p class="why"><b>Why a scout cares:</b> Traction separates a company that&rsquo;s shipping from one that&rsquo;s still just a pitch &mdash; the difference between &ldquo;could work&rdquo; and &ldquo;is working.&rdquo;</p>
-          </div>
-        </li>
+          <ul class="cards" role="list">
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-1">
+                      <span class="card__head"><span class="card__name">Startup</span><span class="chip">Stage</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-1" inert aria-hidden="true">
+                  <p class="card__back-term">Startup</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">A young company built to grow fast, usually around a new product or technology.</p>
+                    <p class="why"><b>Why a scout cares:</b> Almost everything you source is a startup &mdash; reading how far along it is, is half the job.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-5">
-              <span class="card__name">Subsidiary</span>
-              <span class="chip">Ownership</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-5" hidden>
-            <p class="plain">A company that is owned and controlled by another, larger company (its parent).</p>
-            <p class="why"><b>Why a scout cares:</b> ETL takes independent companies only. A subsidiary of a public company fails the eligibility gate &mdash; spotting one saves you from rating a company that can&rsquo;t qualify.</p>
-          </div>
-        </li>
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-2">
+                      <span class="card__head"><span class="card__name">Beta</span><span class="chip">Stage</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-2" inert aria-hidden="true">
+                  <p class="card__back-term">Beta</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">A working early version of a product that real users can actually try, before it&rsquo;s fully finished.</p>
+                    <p class="why"><b>Why a scout cares:</b> ETL&rsquo;s gate requires at least a working beta with active users &mdash; so &ldquo;beta or better&rdquo; is a pass/fail signal you check on every company.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-6">
-              <span class="card__name">Parent company</span>
-              <span class="chip">Ownership</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-6" hidden>
-            <p class="plain">The larger company that owns one or more subsidiaries.</p>
-            <p class="why"><b>Why a scout cares:</b> If your find is a subsidiary &mdash; or is itself a parent with its own subsidiaries &mdash; check ownership before you trust the rest of your read.</p>
-          </div>
-        </li>
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-3">
+                      <span class="card__head"><span class="card__name">Seed / Series A</span><span class="chip">Stage</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-3" inert aria-hidden="true">
+                  <p class="card__back-term">Seed / Series A</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain"><strong>Seed</strong> is usually the first real outside investment; <strong>Series A</strong> is the next, larger round once a company is proving itself.</p>
+                    <p class="why"><b>Why a scout cares:</b> Quick shorthand for how far along and how well-funded a startup is &mdash; a one-word read on stage.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-7">
-              <span class="card__name">Public vs. private</span>
-              <span class="chip">Ownership</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-7" hidden>
-            <p class="plain">A <strong>public</strong> company sells shares anyone can buy on a stock exchange and files its financials openly; a <strong>private</strong> company doesn&rsquo;t.</p>
-            <p class="why"><b>Why a scout cares:</b> ETL takes private, independent companies. Public companies &mdash; and their subsidiaries &mdash; are out. One of the fastest disqualifiers to check.</p>
-          </div>
-        </li>
+          <section class="quiz" aria-labelledby="check-h1">
+            <h3 class="quiz__title" id="check-h1">Quick check</h3>
+            <form id="quiz-1" novalidate>
+              <fieldset class="q">
+                <legend>A startup&rsquo;s site has a polished product page and a &ldquo;Join the waitlist&rdquo; button, but no sign anyone is using the product yet. How does that read against ETL&rsquo;s &ldquo;working beta with active users&rdquo; bar?</legend>
+                <div class="q__opts">
+                  <label class="opt" for="g1a"><input type="radio" name="g1" id="g1a" value="a" aria-describedby="fb-g1"><span>It clears the bar &mdash; a real product page is proof enough.</span></label>
+                  <label class="opt" for="g1b"><input type="radio" name="g1" id="g1b" value="b" aria-describedby="fb-g1"><span>Waitlist sign-ups count as active users, so it passes.</span></label>
+                  <label class="opt" for="g1c"><input type="radio" name="g1" id="g1c" value="c" aria-describedby="fb-g1"><span>It hasn&rsquo;t cleared the bar yet &mdash; a waitlist is a promise, not proof of active users.</span></label>
+                  <label class="opt" for="g1d"><input type="radio" name="g1" id="g1d" value="d" aria-describedby="fb-g1"><span>It&rsquo;s an automatic cut &mdash; a waitlist disqualifies a company.</span></label>
+                </div>
+                <p class="q__fb" id="fb-g1" hidden></p>
+              </fieldset>
+              <div class="quiz__actions">
+                <button type="submit" class="btn btn-primary">Check my answer</button>
+                <button type="button" class="btn btn-reset" id="reset-1" hidden>Try again</button>
+              </div>
+              <p class="quiz__score" id="score-g1" role="status" aria-live="polite" aria-atomic="true"></p>
+            </form>
+          </section>
+        </div>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-8">
-              <span class="card__name">Seed / Series A</span>
-              <span class="chip">Stage</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-8" hidden>
-            <p class="plain"><strong>Seed</strong> is usually the first real outside investment; <strong>Series A</strong> is the next, larger round once a company is proving itself.</p>
-            <p class="why"><b>Why a scout cares:</b> Quick shorthand for how far along and how well-funded a startup is &mdash; a one-word read on stage.</p>
-          </div>
-        </li>
+        <!-- ============ GROUP 2 — Signals to Weigh ============ -->
+        <div class="panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2" tabindex="0" hidden>
+          <p class="panel__meta">Group 2 of 5</p>
+          <h2 class="panel__title">Signals to Weigh</h2>
+          <p class="panel__sub">The evidence that tells you a company is really working &mdash; and one plus to flag.</p>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-9">
-              <span class="card__name">Crunchbase</span>
-              <span class="chip">Tool</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-9" hidden>
-            <p class="plain">A free/freemium online database of companies: funding, founders, locations, and ownership.</p>
-            <p class="why"><b>Why a scout cares:</b> A fast first stop to check a startup&rsquo;s stage, money raised, and whether it&rsquo;s independent &mdash; often your opening move on a new company.</p>
-          </div>
-        </li>
+          <ul class="cards" role="list">
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-4">
+                      <span class="card__head"><span class="card__name">Active users</span><span class="chip">Signal</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-4" inert aria-hidden="true">
+                  <p class="card__back-term">Active users</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">Real people or organizations using the product right now &mdash; not just names on a waitlist.</p>
+                    <p class="why"><b>Why a scout cares:</b> Proof the product works in the real world, not only on a slide. A waitlist is a promise; active users are traction.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-10">
-              <span class="card__name">SEC EDGAR</span>
-              <span class="chip">Tool</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-10" hidden>
-            <p class="plain">The U.S. government&rsquo;s free database of public-company filings (SEC = Securities and Exchange Commission).</p>
-            <p class="why"><b>Why a scout cares:</b> If a company or its parent files here, it&rsquo;s public &mdash; an instant independence check. No filings is a signal it&rsquo;s likely private.</p>
-          </div>
-        </li>
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-5">
+                      <span class="card__head"><span class="card__name">Traction</span><span class="chip">Signal</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-5" inert aria-hidden="true">
+                  <p class="card__back-term">Traction</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">Evidence a product is catching on: real customers, deployments, usage, or revenue.</p>
+                    <p class="why"><b>Why a scout cares:</b> Traction separates a company that&rsquo;s shipping from one that&rsquo;s still just a pitch &mdash; the difference between &ldquo;could work&rdquo; and &ldquo;is working.&rdquo;</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-11">
-              <span class="card__name"><abbr title="Minority- and Women-owned Business Enterprise">M/WBE</abbr></span>
-              <span class="chip">Signal</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-11" hidden>
-            <p class="plain">Minority- and Women-owned Business Enterprise &mdash; a company owned by people from those groups.</p>
-            <p class="why"><b>Why a scout cares:</b> ETL <em>especially encourages</em> M/WBE companies. Flag it as a plus, but never gate on it &mdash; a non-M/WBE company still qualifies.</p>
-          </div>
-        </li>
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-6">
+                      <span class="card__head"><span class="card__name"><abbr title="Minority- and Women-owned Business Enterprise">M/WBE</abbr></span><span class="chip">Signal</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-6" inert aria-hidden="true">
+                  <p class="card__back-term">M/WBE</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">Minority- and Women-owned Business Enterprise &mdash; a company owned by people from those groups.</p>
+                    <p class="why"><b>Why a scout cares:</b> ETL <em>especially encourages</em> M/WBE companies. Flag it as a plus, but never gate on it &mdash; a non-M/WBE company still qualifies.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-12">
-              <span class="card__name">Proof-of-concept (POC)</span>
-              <span class="chip">Process</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-12" hidden>
-            <p class="plain">A small, funded trial where a company shows its product can actually solve the real problem.</p>
-            <p class="why"><b>Why a scout cares:</b> The prize at the bottom of the funnel &mdash; the paid trial DEP runs with the winners you help surface. Everything you do points toward it.</p>
-          </div>
-        </li>
+          <section class="quiz" aria-labelledby="check-h2">
+            <h3 class="quiz__title" id="check-h2">Quick check</h3>
+            <form id="quiz-2" novalidate>
+              <fieldset class="q">
+                <legend>A strong, otherwise-eligible company is <em>not</em> an M/WBE. How should that affect your call?</legend>
+                <div class="q__opts">
+                  <label class="opt" for="g2a"><input type="radio" name="g2" id="g2a" value="a" aria-describedby="fb-g2"><span>Down-rate it &mdash; ETL requires M/WBE companies.</span></label>
+                  <label class="opt" for="g2b"><input type="radio" name="g2" id="g2b" value="b" aria-describedby="fb-g2"><span>Cut it &mdash; non-M/WBE companies don&rsquo;t qualify.</span></label>
+                  <label class="opt" for="g2c"><input type="radio" name="g2" id="g2c" value="c" aria-describedby="fb-g2"><span>It doesn&rsquo;t change eligibility &mdash; M/WBE is a plus to flag, never a requirement.</span></label>
+                  <label class="opt" for="g2d"><input type="radio" name="g2" id="g2d" value="d" aria-describedby="fb-g2"><span>Only keep it if there are no M/WBE options in your pipeline.</span></label>
+                </div>
+                <p class="q__fb" id="fb-g2" hidden></p>
+              </fieldset>
+              <div class="quiz__actions">
+                <button type="submit" class="btn btn-primary">Check my answer</button>
+                <button type="button" class="btn btn-reset" id="reset-2" hidden>Try again</button>
+              </div>
+              <p class="quiz__score" id="score-g2" role="status" aria-live="polite" aria-atomic="true"></p>
+            </form>
+          </section>
+        </div>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-13">
-              <span class="card__name">Pipeline</span>
-              <span class="chip">Process</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-13" hidden>
-            <p class="plain">The running, shared list of companies the team is tracking &mdash; ideally one clean record per company.</p>
-            <p class="why"><b>Why a scout cares:</b> You work inside it alongside other scouts. Keeping it clean and claiming a company before you work it is basic team hygiene.</p>
-          </div>
-        </li>
+        <!-- ============ GROUP 3 — Ownership & Eligibility ============ -->
+        <div class="panel" role="tabpanel" id="panel-3" aria-labelledby="tab-3" tabindex="0" hidden>
+          <p class="panel__meta">Group 3 of 5</p>
+          <h2 class="panel__title">Ownership &amp; Eligibility</h2>
+          <p class="panel__sub">Who owns whom &mdash; the fastest way to spot a company that can&rsquo;t qualify.</p>
 
-        <li class="card">
-          <h2 class="card__term">
-            <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-14">
-              <span class="card__name">Deduplication</span>
-              <span class="chip">Process</span>
-              <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </h2>
-          <div class="card__def" id="def-14" hidden>
-            <p class="plain">Removing duplicate entries so each company shows up only once.</p>
-            <p class="why"><b>Why a scout cares:</b> Two scouts logging the same startup wastes effort. &ldquo;Dedup&rdquo; keeps the shared pipeline trustworthy &mdash; and keeps you from claiming a find someone already has.</p>
-          </div>
-        </li>
+          <ul class="cards" role="list">
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-7">
+                      <span class="card__head"><span class="card__name">Subsidiary</span><span class="chip">Ownership</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-7" inert aria-hidden="true">
+                  <p class="card__back-term">Subsidiary</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">A company that is owned and controlled by another, larger company (its parent).</p>
+                    <p class="why"><b>Why a scout cares:</b> ETL takes independent companies only. A subsidiary of a public company fails the eligibility gate &mdash; spotting one saves you from rating a company that can&rsquo;t qualify.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
 
-      </ul>
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-8">
+                      <span class="card__head"><span class="card__name">Parent company</span><span class="chip">Ownership</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-8" inert aria-hidden="true">
+                  <p class="card__back-term">Parent company</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">The larger company that owns one or more subsidiaries.</p>
+                    <p class="why"><b>Why a scout cares:</b> If your find is a subsidiary &mdash; or is itself a parent with its own subsidiaries &mdash; check ownership before you trust the rest of your read.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
 
-      <section class="quiz">
-        <h2 id="quiz-h">Check Your Understanding</h2>
-        <p class="quiz__intro" id="quiz-intro">Four quick questions on the calls a scout actually makes. Answer all four, then select <strong>Check my answers</strong>. Nothing is graded or saved &mdash; this is just for you.</p>
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-9">
+                      <span class="card__head"><span class="card__name">Public vs. private</span><span class="chip">Ownership</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-9" inert aria-hidden="true">
+                  <p class="card__back-term">Public vs. private</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">A <strong>public</strong> company sells shares anyone can buy on a stock exchange and files its financials openly; a <strong>private</strong> company doesn&rsquo;t.</p>
+                    <p class="why"><b>Why a scout cares:</b> ETL takes private, independent companies. Public companies &mdash; and their subsidiaries &mdash; are out. One of the fastest disqualifiers to check.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
 
-        <form id="quiz-form" aria-labelledby="quiz-h" aria-describedby="quiz-intro" novalidate>
-          <fieldset class="q">
-            <legend><span class="q__num">Question 1 of 4</span> You find a promising water-sensor company, but it turns out to be a wholly-owned subsidiary of a large, publicly-traded utility. What&rsquo;s the right first-pass call for ETL eligibility?</legend>
-            <div class="q__opts">
-              <label class="opt" for="q1a"><input type="radio" name="q1" id="q1a" value="a" aria-describedby="fb-q1"><span>Rate it highly &mdash; the technology clearly fits DEP&rsquo;s needs.</span></label>
-              <label class="opt" for="q1b"><input type="radio" name="q1" id="q1b" value="b" aria-describedby="fb-q1"><span>Cut it &mdash; ETL takes independent, private companies, and a subsidiary of a public parent fails the eligibility gate.</span></label>
-              <label class="opt" for="q1c"><input type="radio" name="q1" id="q1c" value="c" aria-describedby="fb-q1"><span>Flag it as M/WBE and keep it in the running.</span></label>
-              <label class="opt" for="q1d"><input type="radio" name="q1" id="q1d" value="d" aria-describedby="fb-q1"><span>It still qualifies, as long as the subsidiary itself isn&rsquo;t traded.</span></label>
-            </div>
-            <p class="q__fb" id="fb-q1" hidden></p>
-          </fieldset>
+          <section class="quiz" aria-labelledby="check-h3">
+            <h3 class="quiz__title" id="check-h3">Quick check</h3>
+            <form id="quiz-3" novalidate>
+              <fieldset class="q">
+                <legend>You find a promising water-sensor company, but it turns out to be a wholly-owned subsidiary of a large, publicly-traded utility. What&rsquo;s the right first-pass call for ETL eligibility?</legend>
+                <div class="q__opts">
+                  <label class="opt" for="g3a"><input type="radio" name="g3" id="g3a" value="a" aria-describedby="fb-g3"><span>Rate it highly &mdash; the technology clearly fits DEP&rsquo;s needs.</span></label>
+                  <label class="opt" for="g3b"><input type="radio" name="g3" id="g3b" value="b" aria-describedby="fb-g3"><span>Cut it &mdash; ETL takes independent, private companies, and a subsidiary of a public parent fails the eligibility gate.</span></label>
+                  <label class="opt" for="g3c"><input type="radio" name="g3" id="g3c" value="c" aria-describedby="fb-g3"><span>Flag it as M/WBE and keep it in the running.</span></label>
+                  <label class="opt" for="g3d"><input type="radio" name="g3" id="g3d" value="d" aria-describedby="fb-g3"><span>It still qualifies, as long as the subsidiary itself isn&rsquo;t traded.</span></label>
+                </div>
+                <p class="q__fb" id="fb-g3" hidden></p>
+              </fieldset>
+              <div class="quiz__actions">
+                <button type="submit" class="btn btn-primary">Check my answer</button>
+                <button type="button" class="btn btn-reset" id="reset-3" hidden>Try again</button>
+              </div>
+              <p class="quiz__score" id="score-g3" role="status" aria-live="polite" aria-atomic="true"></p>
+            </form>
+          </section>
+        </div>
 
-          <fieldset class="q">
-            <legend><span class="q__num">Question 2 of 4</span> A startup&rsquo;s site has a polished product page and a &ldquo;Join the waitlist&rdquo; button, but no sign anyone is using the product yet. How does that read against ETL&rsquo;s &ldquo;working beta with active users&rdquo; bar?</legend>
-            <div class="q__opts">
-              <label class="opt" for="q2a"><input type="radio" name="q2" id="q2a" value="a" aria-describedby="fb-q2"><span>It clears the bar &mdash; a real product page is proof enough.</span></label>
-              <label class="opt" for="q2b"><input type="radio" name="q2" id="q2b" value="b" aria-describedby="fb-q2"><span>Waitlist sign-ups count as active users, so it passes.</span></label>
-              <label class="opt" for="q2c"><input type="radio" name="q2" id="q2c" value="c" aria-describedby="fb-q2"><span>It hasn&rsquo;t cleared the bar yet &mdash; a waitlist is a promise, not proof of active users.</span></label>
-              <label class="opt" for="q2d"><input type="radio" name="q2" id="q2d" value="d" aria-describedby="fb-q2"><span>It&rsquo;s an automatic cut &mdash; a waitlist disqualifies a company.</span></label>
-            </div>
-            <p class="q__fb" id="fb-q2" hidden></p>
-          </fieldset>
+        <!-- ============ GROUP 4 — Research Tools ============ -->
+        <div class="panel" role="tabpanel" id="panel-4" aria-labelledby="tab-4" tabindex="0" hidden>
+          <p class="panel__meta">Group 4 of 5</p>
+          <h2 class="panel__title">Research Tools</h2>
+          <p class="panel__sub">The two databases you&rsquo;ll reach for first on any new company.</p>
 
-          <fieldset class="q">
-            <legend><span class="q__num">Question 3 of 4</span> You want the fastest, most definitive free check of whether a company (or its parent) is publicly traded. Which source do you reach for?</legend>
-            <div class="q__opts">
-              <label class="opt" for="q3a"><input type="radio" name="q3" id="q3a" value="a" aria-describedby="fb-q3"><span>SEC EDGAR &mdash; if the company or its parent files there, it&rsquo;s public.</span></label>
-              <label class="opt" for="q3b"><input type="radio" name="q3" id="q3b" value="b" aria-describedby="fb-q3"><span>Crunchbase, because it lists a company&rsquo;s funding rounds.</span></label>
-              <label class="opt" for="q3c"><input type="radio" name="q3" id="q3c" value="c" aria-describedby="fb-q3"><span>The company&rsquo;s own homepage and &ldquo;About&rdquo; page.</span></label>
-              <label class="opt" for="q3d"><input type="radio" name="q3" id="q3d" value="d" aria-describedby="fb-q3"><span>An M/WBE certification directory.</span></label>
-            </div>
-            <p class="q__fb" id="fb-q3" hidden></p>
-          </fieldset>
+          <ul class="cards" role="list">
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-10">
+                      <span class="card__head"><span class="card__name">Crunchbase</span><span class="chip">Tool</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-10" inert aria-hidden="true">
+                  <p class="card__back-term">Crunchbase</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">A free/freemium online database of companies: funding, founders, locations, and ownership.</p>
+                    <p class="why"><b>Why a scout cares:</b> A fast first stop to check a startup&rsquo;s stage, money raised, and whether it&rsquo;s independent &mdash; often your opening move on a new company.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
 
-          <fieldset class="q">
-            <legend><span class="q__num">Question 4 of 4</span> A strong, otherwise-eligible company is <em>not</em> an M/WBE. How should that affect your call?</legend>
-            <div class="q__opts">
-              <label class="opt" for="q4a"><input type="radio" name="q4" id="q4a" value="a" aria-describedby="fb-q4"><span>Down-rate it &mdash; ETL requires M/WBE companies.</span></label>
-              <label class="opt" for="q4b"><input type="radio" name="q4" id="q4b" value="b" aria-describedby="fb-q4"><span>Cut it &mdash; non-M/WBE companies don&rsquo;t qualify.</span></label>
-              <label class="opt" for="q4c"><input type="radio" name="q4" id="q4c" value="c" aria-describedby="fb-q4"><span>It doesn&rsquo;t change eligibility &mdash; M/WBE is a plus to flag, never a requirement.</span></label>
-              <label class="opt" for="q4d"><input type="radio" name="q4" id="q4d" value="d" aria-describedby="fb-q4"><span>Only keep it if there are no M/WBE options in your pipeline.</span></label>
-            </div>
-            <p class="q__fb" id="fb-q4" hidden></p>
-          </fieldset>
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-11">
+                      <span class="card__head"><span class="card__name">SEC EDGAR</span><span class="chip">Tool</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-11" inert aria-hidden="true">
+                  <p class="card__back-term">SEC EDGAR</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">The U.S. government&rsquo;s free database of public-company filings (SEC = Securities and Exchange Commission).</p>
+                    <p class="why"><b>Why a scout cares:</b> If a company or its parent files here, it&rsquo;s public &mdash; an instant independence check. No filings is a signal it&rsquo;s likely private.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
 
-          <div class="quiz__actions">
-            <button type="submit" class="btn btn-primary">Check my answers</button>
-            <button type="button" class="btn btn-reset" id="quiz-reset" hidden>Try again</button>
-          </div>
+          <section class="quiz" aria-labelledby="check-h4">
+            <h3 class="quiz__title" id="check-h4">Quick check</h3>
+            <form id="quiz-4" novalidate>
+              <fieldset class="q">
+                <legend>You want the fastest, most definitive free check of whether a company (or its parent) is publicly traded. Which source do you reach for?</legend>
+                <div class="q__opts">
+                  <label class="opt" for="g4a"><input type="radio" name="g4" id="g4a" value="a" aria-describedby="fb-g4"><span>SEC EDGAR &mdash; if the company or its parent files there, it&rsquo;s public.</span></label>
+                  <label class="opt" for="g4b"><input type="radio" name="g4" id="g4b" value="b" aria-describedby="fb-g4"><span>Crunchbase, because it lists a company&rsquo;s funding rounds.</span></label>
+                  <label class="opt" for="g4c"><input type="radio" name="g4" id="g4c" value="c" aria-describedby="fb-g4"><span>The company&rsquo;s own homepage and &ldquo;About&rdquo; page.</span></label>
+                  <label class="opt" for="g4d"><input type="radio" name="g4" id="g4d" value="d" aria-describedby="fb-g4"><span>An M/WBE certification directory.</span></label>
+                </div>
+                <p class="q__fb" id="fb-g4" hidden></p>
+              </fieldset>
+              <div class="quiz__actions">
+                <button type="submit" class="btn btn-primary">Check my answer</button>
+                <button type="button" class="btn btn-reset" id="reset-4" hidden>Try again</button>
+              </div>
+              <p class="quiz__score" id="score-g4" role="status" aria-live="polite" aria-atomic="true"></p>
+            </form>
+          </section>
+        </div>
 
-          <p class="quiz__score" id="quiz-score" role="status" aria-live="polite" aria-atomic="true"></p>
-        </form>
-      </section>
+        <!-- ============ GROUP 5 — Working the Pipeline ============ -->
+        <div class="panel" role="tabpanel" id="panel-5" aria-labelledby="tab-5" tabindex="0" hidden>
+          <p class="panel__meta">Group 5 of 5</p>
+          <h2 class="panel__title">Working the Pipeline</h2>
+          <p class="panel__sub">Where your work lands &mdash; and the team hygiene that keeps it trustworthy.</p>
+
+          <ul class="cards" role="list">
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-12">
+                      <span class="card__head"><span class="card__name">Proof-of-concept (POC)</span><span class="chip">Process</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-12" inert aria-hidden="true">
+                  <p class="card__back-term">Proof-of-concept (POC)</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">A small, funded trial where a company shows its product can actually solve the real problem.</p>
+                    <p class="why"><b>Why a scout cares:</b> The prize at the bottom of the funnel &mdash; the paid trial DEP runs with the winners you help surface. Everything you do points toward it.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
+
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-13">
+                      <span class="card__head"><span class="card__name">Pipeline</span><span class="chip">Process</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-13" inert aria-hidden="true">
+                  <p class="card__back-term">Pipeline</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">The running, shared list of companies the team is tracking &mdash; ideally one clean record per company.</p>
+                    <p class="why"><b>Why a scout cares:</b> You work inside it alongside other scouts. Keeping it clean and claiming a company before you work it is basic team hygiene.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
+
+            <li class="card">
+              <div class="card__inner" data-flipped="false">
+                <div class="card__face card__front">
+                  <h3 class="card__term">
+                    <button type="button" class="card__btn" aria-expanded="false" aria-controls="def-14">
+                      <span class="card__head"><span class="card__name">Deduplication</span><span class="chip">Process</span></span>
+                      <span class="card__affordance">Flip to define
+                        <svg class="chev" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 7h9a3 3 0 010 6H8m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </button>
+                  </h3>
+                </div>
+                <div class="card__face card__back" id="def-14" inert aria-hidden="true">
+                  <p class="card__back-term">Deduplication</p>
+                  <div class="scrolls" tabindex="0" role="group" aria-label="Definition">
+                    <p class="plain">Removing duplicate entries so each company shows up only once.</p>
+                    <p class="why"><b>Why a scout cares:</b> Two scouts logging the same startup wastes effort. &ldquo;Dedup&rdquo; keeps the shared pipeline trustworthy &mdash; and keeps you from claiming a find someone already has.</p>
+                  </div>
+                  <button type="button" class="card__flipback">
+                    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M16 13H7a3 3 0 010-6h5m0 0l-3-3m3 3l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Back to term
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <section class="quiz" aria-labelledby="check-h5">
+            <h3 class="quiz__title" id="check-h5">Quick check</h3>
+            <form id="quiz-5" novalidate>
+              <fieldset class="q">
+                <legend>You spot a promising startup and you&rsquo;re about to research and log it. Two teammates are scouting the same challenge. What&rsquo;s the basic pipeline hygiene move?</legend>
+                <div class="q__opts">
+                  <label class="opt" for="g5a"><input type="radio" name="g5" id="g5a" value="a" aria-describedby="fb-g5"><span>Log a fresh record right away so you get credit for the find.</span></label>
+                  <label class="opt" for="g5b"><input type="radio" name="g5" id="g5b" value="b" aria-describedby="fb-g5"><span>Check the shared pipeline first and claim the company before you work it, so you don&rsquo;t duplicate a teammate&rsquo;s entry.</span></label>
+                  <label class="opt" for="g5c"><input type="radio" name="g5" id="g5c" value="c" aria-describedby="fb-g5"><span>Wait until the next team meeting to add anything to the pipeline.</span></label>
+                  <label class="opt" for="g5d"><input type="radio" name="g5" id="g5d" value="d" aria-describedby="fb-g5"><span>Only add it once it reaches proof-of-concept.</span></label>
+                </div>
+                <p class="q__fb" id="fb-g5" hidden></p>
+              </fieldset>
+              <div class="quiz__actions">
+                <button type="submit" class="btn btn-primary">Check my answer</button>
+                <button type="button" class="btn btn-reset" id="reset-5" hidden>Try again</button>
+              </div>
+              <p class="quiz__score" id="score-g5" role="status" aria-live="polite" aria-atomic="true"></p>
+            </form>
+          </section>
+        </div>
+
+      </div>
     </main>
   </div>
 
   <script>
+    /* ---------- Flip cards (focus follows the visible face; inert hides the other) ---------- */
     (function () {
-      var buttons = document.querySelectorAll('.card__btn');
-      Array.prototype.forEach.call(buttons, function (btn) {
-        btn.addEventListener('click', function () {
-          var panel = document.getElementById(btn.getAttribute('aria-controls'));
-          if (!panel) return;
-          var expanded = btn.getAttribute('aria-expanded') === 'true';
-          // Toggle state and visibility synchronously — never from transitionend.
-          btn.setAttribute('aria-expanded', String(!expanded));
-          panel.hidden = expanded;
-        });
+      var cards = document.querySelectorAll('.card');
+      Array.prototype.forEach.call(cards, function (card) {
+        var inner    = card.querySelector('.card__inner');
+        var front    = card.querySelector('.card__front');
+        var back     = card.querySelector('.card__back');
+        var frontBtn = front.querySelector('.card__btn');
+        var backBtn  = back.querySelector('.card__flipback');
+        var defRegion = back.querySelector('.scrolls');
+
+        function setFlipped(flipped) {
+          // Toggle visual + semantic state synchronously; move focus BEFORE inert-ing
+          // the outgoing face so focus is never trapped on an inert element.
+          inner.setAttribute('data-flipped', flipped ? 'true' : 'false');
+          frontBtn.setAttribute('aria-expanded', flipped ? 'true' : 'false');
+          if (flipped) {
+            back.removeAttribute('inert');
+            back.removeAttribute('aria-hidden');
+            // Land focus on the definition itself: it voices first, and the region
+            // (tabindex=0, overflow-y:auto) is keyboard-scrollable for long entries.
+            (defRegion || backBtn).focus();
+            front.setAttribute('inert', '');
+            front.setAttribute('aria-hidden', 'true');
+          } else {
+            front.removeAttribute('inert');
+            front.removeAttribute('aria-hidden');
+            frontBtn.focus();
+            back.setAttribute('inert', '');
+            back.setAttribute('aria-hidden', 'true');
+          }
+        }
+
+        frontBtn.addEventListener('click', function () { setFlipped(true); });
+        backBtn.addEventListener('click', function () { setFlipped(false); });
       });
     })();
 
+    /* ---------- Slide deck: tabs (manual activation) + Prev/Next ---------- */
     (function () {
-      var form = document.getElementById('quiz-form');
-      if (!form) return;
+      var GROUP_NAMES = ['Company Stage', 'Signals to Weigh', 'Ownership & Eligibility', 'Research Tools', 'Working the Pipeline'];
+      var tablist = document.querySelector('[role="tablist"]');
+      if (!tablist) return;
+      var tabs = Array.prototype.slice.call(tablist.querySelectorAll('[role="tab"]'));
+      var panels = tabs.map(function (t) { return document.getElementById(t.getAttribute('aria-controls')); });
+      var prevBtn = document.getElementById('prev-btn');
+      var nextBtn = document.getElementById('next-btn');
+      var statusEl = document.getElementById('slide-status');
+      var body = document.querySelector('.deck__body');
+      var selected = 0;
 
-      var QUESTIONS = [
-        {
-          name: 'q1', correct: 'b',
-          ok: 'Correct — a subsidiary of a public parent fails ETL’s independence gate, however good the product is.',
-          no: 'Not quite — the right call is to cut it. ETL takes independent, private companies, so a subsidiary of a public parent fails the eligibility gate no matter how well the tech fits.'
-        },
-        {
-          name: 'q2', correct: 'c',
+      function setRoving(i) {
+        tabs.forEach(function (t, j) { t.tabIndex = (j === i) ? 0 : -1; });
+      }
+
+      function updateArrows() {
+        prevBtn.setAttribute('aria-disabled', selected === 0 ? 'true' : 'false');
+        nextBtn.setAttribute('aria-disabled', selected === tabs.length - 1 ? 'true' : 'false');
+      }
+
+      function announce(msg) {
+        // Clear-then-set across two frames so re-announcing the same group still fires.
+        statusEl.textContent = '';
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { statusEl.textContent = msg; });
+        });
+      }
+
+      function clearScore(i) {
+        var panel = panels[i];
+        var s = panel.querySelector('.quiz__score');
+        if (s) s.textContent = '';
+        // Also wipe a lingering "unanswered" error so the group starts clean on return.
+        var fs = panel.querySelector('fieldset');
+        if (fs && fs.getAttribute('data-state') === 'invalid') {
+          fs.removeAttribute('data-state');
+          var fb = panel.querySelector('.q__fb');
+          if (fb) { fb.hidden = true; fb.textContent = ''; }
+          Array.prototype.forEach.call(panel.querySelectorAll('input[type="radio"]'), function (r) {
+            r.removeAttribute('aria-invalid');
+          });
+        }
+      }
+
+      // Single source of truth. focusTab: move focus onto the activated tab (tab/click path);
+      // Prev/Next leave focus on themselves so the stepper stays operable.
+      function goToSlide(i, focusTab) {
+        if (i < 0 || i >= tabs.length) return;
+        clearScore(selected);              // kill any stale result before the panel is hidden
+        selected = i;
+        tabs.forEach(function (t, j) {
+          var sel = (j === i);
+          t.setAttribute('aria-selected', sel ? 'true' : 'false');
+          panels[j].hidden = !sel;
+        });
+        setRoving(i);
+        updateArrows();
+        if (body) body.scrollTop = 0;
+        announce('Group ' + (i + 1) + ' of ' + tabs.length + ': ' + GROUP_NAMES[i]);
+        if (focusTab) tabs[i].focus();
+      }
+
+      // Move focus between tabs without activating (manual activation model).
+      function focusTab(i) { setRoving(i); tabs[i].focus(); }
+
+      tabs.forEach(function (tab, i) {
+        tab.addEventListener('click', function () { goToSlide(i, true); });
+      });
+
+      tablist.addEventListener('keydown', function (e) {
+        var i = tabs.indexOf(document.activeElement);
+        if (i < 0) return;
+        var n = tabs.length;
+        switch (e.key) {
+          case 'ArrowRight':
+          case 'ArrowDown': e.preventDefault(); focusTab((i + 1) % n); break;
+          case 'ArrowLeft':
+          case 'ArrowUp':   e.preventDefault(); focusTab((i - 1 + n) % n); break;
+          case 'Home':      e.preventDefault(); focusTab(0); break;
+          case 'End':       e.preventDefault(); focusTab(n - 1); break;
+          case 'Enter':
+          case ' ':         e.preventDefault(); goToSlide(i, false); break;
+        }
+      });
+
+      prevBtn.addEventListener('click', function () {
+        if (prevBtn.getAttribute('aria-disabled') === 'true') return;
+        goToSlide(selected - 1, false);
+      });
+      nextBtn.addEventListener('click', function () {
+        if (nextBtn.getAttribute('aria-disabled') === 'true') return;
+        goToSlide(selected + 1, false);
+      });
+
+      updateArrows();
+    })();
+
+    /* ---------- Per-slide self-checks (each scoped to its own form) ---------- */
+    (function () {
+      var ANSWERS = {
+        g1: {
+          correct: 'c',
           ok: 'Correct — a waitlist is a promise, not traction. You’d note “no evidence of active users yet,” rather than treat sign-ups as proof.',
           no: 'Not quite — it hasn’t cleared the bar yet. Active users means people using it now; a waitlist is only a promise, so the bar isn’t met. (It’s not an automatic cut — just unproven.)'
         },
-        {
-          name: 'q3', correct: 'a',
+        g2: {
+          correct: 'c',
+          ok: 'Correct — ETL especially encourages M/WBE companies, so you flag it as a plus, but you never gate on it. A non-M/WBE company still fully qualifies.',
+          no: 'Not quite — it doesn’t change eligibility. M/WBE is a plus you flag, never a gate; a non-M/WBE company still qualifies on its merits.'
+        },
+        g3: {
+          correct: 'b',
+          ok: 'Correct — a subsidiary of a public parent fails ETL’s independence gate, however good the product is.',
+          no: 'Not quite — the right call is to cut it. ETL takes independent, private companies, so a subsidiary of a public parent fails the eligibility gate no matter how well the tech fits.'
+        },
+        g4: {
+          correct: 'a',
           ok: 'Correct — EDGAR is the U.S. government’s public-filing database: filings there mean public, no filings suggests private. Crunchbase is great for stage and funding, but EDGAR is the definitive public/private check.',
           no: 'Not quite — the answer is SEC EDGAR. If a company or its parent files there, it’s public; no filings signals it’s likely private. Crunchbase is useful for stage and funding, but not the definitive independence check.'
         },
-        {
-          name: 'q4', correct: 'c',
-          ok: 'Correct — ETL especially encourages M/WBE companies, so you flag it as a plus, but you never gate on it. A non-M/WBE company still fully qualifies.',
-          no: 'Not quite — it doesn’t change eligibility. M/WBE is a plus you flag, never a gate; a non-M/WBE company still qualifies on its merits.'
+        g5: {
+          correct: 'b',
+          ok: 'Correct — you check the shared pipeline and claim the company first. That’s deduplication in practice: one clean record per company, no two scouts working the same find.',
+          no: 'Not quite — check the shared pipeline and claim the company before you work it. Logging a blind duplicate is exactly what deduplication exists to prevent; one clean record per company keeps the pipeline trustworthy.'
         }
-      ];
+      };
 
-      var scoreEl = document.getElementById('quiz-score');
-      var resetBtn = document.getElementById('quiz-reset');
+      var forms = document.querySelectorAll('.quiz form');
+      Array.prototype.forEach.call(forms, function (form) {
+        var radios = Array.prototype.slice.call(form.querySelectorAll('input[type="radio"]'));
+        if (!radios.length) return;
+        var name = radios[0].name;
+        var data = ANSWERS[name];
+        var fieldset = form.querySelector('fieldset');
+        var fb = form.querySelector('.q__fb');
+        var scoreEl = form.querySelector('.quiz__score');
+        var resetBtn = form.querySelector('.btn-reset');
 
-      function fbEl(name) { return document.getElementById('fb-' + name); }
-      function fieldsetOf(name) { return fbEl(name).closest('fieldset'); }
-      function radiosOf(name) { return form.querySelectorAll('input[name="' + name + '"]'); }
-
-      function clearInvalid(name) {
-        var fs = fieldsetOf(name);
-        if (fs.getAttribute('data-state') === 'invalid') {
-          fs.removeAttribute('data-state');
-          var fb = fbEl(name);
-          fb.hidden = true;
-          fb.textContent = '';
-        }
-        Array.prototype.forEach.call(radiosOf(name), function (r) { r.removeAttribute('aria-invalid'); });
-      }
-
-      // Clear a question's "unanswered" flag the moment the user answers it.
-      QUESTIONS.forEach(function (q) {
-        Array.prototype.forEach.call(radiosOf(q.name), function (r) {
-          r.addEventListener('change', function () { clearInvalid(q.name); });
-        });
-      });
-
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        // Validate: flag every unanswered question; focus the first one.
-        // The focus move self-voices the legend + error via aria-describedby —
-        // deliberately NO live region here (that would double-announce).
-        var firstUnanswered = null;
-        QUESTIONS.forEach(function (q) {
-          var picked = form.querySelector('input[name="' + q.name + '"]:checked');
-          if (!picked) {
-            var fs = fieldsetOf(q.name);
-            var fb = fbEl(q.name);
-            fs.setAttribute('data-state', 'invalid');
-            fb.textContent = 'Select an answer to this question before checking.';
-            fb.hidden = false;
-            Array.prototype.forEach.call(radiosOf(q.name), function (r) { r.setAttribute('aria-invalid', 'true'); });
-            if (!firstUnanswered) firstUnanswered = radiosOf(q.name)[0];
+        function clearInvalid() {
+          if (fieldset.getAttribute('data-state') === 'invalid') {
+            fieldset.removeAttribute('data-state');
+            fb.hidden = true;
+            fb.textContent = '';
           }
-        });
-        if (firstUnanswered) {
-          scoreEl.textContent = '';
-          firstUnanswered.focus();
-          return;
+          radios.forEach(function (r) { r.removeAttribute('aria-invalid'); });
         }
+        radios.forEach(function (r) { r.addEventListener('change', clearInvalid); });
 
-        // All answered — grade. One announcement, via the polite score region.
-        var correctCount = 0;
-        QUESTIONS.forEach(function (q) {
-          var picked = form.querySelector('input[name="' + q.name + '"]:checked');
-          var fb = fbEl(q.name);
-          var fs = fieldsetOf(q.name);
-          var isCorrect = picked.value === q.correct;
-          if (isCorrect) correctCount++;
-          Array.prototype.forEach.call(radiosOf(q.name), function (r) { r.removeAttribute('aria-invalid'); });
-          fs.setAttribute('data-state', isCorrect ? 'correct' : 'wrong');
-          fb.textContent = isCorrect ? q.ok : q.no;
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var picked = form.querySelector('input[type="radio"]:checked');
+
+          // Unanswered — flag inline, move focus to the group (self-voices legend + error).
+          // Deliberately NO live-region write here (avoids a double announcement).
+          if (!picked) {
+            fieldset.setAttribute('data-state', 'invalid');
+            fb.textContent = 'Select an answer before checking.';
+            fb.hidden = false;
+            // Mark the group once (on the first option) rather than every radio, so
+            // arrowing the group doesn't repeat "invalid" on each option.
+            radios[0].setAttribute('aria-invalid', 'true');
+            scoreEl.textContent = '';
+            radios[0].focus();
+            return;
+          }
+
+          // Answered — grade. Detail in fb (the describedby target); score region stays terse.
+          var isCorrect = picked.value === data.correct;
+          radios.forEach(function (r) { r.removeAttribute('aria-invalid'); });
+          fieldset.setAttribute('data-state', isCorrect ? 'correct' : 'wrong');
+          fb.textContent = isCorrect ? data.ok : data.no;
           fb.hidden = false;
+          scoreEl.textContent = isCorrect ? 'Correct.' : 'Not quite — see the note above.';
+          resetBtn.hidden = false;
         });
 
-        var tail = correctCount === 4
-          ? 'Nailed it — that’s the scout’s eye.'
-          : 'Review the questions marked “Not quite,” then select Try again to have another go.';
-        scoreEl.textContent = 'You got ' + correctCount + ' of 4. ' + tail;
-        resetBtn.hidden = false;
-      });
-
-      resetBtn.addEventListener('click', function () {
-        form.reset();
-        QUESTIONS.forEach(function (q) {
-          var fb = fbEl(q.name);
+        resetBtn.addEventListener('click', function () {
+          form.reset();
           fb.hidden = true;
           fb.textContent = '';
-          fieldsetOf(q.name).removeAttribute('data-state');
-          Array.prototype.forEach.call(radiosOf(q.name), function (r) { r.removeAttribute('aria-invalid'); });
+          fieldset.removeAttribute('data-state');
+          radios.forEach(function (r) { r.removeAttribute('aria-invalid'); });
+          scoreEl.textContent = '';
+          resetBtn.hidden = true;
+          radios[0].focus();
         });
-        scoreEl.textContent = '';
-        resetBtn.hidden = true;
-        var first = form.querySelector('input[type="radio"]');
-        if (first) first.focus();
       });
     })();
   </script>
