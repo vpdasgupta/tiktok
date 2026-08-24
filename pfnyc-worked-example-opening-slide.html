@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Worked Example — Draft Your Opening Slide (Slide 1: Challenge &amp; Lane)</title>
+
+<!--
+  WORKED EXAMPLE — "Draft Your Opening Slide" (PFNYC Week 1, Step 1.4 / substep 03)
+  A simple, self-contained, embeddable HTML rendering of the fully worked example from the
+  "[Task] Draft Your Opening Slide" Notion page. It shows what a finished Slide 1
+  (Challenge & Lane) of the final Top Companies Briefing looks like: a clean presentation
+  slide with MINIMAL on-slide text, paired with the fuller "talking notes" a scout would say
+  out loud. Sample Lane: Challenge 2 → Water supply & environmental field monitoring.
+
+  PALETTE: the Extern 5-color light design system (matches step-02/step-03 interactives).
+  Five tokens only (--bg, --highlight, --on-highlight, --body, --title). Dark-mode mirror
+  provided. Meaning is never carried by color alone.
+
+  ACCESSIBILITY (WCAG 2.2 AA): one H1; strict heading order (H1 > H2 > H3); semantic
+  landmarks; slide/notes pairing linked with aria-labelledby; decorative marks are
+  aria-hidden; responsive down to 320px and to 400% zoom; print-friendly; honors
+  prefers-color-scheme and prefers-reduced-motion.
+-->
+
+<style>
+  :root{
+    --highlight:#DCE1FF;    /* cards, panels, highlighted blocks   */
+    --on-highlight:#001D69; /* accents, active state, rules        */
+    --bg:#FDF8F8;           /* canvas background, negative space   */
+    --body:#484646;         /* body copy, captions                 */
+    --title:#1C1B1B;        /* headings, primary text              */
+    --surface:#FFFFFF;      /* slide surface above the canvas      */
+    --card-edge:#7C86C4;    /* slide boundary — 3:1 vs bg (1.4.11) */
+    font-size:16px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --highlight:#28306B;
+      --on-highlight:#BFC9FF;
+      --bg:#151418;
+      --body:#C9C6C6;
+      --title:#F4F1F1;
+      --surface:#1E1D22;
+      --card-edge:#6E77B8;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--body);line-height:1.55;
+    padding:32px 20px 56px;
+  }
+  .wrap{max-width:860px;margin:0 auto}
+
+  .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--on-highlight);outline-offset:2px;border-radius:6px}
+
+  /* ---- page header ---- */
+  .page-kicker{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--on-highlight)}
+  h1{font-size:1.6rem;font-weight:800;line-height:1.2;color:var(--title);margin:6px 0 8px}
+  .lede{font-size:1rem;max-width:64ch}
+
+  /* ---- the slide ---- */
+  .slide{
+    background:var(--surface);border:1px solid var(--card-edge);
+    border-radius:14px;padding:34px 38px;margin:26px 0 12px;
+    box-shadow:0 1px 3px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.05);
+  }
+  .slide-kicker{font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--body)}
+  .slide h2{font-size:1.5rem;font-weight:800;line-height:1.15;color:var(--title);
+    margin:6px 0 22px;padding-bottom:16px;border-bottom:2px solid var(--highlight)}
+  .blocks{display:grid;gap:20px}
+  .block h3{font-size:.95rem;font-weight:800;color:var(--on-highlight);margin:0 0 5px}
+  .block p{font-size:1.02rem;color:var(--title);max-width:60ch}
+  .block .need{
+    display:inline-block;margin-top:8px;font-size:.9rem;color:var(--title);
+    background:var(--highlight);border-left:4px solid var(--on-highlight);
+    border-radius:0 8px 8px 0;padding:8px 12px;max-width:60ch}
+  .path{font-weight:700;color:var(--title)}
+
+  .caption{font-size:.82rem;color:var(--body);margin:0 0 30px;font-style:italic}
+
+  /* ---- talking notes ---- */
+  .notes{background:var(--highlight);border-radius:14px;padding:26px 30px;margin-top:8px}
+  .notes h2{font-size:1.05rem;font-weight:800;color:var(--title);margin-bottom:4px;
+    display:flex;align-items:center;gap:8px}
+  .notes-intro{font-size:.9rem;color:var(--body);margin-bottom:18px;max-width:60ch}
+  .note{padding:14px 0;border-top:1px solid var(--on-highlight)}
+  .note:first-of-type{border-top:0;padding-top:2px}
+  .note h3{font-size:.9rem;font-weight:800;color:var(--on-highlight);margin-bottom:5px}
+  .note p{font-size:.95rem;color:var(--title);max-width:64ch}
+
+  /* ---- "what makes this work" footer ---- */
+  .why{margin-top:26px;border:1px dashed var(--on-highlight);border-radius:12px;padding:18px 22px}
+  .why h2{font-size:.95rem;font-weight:800;color:var(--title);margin-bottom:6px}
+  .why p{font-size:.92rem;color:var(--body);max-width:66ch}
+
+  /* ---- responsive ---- */
+  @media (max-width:560px){
+    body{padding:22px 14px 44px}
+    .slide{padding:24px 20px}
+    .notes{padding:20px 18px}
+    h1{font-size:1.4rem}
+    .slide h2{font-size:1.3rem}
+  }
+
+  /* ---- print ---- */
+  @media print{
+    :root{--bg:#fff;--surface:#fff}
+    body{padding:0;color:#000}
+    .slide{box-shadow:none;border-color:#999;page-break-inside:avoid}
+    .notes,.why{background:#fff;border:1px solid #999}
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <p class="page-kicker">Week 1 deliverable · Worked example</p>
+  <h1>What a finished Slide&nbsp;1 looks like</h1>
+  <p class="lede">This is the opening slide of the final <strong>Top Companies Briefing</strong>,
+    drafted by a scout who claimed <strong>Challenge&nbsp;2 → Water supply &amp; environmental
+    field monitoring</strong>. Read the slide first, then the talking notes underneath — the
+    fuller version the scout would say out loud. Yours does not need to be longer than this.</p>
+
+  <!-- THE SLIDE ---------------------------------------------------- -->
+  <section class="slide" aria-labelledby="slide-title">
+    <p class="slide-kicker">Top Companies Briefing · Slide 1 of 4</p>
+    <h2 id="slide-title">Challenge &amp; Lane</h2>
+
+    <div class="blocks">
+      <div class="block">
+        <h3>The problem, in my words</h3>
+        <p>DEP usually learns something in its water system has failed only <em>after</em> it
+          breaks. Challenge&nbsp;2 is an early-warning system — sensors and analytics that
+          reveal the condition of pipes, equipment, and the water environment.</p>
+      </div>
+
+      <div class="block">
+        <h3>Why it matters to DEP</h3>
+        <p>Every undetected leak wastes treated drinking water and risks a main break under a
+          city street. Catching it early turns a dig-when-it-breaks operation into a
+          predictive one — at the scale of 10&nbsp;million people.</p>
+      </div>
+
+      <div class="block">
+        <h3>My lane — and why I chose it</h3>
+        <p><span class="path">Challenge&nbsp;2 → Water supply &amp; environmental field
+          monitoring:</span> startups making low-cost water-level sensors and co-located rain
+          gauges a utility could deploy across green-infrastructure sites.</p>
+        <span class="need">Maps to DEP's need: <strong>cloudburst / GI monitoring — low-cost,
+          low-maintenance water-level sensors and rain gauges.</strong> Chosen because it's
+          verifiable: a sensor has real deployments, or it doesn't.</span>
+      </div>
+    </div>
+  </section>
+  <p class="caption">One slide. Plain-spoken. Every claim points at something real — a specific
+    DEP need, a concrete consequence, an honest reason for the choice.</p>
+
+  <!-- TALKING NOTES ------------------------------------------------ -->
+  <section class="notes" aria-labelledby="notes-title">
+    <h2 id="notes-title"><span aria-hidden="true">🎤</span> Talking notes</h2>
+    <p class="notes-intro">What the scout would say to the panel while this slide is on screen.
+      The slide stays tight; the detail lives here.</p>
+
+    <div class="note">
+      <h3>On “the problem”</h3>
+      <p>DEP runs a billion-gallon-a-day water system across thousands of miles of mostly
+        underground, often century-old infrastructure — and usually finds out something has
+        failed only after it breaks. Challenge&nbsp;2 is about giving DEP the ability to act
+        <em>before</em> a break, an overflow, or a plant outage.</p>
+    </div>
+
+    <div class="note">
+      <h3>On “why it matters”</h3>
+      <p>An undetected leak wastes treated drinking water and risks a main break under a city
+        street; a green-infrastructure asset that quietly stops working means stormwater DEP
+        thought it was managing is now flooding a neighborhood. Catching condition problems
+        early is real money and real public-safety impact.</p>
+    </div>
+
+    <div class="note">
+      <h3>On “my lane”</h3>
+      <p>I'm scouting water supply and environmental field monitoring companies — the low-cost
+        sensors and rain gauges a utility could actually deploy at scale. It maps directly to
+        DEP's cloudburst / GI monitoring need. Sourced globally, US-first. I chose it because
+        it's concrete and verifiable, which makes the eligibility gate and relevance call
+        cleaner to source from public evidence.</p>
+    </div>
+  </section>
+
+  <!-- WHY IT WORKS -------------------------------------------------- -->
+  <section class="why" aria-labelledby="why-title">
+    <h2 id="why-title">What makes this work</h2>
+    <p>It's plain, it's specific, and it fits on one slide you could actually present. It names
+      a use case, a specific DEP need, a concrete consequence, and an honest reason for the
+      choice — not a vague preference. Your draft should do the same for <em>your</em> Lane.</p>
+  </section>
+
+</main>
+</body>
+</html>
