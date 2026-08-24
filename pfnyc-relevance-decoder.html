@@ -9,10 +9,9 @@
 <!--
   RELEVANCE DECODER — "Decide If a Company Fits the Challenge" (PFNYC Week 1, Step 1.3)
   Self-contained, embeddable HTML activity. A learner reads a short profile of each of
-  four real-style companies, picks which DEP challenge it fits (or "Not relevant"), then
-  breaks the call down into three steps (What it does / Use case / Verdict) and, as the
-  partner at a desk screen, names the step that actually decides keep-or-cut. Two rounds are
-  traps (GridGuard vs. LockDesk — same word, opposite verdict).
+  four real-style companies and picks which DEP challenge it fits (or "Not relevant"); the
+  feedback names the specific DEP use case that decides the call. Two rounds are traps
+  (GridGuard vs. LockDesk — same word, opposite verdict).
 
   CUSTOMISE: edit only the DECK object (search "EDIT BELOW"). Everything under the
   "DO NOT EDIT" banner is the generic slide engine.
@@ -28,8 +27,8 @@
   ACCESSIBILITY (WCAG 2.2 AA — reviewed by the accessibility-lead team):
   focus moves to each slide heading on change; inactive slides are hidden (out of tab
   order + a11y tree); a persistent polite live region announces picks, results, gate
-  state and slide position; the challenge picker and the parts picker are real radiogroups
-  (role=radiogroup, aria-checked, roving tabindex); the challenge picker commits on
+  state and slide position; the challenge picker is a real radiogroup
+  (role=radiogroup, aria-checked, roving tabindex); it commits on
   Space/Enter so arrowing never spoils the answer; correct/incorrect is conveyed by TEXT
   (never color) plus a decorative check/cross; Next uses aria-disabled + a described reason
   and unlocks on any pick; at ≤640px / 400% zoom the fixed canvas becomes a fluid scrolling
@@ -230,24 +229,21 @@
    ============================================================================ */
 const DECK = {
   /* Unique per embed. Namespaces every id + the localStorage save key. Kebab-case. */
-  deckId: 'pfnyc-relevance',
+  deckId: 'pfnyc-relevance-v2',
 
   /* ---- title slide ---- */
   emoji: '🎯',
   title: 'Decide If a Company Fits the Challenge',
   intro: "You've met the three ETL challenges. Time to use them. I'll describe four real-style "
        + "companies — you read each one, then pick the challenge it fits (or call it not "
-       + "relevant). After each pick we take the call apart to find the one move that makes it "
-       + "a <b style=\"color:var(--on-highlight)\">judgment</b> instead of a guess. Two of them are traps.",
+       + "relevant). Each call comes down to one question: does what it does match a specific "
+       + "DEP <b style=\"color:var(--on-highlight)\">use case</b>? Two of them are traps.",
   startLabel: 'Start with Company 1 →',
 
   /* shown after a wrong match pick (retry) — never names the answer */
   retryText: 'Take another look at the profile and the challenge questions, then pick again.',
   /* safety valve: after this many wrong tries the answer is revealed and Next unlocks */
   maxTries: 3,
-
-  /* The word for the second-perspective persona (lowercase). Used in headings. */
-  perspective: 'partner',
 
   /* ---- the challenge picker options (same four every round) ----
      key : matched against each round's `correct`
@@ -263,161 +259,64 @@ const DECK = {
       q:"Doesn't map to any of the three challenges' use cases." },
   ],
 
-  /* ---- THE THREE STEPS OF THE FIT CHECK (5-color palette; the name + icon +
-     definition carry the difference, not color) ---- */
-  parts: [
-    { key:'does',    name:'What it does', color:'--on-highlight', def:"The company's actual activity — the verb and the thing it acts on.", icon:'eye'    },
-    { key:'usecase', name:'Use case',     color:'--on-highlight', def:"The specific DEP use case it maps to. Name it, or the match doesn't count.", icon:'target' },
-    { key:'verdict', name:'Verdict',      color:'--on-highlight', def:'In scope (High / Medium / Low) or Not relevant — the keep-or-cut call.', icon:'shield' },
-  ],
-
   /* ---- ONE ROUND PER EXAMPLE ----
-     company     : the company's name
-     answerLabel : the decoded answer shown on the parts slide + in announcements
-     correct     : which challengeOptions key is right ('c1'|'c2'|'c3'|'none')
-     matchTitle  : the question above the picker
-     blurb       : the 2-3 sentence company description
-     matchFeedback : shown after any pick; names the correct answer + why
-     headline/sub: heading + subhead on the parts slide
-     map         : { partKey: "how THIS company expresses that part" }
-     stake       : one line summarising what's at risk this round (escalates each round)
-     prompt      : the partner question (may include <b>…</b>)
-     hint        : sub-instruction under the prompt
-     options     : { partKey: { fb:"feedback text", key:true|false } } for the parts picker */
+     company       : the company's name (for reference; not rendered)
+     correct       : which challengeOptions key is right ('c1'|'c2'|'c3'|'none')
+     matchTitle    : the question above the picker
+     blurb         : the 2-3 sentence company description
+     matchFeedback : shown after any pick; names the correct answer + why */
   rounds: [
     {
       company:'HydroSense',
-      answerLabel:'Challenge 2 · HydroSense',
       correct:'c2',
       matchTitle:'Which challenge does HydroSense fit?',
       blurb:"HydroSense works with a water utility's maintenance records — years of work orders and customer complaints. "
            +"It digs through that history to predict which parts of the system are most likely to fail next, right down to "
            +"which water mains will break. The product is an early-warning tool that flags trouble before a pipe bursts.",
-      matchFeedback:"HydroSense maps to Challenge 2's pipe & main integrity use case. Predicting breaks before they happen is a clean, High fit.",
-      headline:'HydroSense, decoded',
-      sub:'Break it down: what it does → which use case → verdict.',
-      map:{
-        does:'Predicts water-main breaks from work-order and complaint history.',
-        usecase:'Challenge 2 — pipe / main integrity.',
-        verdict:'In scope. A clean, High fit — catching failure before it happens.'
-      },
-      stake:'STAKES: an easy keep. Miss this one and you are not reading the profiles.',
-      prompt:"Now you're the partner at the desk screen — 8 seconds a company, 70 of 100 cut. Which step actually decides keep-or-cut?",
-      hint:'Pick the step you would screen on, then click the rest. Each shows what it does — and does not — settle.',
-      options:{
-        does:{fb:"Knowing what it does is the start — but 'predicts breaks' only counts once you tie it to a specific use case.",key:false},
-        usecase:{fb:"This is the call. 'Pipe/main integrity' is a Challenge 2 use case — point to it and the keep is automatic.",key:true},
-        verdict:{fb:"'In scope' is the output, not the reason. Without the use case behind it, it is just a vibe.",key:false}
-      }
+      matchFeedback:"HydroSense maps to Challenge 2's pipe & main integrity use case. Predicting breaks before they happen is a clean, High fit."
     },
     {
       company:'StruviCorp',
-      answerLabel:'Challenge 3 · StruviCorp',
       correct:'c3',
       matchTitle:"The least 'sensor-on-a-pipe' company in the set. Where does StruviCorp fit?",
       blurb:"StruviCorp doesn't monitor equipment or catch failures. It works at the tail end of a treatment plant, on the "
            +"wastewater itself, pulling valuable material back out of the flow instead of letting it wash away. Specifically, "
            +"it recovers struvite — a fertilizer — and other reusable nutrients from the waste stream.",
-      matchFeedback:"StruviCorp maps to Challenge 3's Recovery & Conversion use case. Recovering nutrients from wastewater is in scope, however novel it sounds.",
-      headline:'StruviCorp, decoded',
-      sub:'No sensors here. The breakdown still fits — watch.',
-      map:{
-        does:"Recovers struvite fertilizer and nutrients from a plant's wastewater.",
-        usecase:'Challenge 3 — Recovery & Conversion.',
-        verdict:'In scope. The newest, least-crowded challenge — a find your peers may miss.'
-      },
-      stake:'STAKES: a hidden gem. Screen for the word "sensor" and you would wrongly cut the whole recovery category.',
-      prompt:"Partner's desk again. This one has no sensor, no alarm. Which step keeps you from tossing it?",
-      hint:'Pick your screen step, then explore the rest.',
-      options:{
-        does:{fb:"'Recovers nutrients from wastewater' sounds odd for a water utility — until you map it to a use case.",key:false},
-        usecase:{fb:"Nailed it. 'Recovery & Conversion' is a Challenge 3 use case. Matched = in, no matter how novel it sounds.",key:true},
-        verdict:{fb:"'In scope' — but only because you can point to the recovery use case. Drop it and this reads as random green-tech.",key:false}
-      }
+      matchFeedback:"StruviCorp maps to Challenge 3's Recovery & Conversion use case. Recovering nutrients from wastewater is in scope, however novel it sounds."
     },
     {
       company:'GridGuard OT',
-      answerLabel:'Challenge 1 · GridGuard OT',
       correct:'c1',
       matchTitle:'Careful — the obvious read is the wrong one. Where does GridGuard fit?',
       blurb:"GridGuard is a cybersecurity company — but hold your instinct. It doesn't protect laptops, email, or office "
            +"networks; it protects the control systems that physically run water-treatment pumps and valves. Those are "
            +"OT/SCADA systems — the operational-technology controls that run the plant's machinery itself.",
-      matchFeedback:"GridGuard maps to Challenge 1's OT/SCADA cybersecurity use case. It's a High fit; the use case beats the 'cyber, pass' gut call.",
-      headline:'GridGuard OT, decoded',
-      sub:"'Cybersecurity' almost got it cut. The use case saves it.",
-      map:{
-        does:'Protects the OT/SCADA systems running water-treatment pumps and valves.',
-        usecase:'Challenge 1 — Cybersecurity (OT/SCADA).',
-        verdict:"In scope — a High fit. Not an exclude, despite the word 'cybersecurity.'"
-      },
-      stake:'STAKES: a High fit you would cut by reflex. This is the miss the pros warn about.',
-      prompt:"Partner's desk. Your gut says 'cyber — pass.' Which step overrides the gut?",
-      hint:'Pick the step that flips your call, then read the rest.',
-      options:{
-        does:{fb:"'Protects water-plant control systems' is the tell — but only if you translate it into a use case.",key:false},
-        usecase:{fb:"Exactly. 'OT/SCADA cyber' is a Challenge 1 use case and a High fit. The use case beats the gut every time.",key:true},
-        verdict:{fb:"'In, High' — but the reason is the OT/SCADA use case. Without it, 'cybersecurity' reads as an auto-cut.",key:false}
-      }
+      matchFeedback:"GridGuard maps to Challenge 1's OT/SCADA cybersecurity use case. It's a High fit; the use case beats the 'cyber, pass' gut call."
     },
     {
       company:'LockDesk IT',
-      answerLabel:'Not relevant · LockDesk IT',
       correct:'none',
       matchTitle:'Same word as GridGuard, opposite answer. Where does LockDesk fit — or is it out?',
       blurb:"LockDesk is another cybersecurity company, so read it carefully. This one protects corporate office networks — "
            +"employee laptops, email inboxes, the back office. Nothing it touches runs a pump, a valve, or any part of the "
            +"water system.",
-      matchFeedback:"LockDesk is Not relevant — IT-only cyber, with no DEP use case to point to. Same word as GridGuard, opposite verdict, because the use case is different.",
-      headline:'LockDesk IT, decoded',
-      sub:'The twin of GridGuard. Same word, opposite verdict — because the use case is different.',
-      map:{
-        does:'Protects office IT — laptops, email, corporate networks.',
-        usecase:'None. No critical-infrastructure or OT tie to any DEP use case.',
-        verdict:'Not relevant. IT-only cyber — the mirror image of GridGuard.'
-      },
-      stake:'STAKES: an afternoon wasted. Tag it "in" on the word "cyber" and you chase a dud.',
-      prompt:"Last one. GridGuard was in; this is out. Which step told you the difference?",
-      hint:'Pick the deciding step, then read why the twin flips.',
-      options:{
-        does:{fb:"'Protects office laptops' is the clue — it never touches the plant. But you confirm that by hunting for a use case.",key:false},
-        usecase:{fb:"That's the whole lesson. You searched for a matching DEP use case and found none — so it's out. GridGuard had one; this doesn't.",key:true},
-        verdict:{fb:"'Out' is right, but 'it's cyber so it's out' is the wrong reason — that logic would have cut GridGuard too. The use case is the reason.",key:false}
-      }
+      matchFeedback:"LockDesk is Not relevant — IT-only cyber, with no DEP use case to point to. Same word as GridGuard, opposite verdict, because the use case is different."
     }
   ],
 
-  /* Short label per round for the escalating "stakes" chips on the title + partner slides. */
+  /* Short label per round for the "stakes" chips on the title slide. */
   stakeChips:['Warm Up','miss a hidden gem','cut a High fit by reflex','chase an out-of-scope dud'],
 
   /* ---- finale ---- */
   finale:{
     heading:'You can match a company to a challenge on sight now.',
-    body:"Every company you decoded came down to the same three-step read: <b>what it does</b>, "
-       + "the <b>use case</b> it maps to, and the <b>verdict</b> (keep or cut). One step does "
-       + "the real work: naming the <b>use case</b>. A match without a use case is a guess — "
-       + "and guesses are how scouts miss OT/SCADA vendors and waste afternoons on office IT. "
-       + "GridGuard and LockDesk proved it: <b>same word, opposite verdicts, because the use "
-       + "case was different.</b>",
+    body:"Every company came down to one question: does what it does match a specific DEP "
+       + "<b>use case</b>? Name the use case and the challenge — and the keep-or-cut call — "
+       + "follow. A match without a use case is a guess, and guesses are how scouts miss "
+       + "OT/SCADA vendors and waste afternoons on office IT. GridGuard and LockDesk proved "
+       + "it: <b>same word, opposite verdicts, because the use case was different.</b>",
     bridge:"You now know what counts as <b>relevant</b> — and what counts as <b>qualified</b>.<br>Next: make it personal — learn how the Lane menu works and stake your claim on the patch of the field that's yours to scout."
   }
-};
-
-/* ============================================================================
-   ICON LIBRARY — reference by key in parts[].icon, or supply parts[].svg directly.
-   Icons are DECORATIVE (part name sits beside them) → rendered aria-hidden.
-   `__COLOR__` is replaced with the part's resolved color at build time.
-   ============================================================================ */
-const ICONS = {
-  eye:`<svg viewBox="0 0 64 64" fill="none" stroke="__COLOR__" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-    <path d="M6 32 C 18 16, 46 16, 58 32 C 46 48, 18 48, 6 32 Z"/><circle cx="32" cy="32" r="8" fill="__COLOR__" stroke="none"/>
-    <path d="M50 12 q 5 4 0 8" opacity=".8"/><path d="M56 8 q 8 6 0 12" opacity=".5"/></svg>`,
-  shield:`<svg viewBox="0 0 64 64" fill="none" stroke="__COLOR__" stroke-width="3" stroke-linejoin="round" aria-hidden="true" focusable="false">
-    <path d="M32 6 54 14v18c0 14-10 22-22 26C20 54 10 46 10 32V14z"/><polyline points="24,32 30,38 42,26" stroke-linecap="round"/></svg>`,
-  chart:`<svg viewBox="0 0 64 64" fill="none" stroke="__COLOR__" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-    <path d="M10 10v44h44"/><rect x="20" y="34" width="7" height="14" fill="__COLOR__" stroke="none"/><rect x="33" y="24" width="7" height="24" fill="__COLOR__" stroke="none"/><rect x="46" y="14" width="7" height="34" fill="__COLOR__" stroke="none"/></svg>`,
-  target:`<svg viewBox="0 0 64 64" fill="none" stroke="__COLOR__" stroke-width="3" aria-hidden="true" focusable="false">
-    <circle cx="32" cy="32" r="24"/><circle cx="32" cy="32" r="14"/><circle cx="32" cy="32" r="4" fill="__COLOR__" stroke="none"/></svg>`
 };
 
 /* ============================================================================
@@ -429,12 +328,8 @@ const ICONS = {
   const id = s => NS + '-' + s;                 // build a namespaced id
   const R  = DECK.rounds;
   const RN = R.length;
-  const N  = 2 + RN * 3;                        // total slides: title + 3/round + finale
+  const N  = 2 + RN;                            // total slides: title + 1/round + finale
   const FIN = N - 1;
-  const P  = DECK.parts;
-  const ORDER = P.map(p => p.key);
-  const META = Object.fromEntries(P.map(p => [p.key, p]));
-  const colorOf = k => `var(${META[k].color})`;
   const CH = DECK.challengeOptions;
   const CHLABEL = Object.fromEntries(CH.map(o => [o.key, o.label]));
 
@@ -459,16 +354,6 @@ const ICONS = {
     annT = setTimeout(() => { region.textContent = msg; }, 60); // set next tick — re-fires even when the text is identical (repeat "Not quite")
   }
 
-  function iconFor(k){
-    const p = META[k];
-    if (p.svg) return p.svg;
-    const tpl = ICONS[p.icon] || ICONS.target;
-    return tpl.replaceAll('__COLOR__', colorOf(k));
-  }
-  function nameHTML(k){
-    const p = META[k];
-    return p.name + (p.alt ? ' <span style="color:var(--body);font-weight:400;font-size:.75rem">'+p.alt+'</span>' : '');
-  }
   const esc = s => String(s);   // DECK copy is trusted author content (allows inline <b>)
 
   /* ---- per-round state ---- */
@@ -476,7 +361,6 @@ const ICONS = {
   const solved   = R.map(() => false); // match-phase solved via a correct pick
   const attempts = R.map(() => 0);     // wrong-attempt count per round (drives the safety valve)
   const revealed = R.map(() => false); // answer revealed by the valve after MAXTRY wrong tries
-  const picked   = R.map(() => null);  // partner-phase pick (part key)
   const MAXTRY   = DECK.maxTries || 3;
   let cur = 0;
   let lastResultAt = 0;               // timestamp of the last pick-result announce (race guard)
@@ -485,14 +369,13 @@ const ICONS = {
   /* ---- optional progress persistence (safe if storage is blocked) ---- */
   const SKEY = 'concept-decoder:' + NS;
   function save(){
-    try{ localStorage.setItem(SKEY, JSON.stringify({chosen,picked,cur,attempts,revealed})); }catch(e){}
+    try{ localStorage.setItem(SKEY, JSON.stringify({chosen,cur,attempts,revealed})); }catch(e){}
   }
   function load(){
     try{
       const s = JSON.parse(localStorage.getItem(SKEY) || 'null');
       if(!s || !Array.isArray(s.chosen) || s.chosen.length !== RN) return;
       s.chosen.forEach((v,i)=>{ chosen[i]=v; if(v!==null && v===R[i].correct) solved[i]=true; });
-      s.picked.forEach((v,i)=>picked[i]=v);
       if(Array.isArray(s.attempts)) s.attempts.forEach((v,i)=>attempts[i]=v|0);
       if(Array.isArray(s.revealed)) s.revealed.forEach((v,i)=>revealed[i]=!!v);
       cur = Math.min(Math.max(0, s.cur|0), N-1);
@@ -500,11 +383,8 @@ const ICONS = {
   }
 
   /* ---- slide index helpers ---- */
-  const guessIdx = r => 1 + r*3;      // the "match the challenge" slide
-  const partsIdx = r => 2 + r*3;
-  const lensIdx  = r => 3 + r*3;
-  const roundOfGuess = i => (i-1)%3===0 ? (i-1)/3 : -1;
-  const roundOfLens  = i => (i-3)%3===0 && i<=lensIdx(RN-1) ? (i-3)/3 : -1;
+  const guessIdx = r => 1 + r;        // the "match the challenge" slide (one per round)
+  const roundOfGuess = i => (i>=1 && i<=RN) ? i-1 : -1;
 
   /* ---- build shells ---- */
   function buildShells(){
@@ -527,8 +407,6 @@ const ICONS = {
     // rounds
     for(let r=0;r<RN;r++){
       wrapper.insertBefore(shell(guessIdx(r), buildMatch(r)), nav);
-      wrapper.insertBefore(shell(partsIdx(r), buildParts(r)), nav);
-      wrapper.insertBefore(shell(lensIdx(r),  buildLens(r)),  nav);
     }
     // finale
     const f = shell(FIN, `
@@ -564,43 +442,6 @@ const ICONS = {
       <div class="m-opts" role="radiogroup" id="${id('mg'+r)}"
            aria-labelledby="${id('h-'+guessIdx(r))}" aria-describedby="${id('bl'+r)} ${id('mfb'+r)}">${opts}</div>
       <div class="m-fb" id="${id('mfb'+r)}"></div>`;
-  }
-
-  function buildParts(r){
-    const d = R[r];
-    const cards = ORDER.map(k=>`
-      <li class="part">
-        <div class="pic">${iconFor(k)}</div>
-        <div class="pname" style="color:${colorOf(k)}">${nameHTML(k)}</div>
-        <div class="pdef">${esc(META[k].def)}</div>
-        <div class="pmap">In this company: <b>${esc(d.map[k])}</b></div>
-      </li>`).join('');
-    return `
-      <div class="parts-head">
-        <div class="roundtag">Round ${r+1} of ${RN} · ${esc(d.answerLabel)}</div>
-        <h2 id="${id('h-'+partsIdx(r))}" tabindex="-1" style="margin-top:9px">${esc(d.headline)}</h2>
-        <div class="sub">${esc(d.sub)}</div>
-      </div>
-      <ul class="parts-grid" aria-label="The steps, mapped to this company">${cards}</ul>`;
-  }
-
-  function buildLens(r){
-    const d = R[r];
-    const chips = DECK.stakeChips.map((c,i)=>
-      `<span class="stake ${i<=r?('on'+(i%4)):''}" >${esc(c)}</span>`+
-      (i<DECK.stakeChips.length-1?'<span class="arrow" aria-hidden="true">▸</span>':'')
-    ).join('');
-    const opts = ORDER.map(k=>`
-      <button class="a-opt" role="radio" aria-checked="false" id="${id('ao'+r+'-'+k)}"
-              data-k="${k}" tabindex="-1">
-        <span class="ic">${iconFor(k)}</span>${esc(META[k].name)}<span class="chk" aria-hidden="true">✓ picked</span></button>`).join('');
-    return `
-      <div class="a-esc" aria-hidden="true">${chips}</div>
-      <div class="roundtag">Round ${r+1} of ${RN} · ${esc(DECK.perspective)}'s turn</div>
-      <h2 id="${id('h-'+lensIdx(r))}" tabindex="-1" class="a-prompt" style="margin-top:9px">${esc(d.prompt)}</h2>
-      <p class="a-hint" id="${id('ah'+r)}">${esc(d.hint)}</p>
-      <div class="a-opts" role="radiogroup" id="${id('rg'+r)}" aria-labelledby="${id('h-'+lensIdx(r))}">${opts}</div>
-      <div class="a-fb" id="${id('afb'+r)}"></div>`;
   }
 
   /* ---- MATCH mechanics (radiogroup; commit on Space/Enter/click) ---- */
@@ -683,57 +524,13 @@ const ICONS = {
     });
   }
 
-  /* ---- partner (parts radiogroup) mechanics ---- */
-  function pickLens(r, k, silent){
-    picked[r] = k;
-    const grp = document.getElementById(id('rg'+r));
-    grp.querySelectorAll('.a-opt').forEach(b=>{
-      const on = b.dataset.k === k;
-      b.setAttribute('aria-checked', on ? 'true':'false');
-      b.tabIndex = on ? 0 : -1;
-    });
-    const o = R[r].options[k];
-    const fb = document.getElementById(id('afb'+r));
-    fb.className = 'a-fb show';
-    fb.innerHTML =
-      '<span class="verdict '+(o.key?'key':'nokey')+'"><b>'+(o.key?'Sharp target.':'Fair pick.')+'</b></span> '
-      + esc(o.fb) + '<div class="stakeline">' + esc(R[r].stake) + '</div>';
-    if(!silent){ lastResultAt = Date.now(); announce((o.key?'Sharp target. ':'Fair pick. ') + o.fb + ' ' + R[r].stake); }
-    save(); updateNav();
-  }
-  function setupRadiogroup(r){
-    const grp = document.getElementById(id('rg'+r));
-    if(!grp) return;
-    const opts = [...grp.querySelectorAll('.a-opt')];
-    if(picked[r]) pickLens(r, picked[r], true);   // restore silently
-    else opts[0].tabIndex = 0;                     // first is the tab stop until a pick is made
-    if(grp.dataset.wired) return;
-    grp.dataset.wired = '1';
-    grp.addEventListener('click', e=>{
-      const b = e.target.closest('.a-opt'); if(b) pickLens(r, b.dataset.k);
-    });
-    grp.addEventListener('keydown', e=>{
-      const i = opts.indexOf(document.activeElement);
-      if(i<0) return;
-      let n = -1;
-      if(e.key==='ArrowRight'||e.key==='ArrowDown') n = (i+1)%opts.length;
-      else if(e.key==='ArrowLeft'||e.key==='ArrowUp') n = (i-1+opts.length)%opts.length;
-      else if(e.key==='Home') n = 0;
-      else if(e.key==='End')  n = opts.length-1;
-      else if(e.key===' '||e.key==='Enter'){ e.preventDefault(); pickLens(r, opts[i].dataset.k); return; }
-      if(n>=0){ e.preventDefault(); opts[n].focus(); pickLens(r, opts[n].dataset.k); }  // neutral picks: selection follows focus
-    });
-  }
-
   /* ---- gating ---- */
   function canLeave(i){
     const rg = roundOfGuess(i); if(rg>=0) return solved[rg] || revealed[rg];
-    const rl = roundOfLens(i);  if(rl>=0) return picked[rl]!==null;
     return true;
   }
   function gateReason(i){
     if(roundOfGuess(i)>=0) return 'Match this company to a challenge to continue.';
-    if(roundOfLens(i)>=0)  return 'Make your pick to continue.';
     return '';
   }
 
@@ -750,7 +547,6 @@ const ICONS = {
   }
   function setupFor(i){
     if(roundOfGuess(i)>=0) setupGuessRadiogroup(roundOfGuess(i));
-    if(roundOfLens(i)>=0)  setupRadiogroup(roundOfLens(i));
   }
   function focusHeading(i){
     const h = document.getElementById(id('h-'+i));
@@ -782,7 +578,7 @@ const ICONS = {
     nb.setAttribute('aria-disabled', (atEnd||locked) ? 'true':'false');
     if(locked){ nb.setAttribute('aria-describedby', id('gatereason')); ensureGateReason(); document.getElementById(id('gatereason')).textContent = gateReason(cur); }
     else nb.removeAttribute('aria-describedby');
-    nb.classList.toggle('ready', !atEnd && !locked && (roundOfGuess(cur)>=0 || roundOfLens(cur)>=0));
+    nb.classList.toggle('ready', !atEnd && !locked && roundOfGuess(cur)>=0);
   }
   function ensureGateReason(){
     if(document.getElementById(id('gatereason'))) return;
@@ -820,7 +616,7 @@ const ICONS = {
     if(isStacked()){
       // show everything, ungated, no active-only logic
       document.querySelectorAll('#deck-wrapper .slide').forEach(s=>{ s.hidden=false; s.classList.remove('active'); });
-      for(let r=0;r<RN;r++){ setupGuessRadiogroup(r); setupRadiogroup(r); }
+      for(let r=0;r<RN;r++){ setupGuessRadiogroup(r); }
     }else{
       showSlide(cur);
       setupFor(cur);
