@@ -9,8 +9,8 @@
 <!--
   RELEVANCE DECODER — "Decide If a Company Fits the Challenge" (PFNYC Week 1, Step 1.3)
   Self-contained, embeddable HTML activity. A learner reads a short profile of each of
-  four real-style companies and picks which DEP challenge it fits (or "Not relevant"); the
-  feedback names the specific DEP use case that decides the call. Two rounds are traps
+  four real-style companies, picks which DEP challenge it fits (or "Not relevant"), then
+  ranks how strong the fit is (High / Medium / Low). Two rounds are traps
   (GridGuard vs. LockDesk — same word, opposite verdict).
 
   CUSTOMISE: edit only the DECK object (search "EDIT BELOW"). Everything under the
@@ -27,8 +27,8 @@
   ACCESSIBILITY (WCAG 2.2 AA — reviewed by the accessibility-lead team):
   focus moves to each slide heading on change; inactive slides are hidden (out of tab
   order + a11y tree); a persistent polite live region announces picks, results, gate
-  state and slide position; the challenge picker is a real radiogroup
-  (role=radiogroup, aria-checked, roving tabindex); it commits on
+  state and slide position; the challenge picker and the rank picker are real radiogroups
+  (role=radiogroup, aria-checked, roving tabindex); the challenge picker commits on
   Space/Enter so arrowing never spoils the answer; correct/incorrect is conveyed by TEXT
   (never color) plus a decorative check/cross; Next uses aria-disabled + a described reason
   and unlocks on any pick; at ≤640px / 400% zoom the fixed canvas becomes a fluid scrolling
@@ -132,7 +132,7 @@
   .m-fb{margin-top:14px;border-radius:11px;padding:13px 16px;font-size:.9rem;line-height:1.5;display:none;
     background:var(--highlight);border:1px solid var(--on-highlight);color:var(--title)}
   .m-fb.show{display:block;animation:in var(--t-frame) var(--ease-out)}
-  .m-fb .verdict{display:inline-flex;align-items:center;gap:6px;color:var(--on-highlight)}
+  .m-fb .verdict{display:inline-flex;align-items:baseline;gap:6px;color:var(--on-highlight)}
   .m-fb .verdict b{color:var(--on-highlight)}
   .fbic{width:18px;height:18px;flex-shrink:0}
   @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
@@ -259,30 +259,51 @@ const DECK = {
       q:"Doesn't map to any of the three challenges' use cases." },
   ],
 
+  /* ---- the rank picker options (same four every round; the fit-strength scale) ---- */
+  rankOptions: [
+    { key:'high',   label:'High fit',
+      q:'Lands squarely on a challenge use case — direct, specific, with real evidence.' },
+    { key:'medium', label:'Medium fit',
+      q:'A real fit, but partial, indirect, or unproven.' },
+    { key:'low',    label:'Low fit',
+      q:'Only just in scope — a thin or borderline fit.' },
+    { key:'none',   label:'Not relevant — nothing to rank',
+      q:'Maps to no DEP use case, so it never enters High/Medium/Low.' },
+  ],
+
   /* ---- ONE ROUND PER EXAMPLE ----
      company       : the company's name (for reference; not rendered)
      correct       : which challengeOptions key is right ('c1'|'c2'|'c3'|'none')
-     matchTitle    : the question above the picker
+     matchTitle    : the question above the match picker
      blurb         : the 2-3 sentence company description
-     matchFeedback : shown after any pick; names the correct answer + why */
+     matchFeedback : shown after the match pick; names the challenge/use case (NOT the rank)
+     rankTitle     : the question above the rank picker
+     rankCorrect   : the intended rank ('high'|'medium'|'low'|'none')
+     rankReason    : why we rank it that way (shown after the rank pick) */
   rounds: [
     {
       company:'HydroSense',
       correct:'c2',
       matchTitle:'Which challenge does HydroSense fit?',
-      blurb:"HydroSense works with a water utility's maintenance records — years of work orders and customer complaints. "
-           +"It digs through that history to predict which parts of the system are most likely to fail next, right down to "
-           +"which water mains will break. The product is an early-warning tool that flags trouble before a pipe bursts.",
-      matchFeedback:"HydroSense maps to Challenge 2's pipe & main integrity use case. Predicting breaks before they happen is a clean, High fit."
+      blurb:"HydroSense reads a utility's maintenance records — years of work orders and complaints — and flags which mains are "
+           +"most likely to fail next. The idea fits the problem, but the model was trained on a single mid-size utility, it "
+           +"hasn't been validated on a system anywhere near DEP's scale, and there's no live deployment yet.",
+      matchFeedback:"HydroSense maps to Challenge 2's pipe & main integrity use case — spotting failures before they happen.",
+      rankTitle:"How strong is HydroSense's fit?",
+      rankCorrect:'medium',
+      rankReason:"It's a genuine fit to the pipe-integrity use case, but the evidence is thin — one small utility, no validation at DEP's scale, and nothing deployed yet. Real, but unproven: Medium, not High."
     },
     {
       company:'StruviCorp',
       correct:'c3',
       matchTitle:"The least 'sensor-on-a-pipe' company in the set. Where does StruviCorp fit?",
-      blurb:"StruviCorp doesn't monitor equipment or catch failures. It works at the tail end of a treatment plant, on the "
-           +"wastewater itself, pulling valuable material back out of the flow instead of letting it wash away. Specifically, "
-           +"it recovers struvite — a fertilizer — and other reusable nutrients from the waste stream.",
-      matchFeedback:"StruviCorp maps to Challenge 3's Recovery & Conversion use case. Recovering nutrients from wastewater is in scope, however novel it sounds."
+      blurb:"StruviCorp pulls struvite — a niche fertilizer — out of wastewater at the tail end of a plant. The chemistry is "
+           +"clever, but it only runs at bench scale, the recovered volume is tiny, and DEP has no current pathway to use or "
+           +"sell the output.",
+      matchFeedback:"StruviCorp maps to Challenge 3's Recovery & Conversion use case — it recovers material from the waste stream, so it's in scope.",
+      rankTitle:"How strong is StruviCorp's fit?",
+      rankCorrect:'low',
+      rankReason:"It touches the recovery use case, so it's in scope — but only just. Bench-scale, tiny volume, and no path for DEP to use the output make the fit thin. In scope, but Low."
     },
     {
       company:'GridGuard OT',
@@ -291,7 +312,10 @@ const DECK = {
       blurb:"GridGuard is a cybersecurity company — but hold your instinct. It doesn't protect laptops, email, or office "
            +"networks; it protects the control systems that physically run water-treatment pumps and valves. Those are "
            +"OT/SCADA systems — the operational-technology controls that run the plant's machinery itself.",
-      matchFeedback:"GridGuard maps to Challenge 1's OT/SCADA cybersecurity use case. It's a High fit; the use case beats the 'cyber, pass' gut call."
+      matchFeedback:"GridGuard maps to Challenge 1's OT/SCADA cybersecurity use case — the named use case beats the 'cyber, pass' gut call.",
+      rankTitle:"How strong is GridGuard's fit?",
+      rankCorrect:'high',
+      rankReason:"It lands squarely on Challenge 1's OT/SCADA use case — protecting the exact control systems DEP runs, a critical and specific need. Direct and strong: a clean High."
     },
     {
       company:'LockDesk IT',
@@ -300,12 +324,12 @@ const DECK = {
       blurb:"LockDesk is another cybersecurity company, so read it carefully. This one protects corporate office networks — "
            +"employee laptops, email inboxes, the back office. Nothing it touches runs a pump, a valve, or any part of the "
            +"water system.",
-      matchFeedback:"LockDesk is Not relevant — IT-only cyber, with no DEP use case to point to. Same word as GridGuard, opposite verdict, because the use case is different."
+      matchFeedback:"LockDesk is Not relevant — IT-only cyber, with no DEP use case to point to. Same word as GridGuard, opposite verdict, because the use case is different.",
+      rankTitle:"How would you rank LockDesk — or is there nothing to rank?",
+      rankCorrect:'none',
+      rankReason:"There's nothing to rank. LockDesk maps to no DEP use case, so it never enters High/Medium/Low — ranking only applies once a company is in scope."
     }
   ],
-
-  /* Short label per round for the "stakes" chips on the title slide. */
-  stakeChips:['Warm Up','miss a hidden gem','cut a High fit by reflex','chase an out-of-scope dud'],
 
   /* ---- finale ---- */
   finale:{
@@ -315,7 +339,7 @@ const DECK = {
        + "follow. A match without a use case is a guess, and guesses are how scouts miss "
        + "OT/SCADA vendors and waste afternoons on office IT. GridGuard and LockDesk proved "
        + "it: <b>same word, opposite verdicts, because the use case was different.</b>",
-    bridge:"You now know what counts as <b>relevant</b> — and what counts as <b>qualified</b>.<br>Next: make it personal — learn how the Lane menu works and stake your claim on the patch of the field that's yours to scout."
+    bridge:"You now know what counts as <b>relevant</b> — and what counts as <b>qualified</b>."
   }
 };
 
@@ -328,10 +352,12 @@ const DECK = {
   const id = s => NS + '-' + s;                 // build a namespaced id
   const R  = DECK.rounds;
   const RN = R.length;
-  const N  = 2 + RN;                            // total slides: title + 1/round + finale
+  const N  = 2 + RN*2;                          // total slides: title + 2/round (match + rank) + finale
   const FIN = N - 1;
   const CH = DECK.challengeOptions;
   const CHLABEL = Object.fromEntries(CH.map(o => [o.key, o.label]));
+  const RANK = DECK.rankOptions;
+  const RANKLABEL = Object.fromEntries(RANK.map(o => [o.key, o.label]));
 
   /* decorative text-feedback glyphs — navy, aria-hidden (the word carries the meaning) */
   const CHECK_SVG = '<svg class="fbic" viewBox="0 0 24 24" fill="none" stroke="var(--on-highlight)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="20 6 9 17 4 12"/></svg>';
@@ -361,6 +387,7 @@ const DECK = {
   const solved   = R.map(() => false); // match-phase solved via a correct pick
   const attempts = R.map(() => 0);     // wrong-attempt count per round (drives the safety valve)
   const revealed = R.map(() => false); // answer revealed by the valve after MAXTRY wrong tries
+  const rankPick = R.map(() => null);  // rank-phase pick (rank key), null until picked
   const MAXTRY   = DECK.maxTries || 3;
   let cur = 0;
   let lastResultAt = 0;               // timestamp of the last pick-result announce (race guard)
@@ -369,7 +396,7 @@ const DECK = {
   /* ---- optional progress persistence (safe if storage is blocked) ---- */
   const SKEY = 'concept-decoder:' + NS;
   function save(){
-    try{ localStorage.setItem(SKEY, JSON.stringify({chosen,cur,attempts,revealed})); }catch(e){}
+    try{ localStorage.setItem(SKEY, JSON.stringify({chosen,cur,attempts,revealed,rankPick})); }catch(e){}
   }
   function load(){
     try{
@@ -378,13 +405,16 @@ const DECK = {
       s.chosen.forEach((v,i)=>{ chosen[i]=v; if(v!==null && v===R[i].correct) solved[i]=true; });
       if(Array.isArray(s.attempts)) s.attempts.forEach((v,i)=>attempts[i]=v|0);
       if(Array.isArray(s.revealed)) s.revealed.forEach((v,i)=>revealed[i]=!!v);
+      if(Array.isArray(s.rankPick)) s.rankPick.forEach((v,i)=>rankPick[i]=v);
       cur = Math.min(Math.max(0, s.cur|0), N-1);
     }catch(e){}
   }
 
-  /* ---- slide index helpers ---- */
-  const guessIdx = r => 1 + r;        // the "match the challenge" slide (one per round)
-  const roundOfGuess = i => (i>=1 && i<=RN) ? i-1 : -1;
+  /* ---- slide index helpers (each round = match slide then rank slide) ---- */
+  const guessIdx = r => 1 + r*2;      // the "match the challenge" slide
+  const rankIdx  = r => 2 + r*2;      // the "rank the fit" slide
+  const roundOfGuess = i => (i>=1 && i<=2*RN && (i-1)%2===0) ? (i-1)/2 : -1;
+  const roundOfRank  = i => (i>=2 && i<=2*RN && (i-2)%2===0) ? (i-2)/2 : -1;
 
   /* ---- build shells ---- */
   function buildShells(){
@@ -393,20 +423,16 @@ const DECK = {
     t.setAttribute('role','group');
     t.setAttribute('aria-roledescription','slide');
     t.setAttribute('aria-label','1 of '+N);
-    const chips = DECK.stakeChips.map((c,i)=>
-      `<li class="stake-li"><span class="stake" id="${id('st'+i)}">Round ${i+1} · ${esc(c)}</span>`+
-      (i<DECK.stakeChips.length-1?'<span class="arrow" aria-hidden="true">▸</span>':'')+`</li>`
-    ).join('');
     t.innerHTML = `
       <h1 id="${id('h-0')}" tabindex="-1"><span class="emoji" aria-hidden="true">${esc(DECK.emoji)}</span> ${esc(DECK.title)}</h1>
       <p class="muted" style="font-size:1rem;max-width:660px;line-height:1.55">${esc(DECK.intro)}</p>
-      <ul class="stakes" aria-label="What's at stake, round by round">${chips}</ul>
       <div><button class="btn" id="${id('start')}" type="button">${esc(DECK.startLabel||'Start →')}</button></div>`;
     t.querySelector('#'+id('start')).addEventListener('click', ()=>go(1));
 
     // rounds
     for(let r=0;r<RN;r++){
       wrapper.insertBefore(shell(guessIdx(r), buildMatch(r)), nav);
+      wrapper.insertBefore(shell(rankIdx(r),  buildRank(r)),  nav);
     }
     // finale
     const f = shell(FIN, `
@@ -442,6 +468,22 @@ const DECK = {
       <div class="m-opts" role="radiogroup" id="${id('mg'+r)}"
            aria-labelledby="${id('h-'+guessIdx(r))}" aria-describedby="${id('bl'+r)} ${id('mfb'+r)}">${opts}</div>
       <div class="m-fb" id="${id('mfb'+r)}"></div>`;
+  }
+
+  /* ---- RANK slide: rank the fit High/Medium/Low (reveal on pick, reuses match styling) ---- */
+  function buildRank(r){
+    const d = R[r];
+    const opts = RANK.map(o=>`
+      <button class="m-opt" role="radio" aria-checked="false" id="${id('ro'+r+'-'+o.key)}"
+              data-k="${o.key}" tabindex="-1">
+        <span class="m-opttext"><span class="m-optlab">${esc(o.label)}</span>${o.q?`<span class="m-optq">${esc(o.q)}</span>`:''}</span><span class="chk" aria-hidden="true">✓ picked</span></button>`).join('');
+    return `
+      <div class="roundtag">Round ${r+1} of ${RN} · rank the fit</div>
+      <h2 id="${id('h-'+rankIdx(r))}" tabindex="-1" class="qtitle">${esc(d.rankTitle)}</h2>
+      <p class="blurb" id="${id('rbl'+r)}">${esc(d.matchFeedback)}</p>
+      <div class="m-opts" role="radiogroup" id="${id('rkg'+r)}"
+           aria-labelledby="${id('h-'+rankIdx(r))}" aria-describedby="${id('rbl'+r)} ${id('rfb'+r)}">${opts}</div>
+      <div class="m-fb" id="${id('rfb'+r)}"></div>`;
   }
 
   /* ---- MATCH mechanics (radiogroup; commit on Space/Enter/click) ---- */
@@ -524,13 +566,67 @@ const DECK = {
     });
   }
 
+  /* ---- RANK mechanics (reveal on pick; not graded — ranking is a judgment) ---- */
+  function renderRankState(r, k, silent){
+    rankPick[r] = k;
+    const grp = document.getElementById(id('rkg'+r));
+    grp.querySelectorAll('.m-opt').forEach(b=>{
+      const on = b.dataset.k === k;
+      b.setAttribute('aria-checked', on ? 'true':'false');
+      b.tabIndex = on ? 0 : -1;
+    });
+    grp.setAttribute('aria-readonly','true');   // one commit, then locked
+    const correct = (k === R[r].rankCorrect);
+    const intended = RANKLABEL[R[r].rankCorrect];
+    const fb = document.getElementById(id('rfb'+r));
+    fb.className = 'm-fb show';
+    const lead = correct
+      ? '<span class="verdict">'+CHECK_SVG+'<b>That’s the call.</b></span> '
+      : '<span class="verdict">'+CHECK_SVG+'<b>We’d rank it '+esc(intended)+'.</b></span> ';
+    fb.innerHTML = lead + esc(R[r].rankReason);
+    if(!silent){
+      lastResultAt = Date.now();
+      announce((correct ? 'That’s the call. ' : 'We’d rank it ' + intended + '. ') + R[r].rankReason + ' Next is now available.');
+    }
+    save(); updateNav();
+  }
+  function setupRankRadiogroup(r){
+    const grp = document.getElementById(id('rkg'+r));
+    if(!grp) return;
+    const opts = [...grp.querySelectorAll('.m-opt')];
+    if(rankPick[r] !== null) renderRankState(r, rankPick[r], true);   // restore silently
+    else opts[0].tabIndex = 0;
+    if(grp.dataset.wired) return;
+    grp.dataset.wired = '1';
+    grp.addEventListener('click', e=>{
+      const b = e.target.closest('.m-opt'); if(b && rankPick[r]===null) renderRankState(r, b.dataset.k, false);
+    });
+    grp.addEventListener('keydown', e=>{
+      const i = opts.indexOf(document.activeElement);
+      if(i<0) return;
+      let n = -1;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown') n = (i+1)%opts.length;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp') n = (i-1+opts.length)%opts.length;
+      else if(e.key==='Home') n = 0;
+      else if(e.key==='End')  n = opts.length-1;
+      else if(e.key===' '||e.key==='Enter'){ e.preventDefault(); if(rankPick[r]===null) renderRankState(r, opts[i].dataset.k, false); return; }
+      if(n>=0){
+        e.preventDefault();
+        if(rankPick[r]===null) opts.forEach((o,j)=>o.tabIndex = (j===n?0:-1));   // roving until committed
+        opts[n].focus();
+      }
+    });
+  }
+
   /* ---- gating ---- */
   function canLeave(i){
     const rg = roundOfGuess(i); if(rg>=0) return solved[rg] || revealed[rg];
+    const rk = roundOfRank(i);  if(rk>=0) return rankPick[rk] !== null;
     return true;
   }
   function gateReason(i){
     if(roundOfGuess(i)>=0) return 'Match this company to a challenge to continue.';
+    if(roundOfRank(i)>=0)  return 'Rank the fit to continue.';
     return '';
   }
 
@@ -547,6 +643,7 @@ const DECK = {
   }
   function setupFor(i){
     if(roundOfGuess(i)>=0) setupGuessRadiogroup(roundOfGuess(i));
+    if(roundOfRank(i)>=0)  setupRankRadiogroup(roundOfRank(i));
   }
   function focusHeading(i){
     const h = document.getElementById(id('h-'+i));
@@ -578,7 +675,7 @@ const DECK = {
     nb.setAttribute('aria-disabled', (atEnd||locked) ? 'true':'false');
     if(locked){ nb.setAttribute('aria-describedby', id('gatereason')); ensureGateReason(); document.getElementById(id('gatereason')).textContent = gateReason(cur); }
     else nb.removeAttribute('aria-describedby');
-    nb.classList.toggle('ready', !atEnd && !locked && roundOfGuess(cur)>=0);
+    nb.classList.toggle('ready', !atEnd && !locked && (roundOfGuess(cur)>=0 || roundOfRank(cur)>=0));
   }
   function ensureGateReason(){
     if(document.getElementById(id('gatereason'))) return;
@@ -616,7 +713,7 @@ const DECK = {
     if(isStacked()){
       // show everything, ungated, no active-only logic
       document.querySelectorAll('#deck-wrapper .slide').forEach(s=>{ s.hidden=false; s.classList.remove('active'); });
-      for(let r=0;r<RN;r++){ setupGuessRadiogroup(r); }
+      for(let r=0;r<RN;r++){ setupGuessRadiogroup(r); setupRankRadiogroup(r); }
     }else{
       showSlide(cur);
       setupFor(cur);
