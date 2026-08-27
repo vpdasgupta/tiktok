@@ -173,7 +173,7 @@
         <select id="fChallenge"><option value="">All</option></select>
       </div>
       <div class="fld">
-        <label for="fSub">Sub-vertical</label>
+        <label for="fSub">Use case</label>
         <select id="fSub"><option value="">All</option></select>
       </div>
       <div class="fld">
@@ -194,7 +194,7 @@
             <th scope="col">Company</th>
             <th scope="col">Submitted by</th>
             <th scope="col">Challenge</th>
-            <th scope="col">Sub-vertical</th>
+            <th scope="col">Use case</th>
             <th scope="col">Named need</th>
             <th scope="col">Section 3a gate</th>
             <th scope="col">Relevance</th>
@@ -230,14 +230,22 @@
         <input id="subName" type="text" autocomplete="name" required aria-describedby="subNameHint">
         <p class="hint" id="subNameHint">Tags this company to you on the shared board. Example: Priya D.</p>
         <div id="challengeLockWrap"></div>
-        <label for="cSub">Sub-vertical <span class="req">(required)</span></label>
+        <label for="cSub">Use case <span class="req">(required)</span></label>
         <select id="cSub" required><option value="">Choose…</option></select>
+        <div id="cSubOtherWrap" hidden>
+          <label for="cSubOther">Other use case (enter your own)</label>
+          <input id="cSubOther" type="text">
+        </div>
         <label for="cNeed">Named need <span class="req">(required)</span></label>
-        <select id="cNeed" required><option value="">Choose a sub-vertical first</option></select>
+        <select id="cNeed" required><option value="">Choose a use case first</option></select>
+        <div id="cNeedOtherWrap" hidden>
+          <label for="cNeedOther">Other named need (enter your own)</label>
+          <input id="cNeedOther" type="text">
+        </div>
       </fieldset>
 
       <fieldset>
-        <legend>Identity</legend>
+        <legend>Company Information</legend>
         <p class="hint" id="citeHint">Every field below is required. Cite-or-strike: give a value with a source, or the literal words “not publicly disclosed”. No blanks.</p>
         <label for="cCompany">Company name <span class="req">(required)</span></label>
         <input id="cCompany" type="text" required aria-describedby="cCompanyHint">
@@ -246,9 +254,7 @@
         <input id="lWebsite" type="text" aria-required="true" aria-describedby="citeHint">
         <label for="lHq">HQ / location <span class="req">(required)</span></label>
         <input id="lHq" type="text" aria-required="true" aria-describedby="citeHint">
-        <label for="lOne">One-line description <span class="req">(required)</span></label>
-        <input id="lOne" type="text" aria-required="true" aria-describedby="citeHint">
-        <label for="lWhat">What it does (verified) <span class="req">(required)</span></label>
+        <label for="lWhat">What it does <span class="req">(required)</span></label>
         <textarea id="lWhat" aria-required="true" aria-describedby="citeHint"></textarea>
         <label for="lStage">Product stage <span class="req">(required)</span></label>
         <input id="lStage" type="text" aria-required="true" aria-describedby="citeHint" placeholder="pre-product · beta · deployed/operational">
@@ -261,7 +267,7 @@
       </fieldset>
 
       <fieldset>
-        <legend>§3a eligibility gate — all five must pass, or the company is excluded</legend>
+        <legend>Eligibility gate — all five must pass, or the company is excluded</legend>
         <p class="hint">Any single FAIL makes the overall result EXCLUDE. Mark each with a source.</p>
         <div id="gateWrap"></div>
         <p id="gateResult" class="result" aria-live="polite" style="margin-top:8px"></p>
@@ -610,7 +616,7 @@
       wrap.innerHTML='<p><strong>Challenge (locked for the program):</strong> Challenge '+esc(lockedChallenge)+" — "+esc(challengeNameOf(lockedChallenge))+"</p>"+
         '<input type="hidden" id="cChallenge" value="'+esc(lockedChallenge)+'">';
     } else {
-      wrap.innerHTML='<label for="cChallenge">Challenge <span class="req">(required — locks after your first submission)</span></label>'+
+      wrap.innerHTML='<label for="cChallenge">Challenge <span class="req">(required)</span></label>'+
         '<select id="cChallenge" required><option value="">Choose…</option>'+
         '<option value="1">Challenge 1 — Planning, Data &amp; Field Operations</option>'+
         '<option value="2">Challenge 2 — Asset Condition &amp; Failure Prevention</option>'+
@@ -620,15 +626,26 @@
     refreshSubs();
   }
   function challengeVal(){ var el=$("#cChallenge"); return el?el.value:lockedChallenge; }
+  function appendOther(sel){ var o=document.createElement("option"); o.value="__other__"; o.textContent="Other…"; sel.appendChild(o); }
+  function toggleOther(wrapId,inputId,show,focus){ var w=$("#"+wrapId); if(!w) return; w.hidden=!show; if(show&&focus!==false) $("#"+inputId).focus(); }
   function refreshSubs(){
     var ch=challengeVal();
-    fill($("#cSub"),subVerticalsFor(ch),true);
-    fill($("#cNeed"),[],true); $("#cNeed").options[0].textContent="Choose a sub-vertical first";
+    fill($("#cSub"),subVerticalsFor(ch),true); appendOther($("#cSub"));
+    fill($("#cNeed"),[],true); $("#cNeed").options[0].textContent="Choose a use case first";
+    toggleOther("cSubOtherWrap","cSubOther",false); toggleOther("cNeedOtherWrap","cNeedOther",false);
   }
   $("#cSub").addEventListener("change",function(){
-    fill($("#cNeed"),needsFor(challengeVal(),$("#cSub").value),true);
-    $("#cNeed").options[0].textContent="Choose…";
+    var isOther=$("#cSub").value==="__other__";
+    toggleOther("cSubOtherWrap","cSubOther",isOther);
+    if(isOther){
+      fill($("#cNeed"),[],true); $("#cNeed").options[0].textContent="—"; appendOther($("#cNeed"));
+      $("#cNeed").value="__other__"; toggleOther("cNeedOtherWrap","cNeedOther",true,false);
+    } else {
+      fill($("#cNeed"),needsFor(challengeVal(),$("#cSub").value),true); $("#cNeed").options[0].textContent="Choose…"; appendOther($("#cNeed"));
+      toggleOther("cNeedOtherWrap","cNeedOther",false);
+    }
   });
+  $("#cNeed").addEventListener("change",function(){ toggleOther("cNeedOtherWrap","cNeedOther",$("#cNeed").value==="__other__"); });
 
   /* ============ §3a gate ============ */
   function renderGate(){
@@ -701,12 +718,17 @@
 
     // identity + name + company + contact
     need("subName","Your name","Enter your name.");
-    var ch=challengeVal(), sv=$("#cSub").value, nd=$("#cNeed").value;
+    var ch=challengeVal();
+    var subSel=$("#cSub").value, needSel=$("#cNeed").value;
+    var sv = subSel==="__other__" ? $("#cSubOther").value.trim() : subSel;
+    var nd = needSel==="__other__" ? $("#cNeedOther").value.trim() : needSel;
     if(!ch) errs.push({id:$("#cChallenge")?"cChallenge":"challengeLockWrap",msg:"Choose a challenge."});
-    if(!sv) errs.push({id:"cSub",msg:"Choose a sub-vertical."});
-    if(!nd) errs.push({id:"cNeed",msg:"Choose a named need."});
-    ["cCompany","lWebsite","lHq","lOne","lWhat","lStage","lTraction","lFunding","lOwnership","lTier1"].forEach(function(f){
-      need(f,{cCompany:"Company name",lWebsite:"Website",lHq:"HQ / location",lOne:"One-line description",lWhat:"What it does",lStage:"Product stage",lTraction:"Traction",lFunding:"Funding",lOwnership:"Ownership",lTier1:"Tier-1 contact"}[f]);
+    if(!subSel) errs.push({id:"cSub",msg:"Choose a use case."});
+    else if(subSel==="__other__" && !sv) errs.push({id:"cSubOther",msg:"Enter your use case."});
+    if(!needSel) errs.push({id:"cNeed",msg:"Choose a named need."});
+    else if(needSel==="__other__" && !nd) errs.push({id:"cNeedOther",msg:"Enter your named need."});
+    ["cCompany","lWebsite","lHq","lWhat","lStage","lTraction","lFunding","lOwnership","lTier1"].forEach(function(f){
+      need(f,{cCompany:"Company name",lWebsite:"Website",lHq:"HQ / location",lWhat:"What it does",lStage:"Product stage",lTraction:"Traction",lFunding:"Funding",lOwnership:"Ownership",lTier1:"Tier-1 contact"}[f]);
     });
 
     // gate
@@ -733,7 +755,7 @@
     var nm=$("#subName").value.trim();
     var payload={action:"submitCompany",claimant_name:nm,challenge:ch,sub_vertical:sv,named_need:nd,
       company_name:$("#cCompany").value.trim(),website:$("#lWebsite").value.trim(),hq_location:$("#lHq").value.trim(),
-      one_line:$("#lOne").value.trim(),what_it_does:$("#lWhat").value.trim(),product_stage:$("#lStage").value.trim(),
+      what_it_does:$("#lWhat").value.trim(),product_stage:$("#lStage").value.trim(),
       traction:$("#lTraction").value.trim(),funding:$("#lFunding").value.trim(),ownership:$("#lOwnership").value.trim(),
       gate_result:gateResult,gate_fail_reason:$("#lGateFail").value.trim(),
       flag_us_domestic:usdom,s3b_note:usdom==="N"?$("#lS3b").value.trim():"",flag_mwbe:mwbe,
@@ -753,8 +775,8 @@
       if(!lockedChallenge){ lockedChallenge=ch; localStorage.setItem("pfnyc-dashboard:challenge",ch); renderChallengeLock(); }
       showResult("ok","Submitted: “"+esc(payload.company_name)+"” is on the board (§3a "+r.gate_result+"). Add another, or check the Board tab.");
       // reset the company-specific fields, keep name + locked challenge
-      ["cCompany","lWebsite","lHq","lOne","lWhat","lStage","lTraction","lFunding","lOwnership","lTier1","lGateFail","lRationale","lPerson","lPersonRole","lPersonInfo","lNotes","lTakeaway"].forEach(function(id){$("#"+id).value="";});
-      $("#cSub").selectedIndex=0; fill($("#cNeed"),[],true); $("#cNeed").options[0].textContent="Choose a sub-vertical first";
+      ["cCompany","lWebsite","lHq","lWhat","lStage","lTraction","lFunding","lOwnership","lTier1","lGateFail","lRationale","lPerson","lPersonRole","lPersonInfo","lNotes","lTakeaway","cSubOther","cNeedOther"].forEach(function(id){$("#"+id).value="";});
+      $("#cSub").selectedIndex=0; refreshSubs();
       renderGate(); updateGateResult(); $("#s3bWrap").hidden=true;
       ["usdom","mwbe","rel"].forEach(function(n){ Array.prototype.forEach.call(document.getElementsByName(n),function(el){el.checked=false;}); });
       refresh(true);
