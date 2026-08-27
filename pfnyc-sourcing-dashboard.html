@@ -104,7 +104,8 @@
   .toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;margin:0 0 12px}
   .toolbar .fld{flex:1 1 180px;max-width:240px}
   .toolbar label{margin:0 0 4px}
-  .board-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
+  .board-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0}
+  footer.app-foot{max-width:1100px;margin:28px auto 0;padding:14px 20px;border-top:2px solid var(--on-highlight)}
   .board-scroll{border:2px solid var(--on-highlight);border-radius:10px;overflow:auto;max-height:70vh}
   table{border-collapse:collapse;width:100%;min-width:760px}
   caption{text-align:left;padding:8px 10px;font-weight:600;color:var(--title)}
@@ -148,8 +149,8 @@
 
 <nav class="views" aria-label="Dashboard views" id="viewNav">
   <button type="button" data-view="board" aria-current="page">Board</button>
-  <button type="button" data-view="coverage">Coverage map</button>
   <button type="button" data-view="submit">Submit a company</button>
+  <button type="button" data-view="coverage">Coverage map</button>
 </nav>
 
 <main id="main" tabindex="-1">
@@ -165,12 +166,6 @@
     <h2 id="h-board" tabindex="-1">The board — every company the cohort is tracking</h2>
     <p class="notice" id="demoNotice" hidden>Demo mode: not connected to the shared backend yet.
       Entries you add are stored only in this browser. Wire up the Apps Script URL (see README) to go live.</p>
-
-    <div class="board-actions">
-      <button class="btn secondary" type="button" id="refreshBtn">Refresh now</button>
-      <button class="btn secondary" type="button" id="pausePoll" aria-pressed="false">Pause auto-refresh</button>
-      <span class="hint" id="pollNote">Auto-refreshes every 15 seconds.</span>
-    </div>
 
     <div class="toolbar" role="search" aria-label="Filter the board">
       <div class="fld">
@@ -342,6 +337,14 @@
     </form>
   </section>
 </main>
+
+<footer class="app-foot" role="contentinfo" aria-label="Board refresh controls">
+  <div class="board-actions">
+    <button class="btn secondary" type="button" id="refreshBtn">Refresh now</button>
+    <button class="btn secondary" type="button" id="pausePoll" aria-pressed="false">Pause auto-refresh</button>
+    <span class="hint" id="pollNote">Auto-refreshes every 15 seconds.</span>
+  </div>
+</footer>
 
 <script>
 (function(){
