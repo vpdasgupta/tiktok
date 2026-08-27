@@ -217,7 +217,7 @@
   <!-- ===== View: submit ===== -->
   <section id="view-submit" aria-labelledby="h-submit" hidden>
     <h2 id="h-submit" tabindex="-1">Submit a company</h2>
-    <p>Check the board first, then submit your fully vetted company as one canonical row. Every factual
+    <p>Check the board first, then submit your fully vetted company. Every factual
       field needs a source, or the honest words <em>not publicly disclosed</em> — never a blank.</p>
 
     <div id="submitErrors" role="alert" tabindex="-1" hidden></div>
@@ -794,16 +794,19 @@
   function showResult(kind,msg){ var el=$("#submitResult"); el.className="result "+(kind==="ok"?"ok":"warn"); el.textContent=msg; el.hidden=false; el.focus(); }
 
   /* ============ Board filters ============ */
-  ["#fNeed"].forEach(function(s){ $(s).addEventListener("change",renderBoard); });
+  function uniq(a){ var s={},o=[]; a.forEach(function(x){ if(!s[x]){s[x]=1;o.push(x);} }); return o; }
+  function fillChallenges(sel){ [["1","Challenge 1"],["2","Challenge 2"],["3","Challenge 3"]].forEach(function(c){ var o=document.createElement("option"); o.value=c[0]; o.textContent=c[1]; sel.appendChild(o); }); }
   var searchT=null; $("#fSearch").addEventListener("input",function(){ clearTimeout(searchT); searchT=setTimeout(renderBoard,300); });
+  $("#fNeed").addEventListener("change",renderBoard);
   $("#fChallenge").addEventListener("change",function(){
-    fill($("#fSub"),subVerticalsFor($("#fChallenge").value),true);
-    fill($("#fNeed"),[],true); $("#fNeed").options[0].textContent="All";
+    var ch=$("#fChallenge").value;
+    fill($("#fSub"),subVerticalsFor(ch),true);
+    fill($("#fNeed"),uniq(needsFor(ch,"")),true);
     renderBoard();
   });
   $("#fSub").addEventListener("change",function(){
-    fill($("#fNeed"),needsFor($("#fChallenge").value,$("#fSub").value),true);
-    $("#fNeed").options[0].textContent="All"; renderBoard();
+    fill($("#fNeed"),uniq(needsFor($("#fChallenge").value,$("#fSub").value)),true);
+    renderBoard();
   });
 
   /* ============ Poll controls ============ */
@@ -823,7 +826,9 @@
   /* ============ Init ============ */
   function init(){
     if(DEMO){ $("#demoNotice").hidden=false; $("#modeLine").textContent="Demo mode (local browser only) · Startup Sourcing for NYC's Water Utility"; }
+    fillChallenges($("#fChallenge"));
     fill($("#fSub"),subVerticalsFor(""),true);
+    fill($("#fNeed"),uniq(needsFor("","")),true);
     if(name) $("#subName").value=name;
     renderChallengeLock();
     refresh(true).then(function(){ showView("board",{initial:true}); startPoll(); });
