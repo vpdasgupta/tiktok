@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PFNYC Sourcing Dashboard</title>
+<style>
+  /* ---------------------------------------------------------------
+     Extern design system. These five values are the entire palette.
+     Do not add a sixth. (Verified contrast ratios in README.)
+     --------------------------------------------------------------- */
+  :root{
+    --highlight:#DCE1FF;    /* fills — MUST carry a navy border (1.23:1 vs bg) */
+    --on-highlight:#001D69; /* ink: links, buttons, borders, focus ring        */
+    --bg:#FDF8F8;           /* canvas background                               */
+    --body:#484646;         /* body copy (8.9:1 on bg)                         */
+    --title:#1C1B1B;        /* headings (16.3:1 on bg)                         */
+    --t-fast:160ms; --ease-out:cubic-bezier(.2,.7,.3,1);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:16px}
+  body{
+    background:var(--bg);color:var(--body);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased;padding:0 0 40px;
+  }
+
+  /* screen-reader-only, still in the a11y tree (never display:none) */
+  .vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  /* skip link */
+  .skip{position:absolute;left:8px;top:-46px;z-index:20;background:var(--highlight);
+    color:var(--on-highlight);border:2px solid var(--on-highlight);border-radius:6px;
+    padding:8px 14px;font-weight:600;transition:top var(--t-fast)}
+  .skip:focus{top:8px}
+
+  /* focus ring — navy clears 3:1 on every surface in this palette */
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
+  textarea:focus-visible,[tabindex]:focus-visible{
+    outline:3px solid var(--on-highlight);outline-offset:2px}
+
+  header.app{padding:16px 20px 8px;max-width:1100px;margin:0 auto}
+  h1{font-size:1.35rem;color:var(--title);line-height:1.2}
+  .sub{font-size:.9rem;margin-top:2px}
+  main{max-width:1100px;margin:0 auto;padding:0 20px}
+  h2{font-size:1.15rem;color:var(--title);margin:0 0 12px}
+  h3{font-size:1rem;color:var(--title);margin:14px 0 8px}
+  p{margin:0 0 10px}
+  a{color:var(--on-highlight);text-decoration:underline;text-underline-offset:2px}
+
+  /* nav */
+  nav.views{display:flex;flex-wrap:wrap;gap:8px;max-width:1100px;margin:8px auto 4px;padding:0 20px}
+  nav.views button{
+    background:var(--bg);color:var(--on-highlight);border:2px solid var(--on-highlight);
+    border-radius:8px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer;
+    min-height:44px}
+  nav.views button[aria-current="page"]{background:var(--highlight)}
+  nav.views button:hover{text-decoration:underline}
+
+  /* generic button */
+  .btn{background:var(--highlight);color:var(--on-highlight);border:2px solid var(--on-highlight);
+    border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;min-height:44px}
+  .btn.secondary{background:var(--bg)}
+  .btn:hover{text-decoration:underline}
+  .btn:disabled{opacity:.5;cursor:not-allowed;text-decoration:none}
+
+  section[hidden]{display:none}
+  .card{border:2px solid var(--on-highlight);border-radius:12px;background:var(--bg);
+    padding:16px;margin:0 0 16px}
+  .notice{border:2px dashed var(--on-highlight);border-radius:10px;padding:10px 14px;
+    margin:0 0 14px;font-size:.9rem}
+
+  /* forms */
+  fieldset{border:2px solid var(--on-highlight);border-radius:10px;padding:12px 14px;margin:0 0 14px}
+  legend{font-weight:700;color:var(--title);padding:0 6px}
+  fieldset fieldset{margin:10px 0}
+  label{display:block;font-weight:600;color:var(--title);margin:10px 0 4px}
+  .req{font-weight:600}
+  .opt{font-weight:400;color:var(--body)}
+  input[type=text],input[type=search],input[type=url],input[type=email],input[type=tel],select,textarea{
+    width:100%;max-width:640px;font:inherit;color:var(--body);background:var(--bg);
+    border:2px solid var(--on-highlight);border-radius:8px;padding:9px 10px;min-height:44px}
+  textarea{min-height:80px;line-height:1.4}
+  .radios label{display:inline-flex;align-items:center;gap:6px;font-weight:500;
+    margin:6px 16px 6px 0;min-height:44px}
+  .radios input{width:auto;min-height:auto;transform:scale(1.2);margin-right:2px}
+  .hint{font-weight:400;font-size:.85rem;margin:2px 0 0}
+  .field-err{font-weight:700;color:var(--title);margin:4px 0 0}
+  [aria-invalid="true"]{border-width:3px;border-style:dashed}
+
+  /* error summary */
+  #submitErrors{border:3px solid var(--on-highlight);border-radius:10px;
+    background:var(--highlight);padding:12px 14px;margin:0 0 16px}
+  #submitErrors ul{margin:6px 0 0 18px}
+
+  /* status / result messages */
+  .result{border:2px solid var(--on-highlight);border-radius:10px;padding:10px 14px;margin:12px 0}
+  .result.ok{background:var(--highlight)}
+  .result.warn{background:var(--bg);border-style:dashed}
+
+  /* table */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;margin:0 0 12px}
+  .toolbar .fld{flex:1 1 180px;max-width:240px}
+  .toolbar label{margin:0 0 4px}
+  .board-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
+  .board-scroll{border:2px solid var(--on-highlight);border-radius:10px;overflow:auto;max-height:70vh}
+  table{border-collapse:collapse;width:100%;min-width:760px}
+  caption{text-align:left;padding:8px 10px;font-weight:600;color:var(--title)}
+  thead th{position:sticky;top:0;background:var(--highlight);color:var(--on-highlight);
+    text-align:left;border-bottom:2px solid var(--on-highlight);padding:8px 10px;font-size:.85rem}
+  tbody th,tbody td{border-bottom:1px solid var(--on-highlight);padding:8px 10px;
+    font-size:.9rem;vertical-align:top;scroll-margin-top:44px}
+  tbody th[scope=row]{text-align:left;color:var(--title);font-weight:700}
+  tbody tr:hover td,tbody tr:hover th{background:var(--highlight)}
+
+  /* badges — meaning via text + glyph + shape, never color */
+  .badge{display:inline-block;border:2px solid var(--on-highlight);color:var(--on-highlight);
+    padding:1px 7px;border-radius:6px;font-size:.8rem;font-weight:700;white-space:nowrap}
+  .badge.fill{background:var(--highlight)}
+  .badge.out{background:transparent;border-style:dashed}
+  .dots{letter-spacing:1px}
+
+  /* coverage */
+  .cov-group{margin:0 0 18px}
+  .cov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .cov-cell{border:2px solid var(--on-highlight);border-radius:10px;padding:10px 12px}
+  .cov-cell.gap{border-style:dashed;background:var(--bg)}
+  .cov-cell .need{font-weight:700;color:var(--title)}
+  .cov-cell .cnt{font-size:.85rem;margin-top:4px}
+  .cov-cell .cnt strong{font-size:1.1rem}
+
+  @media (max-width:560px){
+    .toolbar .fld{max-width:none}
+    input,select,textarea{max-width:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to main content</a>
+
+<header class="app">
+  <h1>PFNYC Sourcing Dashboard</h1>
+  <p class="sub" id="modeLine">Shared cohort board · Startup Sourcing for NYC's Water Utility</p>
+</header>
+
+<nav class="views" aria-label="Dashboard views" id="viewNav">
+  <button type="button" data-view="board" aria-current="page">Board</button>
+  <button type="button" data-view="coverage">Coverage map</button>
+  <button type="button" data-view="submit">Submit a company</button>
+</nav>
+
+<main id="main" tabindex="-1">
+  <p class="vh" id="intro">Interactive dashboard for sourcing startups for the PFNYC externship.
+    Use the view buttons to switch between the Board, the Coverage map, and submitting a company.</p>
+
+  <!-- live regions declared once, empty, at load -->
+  <p class="vh" role="status" aria-live="polite" id="liveStatus"></p>
+  <p class="vh" role="status" aria-live="polite" id="tableStatus"></p>
+
+  <!-- ===== View: board (landing) ===== -->
+  <section id="view-board" aria-labelledby="h-board">
+    <h2 id="h-board" tabindex="-1">The board — every company the cohort is tracking</h2>
+    <p class="notice" id="demoNotice" hidden>Demo mode: not connected to the shared backend yet.
+      Entries you add are stored only in this browser. Wire up the Apps Script URL (see README) to go live.</p>
+
+    <div class="board-actions">
+      <button class="btn secondary" type="button" id="refreshBtn">Refresh now</button>
+      <button class="btn secondary" type="button" id="pausePoll" aria-pressed="false">Pause auto-refresh</button>
+      <span class="hint" id="pollNote">Auto-refreshes every 15 seconds.</span>
+    </div>
+
+    <div class="toolbar" role="search" aria-label="Filter the board">
+      <div class="fld">
+        <label for="fChallenge">Challenge</label>
+        <select id="fChallenge"><option value="">All</option></select>
+      </div>
+      <div class="fld">
+        <label for="fSub">Sub-vertical</label>
+        <select id="fSub"><option value="">All</option></select>
+      </div>
+      <div class="fld">
+        <label for="fNeed">Named need</label>
+        <select id="fNeed"><option value="">All</option></select>
+      </div>
+      <div class="fld">
+        <label for="fSearch">Search company</label>
+        <input id="fSearch" type="search" placeholder="Type to filter…">
+      </div>
+    </div>
+
+    <div class="board-scroll" id="boardScroll" role="region" aria-label="Company board (scrollable)" tabindex="0">
+      <table>
+        <caption>Companies submitted by the cohort. Use the filters above to narrow the list.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Company</th>
+            <th scope="col">Submitted by</th>
+            <th scope="col">Challenge</th>
+            <th scope="col">Sub-vertical</th>
+            <th scope="col">Named need</th>
+            <th scope="col">Section 3a gate</th>
+            <th scope="col">Relevance</th>
+            <th scope="col">Contact person</th>
+          </tr>
+        </thead>
+        <tbody id="boardBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== View: coverage ===== -->
+  <section id="view-coverage" aria-labelledby="h-cov" hidden>
+    <h2 id="h-cov" tabindex="-1">Coverage map — where the gaps are</h2>
+    <p>Each named need shows how many companies the cohort has on it. A need with
+      <strong>0</strong> (dashed outline) is an open gap — a good place to aim your next find.</p>
+    <div id="covWrap"></div>
+  </section>
+
+  <!-- ===== View: submit ===== -->
+  <section id="view-submit" aria-labelledby="h-submit" hidden>
+    <h2 id="h-submit" tabindex="-1">Submit a company</h2>
+    <p>Check the board first, then submit your fully vetted company as one canonical row. Every factual
+      field needs a source, or the honest words <em>not publicly disclosed</em> — never a blank.</p>
+
+    <div id="submitErrors" role="alert" tabindex="-1" hidden></div>
+    <div id="submitResult" class="result" role="alert" tabindex="-1" hidden></div>
+
+    <form id="submitForm" novalidate>
+      <fieldset>
+        <legend>You &amp; your Lane</legend>
+        <label for="subName">Your name <span class="req">(required)</span></label>
+        <input id="subName" type="text" autocomplete="name" required aria-describedby="subNameHint">
+        <p class="hint" id="subNameHint">Tags this company to you on the shared board. Example: Priya D.</p>
+        <div id="challengeLockWrap"></div>
+        <label for="cSub">Sub-vertical <span class="req">(required)</span></label>
+        <select id="cSub" required><option value="">Choose…</option></select>
+        <label for="cNeed">Named need <span class="req">(required)</span></label>
+        <select id="cNeed" required><option value="">Choose a sub-vertical first</option></select>
+      </fieldset>
+
+      <fieldset>
+        <legend>Identity</legend>
+        <p class="hint" id="citeHint">Every field below is required. Cite-or-strike: give a value with a source, or the literal words “not publicly disclosed”. No blanks.</p>
+        <label for="cCompany">Company name <span class="req">(required)</span></label>
+        <input id="cCompany" type="text" required aria-describedby="cCompanyHint">
+        <p class="hint" id="cCompanyHint">Use the company's real operating name — this is the dedup key.</p>
+        <label for="lWebsite">Website <span class="req">(required)</span></label>
+        <input id="lWebsite" type="text" aria-required="true" aria-describedby="citeHint">
+        <label for="lHq">HQ / location <span class="req">(required)</span></label>
+        <input id="lHq" type="text" aria-required="true" aria-describedby="citeHint">
+        <label for="lOne">One-line description <span class="req">(required)</span></label>
+        <input id="lOne" type="text" aria-required="true" aria-describedby="citeHint">
+        <label for="lWhat">What it does (verified) <span class="req">(required)</span></label>
+        <textarea id="lWhat" aria-required="true" aria-describedby="citeHint"></textarea>
+        <label for="lStage">Product stage <span class="req">(required)</span></label>
+        <input id="lStage" type="text" aria-required="true" aria-describedby="citeHint" placeholder="pre-product · beta · deployed/operational">
+        <label for="lTraction">Traction (named customer / deployment) <span class="req">(required)</span></label>
+        <input id="lTraction" type="text" aria-required="true" aria-describedby="citeHint">
+        <label for="lFunding">Funding (round + amount) <span class="req">(required)</span></label>
+        <input id="lFunding" type="text" aria-required="true" aria-describedby="citeHint">
+        <label for="lOwnership">Ownership <span class="req">(required)</span></label>
+        <input id="lOwnership" type="text" aria-required="true" aria-describedby="citeHint" placeholder="independent/private vs. subsidiary/public">
+      </fieldset>
+
+      <fieldset>
+        <legend>§3a eligibility gate — all five must pass, or the company is excluded</legend>
+        <p class="hint">Any single FAIL makes the overall result EXCLUDE. Mark each with a source.</p>
+        <div id="gateWrap"></div>
+        <p id="gateResult" class="result" aria-live="polite" style="margin-top:8px"></p>
+        <label for="lGateFail">If excluded: failing criterion + source</label>
+        <input id="lGateFail" type="text" aria-describedby="gateFailHint">
+        <p class="hint" id="gateFailHint">Required only when the overall result is EXCLUDE.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Preferred signals (context only — these never gate)</legend>
+        <fieldset>
+          <legend>US-domestic HQ?</legend>
+          <div class="radios">
+            <label><input type="radio" name="usdom" value="Y"> Yes</label>
+            <label><input type="radio" name="usdom" value="N"> No</label>
+          </div>
+        </fieldset>
+        <div id="s3bWrap" hidden>
+          <label for="lS3b">§3b-at-outreach note (required for non-US companies)</label>
+          <input id="lS3b" type="text" value="Will need to clear ETL's §3b bar (US data storage + NYS registration) at outreach.">
+        </div>
+        <fieldset>
+          <legend>M/WBE (minority- or women-owned)?</legend>
+          <div class="radios">
+            <label><input type="radio" name="mwbe" value="Y"> Yes</label>
+            <label><input type="radio" name="mwbe" value="N"> No</label>
+            <label><input type="radio" name="mwbe" value="ND"> Not disclosed</label>
+          </div>
+        </fieldset>
+      </fieldset>
+
+      <fieldset>
+        <legend>Relevance</legend>
+        <fieldset id="relGroup">
+          <legend>Relevance rating <span class="req">(required)</span></legend>
+          <div class="radios">
+            <label><input type="radio" name="rel" value="High"> High</label>
+            <label><input type="radio" name="rel" value="Medium"> Medium</label>
+            <label><input type="radio" name="rel" value="Low"> Low</label>
+            <label><input type="radio" name="rel" value="Exclude"> Exclude</label>
+          </div>
+        </fieldset>
+        <label for="lRationale">Sourced rationale <span class="req">(required)</span></label>
+        <textarea id="lRationale" aria-describedby="ratHint"></textarea>
+        <p class="hint" id="ratHint">Pattern: “[Level] — maps to [named DEP need]; [evidence + where it's proven]. Source: [URL].”</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Contact</legend>
+        <label for="lTier1">Tier-1 contact (general) <span class="req">(required)</span></label>
+        <input id="lTier1" type="text" aria-required="true" aria-describedby="citeHint" placeholder="contact/partnerships URL + general email + HQ">
+        <fieldset>
+          <legend>Contact person <span class="opt">(optional)</span></legend>
+          <label for="lPerson">Name</label>
+          <input id="lPerson" type="text">
+          <label for="lPersonRole">Role / title</label>
+          <input id="lPersonRole" type="text" placeholder="e.g. Head of Partnerships">
+          <label for="lPersonInfo">Contact info (email or phone)</label>
+          <input id="lPersonInfo" type="text" aria-describedby="personInfoHint" placeholder="email or phone">
+          <p class="hint" id="personInfoHint">Optional. Captured for ETL's handoff only — you do not contact the company yourself.</p>
+        </fieldset>
+      </fieldset>
+
+      <fieldset>
+        <legend>Notes <span class="opt">(optional)</span></legend>
+        <label for="lNotes">Notes / uncertainty</label>
+        <textarea id="lNotes"></textarea>
+        <label for="lTakeaway">Blind-scoring takeaway</label>
+        <input id="lTakeaway" type="text">
+      </fieldset>
+
+      <p><button class="btn" type="submit">Submit company to the board</button></p>
+    </form>
+  </section>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ CONFIG ============ */
+  // Paste your deployed Apps Script /exec URL between the quotes to go live.
+  // Leave blank to run in local demo mode (stored in this browser only).
+  var API = "https://script.google.com/macros/s/AKfycbzXQnBLJsZ37GpvmPulkRfURP7sVn69jP8MLLc_a1aUreBuNraWhbejhwyxmxMjFSQM/exec";
+  var POLL_MS = 15000;
+
+  /* ============ Menu (challenge → sub-vertical → named need) ============ */
+  var MENU = [
+    ["1","Planning, Data & Field Operations","Extreme Heat & crew safety","Cooling workwear"],
+    ["1","Planning, Data & Field Operations","Extreme Heat & crew safety","Mobile water & cooling"],
+    ["1","Planning, Data & Field Operations","Extreme Heat & crew safety","Hydrant retrofits"],
+    ["1","Planning, Data & Field Operations","Field Operations & imagery","Field data-capture tools"],
+    ["1","Planning, Data & Field Operations","Field Operations & imagery","Street-level imagery"],
+    ["1","Planning, Data & Field Operations","OT/SCADA & AI-governance security","OT/SCADA cyber"],
+    ["1","Planning, Data & Field Operations","OT/SCADA & AI-governance security","AI-usage governance & risk"],
+    ["1","Planning, Data & Field Operations","Demand, flow & weather modeling","Water-demand modeling"],
+    ["1","Planning, Data & Field Operations","Demand, flow & weather modeling","Wastewater-flow modeling"],
+    ["1","Planning, Data & Field Operations","Demand, flow & weather modeling","Stormwater-risk modeling"],
+    ["1","Planning, Data & Field Operations","Capital planning, cost & KPI data","Cost tracking"],
+    ["1","Planning, Data & Field Operations","Capital planning, cost & KPI data","Chemical-safety triage"],
+    ["1","Planning, Data & Field Operations","Capital planning, cost & KPI data","Road-mapping"],
+    ["1","Planning, Data & Field Operations","Capital planning, cost & KPI data","KPI & complaint tracking"],
+    ["2","Asset Condition & Failure Prevention","Pipe, main & aqueduct integrity","Leak detection"],
+    ["2","Asset Condition & Failure Prevention","Pipe, main & aqueduct integrity","Main-break prediction"],
+    ["2","Asset Condition & Failure Prevention","Pipe, main & aqueduct integrity","Non-destructive inspection"],
+    ["2","Asset Condition & Failure Prevention","Treatment-plant & process health","Equipment & parameter sensors"],
+    ["2","Asset Condition & Failure Prevention","Treatment-plant & process health","Predictive maintenance (pumps/blowers)"],
+    ["2","Asset Condition & Failure Prevention","Coastal resilience","Floodgate status sensors"],
+    ["2","Asset Condition & Failure Prevention","Coastal resilience","Flood-wall crack/shift detection"],
+    ["2","Asset Condition & Failure Prevention","Coastal resilience","Gate power"],
+    ["2","Asset Condition & Failure Prevention","Water supply & environmental field monitoring","Water-level sensors"],
+    ["2","Asset Condition & Failure Prevention","Water supply & environmental field monitoring","Biofouling monitoring"],
+    ["2","Asset Condition & Failure Prevention","Water supply & environmental field monitoring","Dam-safety data"],
+    ["3","Resource & Energy Recovery","Measurement & planning","Non-invasive flow/temp monitoring"],
+    ["3","Resource & Energy Recovery","Measurement & planning","Energy & decarbonization planning"],
+    ["3","Resource & Energy Recovery","Recovery & conversion","Dewatering"],
+    ["3","Resource & Energy Recovery","Recovery & conversion","Nutrient / struvite / VFA recovery"],
+    ["3","Resource & Energy Recovery","Recovery & conversion","Sewer heat recovery"],
+    ["3","Resource & Energy Recovery","Recovery & conversion","Biogas upgrading"]
+  ].map(function(r){return {challenge:r[0],challenge_name:r[1],sub_vertical:r[2],named_need:r[3]};});
+
+  var GATE_LABELS = [
+    "Legally formed entity",
+    "Independent & privately held",
+    "Working, deployed product (≥1 real customer)",
+    "Early-to-growth stage",
+    "Solves a published DEP challenge"
+  ];
+
+  /* ============ Small helpers ============ */
+  var $=function(s,r){return (r||document).querySelector(s);};
+  var DEMO=!API;
+  var LSKEY="pfnyc-dashboard:v1";
+  var name=localStorage.getItem("pfnyc-dashboard:name")||"";
+  var lockedChallenge=localStorage.getItem("pfnyc-dashboard:challenge")||"";
+  var board=[];           // cached Pipeline rows
+  var coverage=[];        // cached coverage
+  var pollTimer=null, paused=false, currentView="board";
+  var boardSig="";        // signature to diff poll updates
+
+  function normalize(s){
+    return String(s||"").toLowerCase()
+      .replace(/https?:\/\//g,"")
+      .replace(/\b(inc|llc|ltd|corp|co|company|the|technologies|technology|labs|water)\b/g,"")
+      .replace(/[^a-z0-9]/g,"").trim();
+  }
+  function announce(msg){ $("#liveStatus").textContent=""; setTimeout(function(){$("#liveStatus").textContent=msg;},60); }
+
+  /* ============ Local (demo) store ============ */
+  function lsLoad(){ try{return JSON.parse(localStorage.getItem(LSKEY))||{pipeline:[]};}catch(e){return {pipeline:[]};} }
+  function lsSave(d){ localStorage.setItem(LSKEY,JSON.stringify(d)); }
+
+  // peer-only dedup: one canonical row per company across the cohort.
+  function localDedup(companyName,excludeId){
+    var n=normalize(companyName), d=lsLoad();
+    for(var i=0;i<d.pipeline.length;i++){
+      var r=d.pipeline[i];
+      if(excludeId&&r.row_id===excludeId) continue;
+      if(n&&normalize(r.company_name)===n)
+        return {kind:"peer",match:{company_name:r.company_name,claimant_name:r.claimant_name,named_need:r.named_need}};
+    }
+    return null;
+  }
+  function localCoverage(){
+    var d=lsLoad(), counts={};
+    d.pipeline.forEach(function(r){var key=r.challenge+"||"+r.named_need;counts[key]=(counts[key]||0)+1;});
+    return MENU.map(function(m){return {challenge:m.challenge,challenge_name:m.challenge_name,sub_vertical:m.sub_vertical,named_need:m.named_need,count:counts[m.challenge+"||"+m.named_need]||0};});
+  }
+
+  /* ============ API layer (backend or local) ============ */
+  function apiGet(action){
+    if(DEMO){
+      var d=lsLoad();
+      if(action==="board") return Promise.resolve({ok:true,rows:d.pipeline});
+      if(action==="coverage") return Promise.resolve({ok:true,coverage:localCoverage()});
+      return Promise.resolve({ok:true,rows:[]});
+    }
+    return fetch(API+"?action="+encodeURIComponent(action),{method:"GET"}).then(function(r){return r.json();});
+  }
+  function apiPost(payload){
+    if(DEMO) return Promise.resolve(localPost(payload));
+    return fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)}).then(function(r){return r.json();});
+  }
+  function localPost(p){
+    var d=lsLoad();
+    if(p.action==="submitCompany"){
+      var hit=localDedup(p.company_name,null);
+      if(hit) return {ok:false,collision:true,kind:hit.kind,match:hit.match};
+      var id="p_"+Date.now()+"_"+Math.floor(Math.random()*1e6), row={};
+      Object.keys(p).forEach(function(k){ if(k!=="action") row[k]=p[k]; });
+      row.row_id=id; row.timestamp=new Date().toISOString(); row.updated=new Date().toISOString(); row.status="submitted";
+      var anyFail=false; for(var c=1;c<=5;c++){ if(String(row["gate_c"+c]).toUpperCase()==="FAIL") anyFail=true; }
+      row.gate_result=anyFail?"EXCLUDE":"PASS";
+      d.pipeline.push(row); lsSave(d);
+      return {ok:true,row_id:id,gate_result:row.gate_result};
+    }
+    return {ok:false,error:"unknown action"};
+  }
+
+  /* ============ Menu-driven selects ============ */
+  function subVerticalsFor(ch){ var seen={},out=[]; MENU.forEach(function(m){ if((!ch||m.challenge===ch)&&!seen[m.sub_vertical]){seen[m.sub_vertical]=1;out.push(m.sub_vertical);} }); return out; }
+  function needsFor(ch,sv){ var out=[]; MENU.forEach(function(m){ if((!ch||m.challenge===ch)&&(!sv||m.sub_vertical===sv)) out.push(m.named_need); }); return out; }
+  function challengeNameOf(ch){ var f=MENU.filter(function(m){return m.challenge===ch;})[0]; return f?f.challenge_name:""; }
+  function fill(sel,items,keepFirst){
+    var first=keepFirst?sel.options[0]:null; sel.innerHTML="";
+    if(first) sel.appendChild(first);
+    items.forEach(function(v){ var o=document.createElement("option"); o.value=v; o.textContent=v; sel.appendChild(o); });
+  }
+
+  /* ============ Rendering: board ============ */
+  function relBadge(v){
+    if(v==="High") return '<span class="badge fill"><span class="dots" aria-hidden="true">●●● </span>High</span>';
+    if(v==="Medium") return '<span class="badge fill"><span class="dots" aria-hidden="true">●●○ </span>Medium</span>';
+    if(v==="Low") return '<span class="badge out"><span class="dots" aria-hidden="true">●○○ </span>Low</span>';
+    if(v==="Exclude") return '<span class="badge out"><span aria-hidden="true">✕ </span>Exclude</span>';
+    return '<span class="hint"><span aria-hidden="true">—</span><span class="vh">not set</span></span>';
+  }
+  function gateBadge(v){
+    if(v==="PASS") return '<span class="badge fill"><span aria-hidden="true">✓ </span>PASS</span>';
+    if(v==="EXCLUDE") return '<span class="badge out"><span aria-hidden="true">✕ </span>EXCLUDE</span>';
+    return '<span class="hint"><span aria-hidden="true">—</span><span class="vh">not set</span></span>';
+  }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function personCell(r){
+    var nm=(r.contact_person_name||"").trim();
+    if(!nm) return '<span class="hint"><span aria-hidden="true">—</span><span class="vh">none listed</span></span>';
+    var role=(r.contact_person_role||"").trim(), info=(r.contact_person_info||"").trim();
+    return esc(nm)+(role?"<br><span class=\"hint\">"+esc(role)+"</span>":"")+(info?"<br><span class=\"hint\">"+esc(info)+"</span>":"");
+  }
+
+  function filteredRows(){
+    var ch=$("#fChallenge").value, sv=$("#fSub").value, nd=$("#fNeed").value, q=normalize($("#fSearch").value);
+    return board.filter(function(r){
+      if(ch&&String(r.challenge)!==ch) return false;
+      if(sv&&r.sub_vertical!==sv) return false;
+      if(nd&&r.named_need!==nd) return false;
+      if(q&&normalize(r.company_name).indexOf(q)===-1) return false;
+      return true;
+    });
+  }
+  function renderBoard(){
+    var body=$("#boardBody");
+    // Focus safety across re-render: the primary guard is userBusy() in refresh(),
+    // which skips re-rendering the board while focus is in the scroll region or toolbar.
+    var active=document.activeElement, activeId=active&&active.id;
+    var rows=filteredRows();
+    var html="";
+    rows.forEach(function(r){
+      html+="<tr>"+
+        '<th scope="row">'+esc(r.company_name)+"</th>"+
+        "<td>"+esc(r.claimant_name)+"</td>"+
+        "<td>"+esc(r.challenge)+"</td>"+
+        "<td>"+esc(r.sub_vertical)+"</td>"+
+        "<td>"+esc(r.named_need)+"</td>"+
+        "<td>"+gateBadge(r.gate_result)+"</td>"+
+        "<td>"+relBadge(r.relevance)+"</td>"+
+        "<td>"+personCell(r)+"</td>"+
+      "</tr>";
+    });
+    if(!rows.length) html='<tr><td colspan="8">No companies match. Try clearing a filter, or add one on the Submit a company tab.</td></tr>';
+    body.innerHTML=html;
+    $("#tableStatus").textContent="Showing "+rows.length+" of "+board.length+" companies.";
+    if(activeId){ var re=document.getElementById(activeId); if(re) re.focus(); }
+  }
+
+  function renderCoverage(){
+    var byChallenge={};
+    coverage.forEach(function(c){ (byChallenge[c.challenge]=byChallenge[c.challenge]||[]).push(c); });
+    var wrap=$("#covWrap"), html="";
+    Object.keys(byChallenge).sort().forEach(function(ch){
+      html+='<div class="cov-group"><h3>Challenge '+esc(ch)+" — "+esc(challengeNameOf(ch))+"</h3><div class=\"cov-grid\">";
+      byChallenge[ch].forEach(function(c){
+        var gap=c.count===0;
+        html+='<div class="cov-cell'+(gap?" gap":"")+'">'+
+          '<div class="need">'+esc(c.named_need)+"</div>"+
+          '<div class="hint">'+esc(c.sub_vertical)+"</div>"+
+          '<div class="cnt"><strong>'+c.count+"</strong> "+(c.count===1?"company":"companies")+(gap?" — open gap":"")+"</div>"+
+        "</div>";
+      });
+      html+="</div></div>";
+    });
+    wrap.innerHTML=html;
+  }
+
+  /* ============ Data refresh ============ */
+  function userBusy(){
+    var a=document.activeElement;
+    if(!a) return false;
+    if(a.closest&&a.closest("#view-submit")) return true;   // don't disrupt a submission in progress
+    if(currentView==="board"&&a.closest&&a.closest(".board-scroll, .toolbar")) return true;
+    return false;
+  }
+  function signature(rows){ return rows.map(function(r){return r.row_id+":"+r.status;}).join("|"); }
+
+  function refresh(force){
+    return Promise.all([apiGet("board"),apiGet("coverage")]).then(function(res){
+      var newBoard=(res[0]&&res[0].rows)||[];
+      coverage=(res[1]&&res[1].coverage)||[];
+      var newSig=signature(newBoard);
+      var added=newBoard.length-board.length;
+      board=newBoard;
+      if(force||!userBusy()){
+        if(currentView==="board") renderBoard();
+        if(currentView==="coverage") renderCoverage();
+      }
+      if(!force && newSig!==boardSig && added>0 && currentView==="board"){
+        announce(added+(added===1?" new company":" new companies")+" added to the board.");
+      }
+      boardSig=newSig;
+    }).catch(function(){ /* keep last good data; poll will retry */ });
+  }
+
+  function startPoll(){ stopPoll(); if(!paused) pollTimer=setInterval(function(){refresh(false);},POLL_MS); }
+  function stopPoll(){ if(pollTimer){clearInterval(pollTimer);pollTimer=null;} }
+
+  /* ============ View switching ============ */
+  function setTitle(t){ document.title=t+" — PFNYC Sourcing Dashboard"; }
+  function showView(v,opts){
+    opts=opts||{};
+    currentView=v;
+    ["board","coverage","submit"].forEach(function(id){ $("#view-"+id).hidden=(id!==v); });
+    Array.prototype.forEach.call(document.querySelectorAll("nav.views button"),function(b){
+      if(b.dataset.view===v) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
+    });
+    var head={board:"#h-board",coverage:"#h-cov",submit:"#h-submit"}[v];
+    var titles={board:"Board",coverage:"Coverage map",submit:"Submit a company"};
+    setTitle(titles[v]);
+    if(v==="board") renderBoard();
+    if(v==="coverage") renderCoverage();
+    if(v==="submit"){ if(!$("#gateWrap").children.length){ renderGate(); updateGateResult(); } }
+    var h=$(head); if(h && !opts.initial) h.focus();
+  }
+
+  /* ============ Submit: challenge lock + cascades ============ */
+  function renderChallengeLock(){
+    var wrap=$("#challengeLockWrap");
+    if(lockedChallenge){
+      wrap.innerHTML='<p><strong>Challenge (locked for the program):</strong> Challenge '+esc(lockedChallenge)+" — "+esc(challengeNameOf(lockedChallenge))+"</p>"+
+        '<input type="hidden" id="cChallenge" value="'+esc(lockedChallenge)+'">';
+    } else {
+      wrap.innerHTML='<label for="cChallenge">Challenge <span class="req">(required — locks after your first submission)</span></label>'+
+        '<select id="cChallenge" required><option value="">Choose…</option>'+
+        '<option value="1">Challenge 1 — Planning, Data &amp; Field Operations</option>'+
+        '<option value="2">Challenge 2 — Asset Condition &amp; Failure Prevention</option>'+
+        '<option value="3">Challenge 3 — Resource &amp; Energy Recovery</option></select>';
+      $("#cChallenge").addEventListener("change",refreshSubs);
+    }
+    refreshSubs();
+  }
+  function challengeVal(){ var el=$("#cChallenge"); return el?el.value:lockedChallenge; }
+  function refreshSubs(){
+    var ch=challengeVal();
+    fill($("#cSub"),subVerticalsFor(ch),true);
+    fill($("#cNeed"),[],true); $("#cNeed").options[0].textContent="Choose a sub-vertical first";
+  }
+  $("#cSub").addEventListener("change",function(){
+    fill($("#cNeed"),needsFor(challengeVal(),$("#cSub").value),true);
+    $("#cNeed").options[0].textContent="Choose…";
+  });
+
+  /* ============ §3a gate ============ */
+  function renderGate(){
+    var w=$("#gateWrap"), html="";
+    for(var i=1;i<=5;i++){
+      html+='<fieldset id="gcgroup'+i+'"><legend>Criterion '+i+": "+esc(GATE_LABELS[i-1])+' <span class="req">(required)</span></legend>'+
+        '<div class="radios">'+
+          '<label><input type="radio" name="gc'+i+'" value="PASS"> Pass</label>'+
+          '<label><input type="radio" name="gc'+i+'" value="FAIL"> Fail</label>'+
+        "</div>"+
+        '<label for="gsrc'+i+'">Source</label>'+
+        '<input id="gsrc'+i+'" type="text" placeholder="URL or “not publicly disclosed”">'+
+      "</fieldset>";
+    }
+    w.innerHTML=html;
+    for(var j=1;j<=5;j++){
+      Array.prototype.forEach.call(document.getElementsByName("gc"+j),function(el){el.addEventListener("change",updateGateResult);});
+    }
+  }
+  function gateValue(i){ var els=document.getElementsByName("gc"+i); for(var k=0;k<els.length;k++){ if(els[k].checked) return els[k].value; } return ""; }
+  function updateGateResult(){
+    var anyFail=false, anyBlank=false;
+    for(var i=1;i<=5;i++){ var v=gateValue(i); if(v==="FAIL") anyFail=true; if(!v) anyBlank=true; }
+    var el=$("#gateResult");
+    if(anyBlank){ el.className="result"; el.innerHTML='<span aria-hidden="true">…</span> Mark all five criteria to compute the result.'; return; }
+    if(anyFail){ el.className="result warn"; el.innerHTML='Overall §3a result: <span class="badge out"><span aria-hidden="true">✕ </span>EXCLUDE</span> — name the failing criterion + source below.'; }
+    else { el.className="result ok"; el.innerHTML='Overall §3a result: <span class="badge fill"><span aria-hidden="true">✓ </span>PASS</span>'; }
+  }
+  function radioVal(nm){ var els=document.getElementsByName(nm); for(var k=0;k<els.length;k++){ if(els[k].checked) return els[k].value; } return ""; }
+
+  // conditional §3b reveal on US-domestic = No
+  document.addEventListener("change",function(e){
+    if(e.target && e.target.name==="usdom"){
+      var no=e.target.value==="N";
+      $("#s3bWrap").hidden=!no;
+      if(no){ $("#lS3b").focus(); }
+    }
+  });
+
+  /* ============ Submit validation + save ============ */
+  function citeOk(v){ return (v||"").trim()!==""; }
+
+  $("#submitForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    $("#submitResult").hidden=true;
+    var errs=[];
+    function setFieldError(el,msg){
+      el.setAttribute("aria-invalid","true");
+      if(el.dataset.baseDesc===undefined) el.dataset.baseDesc=el.getAttribute("aria-describedby")||"";
+      var errId=el.id+"-err", m=document.getElementById(errId);
+      if(!m){ m=document.createElement("p"); m.id=errId; m.className="field-err"; el.parentNode.insertBefore(m,el.nextSibling); }
+      m.textContent="Error: "+msg;
+      el.setAttribute("aria-describedby",(el.dataset.baseDesc+" "+errId).trim());
+    }
+    function clearFieldError(el){
+      el.removeAttribute("aria-invalid");
+      var errId=el.id+"-err", m=document.getElementById(errId);
+      if(m) m.remove();
+      if(el.dataset.baseDesc!==undefined){ if(el.dataset.baseDesc) el.setAttribute("aria-describedby",el.dataset.baseDesc); else el.removeAttribute("aria-describedby"); }
+    }
+    function mark(el,ok,msg){ if(ok) clearFieldError(el); else setFieldError(el,msg); }
+    function markGroup(el,ok,msg){
+      var errId=el.id+"-err", m=document.getElementById(errId);
+      if(ok){ el.removeAttribute("aria-invalid"); if(m) m.remove(); return; }
+      el.setAttribute("aria-invalid","true");
+      if(!m){ m=document.createElement("p"); m.id=errId; m.className="field-err"; el.appendChild(m); }
+      m.textContent="Error: "+msg;
+    }
+    function need(fid,label,msg){ var el=$("#"+fid); var m=msg||(label+" is required (a value, source, or “not publicly disclosed”)."); if(!citeOk(el.value)){ errs.push({id:fid,msg:m}); mark(el,false,m);} else mark(el,true); }
+
+    // identity + name + company + contact
+    need("subName","Your name","Enter your name.");
+    var ch=challengeVal(), sv=$("#cSub").value, nd=$("#cNeed").value;
+    if(!ch) errs.push({id:$("#cChallenge")?"cChallenge":"challengeLockWrap",msg:"Choose a challenge."});
+    if(!sv) errs.push({id:"cSub",msg:"Choose a sub-vertical."});
+    if(!nd) errs.push({id:"cNeed",msg:"Choose a named need."});
+    ["cCompany","lWebsite","lHq","lOne","lWhat","lStage","lTraction","lFunding","lOwnership","lTier1"].forEach(function(f){
+      need(f,{cCompany:"Company name",lWebsite:"Website",lHq:"HQ / location",lOne:"One-line description",lWhat:"What it does",lStage:"Product stage",lTraction:"Traction",lFunding:"Funding",lOwnership:"Ownership",lTier1:"Tier-1 contact"}[f]);
+    });
+
+    // gate
+    var gate={}, anyFail=false;
+    for(var i=1;i<=5;i++){ var v=gateValue(i); gate["gate_c"+i]=v; gate["gate_c"+i+"_src"]=$("#gsrc"+i).value.trim();
+      if(v==="FAIL") anyFail=true;
+      if(!v){ errs.push({id:"gcgroup"+i,msg:"Criterion "+i+": mark PASS or FAIL."}); markGroup($("#gcgroup"+i),false,"Mark PASS or FAIL."); } else markGroup($("#gcgroup"+i),true);
+      if(v && !citeOk($("#gsrc"+i).value)){ var gmsg="Criterion "+i+" needs a source."; errs.push({id:"gsrc"+i,msg:gmsg}); mark($("#gsrc"+i),false,gmsg);} else mark($("#gsrc"+i),true);
+    }
+    var gateResult=anyFail?"EXCLUDE":"PASS";
+    if(gateResult==="EXCLUDE" && !citeOk($("#lGateFail").value)){ var fmsg="Name the failing criterion + source."; errs.push({id:"lGateFail",msg:fmsg}); mark($("#lGateFail"),false,fmsg);} else mark($("#lGateFail"),true);
+
+    // relevance — target the radio group (not the rationale textarea)
+    var rel=radioVal("rel");
+    if(!rel){ errs.push({id:"relGroup",msg:"Choose a relevance rating."}); markGroup($("#relGroup"),false,"Choose a relevance rating."); } else markGroup($("#relGroup"),true);
+    if(!citeOk($("#lRationale").value)){ var rmsg="Write a sourced rationale."; errs.push({id:"lRationale",msg:rmsg}); mark($("#lRationale"),false,rmsg);} else mark($("#lRationale"),true);
+
+    // preferred flags
+    var usdom=radioVal("usdom"), mwbe=radioVal("mwbe");
+    if(usdom==="N" && !citeOk($("#lS3b").value)){ var smsg="Add the §3b-at-outreach note for a non-US company."; errs.push({id:"lS3b",msg:smsg}); mark($("#lS3b"),false,smsg);} else mark($("#lS3b"),true);
+
+    if(errs.length){ showErrors(errs); return; }
+
+    var nm=$("#subName").value.trim();
+    var payload={action:"submitCompany",claimant_name:nm,challenge:ch,sub_vertical:sv,named_need:nd,
+      company_name:$("#cCompany").value.trim(),website:$("#lWebsite").value.trim(),hq_location:$("#lHq").value.trim(),
+      one_line:$("#lOne").value.trim(),what_it_does:$("#lWhat").value.trim(),product_stage:$("#lStage").value.trim(),
+      traction:$("#lTraction").value.trim(),funding:$("#lFunding").value.trim(),ownership:$("#lOwnership").value.trim(),
+      gate_result:gateResult,gate_fail_reason:$("#lGateFail").value.trim(),
+      flag_us_domestic:usdom,s3b_note:usdom==="N"?$("#lS3b").value.trim():"",flag_mwbe:mwbe,
+      relevance:rel,rationale:$("#lRationale").value.trim(),tier1_contact:$("#lTier1").value.trim(),
+      contact_person_name:$("#lPerson").value.trim(),contact_person_role:$("#lPersonRole").value.trim(),contact_person_info:$("#lPersonInfo").value.trim(),
+      notes:$("#lNotes").value.trim(),blind_score_takeaway:$("#lTakeaway").value.trim()};
+    for(var g=1;g<=5;g++){ payload["gate_c"+g]=gate["gate_c"+g]; payload["gate_c"+g+"_src"]=gate["gate_c"+g+"_src"]; }
+
+    apiPost(payload).then(function(r){
+      if(r.collision){ var m=r.match||{};
+        showResult("warn","Warning: “"+esc(m.company_name||payload.company_name)+"” is already on the board"+(m.claimant_name?" (submitted by "+esc(m.claimant_name)+")":"")+". Only one canonical row per company — try an adjacent need in your sub-vertical.");
+        return;
+      }
+      if(!r.ok){ showResult("warn","Error: "+(r.error||"could not submit.")); return; }
+      // persist identity + lock challenge on first success
+      name=nm; localStorage.setItem("pfnyc-dashboard:name",nm);
+      if(!lockedChallenge){ lockedChallenge=ch; localStorage.setItem("pfnyc-dashboard:challenge",ch); renderChallengeLock(); }
+      showResult("ok","Submitted: “"+esc(payload.company_name)+"” is on the board (§3a "+r.gate_result+"). Add another, or check the Board tab.");
+      // reset the company-specific fields, keep name + locked challenge
+      ["cCompany","lWebsite","lHq","lOne","lWhat","lStage","lTraction","lFunding","lOwnership","lTier1","lGateFail","lRationale","lPerson","lPersonRole","lPersonInfo","lNotes","lTakeaway"].forEach(function(id){$("#"+id).value="";});
+      $("#cSub").selectedIndex=0; fill($("#cNeed"),[],true); $("#cNeed").options[0].textContent="Choose a sub-vertical first";
+      renderGate(); updateGateResult(); $("#s3bWrap").hidden=true;
+      ["usdom","mwbe","rel"].forEach(function(n){ Array.prototype.forEach.call(document.getElementsByName(n),function(el){el.checked=false;}); });
+      refresh(true);
+    });
+  });
+  function showErrors(errs){
+    var box=$("#submitErrors");
+    box.innerHTML="<h3>There "+(errs.length===1?"is 1 problem":"are "+errs.length+" problems")+" with your submission</h3><ul>"+
+      errs.map(function(er){ return '<li><a href="#'+er.id+'">'+esc(er.msg)+"</a></li>"; }).join("")+"</ul>";
+    box.hidden=false; box.focus();
+    Array.prototype.forEach.call(box.querySelectorAll("a"),function(a){
+      a.addEventListener("click",function(ev){ ev.preventDefault(); var t=document.getElementById(a.getAttribute("href").slice(1)); if(t){ (t.querySelector?(t.querySelector("input,textarea,select")||t):t).focus(); } });
+    });
+  }
+  function showResult(kind,msg){ var el=$("#submitResult"); el.className="result "+(kind==="ok"?"ok":"warn"); el.textContent=msg; el.hidden=false; el.focus(); }
+
+  /* ============ Board filters ============ */
+  ["#fNeed"].forEach(function(s){ $(s).addEventListener("change",renderBoard); });
+  var searchT=null; $("#fSearch").addEventListener("input",function(){ clearTimeout(searchT); searchT=setTimeout(renderBoard,300); });
+  $("#fChallenge").addEventListener("change",function(){
+    fill($("#fSub"),subVerticalsFor($("#fChallenge").value),true);
+    fill($("#fNeed"),[],true); $("#fNeed").options[0].textContent="All";
+    renderBoard();
+  });
+  $("#fSub").addEventListener("change",function(){
+    fill($("#fNeed"),needsFor($("#fChallenge").value,$("#fSub").value),true);
+    $("#fNeed").options[0].textContent="All"; renderBoard();
+  });
+
+  /* ============ Poll controls ============ */
+  $("#pausePoll").addEventListener("click",function(){
+    paused=!paused; this.setAttribute("aria-pressed",paused?"true":"false");
+    this.textContent=paused?"Resume auto-refresh":"Pause auto-refresh";
+    $("#pollNote").textContent=paused?"Auto-refresh paused. Use Refresh now to update.":"Auto-refreshes every 15 seconds.";
+    if(paused) stopPoll(); else startPoll();
+  });
+  $("#refreshBtn").addEventListener("click",function(){ refresh(true).then(function(){ announce("Board refreshed."); }); });
+
+  /* ============ Nav ============ */
+  Array.prototype.forEach.call(document.querySelectorAll("nav.views button"),function(b){
+    b.addEventListener("click",function(){ showView(b.dataset.view); });
+  });
+
+  /* ============ Init ============ */
+  function init(){
+    if(DEMO){ $("#demoNotice").hidden=false; $("#modeLine").textContent="Demo mode (local browser only) · Startup Sourcing for NYC's Water Utility"; }
+    fill($("#fSub"),subVerticalsFor(""),true);
+    if(name) $("#subName").value=name;
+    renderChallengeLock();
+    refresh(true).then(function(){ showView("board",{initial:true}); startPoll(); });
+    document.addEventListener("visibilitychange",function(){ if(document.hidden) stopPoll(); else if(!paused) startPoll(); });
+  }
+  init();
+})();
+</script>
+</body>
+</html>
