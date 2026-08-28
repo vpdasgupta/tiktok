@@ -148,14 +148,14 @@
 </header>
 
 <nav class="views" aria-label="Dashboard views" id="viewNav">
-  <button type="button" data-view="board" aria-current="page">Board</button>
+  <button type="button" data-view="board" aria-current="page">Sourcing Board</button>
   <button type="button" data-view="submit">Submit a company</button>
   <button type="button" data-view="coverage">Coverage map</button>
 </nav>
 
 <main id="main" tabindex="-1">
   <p class="vh" id="intro">Interactive dashboard for sourcing startups for the PFNYC externship.
-    Use the view buttons to switch between the Board, the Coverage map, and submitting a company.</p>
+    Use the view buttons to switch between the Sourcing Board, the Coverage map, and submitting a company.</p>
 
   <!-- live regions declared once, empty, at load -->
   <p class="vh" role="status" aria-live="polite" id="liveStatus"></p>
@@ -163,7 +163,7 @@
 
   <!-- ===== View: board (landing) ===== -->
   <section id="view-board" aria-labelledby="h-board">
-    <h2 id="h-board" tabindex="-1">The board — every company the cohort is tracking</h2>
+    <h2 id="h-board" tabindex="-1">The Sourcing Board — every company the cohort is tracking</h2>
     <p class="notice" id="demoNotice" hidden>Demo mode: not connected to the shared backend yet.
       Entries you add are stored only in this browser. Wire up the Apps Script URL (see README) to go live.</p>
 
@@ -256,14 +256,6 @@
         <input id="lHq" type="text" aria-required="true" aria-describedby="citeHint">
         <label for="lWhat">What it does <span class="req">(required)</span></label>
         <textarea id="lWhat" aria-required="true" aria-describedby="citeHint"></textarea>
-        <label for="lStage">Product stage <span class="req">(required)</span></label>
-        <input id="lStage" type="text" aria-required="true" aria-describedby="citeHint" placeholder="pre-product · beta · deployed/operational">
-        <label for="lTraction">Traction (named customer / deployment) <span class="req">(required)</span></label>
-        <input id="lTraction" type="text" aria-required="true" aria-describedby="citeHint">
-        <label for="lFunding">Funding (round + amount) <span class="req">(required)</span></label>
-        <input id="lFunding" type="text" aria-required="true" aria-describedby="citeHint">
-        <label for="lOwnership">Ownership <span class="req">(required)</span></label>
-        <input id="lOwnership" type="text" aria-required="true" aria-describedby="citeHint" placeholder="independent/private vs. subsidiary/public">
       </fieldset>
 
       <fieldset>
@@ -344,7 +336,7 @@
   </section>
 </main>
 
-<footer class="app-foot" role="contentinfo" aria-label="Board refresh controls">
+<footer class="app-foot" role="contentinfo" aria-label="Sourcing Board refresh controls">
   <div class="board-actions">
     <button class="btn secondary" type="button" id="refreshBtn">Refresh now</button>
     <button class="btn secondary" type="button" id="pausePoll" aria-pressed="false">Pause auto-refresh</button>
@@ -601,7 +593,7 @@
       if(b.dataset.view===v) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
     });
     var head={board:"#h-board",coverage:"#h-cov",submit:"#h-submit"}[v];
-    var titles={board:"Board",coverage:"Coverage map",submit:"Submit a company"};
+    var titles={board:"Sourcing Board",coverage:"Coverage map",submit:"Submit a company"};
     setTitle(titles[v]);
     if(v==="board") renderBoard();
     if(v==="coverage") renderCoverage();
@@ -727,8 +719,8 @@
     else if(subSel==="__other__" && !sv) errs.push({id:"cSubOther",msg:"Enter your use case."});
     if(!needSel) errs.push({id:"cNeed",msg:"Choose a named need."});
     else if(needSel==="__other__" && !nd) errs.push({id:"cNeedOther",msg:"Enter your named need."});
-    ["cCompany","lWebsite","lHq","lWhat","lStage","lTraction","lFunding","lOwnership","lTier1"].forEach(function(f){
-      need(f,{cCompany:"Company name",lWebsite:"Website",lHq:"HQ / location",lWhat:"What it does",lStage:"Product stage",lTraction:"Traction",lFunding:"Funding",lOwnership:"Ownership",lTier1:"Tier-1 contact"}[f]);
+    ["cCompany","lWebsite","lHq","lWhat","lTier1"].forEach(function(f){
+      need(f,{cCompany:"Company name",lWebsite:"Website",lHq:"HQ / location",lWhat:"What it does",lTier1:"Tier-1 contact"}[f]);
     });
 
     // gate
@@ -755,8 +747,7 @@
     var nm=$("#subName").value.trim();
     var payload={action:"submitCompany",claimant_name:nm,challenge:ch,sub_vertical:sv,named_need:nd,
       company_name:$("#cCompany").value.trim(),website:$("#lWebsite").value.trim(),hq_location:$("#lHq").value.trim(),
-      what_it_does:$("#lWhat").value.trim(),product_stage:$("#lStage").value.trim(),
-      traction:$("#lTraction").value.trim(),funding:$("#lFunding").value.trim(),ownership:$("#lOwnership").value.trim(),
+      what_it_does:$("#lWhat").value.trim(),
       gate_result:gateResult,gate_fail_reason:$("#lGateFail").value.trim(),
       flag_us_domestic:usdom,s3b_note:usdom==="N"?$("#lS3b").value.trim():"",flag_mwbe:mwbe,
       relevance:rel,rationale:$("#lRationale").value.trim(),tier1_contact:$("#lTier1").value.trim(),
@@ -773,9 +764,9 @@
       // persist identity + lock challenge on first success
       name=nm; localStorage.setItem("pfnyc-dashboard:name",nm);
       if(!lockedChallenge){ lockedChallenge=ch; localStorage.setItem("pfnyc-dashboard:challenge",ch); renderChallengeLock(); }
-      showResult("ok","Submitted: “"+esc(payload.company_name)+"” is on the board (§3a "+r.gate_result+"). Add another, or check the Board tab.");
+      showResult("ok","Submitted: “"+esc(payload.company_name)+"” is on the board (§3a "+r.gate_result+"). Add another, or check the Sourcing Board tab.");
       // reset the company-specific fields, keep name + locked challenge
-      ["cCompany","lWebsite","lHq","lWhat","lStage","lTraction","lFunding","lOwnership","lTier1","lGateFail","lRationale","lPerson","lPersonRole","lPersonInfo","lNotes","lTakeaway","cSubOther","cNeedOther"].forEach(function(id){$("#"+id).value="";});
+      ["cCompany","lWebsite","lHq","lWhat","lTier1","lGateFail","lRationale","lPerson","lPersonRole","lPersonInfo","lNotes","lTakeaway","cSubOther","cNeedOther"].forEach(function(id){$("#"+id).value="";});
       $("#cSub").selectedIndex=0; refreshSubs();
       renderGate(); updateGateResult(); $("#s3bWrap").hidden=true;
       ["usdom","mwbe","rel"].forEach(function(n){ Array.prototype.forEach.call(document.getElementsByName(n),function(el){el.checked=false;}); });
@@ -816,7 +807,7 @@
     $("#pollNote").textContent=paused?"Auto-refresh paused. Use Refresh now to update.":"Auto-refreshes every 15 seconds.";
     if(paused) stopPoll(); else startPoll();
   });
-  $("#refreshBtn").addEventListener("click",function(){ refresh(true).then(function(){ announce("Board refreshed."); }); });
+  $("#refreshBtn").addEventListener("click",function(){ refresh(true).then(function(){ announce("Sourcing Board refreshed."); }); });
 
   /* ============ Nav ============ */
   Array.prototype.forEach.call(document.querySelectorAll("nav.views button"),function(b){
