@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Gybe Company Profile — PFNYC Environmental Tech Lab</title>
+
+<!--
+  THE GYBE COMPANY PROFILE — hover/focus field definitions (PFNYC ETL, Week 2, Step 2.1)
+  Self-contained, Notion-embeddable HTML reference. A fully worked company profile for
+  Gybe. Each Field name is a button: hover, focus (Tab), or tap it to reveal a short
+  definition of what that profile field means and why a sourcing scout captures it.
+
+  DESIGN: matches the PFNYC "Sourcing Glossary" artifact (glossary-of-key-terms.html) —
+  theme-aware (light/dark), Inter stack, indigo accent, .frame container, forced-colors
+  handling, 3px focus ring + halo.
+
+  ACCESSIBILITY (WCAG 2.2 AA — built to the accessibility-lead team's spec):
+  real <table> with <caption>, scope=col/row; each field is a <button> inside its
+  <th scope="row"> with a STATIC aria-describedby to a permanently-present role="tooltip"
+  span that carries a permanent aria-hidden="true" (announced once on focus, never
+  double-read as row-header context). The definition popover meets SC 1.4.13: it appears
+  on hover AND focus, is Dismissable (Esc, focus stays put), Hoverable (no gap + grace
+  timer), and Persistent (no auto-timeout). It is position:fixed so it escapes the
+  frame's overflow clip, flips up near the viewport bottom so it is never clipped, and
+  never renders over the focused trigger (SC 2.4.11). Field affordance is a dotted
+  underline (not color alone). Reduced-motion and forced-colors honored. Keep intact.
+-->
+
+<style>
+  :root {
+    --bg: #ffffff;
+    --frame: #f7f8fc;
+    --card: #ffffff;
+    --card-hover: #f2f4fb;
+    --border: #7b88ad;
+    --text: #1c2340;
+    --muted: #434c66;
+    --accent: #4338ca;
+    --chip-bg: #e7e6fb;
+    --chip-text: #362fa6;
+    --ring: #4338ca;
+    --ring-halo: rgba(67, 56, 202, 0.30);
+    --row-alt: #f4f5fb;
+    --shadow: 0 1px 2px rgba(28, 35, 64, 0.06), 0 2px 8px rgba(28, 35, 64, 0.06);
+    --tip-shadow: 0 6px 24px rgba(28, 35, 64, 0.18), 0 2px 6px rgba(28, 35, 64, 0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14182b;
+      --frame: #191e35;
+      --card: #212747;
+      --card-hover: #283056;
+      --border: #6f7aa8;
+      --text: #eaedf8;
+      --muted: #b3bad4;
+      --accent: #a9a6ff;
+      --chip-bg: #2c3159;
+      --chip-text: #c9caff;
+      --ring: #a9a6ff;
+      --ring-halo: rgba(169, 166, 255, 0.32);
+      --row-alt: #1c2240;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.30);
+      --tip-shadow: 0 8px 28px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.45);
+    }
+  }
+  /* Explicit theme override wins over the media default (host theme toggles stamp data-theme) */
+  :root[data-theme="light"] {
+    --bg: #ffffff; --frame: #f7f8fc; --card: #ffffff; --card-hover: #f2f4fb;
+    --border: #7b88ad; --text: #1c2340; --muted: #434c66; --accent: #4338ca;
+    --chip-bg: #e7e6fb; --chip-text: #362fa6; --ring: #4338ca; --ring-halo: rgba(67,56,202,0.30);
+    --row-alt: #f4f5fb;
+    --shadow: 0 1px 2px rgba(28,35,64,0.06), 0 2px 8px rgba(28,35,64,0.06);
+    --tip-shadow: 0 6px 24px rgba(28,35,64,0.18), 0 2px 6px rgba(28,35,64,0.12);
+  }
+  :root[data-theme="dark"] {
+    --bg: #14182b; --frame: #191e35; --card: #212747; --card-hover: #283056;
+    --border: #6f7aa8; --text: #eaedf8; --muted: #b3bad4; --accent: #a9a6ff;
+    --chip-bg: #2c3159; --chip-text: #c9caff; --ring: #a9a6ff; --ring-halo: rgba(169,166,255,0.32);
+    --row-alt: #1c2240;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 2px 10px rgba(0,0,0,0.30);
+    --tip-shadow: 0 8px 28px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    display: grid;
+    place-items: center;
+    padding: 12px;
+  }
+
+  .frame {
+    width: 100%;
+    max-width: 1040px;
+    max-height: calc(100vh - 24px);
+    background: var(--frame);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;              /* rounds the corners; position:fixed tooltips escape this */
+  }
+
+  .frame__head {
+    padding: 16px 22px 13px;
+    border-bottom: 1px solid var(--border);
+    flex: 0 0 auto;
+  }
+  .kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  h1 { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.2px; }
+  .instruction { font-size: 0.84rem; color: var(--muted); margin-top: 5px; max-width: 78ch; }
+  .instruction .hint {
+    font-weight: 700; color: var(--text);
+    text-decoration: underline dotted; text-underline-offset: 2px;
+  }
+
+  /* ---------- Scrollable table region ---------- */
+  .table-scroll {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 8px 12px 16px;
+    scrollbar-gutter: stable;
+  }
+  .table-scroll:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: -3px;
+    border-radius: 10px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 640px;              /* horizontal scroll on narrow screens, never stack */
+    font-size: 0.9rem;
+  }
+  caption {
+    text-align: left;
+    font-size: 0.8rem;
+    color: var(--muted);
+    padding: 6px 10px 12px;
+    caption-side: top;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--frame);
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+  }
+  tbody th, tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    text-align: left;
+  }
+  tbody tr:nth-child(even) th,
+  tbody tr:nth-child(even) td { background: var(--row-alt); }
+  tbody th[scope="row"] { width: 22%; min-width: 170px; font-weight: 700; }
+  td.entry { color: var(--text); }
+  td.tool  { width: 20%; min-width: 130px; color: var(--muted); font-size: 0.84rem; }
+  strong { font-weight: 700; }
+  em { font-style: italic; color: var(--muted); }
+  td.entry em { color: var(--muted); }
+  td.entry a { color: var(--accent); font-weight: 700; text-underline-offset: 2px; }
+  td.entry a:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--ring-halo);
+    border-radius: 4px;
+  }
+
+  /* ---------- Field trigger (the hover/focus/tap term) ---------- */
+  .field-cell { position: relative; display: inline-block; }
+  .field-term {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 700;
+    color: var(--text);
+    background: transparent;
+    border: 0;
+    padding: 2px 1px;
+    min-height: 24px;
+    line-height: 1.35;
+    text-align: left;
+    cursor: help;
+    scroll-margin-top: 52px;             /* keep a Tab-focused button clear of the sticky header (SC 2.4.11) */
+    text-decoration: underline dotted;   /* affordance is not color alone (SC 1.4.1) */
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1.5px;
+    text-decoration-color: var(--accent);
+  }
+  .field-term:hover { color: var(--accent); }
+  .field-term:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--ring-halo);
+    border-radius: 6px;
+  }
+  .field-term .cue {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 0.72em;
+    font-weight: 700;
+    color: var(--accent);
+    opacity: 0.75;
+  }
+
+  /* ---------- The definition popover (position:fixed, JS-placed) ---------- */
+  .field-tip {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    max-width: 320px;
+    width: max-content;
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);   /* kept always — sole separator in light mode */
+    border-radius: 10px;
+    box-shadow: var(--tip-shadow);
+    padding: 11px 13px;
+    font-size: 0.82rem;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .field-tip.is-open { display: block; }
+  .field-tip .tip-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .field-tip.is-open { animation: tip-in 0.13s ease; }
+    @keyframes tip-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    clip: rect(0 0 0 0); clip-path: inset(50%);
+    overflow: hidden; white-space: nowrap;
+  }
+
+  @media (forced-colors: active) {
+    .frame, table, thead th, tbody th, tbody td, .field-tip { border-color: CanvasText; }
+    .field-term { color: LinkText; }
+    .field-term:focus-visible { outline-color: Highlight; box-shadow: none; }
+    .table-scroll:focus-visible { outline-color: Highlight; }
+    .field-tip { background: Canvas; color: CanvasText; }
+    .field-term .cue, .field-tip .tip-label { color: CanvasText; }
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="frame__head">
+      <p class="kicker">PFNYC · Environmental Tech Lab</p>
+      <h1>The Completed Gybe Company Profile</h1>
+      <p class="instruction">
+        A fully worked profile you can copy from — every field answered, every claim sourced or
+        marked &ldquo;not publicly disclosed,&rdquo; each fact tagged with the tool behind it.
+        <span class="hint">Hover, tab to, or tap any field name</span> to see what that field
+        means and why a scout captures it. <em>Gybe is an ETL alumni example, so it&rsquo;s on the
+        live exclusion list — learn the shape, then point it at a brand-new company.</em>
+      </p>
+    </div>
+
+    <div class="table-scroll" role="region" aria-label="Gybe company profile table (scrollable)" tabindex="0">
+      <table>
+        <caption>Gybe company profile — the fields a sourcing scout fills, with the tool that confirmed each fact. Field names carry a definition on hover or focus.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Field</th>
+            <th scope="col">Entry</th>
+            <th scope="col">Tool behind it</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-name">Company name<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-name" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>The company&rsquo;s legal or brand name — your anchor. Every other fact in the profile is sourced and checked against this exact name.</span>
+              </span>
+            </th>
+            <td class="entry">Gybe</td>
+            <td class="tool">Company site</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-website">Website<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-website" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>The official company site. It&rsquo;s your primary source and the first link a reviewer clicks to sanity-check everything you wrote.</span>
+              </span>
+            </th>
+            <td class="entry"><a href="https://www.gybe.eco/home" target="_blank" rel="noopener noreferrer">gybe.eco/product<span class="visually-hidden"> (opens in a new tab)</span></a></td>
+            <td class="tool">Company site</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-hq">HQ / geography<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-hq" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>Where the company is headquartered. You source globally, so it&rsquo;s not a hard filter — but a US-based HQ earns a preferred-signal flag worth noting.</span>
+              </span>
+            </th>
+            <td class="entry">Wilmington, DE, USA. You source globally, so location isn&rsquo;t a hard rule — but Gybe being US-based earns the <strong>US-domestic preferred signal <span aria-hidden="true">✅</span></strong></td>
+            <td class="tool">Crunchbase / site</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-oneline">One-line description<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-oneline" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>A single plain-language sentence of what the company does. If you can&rsquo;t write it clearly, you don&rsquo;t understand the company well enough yet.</span>
+              </span>
+            </th>
+            <td class="entry">Machine-learning + satellite-imagery platform for continuous water-quality monitoring of reservoirs and source water.</td>
+            <td class="tool">Company site</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-does">What it does<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-does" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>A fuller, sourced account of the product and technology — the confirmed version, stripped of marketing adjectives.</span>
+              </span>
+            </th>
+            <td class="entry">Combines satellite imagery with ML models to monitor water quality across large water bodies without deploying dense in-water hardware. <em>Source: company site + PFNYC research case bank.</em></td>
+            <td class="tool">Company site + news</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-stage">Product stage<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-stage" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>How far along the product is: idea &rarr; beta &rarr; deployed/operational. ETL requires at least a working beta with active users.</span>
+              </span>
+            </th>
+            <td class="entry"><strong>Deployed / operational</strong> — well past beta. Ran a <strong>yearlong DEP pilot on the New Croton &amp; Muscoot reservoirs</strong> (~10% of NYC&rsquo;s drinking water). <em>Source: ETL outcomes.</em></td>
+            <td class="tool">Site + news</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-traction">Traction<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-traction" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>Real-world evidence the product works: named customers, live deployments, usage, or revenue. Your single strongest proof point.</span>
+              </span>
+            </th>
+            <td class="entry">&ge;1 real customer deployment (the NYC DEP reservoir pilot). Other named customers: <strong>not publicly disclosed — do not guess.</strong></td>
+            <td class="tool">Google News + site</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-funding">Funding<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-funding" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>How much the company has raised and at what round (Seed, Series A&hellip;). A fast read on its stage and runway.</span>
+              </span>
+            </th>
+            <td class="entry">~<strong>$3.32M</strong>, Seed-II round. <em>Source: Crunchbase.</em> Exact date/lead investor: <strong>not publicly disclosed.</strong></td>
+            <td class="tool">Crunchbase</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-ownership">Ownership<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-ownership" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>Whether the company is private and independent, or a subsidiary of a larger or public parent. The disqualifier beginners miss most — so you check it, never assume it.</span>
+              </span>
+            </th>
+            <td class="entry"><strong>Private, independent</strong> — no parent-company or public-listing cues found. <em>Checked: site footer + SEC EDGAR (no filings &rarr; private).</em></td>
+            <td class="tool">EDGAR + site footer</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-eligibility">Eligibility gates<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-eligibility" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>The pass/fail call on ETL&rsquo;s hard eligibility gates, built from the fields above. A company can only advance if it&rsquo;s a PASS.</span>
+              </span>
+            </th>
+            <td class="entry"><strong>PASS</strong> — legally formed VC-backed company <span aria-hidden="true">✅</span> · independent &amp; privately held <span aria-hidden="true">✅</span> · working product deployed to &ge;1 customer <span aria-hidden="true">✅</span> · early-to-growth stage (Seed-II) <span aria-hidden="true">✅</span></td>
+            <td class="tool">Built on the fields above</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-preferred">Preferred-signal flags<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-preferred" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>Optional pluses like US-domestic or M/WBE status. You flag them as a bonus, but never gate a company in or out on them.</span>
+              </span>
+            </th>
+            <td class="entry">US-domestic <span aria-hidden="true">✅</span> (Wilmington, DE). M/WBE status: <strong>not publicly disclosed.</strong></td>
+            <td class="tool">Crunchbase / site</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-rating">Relevance rating<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-rating" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>Your High / Medium / Low judgment of how well the company fits a specific DEP challenge use case.</span>
+              </span>
+            </th>
+            <td class="entry"><strong>High</strong> (Challenge 2 · Water Supply &amp; Environmental Field Monitoring)</td>
+            <td class="tool">Your rating (rubric)</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-rationale">Relevance rationale<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-rationale" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>The reasoning and sources behind the rating — why this fit is High, not merely a claim that it is.</span>
+              </span>
+            </th>
+            <td class="entry">Maps directly to Challenge 2&rsquo;s <strong>Water Supply &amp; Environmental Field Monitoring</strong> area — continuous monitoring of source-water/reservoir condition — and it&rsquo;s <em>proven with DEP itself</em> via a yearlong pilot on reservoirs supplying ~10% of NYC&rsquo;s drinking water. <em>Source: ETL challenge page + outcomes.</em></td>
+            <td class="tool">Your reasoning + sources</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-usecase">Use-case fit<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-usecase" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>The specific DEP challenge and named use case the company maps to. Naming the use case is what turns a hunch into a defensible match.</span>
+              </span>
+            </th>
+            <td class="entry">Challenge 2 · Water Supply &amp; Environmental Field Monitoring: source-water / reservoir quality monitoring.</td>
+            <td class="tool">Your reasoning</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-tier1">Contact — Tier 1<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-tier1" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>Company-level contact points only: the contact/partnerships page, a general inquiry email, and the HQ. No individuals at this tier.</span>
+              </span>
+            </th>
+            <td class="entry"> info@gybe.eco </td>
+            <td class="tool">Company site</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-tier2">Contact — Tier 2<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-tier2" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>Who to look for at the company (a role, e.g. founder/CEO or partnerships lead) and how to find them — captured within outreach rules: name, role, and LinkedIn only. No personal email, no outreach.</span>
+              </span>
+            </th>
+            <td class="entry">One contact shown on LinkedIn, Product leader: https://www.linkedin.com/in/omar-zurita/</td>
+            <td class="tool">Company site</td>
+          </tr>
+
+          <tr>
+            <th scope="row">
+              <span class="field-cell">
+                <button type="button" class="field-term" aria-describedby="tip-notes">Notes / uncertainty<span class="cue" aria-hidden="true">ⓘ</span></button>
+                <span role="tooltip" id="tip-notes" class="field-tip" aria-hidden="true"><span class="tip-label" aria-hidden="true">What this field is</span>Honest caveats and open questions — anything you couldn&rsquo;t confirm. This is where your judgment, and the limits of it, live.</span>
+              </span>
+            </th>
+            <td class="entry">Gybe&rsquo;s DEP pilot predates the 2026 challenge framing, so this is a &ldquo;best-illustrates&rdquo; example (it maps cleanly to Challenge 2&rsquo;s environmental-monitoring area), not a same-cycle placement; exact ETL cohort year unconfirmed; funding lead/date not disclosed.</td>
+            <td class="tool">Your judgment</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+  /* ============================================================================
+     Definition popovers — SC 1.4.13 (Content on Hover or Focus) + keyboard.
+     One controller per (button, tooltip) pair. The tooltip is permanently in the
+     DOM with a static aria-describedby + permanent aria-hidden; JS only toggles a
+     visibility class and computes position:fixed placement (escapes overflow clips).
+     ============================================================================ */
+  (function () {
+    'use strict';
+    var GRACE = 120;          // ms grace so the pointer can travel trigger -> bubble
+    var GAP = 6;              // px between trigger and bubble (kept small; no dead zone)
+    var MARGIN = 8;           // px min gap from viewport edge
+    var openCtrl = null;      // the single currently-open controller
+
+    function Ctrl(btn) {
+      this.btn = btn;
+      this.tip = document.getElementById(btn.getAttribute('aria-describedby'));
+      this.hoverOpen = false;
+      this.focusOpen = false;
+      this.dismissed = false;   // Esc latch; cleared on next blur / re-hover
+      this.justFocused = false; // consumes the click that a tap's own focus generates
+      this.timer = null;
+      this.bind();
+    }
+    Ctrl.prototype.visible = function () {
+      return (this.hoverOpen || this.focusOpen) && !this.dismissed;
+    };
+    Ctrl.prototype.clearTimer = function () {
+      if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+    };
+    Ctrl.prototype.place = function () {
+      var tip = this.tip;
+      // Make measurable first (it's already display:block via .is-open).
+      tip.style.left = '0px';
+      tip.style.top = '0px';
+      var r = this.btn.getBoundingClientRect();
+      var tw = tip.offsetWidth, th = tip.offsetHeight;
+      var vw = document.documentElement.clientWidth;
+      var vh = document.documentElement.clientHeight;
+
+      // Horizontal: align to trigger's left, clamp inside the viewport.
+      var left = Math.min(r.left, vw - tw - MARGIN);
+      left = Math.max(MARGIN, left);
+
+      // Vertical: below by default; flip above when it would clip the bottom.
+      var top = r.bottom + GAP;
+      if (top + th + MARGIN > vh && (r.top - GAP - th) >= MARGIN) {
+        top = r.top - GAP - th;   // flip up — never over the trigger (SC 2.4.11)
+      }
+      tip.style.left = Math.round(left) + 'px';
+      tip.style.top = Math.round(top) + 'px';
+    };
+    Ctrl.prototype.render = function () {
+      var show = this.visible();
+      if (show) {
+        if (openCtrl && openCtrl !== this) openCtrl.forceClose();
+        openCtrl = this;
+        this.tip.classList.add('is-open');
+        this.place();
+      } else {
+        this.tip.classList.remove('is-open');
+        if (openCtrl === this) openCtrl = null;
+      }
+    };
+    Ctrl.prototype.forceClose = function () {
+      this.clearTimer();
+      this.hoverOpen = false;
+      this.focusOpen = false;
+      this.tip.classList.remove('is-open');
+      if (openCtrl === this) openCtrl = null;
+    };
+    Ctrl.prototype.bind = function () {
+      var self = this;
+
+      // Hover — Hoverable: grace timer, cancelled by entering the bubble.
+      this.btn.addEventListener('mouseenter', function () {
+        self.clearTimer(); self.dismissed = false; self.hoverOpen = true; self.render();
+      });
+      this.btn.addEventListener('mouseleave', function () {
+        self.clearTimer();
+        self.timer = setTimeout(function () { self.hoverOpen = false; self.render(); }, GRACE);
+      });
+      this.tip.addEventListener('mouseenter', function () { self.clearTimer(); });
+      this.tip.addEventListener('mouseleave', function () {
+        self.clearTimer();
+        self.timer = setTimeout(function () { self.hoverOpen = false; self.render(); }, GRACE);
+      });
+
+      // Focus — appears on focus; closes on blur (synchronous, clears Esc latch).
+      this.btn.addEventListener('focus', function () {
+        self.dismissed = false; self.focusOpen = true; self.justFocused = true; self.render();
+      });
+      this.btn.addEventListener('blur', function () {
+        self.focusOpen = false; self.dismissed = false; self.justFocused = false; self.render();
+      });
+
+      // Dismissable — Esc hides without moving focus; only swallow the key if a tip was open.
+      this.btn.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+          if (self.visible()) {
+            e.stopPropagation();
+            self.dismissed = true;
+            self.render();
+          }
+        }
+      });
+
+      // Touch / click — the tap's own focus fires first and already opened the tip,
+      // so consume that click; later taps toggle it closed/open.
+      this.btn.addEventListener('click', function () {
+        if (self.justFocused) { self.justFocused = false; return; }
+        self.dismissed = !self.dismissed;
+        self.render();
+      });
+    };
+
+    var ctrls = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.field-term[aria-describedby]'), function (btn) {
+      ctrls.push(new Ctrl(btn));
+    });
+
+    // Keep an open bubble glued to its trigger while scrolling/resizing.
+    function reposition() { if (openCtrl && openCtrl.visible()) openCtrl.place(); }
+    window.addEventListener('scroll', reposition, true);
+    window.addEventListener('resize', reposition);
+
+    // Outside tap on touch closes the open bubble.
+    document.addEventListener('touchstart', function (e) {
+      if (openCtrl && !e.target.closest('.field-cell')) openCtrl.forceClose();
+    }, { passive: true });
+  })();
+  </script>
+</body>
+</html>
