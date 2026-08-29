@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crunchbase Key Terms | PFNYC Environmental Tech Lab</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --frame: #f7f8fc;
+    --card: #ffffff;
+    --border: #7b88ad;
+    --term-bg: #eef0fb;
+    --text: #1c2340;
+    --muted: #434c66;
+    --accent: #4338ca;
+    --shadow: 0 1px 2px rgba(28, 35, 64, 0.06), 0 2px 8px rgba(28, 35, 64, 0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14182b;
+      --frame: #191e35;
+      --card: #212747;
+      --border: #6f7aa8;
+      --term-bg: #2a3157;
+      --text: #eaedf8;
+      --muted: #b3bad4;
+      --accent: #a9a6ff;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.30);
+    }
+  }
+  /* Explicit theme override wins over the media default (host theme toggles stamp data-theme) */
+  :root[data-theme="light"] {
+    --bg: #ffffff; --frame: #f7f8fc; --card: #ffffff; --border: #7b88ad;
+    --term-bg: #eef0fb; --text: #1c2340; --muted: #434c66; --accent: #4338ca;
+    --shadow: 0 1px 2px rgba(28,35,64,0.06), 0 2px 8px rgba(28,35,64,0.06);
+  }
+  :root[data-theme="dark"] {
+    --bg: #14182b; --frame: #191e35; --card: #212747; --border: #6f7aa8;
+    --term-bg: #2a3157; --text: #eaedf8; --muted: #b3bad4; --accent: #a9a6ff;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 2px 10px rgba(0,0,0,0.30);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    display: grid;
+    place-items: center;
+    padding: 12px;
+  }
+
+  .frame {
+    width: 100%;
+    max-width: 900px;
+    background: var(--frame);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .frame__head {
+    padding: 16px 20px 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.2px; }
+  .instruction { font-size: 0.84rem; color: var(--muted); margin-top: 3px; }
+
+  /* ---------- Landscape term rows (wide rectangles: term | definition) ---------- */
+  dl.terms {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 20px 20px;
+  }
+  .term {
+    display: flex;
+    align-items: stretch;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .term__name {
+    flex: 0 0 190px;
+    display: flex;
+    align-items: center;
+    background: var(--term-bg);
+    border-right: 1px solid var(--border);
+    padding: 12px 16px;
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: -0.1px;
+    color: var(--text);
+  }
+  .term__def {
+    flex: 1 1 auto;
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    color: var(--text);
+    align-self: center;
+  }
+  .term__def strong { font-weight: 700; color: var(--accent); }
+
+  /* Stack term above definition on narrow viewports */
+  @media (max-width: 540px) {
+    .term { flex-direction: column; }
+    .term__name {
+      flex-basis: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .frame, .term { border-color: ButtonText; }
+    .term__name { border-right-color: ButtonText; border-bottom-color: ButtonText; }
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <main aria-labelledby="terms-h1">
+      <div class="frame__head">
+        <p class="kicker">PFNYC · Environmental Tech Lab</p>
+        <h1 id="terms-h1">Crunchbase: Key Terms</h1>
+        <p class="instruction">Four words you&rsquo;ll meet on a Crunchbase profile. Skim them, then keep this open while you read a company.</p>
+      </div>
+
+      <dl class="terms">
+        <div class="term">
+          <dt class="term__name">Funding round</dt>
+          <dd class="term__def">One event where a company raises money from investors. Rounds have names that roughly track how early the company is.</dd>
+        </div>
+        <div class="term">
+          <dt class="term__name">Seed round</dt>
+          <dd class="term__def">Usually a company&rsquo;s first meaningful outside funding &mdash; very early stage.</dd>
+        </div>
+        <div class="term">
+          <dt class="term__name">Series A</dt>
+          <dd class="term__def">Typically the next major round after seed, once a company has some traction and is scaling.</dd>
+        </div>
+        <div class="term">
+          <dt class="term__name">Paywall</dt>
+          <dd class="term__def">A field or page a site blocks unless you pay for a subscription.</dd>
+        </div>
+      </dl>
+    </main>
+  </div>
+</body>
+</html>
