@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- title is also set from DECK.title by script; this is the no-JS fallback -->
+<title>Blind-Score Your Challenge Set — Interactive</title>
+
+<!--
+  BLIND-SCORE YOUR CHALLENGE SET (PFNYC Week 2, Step 2.5 "Calibrate")
+  Self-contained, embeddable HTML activity. The learner picks the ONE challenge set
+  they locked in Week 1, then evaluates each real-style company one at a time: reads
+  the public snippets (left column), then commits an eligibility-gate call, a relevance
+  rating, and a one-line reason (right column). This is a BLIND capture tool — there is
+  NO correct/incorrect feedback; the reveal comes on the next Notion page. The tool only
+  records and locks the learner's calls, persists them to localStorage, and lets them
+  copy the set of calls to the clipboard before moving on.
+
+  Style: the Extern 5-color light design system + the two sibling PFNYC tools —
+  the relevance-decoder (Module 1) slide engine, and the sourcing-dashboard's form inputs.
+
+  CUSTOMISE: edit only the DECK object (search "EDIT BELOW"). Everything under the
+  "DO NOT EDIT" banner is the generic capture engine.
+
+  PALETTE: exactly five tokens (--bg, --highlight, --on-highlight, --body, --title).
+  Do not add a sixth. State (recorded / required) is carried by TEXT, never by color.
+
+  DEPLOY: host on GitHub Pages (github-pages-deployer) and embed in Notion via
+  <embed src="https://…/pfnyc-blind-score.html">. Notion's embed can't set an iframe
+  title — known platform residual (WCAG 2.4.1/4.1.2); the in-page <title> mitigates.
+
+  ACCESSIBILITY (WCAG 2.2 AA — designed to the accessibility-lead team's pre-build spec):
+  BLIND CAPTURE, not a quiz — no grading vocabulary, no verdict glyphs, no answer reveal,
+  no attempts/safety-valve; announcements confirm capture only, never correctness. Focus
+  moves to each slide heading on change; inactive slides are hidden (out of tab order + a11y
+  tree); a persistent polite live region confirms saves and a persistent assertive region
+  reports what's still needed + copy failures; the gate and relevance pickers are real
+  radiogroups (role=radiogroup, aria-checked, roving tabindex) and stay EDITABLE (never
+  locked) so a learner can change a call before the reveal; the conditional "which criterion"
+  select is toggled with the hidden attribute (out of the a11y tree when gate=PASS) and never
+  steals focus on arrow-roving; real <label for> on every text field; Next uses aria-disabled +
+  a described "not finished" reason (capture wording, not "wrong") and, when pressed while
+  incomplete, announces + moves focus to the first missing field; the summary is a real table
+  with a caption, scope=col headers and scope=row company cells; at ≤640px / 400% zoom the
+  fixed canvas becomes a fluid scrolling stack (snippets before form in DOM order). Keep these
+  intact — they are requirements, not polish.
+-->
+
+<style>
+  /* ---------------------------------------------------------------
+     Extern design system. These five values are the entire palette.
+     Do not add a sixth.
+     --------------------------------------------------------------- */
+  :root{
+    --highlight:#DCE1FF;    /* cards, panels, highlighted blocks   */
+    --on-highlight:#001D69; /* accents, active state, nav buttons  */
+    --bg:#FDF8F8;           /* canvas background, negative space   */
+    --body:#484646;         /* body copy, captions                 */
+    --title:#1C1B1B;        /* headings, primary text              */
+
+    --t-fast:160ms;
+    --t-frame:300ms;
+    --ease-out:cubic-bezier(.2,.7,.3,1);
+    font-size:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg)}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:var(--body)}
+
+  /* visually-hidden but available to assistive tech */
+  .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+  /* focus ring — navy on light surfaces (clears 3:1 on every surface in this palette) */
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
+  textarea:focus-visible,[role="radio"]:focus-visible,[tabindex]:focus{
+    outline:3px solid var(--on-highlight);outline-offset:2px;border-radius:8px}
+  /* on navy-filled controls invert: light inner ring + navy outer halo so it shows on the fill */
+  .btn:focus-visible,.navbtn:focus-visible{
+    outline:2px solid var(--bg);outline-offset:-6px;box-shadow:0 0 0 2px var(--on-highlight)}
+  .navbtn[aria-disabled="true"]:focus-visible{
+    outline:2px solid var(--on-highlight);outline-offset:2px;box-shadow:none}
+
+  #deck-wrapper{width:960px;height:540px;overflow:hidden;position:relative;flex-shrink:0;background:var(--bg)}
+  .slide{width:960px;height:492px;padding:26px 46px 14px;position:absolute;inset:0;display:none;flex-direction:column;overflow:auto}
+  .slide.active{display:flex}
+
+  h1{font-size:2rem;font-weight:800;line-height:1.15;color:var(--title)}
+  h2{font-size:1.4rem;font-weight:800;color:var(--title)}
+  h3{font-size:1rem;font-weight:800;color:var(--title);letter-spacing:.01em}
+  .muted{color:var(--body)}
+  .btn{appearance:none;border:2px solid var(--on-highlight);border-radius:10px;padding:11px 19px;
+    font-size:.94rem;font-weight:700;cursor:pointer;background:var(--on-highlight);color:var(--bg);
+    transition:filter var(--t-fast) var(--ease-out)}
+  .btn:hover{text-decoration:underline}                    /* underline only — stay within the 5-color palette */
+  .btn[aria-disabled="true"]{background:var(--bg);color:var(--body);border-color:var(--body);cursor:not-allowed}
+  .btn.ghost{background:transparent;border:2px solid var(--on-highlight);color:var(--on-highlight)}
+
+  .roundtag{display:inline-block;width:fit-content;font-size:.72rem;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--on-highlight);background:var(--highlight);
+    border:1px solid var(--on-highlight);padding:4px 11px;border-radius:20px}
+
+  /* ---- bottom nav ---- */
+  #nav{position:absolute;left:24px;right:24px;bottom:8px;display:flex;align-items:center;gap:14px;z-index:5}
+  .navbtn{appearance:none;border:2px solid var(--on-highlight);background:var(--on-highlight);color:var(--bg);
+    border-radius:9px;padding:7px 16px;font-size:.81rem;font-weight:700;cursor:pointer}
+  .navbtn:hover{text-decoration:underline}
+  .navbtn[aria-disabled="true"]{background:var(--bg);color:var(--body);border-color:var(--body);cursor:not-allowed}
+  .navbtn.ready{animation:pu 1.3s var(--ease-out) infinite}   /* motion cue, not color — reduced-motion swaps to a static ring */
+  @keyframes pu{50%{transform:translateY(-1px) scale(1.03)}}
+  #pos{font-size:.72rem;color:var(--body);font-weight:700;letter-spacing:.03em}
+  #dots{display:flex;gap:6px;margin:0 auto;flex-wrap:wrap;max-width:60%;justify-content:center}
+  .dt{width:7px;height:7px;border-radius:50%;background:transparent;border:1.5px solid var(--body)}
+  .dt.on{background:var(--on-highlight);border-color:var(--on-highlight)}
+
+  /* ---- title / set-picker slide ---- */
+  .s-title{justify-content:center;gap:14px}
+  .s-title h1{display:flex;align-items:baseline;gap:.3em;flex-wrap:wrap}
+  .s-title .emoji{font-size:1.05em}
+  .warnbox{font-size:.9rem;line-height:1.5;color:var(--title);background:var(--highlight);
+    border-left:4px solid var(--on-highlight);border-radius:0 10px 10px 0;padding:11px 15px;max-width:80ch}
+
+  /* ---- generic option pickers (set picker, gate, relevance) reuse one look ---- */
+  .opts{display:grid;gap:9px;margin-top:8px}
+  .opts.two{grid-template-columns:repeat(2,1fr)}
+  .opt{border:1.5px solid var(--body);background:var(--bg);border-radius:11px;padding:11px 14px;
+    font-size:.9rem;font-weight:700;color:var(--title);cursor:pointer;display:flex;align-items:flex-start;gap:9px;
+    text-align:left;transition:border-color var(--t-fast) var(--ease-out),background var(--t-fast) var(--ease-out)}
+  .opt:hover{border-color:var(--on-highlight)}
+  .opt .otext{flex:1;display:flex;flex-direction:column;gap:2px}
+  .opt .olab{font-weight:800}
+  .opt .oq{font-weight:400;font-size:.76rem;color:var(--body);line-height:1.35}
+  .opt .chk{margin-left:auto;font-weight:800;font-size:.72rem;color:var(--on-highlight);opacity:0;white-space:nowrap;flex-shrink:0}
+  .opt[aria-checked="true"]{background:var(--highlight);border-color:var(--on-highlight);
+    box-shadow:inset 0 0 0 1px var(--on-highlight)}
+  .opt[aria-checked="true"] .chk{opacity:1}
+
+  /* ---- company slide: two columns ---- */
+  .co-head{margin-bottom:8px}
+  .co-focus{font-size:.8rem;color:var(--body);line-height:1.4;margin-top:5px;max-width:96ch}
+  .co-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;align-items:start}
+  .co-col h3{margin-bottom:7px}
+  .co-snip{background:var(--highlight);border:1px solid var(--on-highlight);border-radius:12px;
+    padding:12px 15px}
+  .snip-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .snip-list li{font-size:.86rem;line-height:1.45;color:var(--title)}
+  .snip-list .src{font-weight:800;color:var(--on-highlight)}
+  .co-hint{font-size:.76rem;color:var(--body);margin-top:8px;line-height:1.4}
+
+  /* right column form */
+  .field{margin:0 0 12px}
+  .field > .flab{display:block;font-weight:800;color:var(--title);font-size:.9rem;margin:0 0 5px}
+  .flab .step{color:var(--on-highlight);font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:1px}
+  .req{font-weight:700;color:var(--on-highlight);font-size:.78rem}
+  select,input[type=text]{width:100%;max-width:100%;font:inherit;font-size:.88rem;color:var(--title);
+    background:var(--bg);border:2px solid var(--on-highlight);border-radius:9px;padding:9px 10px;min-height:42px}
+  .fhint{font-size:.76rem;color:var(--body);margin-top:4px;line-height:1.35}
+  .opts.gate,.opts.rel{grid-template-columns:1fr 1fr}
+  .opts.gate .opt,.opts.rel .opt{padding:9px 11px;font-size:.85rem}
+  .saved-tick{font-size:.78rem;font-weight:800;color:var(--on-highlight);margin-top:6px;opacity:0}
+  .saved-tick.show{opacity:1}
+
+  /* ---- reflection slide ---- */
+  .s-reflect{gap:6px}
+  .reflect-note{font-size:.9rem;color:var(--body);line-height:1.5;max-width:80ch}
+
+  /* ---- summary / done slide ---- */
+  .sum-set{font-size:.95rem;font-weight:700;color:var(--title);margin:2px 0 8px}
+  .sum-scroll{overflow-x:auto;border:1px solid var(--on-highlight);border-radius:11px}
+  table.sum{border-collapse:collapse;width:100%;min-width:720px}
+  table.sum caption{text-align:left;padding:9px 12px;font-weight:700;color:var(--title);font-size:.9rem}
+  table.sum thead th{position:sticky;top:0;background:var(--highlight);color:var(--on-highlight);
+    text-align:left;border-bottom:2px solid var(--on-highlight);padding:8px 10px;font-size:.8rem}
+  table.sum tbody th,table.sum tbody td{border-bottom:1px solid var(--on-highlight);padding:8px 10px;
+    font-size:.83rem;vertical-align:top;color:var(--title)}
+  table.sum tbody th[scope=row]{text-align:left;font-weight:800;white-space:nowrap}
+  table.sum tbody td .reason{white-space:normal;line-height:1.4}
+  .sum-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0 8px}
+  .bridge{font-size:1rem;font-weight:700;padding:12px 16px;border-left:4px solid var(--on-highlight);
+    background:var(--highlight);border-radius:0 10px 10px 0;line-height:1.5;color:var(--title);max-width:92ch}
+
+  /* ================= REFLOW / MOBILE FALLBACK (≤640px CSS width, ≈400% zoom) =================
+     Abandon the fixed 960x540 scaled canvas: fluid, vertically-scrolling, ALL slides visible,
+     no transform, no gating. Content parity with desktop; DOM order = reading order. ---------- */
+  @media (max-width:640px){
+    html,body{overflow:auto;height:auto}
+    #deck-wrapper{width:100%;height:auto;overflow:visible;transform:none!important}
+    .slide{position:relative;inset:auto;width:100%;height:auto;min-height:auto;padding:20px 16px 30px;
+      display:flex!important;border-bottom:1px solid var(--on-highlight)}
+    .co-grid{grid-template-columns:1fr;gap:14px}      /* snippets (first in DOM) stack above the form */
+    .opts.two,.opts.gate,.opts.rel{grid-template-columns:1fr}
+    #nav{display:none}            /* no deck nav in scroll mode */
+  }
+
+  /* ================= REDUCED MOTION ================= */
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    .navbtn.ready{animation:none;outline:2px solid var(--on-highlight);outline-offset:2px}  /* static ready cue */
+  }
+</style>
+</head>
+<body>
+
+<!-- persistent live regions: present + empty at load, OUTSIDE the swappable slide DOM -->
+<div id="lr-polite" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="lr-alert"  class="sr-only" role="alert"  aria-live="assertive" aria-atomic="true"></div>
+
+<div id="deck-wrapper">
+
+  <!-- S0 TITLE + SET PICKER (built by JS; heading present for no-JS) -->
+  <section class="slide s-title active" id="sl0" aria-roledescription="slide"></section>
+
+  <!-- company / reflection / summary shells are generated by JS into #deck-wrapper after Start -->
+
+  <div id="nav">
+    <button class="navbtn" id="prevb" type="button">← Back</button>
+    <span id="pos" aria-hidden="true"></span>
+    <div id="dots" aria-hidden="true"></div>
+    <button class="navbtn" id="nextb" type="button">Next →</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   EDIT BELOW — this DECK object is the only thing you change per program.
+   ============================================================================ */
+const DECK = {
+  /* Unique per embed. Namespaces every id + the localStorage save key. Kebab-case. */
+  deckId: 'pfnyc-blind-score',
+
+  emoji: '⚖️',
+  title: 'Blind-Score Your Challenge Set',
+  intro: "Read the public snippets for a set of real companies and make your call on each — "
+       + "pass or fail the eligibility gate, then a relevance rating — all <b>before</b> you see "
+       + "what actually happened to them. Move fast, commit to an answer, and resist the urge to "
+       + "look ahead. The reveal comes on the next page.",
+  warn: "Do not look ahead. A call you already know the answer to teaches you nothing — score first, reveal second.",
+  pickLegend: "Which challenge set are you scoring?",
+  pickHint: "Back in Week 1 you locked one of the three challenges. Score that set. (You can read the others after you submit.)",
+  startLabel: 'Start scoring →',
+
+  /* ---- the eligibility gate: five pass/fail criteria (any one FAIL excludes the company) ----
+     These are the options in the conditional "which criterion" select. */
+  gateCriteria: [
+    { key:'legal',       label:'Legally formed entity' },
+    { key:'independent', label:'Independent & privately held (not public; not a subsidiary of a public company)' },
+    { key:'deployed',    label:'Working, deployed product (at least one real customer)' },
+    { key:'stage',       label:'Early-to-growth stage' },
+    { key:'challenge',   label:'Solves a published DEP challenge' },
+  ],
+
+  /* the gate-call picker (radiogroup) */
+  gateOptions: [
+    { key:'PASS', label:'Pass',         q:'Clears all five gate criteria from the snippets.' },
+    { key:'FAIL', label:'Fail',         q:'Misses at least one criterion — name which one.' },
+    { key:'HOLD', label:'Hold to check', q:"Can't confirm one criterion yet — name what you'd verify." },
+  ],
+
+  /* the relevance picker (radiogroup) */
+  relOptions: [
+    { key:'High',    label:'High',    q:'Lands squarely on a challenge use case — direct, specific, real evidence.' },
+    { key:'Medium',  label:'Medium',  q:'A real fit, but partial, indirect, or unproven.' },
+    { key:'Low',     label:'Low',     q:'Only just in scope — thin or borderline.' },
+    { key:'Exclude', label:'Exclude', q:'Fails the gate, or maps to no DEP use case. A great product PFNYC can’t take is still an exclude.' },
+  ],
+
+  /* ---- the three challenge sets ----
+     Each set: the challenge name, a one-line "use cases" focus reminder, and its companies.
+     company.id : the label shown ("Company 1-A") — no real names, this is blind sourcing practice.
+     company.snips : [{src, text}] public-record snippets, rendered left, read-only. */
+  sets: {
+    '1': {
+      name: 'Challenge 1 — Planning, Data & Field Operations',
+      count: 3,
+      focus: "Challenge 1 asks how startups can make DEP’s planning, cost-estimation, field-data, and admin-review work "
+           + "faster and more data-driven — across five use cases: Extreme Heat (crew safety), Field Operations, "
+           + "Cybersecurity (OT/SCADA + AI governance), Modelling, and Capital Planning & Data. A fit to any of the five "
+           + "can be High — don’t down-rate a company just because it isn’t a physical sensor.",
+      companies: [
+        { id:'Company 1-A', snips:[
+          {src:'From the site', text:'“We pull scattered construction and capital-project records — drawings, contracts, closeout documents — into one searchable place for infrastructure owners and operators.”'},
+          {src:'From Crunchbase', text:'“Headquarters: New York, NY. Stage: Seed. Investor: LDV Capital.”'},
+          {src:'From the site footer', text:'“© [Company] Inc.” — no ticker symbol, no “a [Parent] company” line.'},
+          {src:'A search of SEC EDGAR', text:'returns no filings.'},
+        ]},
+        { id:'Company 1-B', snips:[
+          {src:'From the site', text:'“Our AI builds a ‘digital twin’ of an organization’s operational-technology (OT) control systems and maps how an attacker could move through them. We serve critical-infrastructure operators.” (The site names energy, manufacturing, government/defense, and healthcare as sectors — it does not name water or wastewater.)'},
+          {src:'From Crunchbase / press', text:'“Headquarters: Charlotte, NC. ~$3.9M seed (DataTribe, Jan 2025), plus an extension — roughly $6.4M raised. Private, independent.”'},
+          {src:'A note you spot', text:'one startup directory lists the HQ as “Fulton, MD” — but that’s the investor’s address, not the company’s. Primary sources say Charlotte, NC.'},
+          {src:'SEC EDGAR', text:'no filings; footer shows no parent-company line and no ticker.'},
+        ]},
+        { id:'Company 1-C', snips:[
+          {src:'From the site', text:'“We harden and monitor the operational-technology (OT/SCADA) systems that run industrial and utility operations — asset inventory, vulnerability detection, and patch management for control networks.” (A genuinely strong OT-security product.)'},
+          {src:'From press', text:'“[Company] is a subsidiary of Rockwell Automation (NYSE: ROK).”'},
+          {src:'From the site footer', text:'“A Rockwell Automation business.”'},
+          {src:'SEC EDGAR', text:'filings exist under the parent, Rockwell Automation.'},
+        ]},
+      ],
+    },
+    '2': {
+      name: 'Challenge 2 — Asset Condition & Failure Prevention',
+      count: 3,
+      focus: "Challenge 2 asks how startups can help DEP detect problems in its pipes, equipment, and infrastructure early — "
+           + "before failures, breaks, or downtime — across four use cases: Pipe/Main/Aqueduct Integrity, Treatment Plant & "
+           + "Process Health, Coastal Resilience, and Water Supply & Environmental Field Monitoring. A fit to any of these can be High.",
+      companies: [
+        { id:'Company 2-A', snips:[
+          {src:'From the site', text:'“We map and document underground infrastructure — locating and recording buried pipe and utilities that owners have lost track of, without excavation.”'},
+          {src:'From Crunchbase', text:'“Headquarters: Boston, MA. Stage: early / pre-seed–seed.”'},
+          {src:'From a project write-up', text:'“Our system has been run on a live wastewater treatment facility site.” (No scale, customer name, or results are stated.)'},
+          {src:'From the site footer', text:'“© [Company]” — no ticker, no parent-company line. SEC EDGAR: no filings.'},
+        ]},
+        { id:'Company 2-B', snips:[
+          {src:'From the site', text:'“We make solar-powered wireless water-level sensors with real-time alerting for stormwater and sewer systems.”'},
+          {src:'From press', text:'“Deployed across municipal sites — New Orleans (27 sensors), Chicago (50), and Dearborn, MI.”'},
+          {src:'From Crunchbase', text:'“Headquarters: Ann Arbor, MI. Seed (~$1M): NSF SBIR grant, Druid Ventures, Great Lakes Protection Fund. Private, independent.”'},
+          {src:'SEC EDGAR', text:'no filings; footer shows no parent-company line and no ticker.'},
+        ]},
+        { id:'Company 2-C', snips:[
+          {src:'From the site', text:'“We provide real-time detection of combined sewer overflow (CSO) discharges — start and stop time, overflow rate, and total volume — for utilities and municipalities.” (A CSO is when rain overwhelms the sewers and stormwater plus sewage spills into waterways. This is the most CSO-specific product in the set.)'},
+          {src:'From press (Jan 2025)', text:'“[Company] was acquired for $185M and is now operated as a business of Badger Meter (NYSE: BMI).”'},
+          {src:'From the site footer', text:'“A Badger Meter company.”'},
+          {src:'SEC EDGAR', text:'filings exist under the parent, Badger Meter.'},
+        ]},
+      ],
+    },
+    '3': {
+      name: 'Challenge 3 — Resource & Energy Recovery',
+      count: 6,
+      focus: "Challenge 3 asks how DEP can capture more value from its wastewater and sewer systems — recovering usable "
+           + "energy, heat, and materials — across two theme use cases: Measurement & Planning and Recovery & Conversion. "
+           + "This extended set of six has three strong candidates and three ownership traps: each trap has a genuinely "
+           + "strong product, and there are three different ways ownership can fail. Product fit doesn’t override an ownership problem.",
+      companies: [
+        { id:'Company 3-A', snips:[
+          {src:'From the site', text:'“Contactless, real-time monitoring of sewer flow and wastewater quality — clip-on sensors stream flow rate, temperature, and contaminant signals from inside the network.”'},
+          {src:'From Crunchbase', text:'“Headquarters: Netanya, Israel. ~$30–36M raised (OurCrowd, Bridges). Private, independent.”'},
+          {src:'From the site footer', text:'no ticker, no parent-company line.'},
+          {src:'SEC EDGAR', text:'no U.S. filings.'},
+        ]},
+        { id:'Company 3-B', snips:[
+          {src:'From the site', text:'“Our MagPrex system recovers struvite (a phosphorus-and-ammonium mineral) from wastewater solids, turning a clogging nuisance into a recoverable fertilizer material.”'},
+          {src:'From press', text:'“Deployed at Denver Metro’s water-resource-recovery facility.”'},
+          {src:'From Crunchbase', text:'“Headquarters: Kenosha, WI. Privately held — reacquired by its management team (terms undisclosed).”'},
+          {src:'SEC EDGAR', text:'no filings; footer shows no ticker and no public-parent line.'},
+        ]},
+        { id:'Company 3-C', snips:[
+          {src:'From the site', text:'“We convert biogas from wastewater treatment into PHA bioplastic — a biodegradable material — using methane-eating microbes.”'},
+          {src:'From press', text:'“Runs off the biogas at a municipal wastewater plant; pilot-stage. Woman-founded. SBIR grants plus venture funding.”'},
+          {src:'From Crunchbase', text:'“Headquarters: San Leandro, CA. Private, independent. Total raised: not publicly disclosed.”'},
+          {src:'SEC EDGAR', text:'no filings; no ticker, no parent line.'},
+        ]},
+        { id:'Company 3-D', snips:[
+          {src:'From the site', text:'“Sewer flow monitoring and metering for utilities and municipalities — a long-established line of flow-measurement hardware and analytics.” (Near-identical product category to Company 3-A.)'},
+          {src:'From press', text:'“[Company] is a business unit of IDEX Corporation (NYSE: IEX).”'},
+          {src:'From the site footer', text:'“Part of IDEX.”'},
+          {src:'SEC EDGAR', text:'filings exist under the parent, IDEX Corporation. (Also reads as a mature, large operation, not early-stage.)'},
+        ]},
+        { id:'Company 3-E', snips:[
+          {src:'From the site', text:'“We recover nutrients from wastewater as struvite-based fertilizer — a widely deployed municipal nutrient-recovery process.” (Same struvite category as Company 3-B; strong product.)'},
+          {src:'From Crunchbase / press', text:'“Headquarters: Vancouver, Canada. $70M Series C. Wholly owned by Wheatsheaf Group / Grosvenor — a private holding company. Not publicly listed.”'},
+          {src:'A search of SEC EDGAR', text:'no filings; no stock ticker anywhere. (The parent is genuinely private.)'},
+        ]},
+        { id:'Company 3-F', snips:[
+          {src:'From the site', text:'“We recover heat from wastewater flowing through sewers to heat and cool buildings — sewer heat recovery, deployed on real projects.” (Strong, on-point product for the sewer-heat-recovery need.)'},
+          {src:'From press', text:'“[Company] trades publicly — CSE: SHRC / OTCQB: INTWF.”'},
+          {src:'A search of SEC EDGAR / exchange listings', text:'the company itself is publicly traded.'},
+        ]},
+      ],
+    },
+  },
+
+  /* ---- reflection slide ---- */
+  reflect: {
+    heading: 'One last reflection',
+    note: "You just made real calls from evidence alone. Before you see the reveal, lock in one honest reflection — it’s the "
+        + "kind of note that turns a guess into a lesson.",
+    prompt: 'Which company felt hardest to call, and why?',
+  },
+
+  /* ---- summary / done slide ---- */
+  summary: {
+    heading: 'Your locked calls',
+    intro: "Here’s every call you committed. These are saved in this browser, so a refresh won’t lose them. Copy them if you "
+         + "want to paste them into the Notion submit table — then, and only then, open the reveal.",
+    bridge: "You made real calls without the safety net of knowing the answer — exactly the position you’ll be in every week "
+          + "from here. Now open the reveal to see what actually happened, and where your eye was sharp and where it was off.",
+  },
+};
+
+/* ============================================================================
+   ================= DO NOT EDIT BELOW — generic capture engine ===============
+   ============================================================================ */
+(function(){
+  'use strict';
+  const NS = DECK.deckId;
+  const id = s => NS + '-' + s;
+  const wrapper = document.getElementById('deck-wrapper');
+  const nav = document.getElementById('nav');
+  const polite = document.getElementById('lr-polite');
+  const alertRegion = document.getElementById('lr-alert');
+  const dots = document.getElementById('dots');
+  const isStacked = () => window.matchMedia('(max-width:640px)').matches;
+  const esc = s => String(s);   // DECK copy is trusted author content (allows inline <b>)
+  const escHtml = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  document.title = DECK.title + ' — Interactive';
+
+  /* ---- run state (set once the learner picks a challenge set) ---- */
+  let SETKEY = null;      // '1' | '2' | '3'
+  let COS = [];           // the chosen set's companies
+  let RN = 0;             // number of companies
+  let N = 1;              // total slides (recomputed after set pick): title + companies + reflection + summary
+  let cur = 0;
+  let built = false;
+  let lastSaveAt = 0;     // timestamp guard so slide-position announce doesn't clobber a save confirm
+
+  /* ---- captured answers (indexed by company index r) ---- */
+  let gate = [];          // 'PASS' | 'FAIL' | 'HOLD' | null
+  let criterion = [];     // gateCriteria key | null   (required only when gate is FAIL/HOLD)
+  let relevance = [];     // 'High'|'Medium'|'Low'|'Exclude' | null
+  let reason = [];        // string
+  let reflect = '';       // reflection free text
+
+  const G = DECK.gateOptions, RL = DECK.relOptions, GC = DECK.gateCriteria;
+  const GATELAB = Object.fromEntries(G.map(o=>[o.key,o.label]));
+  const RELLAB  = Object.fromEntries(RL.map(o=>[o.key,o.label]));
+  const CRITLAB = Object.fromEntries(GC.map(o=>[o.key,o.label]));
+
+  /* ---- announcements (textContent only; never re-create the node) ----
+     Every announce stamps lastSaveAt so focusHeading()'s later "Slide N of M"
+     is suppressed when a capture/error message just fired (matches the engine's
+     lastResultAt race guard). One announce() per user action — never chain two
+     (the shared annT would cancel the first); coalesce into one atomic string. */
+  let annT;
+  function announce(msg, assertive){
+    const region = assertive ? alertRegion : polite;
+    lastSaveAt = Date.now();
+    clearTimeout(annT);
+    region.textContent = '';
+    annT = setTimeout(()=>{ region.textContent = msg; }, 60);
+  }
+
+  /* ---- persistence (safe if storage is blocked) ---- */
+  const SKEY = 'blind-score:' + NS;
+  function save(){
+    try{ localStorage.setItem(SKEY, JSON.stringify({v:1,set:SETKEY,cur,gate,criterion,relevance,reason,reflect})); }catch(e){}
+  }
+  function load(){
+    try{
+      const s = JSON.parse(localStorage.getItem(SKEY) || 'null');
+      if(!s || s.v!==1 || !s.set || !DECK.sets[s.set]) return null;   // guard against a stale/foreign blob
+      return s;
+    }catch(e){ return null; }
+  }
+
+  /* ---- slide index helpers ---- */
+  const companyIdx  = r => 1 + r;          // slide index of company r
+  const reflectIdx  = () => 1 + RN;        // reflection slide
+  const summaryIdx  = () => 2 + RN;        // summary slide (last)
+  const roundOf     = i => (i>=1 && i<=RN) ? (i-1) : -1;
+
+  /* ---- decorative check glyph (state carried by text; glyph is aria-hidden) ---- */
+  const TICK = '<span aria-hidden="true">✓</span> ';
+
+  /* =====================================================================
+     TITLE + SET PICKER
+     ===================================================================== */
+  function buildTitle(){
+    const t = document.getElementById('sl0');
+    t.setAttribute('role','group');
+    t.setAttribute('aria-roledescription','slide');
+    const setOpts = ['1','2','3'].map(k=>{
+      const s = DECK.sets[k];
+      return `<button class="opt" role="radio" aria-checked="false" id="${id('set-'+k)}" data-set="${k}" tabindex="-1">
+        <span class="otext"><span class="olab">${esc(s.name)}</span>
+        <span class="oq">${s.count} ${s.count===1?'company':'companies'} to score</span></span>
+        <span class="chk" aria-hidden="true">✓ selected</span></button>`;
+    }).join('');
+    t.innerHTML = `
+      <h1 id="${id('h-0')}" tabindex="-1"><span class="emoji" aria-hidden="true">${esc(DECK.emoji)}</span> ${esc(DECK.title)}</h1>
+      <p class="muted" style="font-size:.98rem;max-width:82ch;line-height:1.5">${esc(DECK.intro)}</p>
+      <p class="warnbox"><b><span aria-hidden="true">⚠️</span> ${esc(DECK.warn)}</b></p>
+      <div class="field" style="margin-top:2px">
+        <span class="flab" id="${id('picklab')}">${esc(DECK.pickLegend)} <span class="req">(required)</span></span>
+        <p class="fhint" id="${id('pickhint')}" style="margin:0 0 6px">${esc(DECK.pickHint)}</p>
+        <div class="opts" role="radiogroup" id="${id('setgrp')}" aria-labelledby="${id('picklab')}" aria-describedby="${id('pickhint')}">${setOpts}</div>
+      </div>
+      <div><button class="btn" id="${id('start')}" type="button" aria-disabled="true" aria-describedby="${id('startreason')}">${esc(DECK.startLabel)}</button>
+      <span id="${id('startreason')}" class="sr-only">Choose a challenge set to begin.</span></div>`;
+
+    const grp = t.querySelector('#'+id('setgrp'));
+    const opts = [...grp.querySelectorAll('.opt')];
+    opts[0].tabIndex = 0;
+    function pickSet(k){
+      SETKEY = k;
+      opts.forEach(o=>{ const on=o.dataset.set===k; o.setAttribute('aria-checked',on?'true':'false'); o.tabIndex=on?0:-1; });
+      const st = t.querySelector('#'+id('start'));
+      st.setAttribute('aria-disabled','false'); st.removeAttribute('aria-describedby');
+      announce(DECK.sets[k].name + ' selected, ' + DECK.sets[k].count + ' companies. Start scoring is now available.');
+    }
+    grp.addEventListener('click', e=>{ const b=e.target.closest('.opt'); if(b) pickSet(b.dataset.set); });
+    grp.addEventListener('keydown', e=>{
+      const i = opts.indexOf(document.activeElement); if(i<0) return;
+      let n=-1;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown') n=(i+1)%opts.length;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp') n=(i-1+opts.length)%opts.length;
+      else if(e.key==='Home') n=0; else if(e.key==='End') n=opts.length-1;
+      else if(e.key===' '||e.key==='Enter'){ e.preventDefault(); pickSet(opts[i].dataset.set); return; }
+      if(n>=0){ e.preventDefault(); pickSet(opts[n].dataset.set); opts[n].focus(); }  // radiogroup: arrow moves + selects
+    });
+    t.querySelector('#'+id('start')).addEventListener('click', function(){
+      if(this.getAttribute('aria-disabled')==='true'){ announce('Choose a challenge set to begin.', true); opts[0].focus(); return; }
+      startSet();
+    });
+  }
+
+  /* =====================================================================
+     BUILD THE DECK for the chosen set
+     ===================================================================== */
+  function startSet(){
+    if(!SETKEY) return;
+    buildDeck();
+    if(isStacked()) syncMode();
+    else { go(1); }
+  }
+
+  function buildDeck(){
+    // clear any prior generated slides (a set change rebuilds)
+    [...wrapper.querySelectorAll('.slide')].forEach(s=>{ if(s.id!=='sl0') s.remove(); });
+    COS = DECK.sets[SETKEY].companies;
+    RN = COS.length;
+    N = 2 + RN + 1;                        // title + companies + reflection + summary
+    gate = COS.map(()=>null); criterion = COS.map(()=>null);
+    relevance = COS.map(()=>null); reason = COS.map(()=>'');
+
+    for(let r=0;r<RN;r++) wrapper.insertBefore(shell(companyIdx(r), buildCompany(r)), nav);
+    wrapper.insertBefore(shell(reflectIdx(), buildReflect()), nav);
+    const sm = shell(summaryIdx(), buildSummary()); wrapper.insertBefore(sm, nav);
+
+    buildDots();
+    built = true;
+
+    // restore any saved answers for this set
+    const s = load();
+    if(s && s.set===SETKEY){
+      s.gate&&s.gate.forEach((v,i)=>{ if(i<RN) gate[i]=v; });
+      s.criterion&&s.criterion.forEach((v,i)=>{ if(i<RN) criterion[i]=v; });
+      s.relevance&&s.relevance.forEach((v,i)=>{ if(i<RN) relevance[i]=v; });
+      s.reason&&s.reason.forEach((v,i)=>{ if(i<RN) reason[i]=v||''; });
+      reflect = s.reflect||'';
+    }
+    for(let r=0;r<RN;r++) hydrateCompany(r);
+    hydrateReflect();
+    renderSummary();
+  }
+
+  function shell(i, html){
+    const s = document.createElement('section');
+    s.className = 'slide'; s.id = 'sl'+i;
+    s.setAttribute('role','group'); s.setAttribute('aria-roledescription','slide');
+    s.setAttribute('aria-label',(i+1)+' of '+N);
+    s.hidden = true; s.innerHTML = html;
+    return s;
+  }
+  function buildDots(){
+    dots.innerHTML='';
+    for(let i=0;i<N;i++){ const d=document.createElement('div'); d.className='dt'; dots.appendChild(d); }
+  }
+
+  /* ---- COMPANY SLIDE ---- */
+  function buildCompany(r){
+    const c = COS[r];
+    const snips = c.snips.map(s=>`<li><span class="src">${escHtml(s.src)}:</span> ${escHtml(s.text)}</li>`).join('');
+    const gateOpts = G.map(o=>`
+      <button class="opt" role="radio" aria-checked="false" id="${id('g'+r+'-'+o.key)}" data-k="${o.key}" tabindex="-1">
+        <span class="otext"><span class="olab">${esc(o.label)}</span><span class="oq">${esc(o.q)}</span></span>
+        <span class="chk" aria-hidden="true">✓</span></button>`).join('');
+    const relOpts = RL.map(o=>`
+      <button class="opt" role="radio" aria-checked="false" id="${id('r'+r+'-'+o.key)}" data-k="${o.key}" tabindex="-1">
+        <span class="otext"><span class="olab">${esc(o.label)}</span><span class="oq">${esc(o.q)}</span></span>
+        <span class="chk" aria-hidden="true">✓</span></button>`).join('');
+    const critOpts = ['<option value="">Select the criterion…</option>']
+      .concat(GC.map(o=>`<option value="${o.key}">${escHtml(o.label)}</option>`)).join('');
+    return `
+      <div class="co-head">
+        <div class="roundtag">Company ${r+1} of ${RN} · score it blind</div>
+        <h2 id="${id('h-'+companyIdx(r))}" tabindex="-1" style="margin-top:6px">${escHtml(c.id)}</h2>
+        <p class="co-focus">${esc(DECK.sets[SETKEY].focus)}</p>
+      </div>
+      <div class="co-grid">
+        <!-- LEFT: read-only snippets (first in DOM = first in reading/tab order).
+             Plain <div> + visible <h3> — NOT a <section aria-labelledby> region, to avoid landmark clutter. -->
+        <div class="co-col co-snip">
+          <h3 id="${id('sniph-'+r)}">What the public record shows</h3>
+          <ul class="snip-list">${snips}</ul>
+          <p class="co-hint">Everything you need is here. Treat anything the snippets don’t state as unknown — don’t fill a gap with a guess.</p>
+        </div>
+        <!-- RIGHT: your call. Unnamed <form> = grouping without a landmark. -->
+        <form class="co-col co-form" onsubmit="return false">
+          <h3 class="sr-only">Your call</h3>
+
+          <div class="field">
+            <span class="flab" id="${id('glab'+r)}"><span class="step">Step 1</span>Eligibility gate call <span class="req">(required)</span></span>
+            <div class="opts gate" role="radiogroup" aria-required="true" id="${id('ggrp'+r)}" aria-labelledby="${id('glab'+r)}">${gateOpts}</div>
+          </div>
+
+          <div class="field" id="${id('critwrap'+r)}" hidden>
+            <label class="flab" for="${id('crit'+r)}" id="${id('critlab'+r)}">Which criterion? <span class="req">(required)</span></label>
+            <select id="${id('crit'+r)}" aria-describedby="${id('crithint'+r)}">${critOpts}</select>
+            <p class="fhint" id="${id('crithint'+r)}">On a Fail, the one criterion it misses. On a Hold, the one you’d verify before passing it.</p>
+          </div>
+
+          <div class="field">
+            <span class="flab" id="${id('rlab'+r)}"><span class="step">Step 2</span>Relevance rating <span class="req">(required)</span></span>
+            <div class="opts rel" role="radiogroup" aria-required="true" id="${id('rgrp'+r)}" aria-labelledby="${id('rlab'+r)}">${relOpts}</div>
+          </div>
+
+          <div class="field">
+            <label class="flab" for="${id('reason'+r)}"><span class="step">Step 3</span>Your one-line reason <span class="req">(required)</span></label>
+            <!-- one-line judgment ABOUT a company (not the user's own data) → autocomplete N/A by design -->
+            <input type="text" id="${id('reason'+r)}" autocomplete="off" required aria-required="true" aria-describedby="${id('reasonhint'+r)}">
+            <p class="fhint" id="${id('reasonhint'+r)}">One line: name the clue, and name the use case it maps to (or why it’s out).</p>
+          </div>
+
+          <p class="saved-tick" id="${id('tick'+r)}" aria-hidden="true">${TICK}Call saved.</p>
+        </form>
+      </div>`;
+  }
+
+  /* ---- REFLECTION SLIDE ---- */
+  function buildReflect(){
+    return `
+      <div class="s-reflect">
+        <div class="roundtag">Reflection</div>
+        <h2 id="${id('h-'+reflectIdx())}" tabindex="-1" style="margin-top:6px">${esc(DECK.reflect.heading)}</h2>
+        <p class="reflect-note">${esc(DECK.reflect.note)}</p>
+        <div class="field" style="margin-top:6px">
+          <label class="flab" for="${id('reflect')}">${esc(DECK.reflect.prompt)} <span class="req">(required)</span></label>
+          <textarea id="${id('reflect')}" autocomplete="off" required aria-required="true"
+                    style="max-width:640px;min-height:88px;line-height:1.4;font:inherit;font-size:.88rem;color:var(--title);background:var(--bg);border:2px solid var(--on-highlight);border-radius:9px;padding:9px 10px;width:100%"></textarea>
+        </div>
+        <p class="reflect-note" id="${id('setrec')}"></p>
+      </div>`;
+  }
+
+  /* ---- SUMMARY SLIDE ---- */
+  function buildSummary(){
+    return `
+      <div class="roundtag">Done</div>
+      <h2 id="${id('h-'+summaryIdx())}" tabindex="-1" style="margin-top:6px">${esc(DECK.summary.heading)}</h2>
+      <p class="sum-set" id="${id('sumset')}"></p>
+      <p class="muted" style="font-size:.9rem;max-width:92ch;line-height:1.5">${esc(DECK.summary.intro)}</p>
+      <div class="sum-scroll" role="region" aria-label="Your calls (scrollable table)" tabindex="0">
+        <table class="sum">
+          <caption id="${id('sumcap')}"></caption>
+          <thead><tr>
+            <th scope="col">Company</th>
+            <th scope="col">Gate call</th>
+            <th scope="col">Criterion</th>
+            <th scope="col">Relevance</th>
+            <th scope="col">Your one-line reason</th>
+          </tr></thead>
+          <tbody id="${id('sumbody')}"></tbody>
+        </table>
+      </div>
+      <div class="sum-actions">
+        <button class="btn ghost" type="button" id="${id('copy')}">Copy my calls</button>
+      </div>
+      <div class="bridge">${esc(DECK.summary.bridge)}</div>`;
+  }
+
+  /* =====================================================================
+     WIRING + HYDRATION
+     ===================================================================== */
+  function hydrateCompany(r){
+    // gate radiogroup
+    wireRadiogroup(id('ggrp'+r), gate[r], k=>{
+      gate[r]=k;
+      // criterion is required only for FAIL/HOLD; PASS clears + hides it
+      const wrap = document.getElementById(id('critwrap'+r));
+      const sel  = document.getElementById(id('crit'+r));
+      if(k==='PASS'){
+        // if focus is inside the select we're about to hide, move it to the checked gate radio first
+        if(document.activeElement===sel){ const co=document.querySelector('#'+id('ggrp'+r)+' .opt[aria-checked="true"]'); if(co) co.focus(); }
+        criterion[r]=null; sel.value=''; sel.removeAttribute('required'); sel.removeAttribute('aria-required'); wrap.hidden=true;
+        announce('Gate call saved: Pass.');
+      } else {
+        wrap.hidden=false;
+        sel.setAttribute('required',''); sel.setAttribute('aria-required','true');   // required only while shown
+        if(sel.value) criterion[r]=sel.value;
+        // one atomic polite string (value + reveal) — never two announce() calls; do NOT yank focus (Tab reaches it)
+        announce('Gate call saved: ' + GATELAB[k] + '. A criterion menu appeared below — choose which criterion' + (k==='HOLD'?' you’d verify.':' it misses.'));
+      }
+      afterFieldChange(r);
+    });
+    // criterion select
+    const sel = document.getElementById(id('crit'+r));
+    sel.addEventListener('change', ()=>{ criterion[r]=sel.value||null; if(criterion[r]) announce('Criterion saved: '+CRITLAB[criterion[r]]+'.'); afterFieldChange(r); });
+    // relevance radiogroup
+    wireRadiogroup(id('rgrp'+r), relevance[r], k=>{ relevance[r]=k; announce('Relevance saved: '+RELLAB[k]+'.'); afterFieldChange(r); });
+    // reason input (announce on blur only, sparingly)
+    const rin = document.getElementById(id('reason'+r));
+    rin.value = reason[r]||'';
+    rin.addEventListener('input', ()=>{ reason[r]=rin.value; refreshTick(r); updateNav(); save(); });   // no per-keystroke announce
+    rin.addEventListener('blur', ()=>{ if(reason[r].trim()) announce('Reason saved.'); });
+    // restore criterion select value + visibility from state (show/hide BEFORE writing value)
+    if(gate[r]==='FAIL'||gate[r]==='HOLD'){ document.getElementById(id('critwrap'+r)).hidden=false;
+      sel.setAttribute('required',''); sel.setAttribute('aria-required','true'); if(criterion[r]) sel.value=criterion[r]; }
+    refreshTick(r);
+  }
+
+  function afterFieldChange(r){ refreshTick(r); updateNav(); save(); }
+  function refreshTick(r){
+    const t=document.getElementById(id('tick'+r));
+    if(t) t.classList.toggle('show', companyComplete(r));
+  }
+
+  function hydrateReflect(){
+    const ri=document.getElementById(id('reflect'));
+    ri.value = reflect||'';
+    ri.addEventListener('input', ()=>{ reflect=ri.value; updateNav(); save(); });
+    const rec=document.getElementById(id('setrec'));
+    if(rec) rec.innerHTML = 'Recorded: you scored <b>'+escHtml(DECK.sets[SETKEY].name)+'</b>.';
+  }
+
+  /* generic custom radiogroup: roving tabindex, arrows move+select, Space/Enter select; stays editable */
+  function wireRadiogroup(grpId, initial, onPick){
+    const grp = document.getElementById(grpId); if(!grp) return;
+    const opts = [...grp.querySelectorAll('.opt')];
+    function setChecked(k, focusIt){
+      opts.forEach(o=>{ const on=o.dataset.k===k; o.setAttribute('aria-checked',on?'true':'false'); o.tabIndex=on?0:-1; });
+      if(focusIt){ const el=opts.find(o=>o.dataset.k===k); if(el) el.focus(); }
+    }
+    if(initial!=null) setChecked(initial,false); else opts[0].tabIndex=0;
+    grp.addEventListener('click', e=>{ const b=e.target.closest('.opt'); if(b){ setChecked(b.dataset.k,false); onPick(b.dataset.k); } });
+    grp.addEventListener('keydown', e=>{
+      const i = opts.indexOf(document.activeElement); if(i<0) return;
+      let n=-1;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown') n=(i+1)%opts.length;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp') n=(i-1+opts.length)%opts.length;
+      else if(e.key==='Home') n=0; else if(e.key==='End') n=opts.length-1;
+      else if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setChecked(opts[i].dataset.k,false); onPick(opts[i].dataset.k); return; }
+      if(n>=0){ e.preventDefault(); setChecked(opts[n].dataset.k,true); onPick(opts[n].dataset.k); }
+    });
+  }
+
+  /* =====================================================================
+     COMPLETION / GATING (blind — "finished", never "correct")
+     ===================================================================== */
+  function companyComplete(r){
+    if(!gate[r] || !relevance[r] || !reason[r].trim()) return false;
+    if((gate[r]==='FAIL'||gate[r]==='HOLD') && !criterion[r]) return false;
+    return true;
+  }
+  function missingFor(r){
+    const miss=[];
+    if(!gate[r]) miss.push({what:'a gate call', focus:id('ggrp'+r)});
+    else if((gate[r]==='FAIL'||gate[r]==='HOLD') && !criterion[r]) miss.push({what:'which criterion', focus:id('crit'+r)});
+    if(!relevance[r]) miss.push({what:'a relevance rating', focus:id('rgrp'+r)});
+    if(!reason[r].trim()) miss.push({what:'a one-line reason', focus:id('reason'+r)});
+    return miss;
+  }
+  function canLeave(i){
+    const r=roundOf(i); if(r>=0) return companyComplete(r);
+    if(i===reflectIdx()) return reflect.trim()!=='';
+    return true;
+  }
+  function gateReason(i){
+    const r=roundOf(i);
+    if(r>=0){ const m=missingFor(r); return 'Finish your call to continue: still needed — ' + m.map(x=>x.what).join(', ') + '.'; }
+    if(i===reflectIdx()) return 'Add your reflection to continue.';
+    return '';
+  }
+  function focusFirstMissing(i){
+    const r=roundOf(i);
+    if(r>=0){ const m=missingFor(r); if(m.length){ const el=document.getElementById(m[0].focus);
+      if(el){ (el.getAttribute('role')==='radiogroup' ? (el.querySelector('.opt[aria-checked="true"]')||el.querySelector('.opt')) : el).focus(); } } return; }
+    if(i===reflectIdx()){ const el=document.getElementById(id('reflect')); if(el) el.focus(); }
+  }
+
+  /* =====================================================================
+     NAVIGATION
+     ===================================================================== */
+  function showSlide(i){
+    document.querySelectorAll('#deck-wrapper .slide').forEach(s=>{
+      const on = s.id === 'sl'+i;
+      s.classList.toggle('active', on); s.hidden=!on;
+    });
+  }
+  function focusHeading(i){
+    const h=document.getElementById(id('h-'+i));
+    if(h) h.focus({preventScroll:true});
+    if(i===summaryIdx()){ lastSaveAt=Date.now(); announce('You scored ' + RN + ' companies. Here are your locked calls. Copy them, then open the reveal.'); return; }
+    setTimeout(()=>{ if(Date.now()-lastSaveAt>1400) announce('Slide '+(i+1)+' of '+N); }, 350);
+  }
+  function go(n){
+    if(isStacked()) return;
+    if(n<0 || n>=N) return;
+    if(n>cur && !canLeave(cur)){ announce(gateReason(cur), true); focusFirstMissing(cur); return; }
+    cur=n; showSlide(cur); updateNav(); focusHeading(cur); save();
+  }
+  function updateNav(){
+    if(!built) return;
+    [...dots.children].forEach((d,i)=>d.classList.toggle('on', i===cur));
+    document.getElementById('pos').textContent = 'Slide '+(cur+1)+' of '+N;
+    const prev=document.getElementById('prevb');
+    prev.setAttribute('aria-disabled', cur===0?'true':'false');
+    const nb=document.getElementById('nextb');
+    const locked=!canLeave(cur), atEnd=cur===N-1;
+    nb.setAttribute('aria-disabled', (atEnd||locked)?'true':'false');
+    if(locked && !atEnd){ ensureGateReason(); nb.setAttribute('aria-describedby', id('gatereason')); document.getElementById(id('gatereason')).textContent=gateReason(cur); }
+    else nb.removeAttribute('aria-describedby');
+    nb.classList.toggle('ready', !atEnd && !locked && cur>0);
+  }
+  function ensureGateReason(){
+    if(document.getElementById(id('gatereason'))) return;
+    const s=document.createElement('span'); s.id=id('gatereason'); s.className='sr-only'; document.body.appendChild(s);
+  }
+
+  document.getElementById('prevb').addEventListener('click', ()=>go(cur-1));
+  document.getElementById('nextb').addEventListener('click', function(){
+    if(this.getAttribute('aria-disabled')==='true'){ announce(gateReason(cur), true); focusFirstMissing(cur); return; }
+    go(cur+1);
+  });
+
+  /* arrows advance, but never hijack typing or a radiogroup's own arrows */
+  window.addEventListener('keydown', e=>{
+    if(isStacked() || !built) return;
+    const t=e.target;
+    if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable)) return;
+    if(t && t.closest && t.closest('[role="radiogroup"]')) return;
+    if(e.altKey||e.ctrlKey||e.metaKey) return;
+    if(e.key==='ArrowRight') go(cur+1);
+    else if(e.key==='ArrowLeft') go(cur-1);
+  });
+
+  /* =====================================================================
+     SUMMARY RENDER + COPY
+     ===================================================================== */
+  function critText(r){
+    if(gate[r]==='PASS') return 'Not applicable (passed)';
+    if(!criterion[r]) return '—';
+    return CRITLAB[criterion[r]];
+  }
+  function renderSummary(){
+    const body=document.getElementById(id('sumbody')); if(!body) return;
+    const setName = DECK.sets[SETKEY].name;
+    document.getElementById(id('sumset')).innerHTML = 'Challenge set: <b>'+escHtml(setName)+'</b>';
+    document.getElementById(id('sumcap')).textContent = 'Your blind calls for ' + setName;
+    body.innerHTML = COS.map((c,r)=>`
+      <tr>
+        <th scope="row">${escHtml(c.id)}</th>
+        <td>${gate[r]?escHtml(GATELAB[gate[r]]):'<span class="muted">—</span>'}</td>
+        <td>${escHtml(critText(r))}</td>
+        <td>${relevance[r]?escHtml(RELLAB[relevance[r]]):'<span class="muted">—</span>'}</td>
+        <td><span class="reason">${reason[r].trim()?escHtml(reason[r].trim()):'<span class="muted">—</span>'}</span></td>
+      </tr>`).join('');
+    const cp=document.getElementById(id('copy'));
+    if(cp && !cp.dataset.wired){ cp.dataset.wired='1'; cp.addEventListener('click', copyCalls); }
+  }
+  function callsAsText(){
+    const lines=['PFNYC Blind-Score — '+DECK.sets[SETKEY].name,''];
+    COS.forEach((c,r)=>{
+      lines.push(c.id
+        + ' | Gate: ' + (gate[r]?GATELAB[gate[r]]:'—')
+        + ' | Criterion: ' + critText(r)
+        + ' | Relevance: ' + (relevance[r]?RELLAB[relevance[r]]:'—')
+        + ' | Reason: ' + (reason[r].trim()||'—'));
+    });
+    lines.push('', 'Hardest to call: ' + (reflect.trim()||'—'));
+    return lines.join('\n');
+  }
+  function copyCalls(){
+    const text=callsAsText();
+    const ok=()=>announce('Your calls were copied to the clipboard.');
+    const fail=()=>announce('Copy did not work here. Select the text in the table above and copy it manually.', true);
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(ok).catch(()=>legacyCopy(text)?ok():fail());
+    } else { legacyCopy(text)?ok():fail(); }
+  }
+  function legacyCopy(text){
+    try{
+      const ta=document.createElement('textarea'); ta.value=text;
+      ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+      ta.focus(); ta.select(); const done=document.execCommand('copy'); document.body.removeChild(ta); return done;
+    }catch(e){ return false; }
+  }
+  // keep summary + reflection-record fresh whenever we (re)enter those slides
+  function refreshDynamic(){ if(built){ renderSummary(); } }
+
+  /* =====================================================================
+     STACKED (mobile / 400% zoom) MODE
+     ===================================================================== */
+  function syncMode(){
+    if(!built){ scaleDeck(); return; }
+    if(isStacked()){
+      document.querySelectorAll('#deck-wrapper .slide').forEach(s=>{ if(s.id==='sl0'){ s.hidden=false; s.classList.add('active'); } else { s.hidden=false; s.classList.remove('active'); } });
+      renderSummary();
+    } else {
+      showSlide(cur); updateNav();
+    }
+    scaleDeck();
+  }
+  function scaleDeck(){
+    if(isStacked()){ wrapper.style.transform='none'; return; }
+    const s=Math.min(window.innerWidth/960, window.innerHeight/540, 1);
+    const ox=Math.max(0,(window.innerWidth-960*s)/2), oy=Math.max(0,(window.innerHeight-540*s)/2);
+    wrapper.style.transformOrigin='top left';
+    wrapper.style.transform='translate('+ox+'px,'+oy+'px) scale('+s+')';
+  }
+
+  /* re-render summary on entering it (covers edits made on earlier slides) */
+  const _go = go;
+  go = function(n){ _go(n); if(cur===summaryIdx()) refreshDynamic(); };
+
+  /* =====================================================================
+     BOOT
+     ===================================================================== */
+  buildTitle();
+  ensureGateReason();
+  // auto-resume a prior in-progress set (so a refresh inside Notion keeps the learner's place)
+  const saved = load();
+  if(saved && saved.set){ SETKEY=saved.set;
+    // reflect the saved set selection on the title picker
+    const so=document.querySelector('#'+id('setgrp')+' .opt[data-set="'+SETKEY+'"]');
+    if(so){ [...document.querySelectorAll('#'+id('setgrp')+' .opt')].forEach(o=>{o.setAttribute('aria-checked','false');o.tabIndex=-1;}); so.setAttribute('aria-checked','true'); so.tabIndex=0; }
+    const st=document.getElementById(id('start')); if(st){ st.setAttribute('aria-disabled','false'); st.removeAttribute('aria-describedby'); }
+    buildDeck();
+    if(!isStacked()){ cur=Math.min(Math.max(0, saved.cur|0), N-1); }
+  }
+  if(isStacked()){ syncMode(); }
+  else { showSlide(cur); updateNav(); scaleDeck(); if(cur===summaryIdx()) refreshDynamic(); }
+  window.addEventListener('resize', syncMode);
+  window.addEventListener('orientationchange', syncMode);
+})();
+</script>
+</body>
+</html>
