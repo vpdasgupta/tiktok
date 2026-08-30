@@ -155,8 +155,13 @@
   select,input[type=text]{width:100%;max-width:100%;font:inherit;font-size:.88rem;color:var(--title);
     background:var(--bg);border:2px solid var(--on-highlight);border-radius:9px;padding:9px 10px;min-height:42px}
   .fhint{font-size:.76rem;color:var(--body);margin-top:4px;line-height:1.35}
-  .opts.gate,.opts.rel{grid-template-columns:1fr 1fr}
-  .opts.gate .opt,.opts.rel .opt{padding:9px 11px;font-size:.85rem}
+  /* landscape rectangular chips — gate in one row of 3, relevance in one row of 4 */
+  .opts.gate{grid-template-columns:repeat(3,1fr)}
+  .opts.rel{grid-template-columns:repeat(4,1fr)}
+  .opts.gate .opt,.opts.rel .opt{padding:11px 8px;font-size:.86rem;justify-content:center;align-items:center;
+    text-align:center;min-height:50px}
+  .opts.gate .opt .olab,.opts.rel .opt .olab{font-weight:800;line-height:1.18}
+  .opts.gate .opt .chk,.opts.rel .opt .chk{margin-left:6px;font-size:.85rem}
   .saved-tick{font-size:.78rem;font-weight:800;color:var(--on-highlight);margin-top:6px;opacity:0}
   .saved-tick.show{opacity:1}
 
@@ -178,6 +183,18 @@
   .sum-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0 8px}
   .bridge{font-size:1rem;font-weight:700;padding:12px 16px;border-left:4px solid var(--on-highlight);
     background:var(--highlight);border-radius:0 10px 10px 0;line-height:1.5;color:var(--title);max-width:92ch}
+
+  /* ---- reveal slides ---- */
+  .rv-intro{font-size:.9rem;color:var(--body);line-height:1.5;max-width:96ch;margin:2px 0 8px}
+  table.sum td .why{white-space:normal;line-height:1.4}
+  .yourcall{font-weight:700;color:var(--title);white-space:normal}
+  .keycall{font-weight:800;color:var(--on-highlight);white-space:normal}
+  .matchnote{display:block;font-size:.72rem;color:var(--body);margin-top:3px}
+  .lesson{font-size:.94rem;line-height:1.55;color:var(--title);background:var(--highlight);
+    border-left:4px solid var(--on-highlight);border-radius:0 10px 10px 0;padding:13px 16px;max-width:96ch;margin:0 0 12px}
+  .miss{border:1px solid var(--on-highlight);border-radius:11px;padding:10px 14px;margin:0 0 9px}
+  .miss .missh{font-weight:800;color:var(--on-highlight);font-size:.9rem}
+  .miss .missr{font-size:.84rem;color:var(--title);line-height:1.45;margin-top:3px}
 
   /* ================= REFLOW / MOBILE FALLBACK (≤640px CSS width, ≈400% zoom) =================
      Abandon the fixed 960x540 scaled canvas: fluid, vertically-scrolling, ALL slides visible,
@@ -231,12 +248,13 @@ const DECK = {
   emoji: '⚖️',
   title: 'Blind-Score Your Challenge Set',
   intro: "Read the public snippets for a set of real companies and make your call on each — "
-       + "pass or fail the eligibility gate, then a relevance rating — all <b>before</b> you see "
-       + "what actually happened to them. Move fast, commit to an answer, and resist the urge to "
-       + "look ahead. The reveal comes on the next page.",
+       + "pass or fail the eligibility gate, then a relevance rating. You score only the challenge "
+       + "set you locked in Week 1; commit every call <b>before</b> the reveal, which you'll see right "
+       + "here once you're done. Move fast, commit to an answer, and resist the urge to look ahead.",
   warn: "Do not look ahead. A call you already know the answer to teaches you nothing — score first, reveal second.",
   pickLegend: "Which challenge set are you scoring?",
-  pickHint: "Back in Week 1 you locked one of the three challenges. Score that set. (You can read the others after you submit.)",
+  pickHint: "Pick only the challenge you locked in Week 1 — you score that one set. Curious about the others afterward? "
+          + "Reload this page and pick a different challenge to run it fresh.",
   startLabel: 'Start scoring →',
 
   /* ---- the eligibility gate: five pass/fail criteria (any one FAIL excludes the company) ----
@@ -373,18 +391,83 @@ const DECK = {
   /* ---- reflection slide ---- */
   reflect: {
     heading: 'One last reflection',
-    note: "You just made real calls from evidence alone. Before you see the reveal, lock in one honest reflection — it’s the "
+    note: "You just made real calls from evidence alone. Before the reveal, lock in one honest reflection — it’s the "
         + "kind of note that turns a guess into a lesson.",
     prompt: 'Which company felt hardest to call, and why?',
   },
 
+  /* ---- the reveal (shown AFTER every call is committed) ---- */
+  reveal: {
+    heading: 'The Reveal — how your calls held up',
+    intro: "Now compare each blind call you locked to what’s really true. Where you nailed it, notice what you saw. "
+         + "Where you missed, name the rule you’ll carry forward.",
+    lessonHeading: 'The lesson to carry forward',
+    missesHeading: 'The two misses to watch for',
+    missesIntro: "Across every beginner cohort, blind-score gaps cluster in exactly two spots. See if either one is yours.",
+  },
+
+  /* ---- answer key, keyed by company id. gate/rel are the ANSWER; reality + verdict explain it. ---- */
+  answers: {
+    'Company 1-A': { name:'Gryps', gate:'PASS', rel:'High',
+      reality:'AI that makes capital-project records searchable — a real ETL alum.',
+      verdict:'Independent, private (no ticker, no filings), NYC seed-stage. High relevance — Capital Planning & Data: it processed 80,000 of the water utility’s capital-project files, making a mountain of documents searchable.' },
+    'Company 1-B': { name:'Frenos', gate:'PASS', rel:'High–Medium',
+      reality:'AI “digital-twin” OT/SCADA attack-path assessment for critical infrastructure.',
+      verdict:'Independent, private, seed-stage. OT/SCADA cyber is explicitly in scope under the Cybersecurity use case and clearly transferable to a water utility — borderline only because water isn’t a named sector on their site.' },
+    'Company 1-C': { name:'Verve', gate:'FAIL', rel:'Exclude',
+      reality:'OT/SCADA security for industrial & utility control networks — a genuinely strong product.',
+      verdict:'Subsidiary of Rockwell Automation (NYSE: ROK), a public company — dispositive under the independence criterion. Relevance would be high, but it’s Exclude: PFNYC can’t take it.' },
+    'Company 2-A': { name:'Prezerv', gate:'PASS', rel:'High',
+      reality:'Non-destructive underground infrastructure mapping & inspection — a real ETL alum.',
+      verdict:'Independent, private, early-stage. High relevance — Pipe/Main/Aqueduct Integrity: it mapped 20,000 sq ft of underground pipe at Owl’s Head, a wastewater resource-recovery facility (WRRF).' },
+    'Company 2-B': { name:'Hyfi', gate:'PASS', rel:'High',
+      reality:'Solar-powered wireless water-level sensors + real-time alerting.',
+      verdict:'Independent, private, live municipal deployments, seed-stage. High relevance — Water Supply & Environmental Field Monitoring.' },
+    'Company 2-C': { name:'SmartCover', gate:'FAIL', rel:'Exclude',
+      reality:'Real-time CSO discharge detection — the most on-target product in the set.',
+      verdict:'Subsidiary of Badger Meter (NYSE: BMI), a public company — dispositive under independence. Relevance is high, but it’s Exclude: PFNYC can’t take it.' },
+    'Company 3-A': { name:'Kando', gate:'PASS', rel:'High',
+      reality:'Contactless real-time sewer flow & quality sensing.',
+      verdict:'Private, independent, well-funded. High relevance — Flow & Temp Monitoring. Non-US (Israel), so it carries a note: it will need to clear ETL’s §3b bar (US data storage + NYS registration) at outreach — PFNYC’s screen, not yours.' },
+    'Company 3-B': { name:'Centrisys / CNP', gate:'PASS', rel:'High',
+      reality:'MagPrex struvite recovery, deployed at Denver Metro.',
+      verdict:'Private, independent (management-owned). High relevance — Nutrient Recovery.' },
+    'Company 3-C': { name:'Mango Materials', gate:'PASS', rel:'High',
+      reality:'Biogas → PHA bioplastic off a real wastewater plant.',
+      verdict:'Private, independent, woman-founded (M/WBE plus). High relevance — Alternative Biogas Use. Pilot-stage — confirm a real paying/deployed customer before treating it as a hard PASS.' },
+    'Company 3-D': { name:'ADS Environmental', gate:'FAIL', rel:'Exclude',
+      reality:'Sewer flow monitoring — near-identical product category to Kando.',
+      verdict:'A business unit of IDEX Corporation (NYSE: IEX), a public company (and a mature operation). Strong product fit, but Exclude on ownership.' },
+    'Company 3-E': { name:'Ostara', gate:'FAIL', rel:'Exclude',
+      reality:'Struvite nutrient recovery — same category as Centrisys/CNP.',
+      verdict:'Not independent — wholly owned by Wheatsheaf Group / Grosvenor, a private holding company. “Privately held” isn’t enough; the bar is independent AND private. Exclude.' },
+    'Company 3-F': { name:'SHARC', gate:'FAIL', rel:'Exclude',
+      reality:'Sewer heat recovery — a strong, on-point product.',
+      verdict:'The company itself is publicly traded (CSE: SHRC / OTCQB: INTWF). A public company is out. Exclude.' },
+  },
+
+  /* per-challenge lesson, shown on the reveal-lesson slide */
+  lessons: {
+    '1': "<b>The Challenge-1 lesson — breadth and ownership.</b> First, Gryps (a data/knowledge tool) rates High — don’t down-rate a company just because it isn’t a physical sensor. Second, Verve is an excellent OT-security product that still fails purely because a public company owns it. Product fit and eligibility are two separate questions.",
+    '2': "<b>The Challenge-2 lesson — a great product can still be ineligible.</b> SmartCover is arguably the best CSO fit you saw. It still fails, purely on ownership, because a public company owns it — the same trap that catches Verve in Challenge 1. Never let a great product talk you past a gate failure.",
+    '3': "<b>The Challenge-3 lesson — three ways ownership fails.</b> Public company → SHARC (directly listed). Subsidiary of a public company → ADS (owned by IDEX, NYSE: IEX). Subsidiary of a private parent → Ostara (owned by Wheatsheaf/Grosvenor) — same struvite category as Centrisys/CNP, which passes; the difference is independence, not privateness. Three excellent products, three exclusions. Fit never overrides ownership.",
+  },
+
+  /* the two classic misses (shared across sets) */
+  misses: [
+    { miss:'Excluding OT/SCADA cyber',
+      rule:'If a cyber product protects the OT/SCADA that runs physical water/wastewater infrastructure, it’s a direct fit (Challenge 1’s Cybersecurity use case). Only exclude IT-only cyber with no control-system angle.' },
+    { miss:'Passing a subsidiary',
+      rule:'Independence is a hard gate. Always check ownership: a ticker or filings under a parent means public → FAIL; and even a private parent can fail the “independent” half.' },
+  ],
+
   /* ---- summary / done slide ---- */
   summary: {
     heading: 'Your locked calls',
-    intro: "Here’s every call you committed. These are saved in this browser, so a refresh won’t lose them. Copy them if you "
-         + "want to paste them into the Notion submit table — then, and only then, open the reveal.",
-    bridge: "You made real calls without the safety net of knowing the answer — exactly the position you’ll be in every week "
-          + "from here. Now open the reveal to see what actually happened, and where your eye was sharp and where it was off.",
+    intro: "Here’s every call you committed — your record of this blind pass. Saved in this browser, so a refresh won’t lose them. "
+         + "Copy them for your records if you like, or reload the page to run a different challenge’s set.",
+    bridge: "You made real calls without the safety net of knowing the answer — exactly the position you’ll be in every week from "
+          + "here. Next up on the following page: name your biggest gap and the one rule you’ll carry into Week 3.",
   },
 };
 
@@ -454,11 +537,14 @@ const DECK = {
     }catch(e){ return null; }
   }
 
-  /* ---- slide index helpers ---- */
-  const companyIdx  = r => 1 + r;          // slide index of company r
-  const reflectIdx  = () => 1 + RN;        // reflection slide
-  const summaryIdx  = () => 2 + RN;        // summary slide (last)
-  const roundOf     = i => (i>=1 && i<=RN) ? (i-1) : -1;
+  /* ---- slide index helpers ----
+     title(0) · companies(1..RN) · reflection(1+RN) · reveal-compare(2+RN) · reveal-lesson(3+RN) · summary(4+RN) */
+  const companyIdx   = r => 1 + r;         // slide index of company r
+  const reflectIdx   = () => 1 + RN;       // reflection slide
+  const revealCmpIdx = () => 2 + RN;       // reveal: your-calls-vs-answer-key table
+  const revealLesIdx = () => 3 + RN;       // reveal: the lesson + the two misses
+  const summaryIdx   = () => 4 + RN;       // summary slide (last)
+  const roundOf      = i => (i>=1 && i<=RN) ? (i-1) : -1;
 
   /* ---- decorative check glyph (state carried by text; glyph is aria-hidden) ---- */
   const TICK = '<span aria-hidden="true">✓</span> ';
@@ -530,13 +616,15 @@ const DECK = {
     [...wrapper.querySelectorAll('.slide')].forEach(s=>{ if(s.id!=='sl0') s.remove(); });
     COS = DECK.sets[SETKEY].companies;
     RN = COS.length;
-    N = 2 + RN + 1;                        // title + companies + reflection + summary
+    N = RN + 5;                            // title + companies + reflection + 2 reveal + summary
     gate = COS.map(()=>null); criterion = COS.map(()=>null);
     relevance = COS.map(()=>null); reason = COS.map(()=>'');
 
     for(let r=0;r<RN;r++) wrapper.insertBefore(shell(companyIdx(r), buildCompany(r)), nav);
-    wrapper.insertBefore(shell(reflectIdx(), buildReflect()), nav);
-    const sm = shell(summaryIdx(), buildSummary()); wrapper.insertBefore(sm, nav);
+    wrapper.insertBefore(shell(reflectIdx(),   buildReflect()),      nav);
+    wrapper.insertBefore(shell(revealCmpIdx(), buildRevealCompare()), nav);
+    wrapper.insertBefore(shell(revealLesIdx(), buildRevealLesson()),  nav);
+    wrapper.insertBefore(shell(summaryIdx(),   buildSummary()),      nav);
 
     buildDots();
     built = true;
@@ -552,6 +640,7 @@ const DECK = {
     }
     for(let r=0;r<RN;r++) hydrateCompany(r);
     hydrateReflect();
+    renderReveal();
     renderSummary();
   }
 
@@ -572,14 +661,13 @@ const DECK = {
   function buildCompany(r){
     const c = COS[r];
     const snips = c.snips.map(s=>`<li><span class="src">${escHtml(s.src)}:</span> ${escHtml(s.text)}</li>`).join('');
+    // compact landscape chips — label only; the per-option guidance lives in the group hint below
     const gateOpts = G.map(o=>`
       <button class="opt" role="radio" aria-checked="false" id="${id('g'+r+'-'+o.key)}" data-k="${o.key}" tabindex="-1">
-        <span class="otext"><span class="olab">${esc(o.label)}</span><span class="oq">${esc(o.q)}</span></span>
-        <span class="chk" aria-hidden="true">✓</span></button>`).join('');
+        <span class="olab">${esc(o.label)}</span><span class="chk" aria-hidden="true">✓</span></button>`).join('');
     const relOpts = RL.map(o=>`
       <button class="opt" role="radio" aria-checked="false" id="${id('r'+r+'-'+o.key)}" data-k="${o.key}" tabindex="-1">
-        <span class="otext"><span class="olab">${esc(o.label)}</span><span class="oq">${esc(o.q)}</span></span>
-        <span class="chk" aria-hidden="true">✓</span></button>`).join('');
+        <span class="olab">${esc(o.label)}</span><span class="chk" aria-hidden="true">✓</span></button>`).join('');
     const critOpts = ['<option value="">Select the criterion…</option>']
       .concat(GC.map(o=>`<option value="${o.key}">${escHtml(o.label)}</option>`)).join('');
     return `
@@ -602,7 +690,8 @@ const DECK = {
 
           <div class="field">
             <span class="flab" id="${id('glab'+r)}"><span class="step">Step 1</span>Eligibility gate call <span class="req">(required)</span></span>
-            <div class="opts gate" role="radiogroup" aria-required="true" id="${id('ggrp'+r)}" aria-labelledby="${id('glab'+r)}">${gateOpts}</div>
+            <div class="opts gate" role="radiogroup" aria-required="true" id="${id('ggrp'+r)}" aria-labelledby="${id('glab'+r)}" aria-describedby="${id('ghint'+r)}">${gateOpts}</div>
+            <p class="fhint" id="${id('ghint'+r)}"><b>Pass</b> = clears all five criteria. <b>Fail</b> = misses one (name it). <b>Hold to check</b> = can’t confirm one yet (name it).</p>
           </div>
 
           <div class="field" id="${id('critwrap'+r)}" hidden>
@@ -613,7 +702,8 @@ const DECK = {
 
           <div class="field">
             <span class="flab" id="${id('rlab'+r)}"><span class="step">Step 2</span>Relevance rating <span class="req">(required)</span></span>
-            <div class="opts rel" role="radiogroup" aria-required="true" id="${id('rgrp'+r)}" aria-labelledby="${id('rlab'+r)}">${relOpts}</div>
+            <div class="opts rel" role="radiogroup" aria-required="true" id="${id('rgrp'+r)}" aria-labelledby="${id('rlab'+r)}" aria-describedby="${id('rhint'+r)}">${relOpts}</div>
+            <p class="fhint" id="${id('rhint'+r)}"><b>High / Medium / Low</b> for companies that pass the gate; <b>Exclude</b> if it fails the gate or fits no use case.</p>
           </div>
 
           <div class="field">
@@ -666,8 +756,68 @@ const DECK = {
       </div>
       <div class="sum-actions">
         <button class="btn ghost" type="button" id="${id('copy')}">Copy my calls</button>
+        <button class="btn ghost" type="button" id="${id('restart')}">Score a different challenge</button>
       </div>
       <div class="bridge">${esc(DECK.summary.bridge)}</div>`;
+  }
+
+  /* ---- REVEAL: your calls vs. the answer key (table) ---- */
+  function buildRevealCompare(){
+    return `
+      <div class="roundtag">Reveal</div>
+      <h2 id="${id('h-'+revealCmpIdx())}" tabindex="-1" style="margin-top:6px">${esc(DECK.reveal.heading)}</h2>
+      <p class="rv-intro">${esc(DECK.reveal.intro)}</p>
+      <div class="sum-scroll" role="region" aria-label="Your calls next to the answer key (scrollable table)" tabindex="0">
+        <table class="sum">
+          <caption id="${id('rvcap')}"></caption>
+          <thead><tr>
+            <th scope="col">Company</th>
+            <th scope="col">Your call</th>
+            <th scope="col">Answer key</th>
+            <th scope="col">What it really is</th>
+          </tr></thead>
+          <tbody id="${id('rvbody')}"></tbody>
+        </table>
+      </div>`;
+  }
+
+  /* ---- REVEAL: the lesson + the two classic misses ---- */
+  function buildRevealLesson(){
+    const misses = DECK.misses.map(m=>`
+      <div class="miss"><div class="missh">${esc(m.miss)}</div><div class="missr">${esc(m.rule)}</div></div>`).join('');
+    return `
+      <div class="roundtag">Reveal · the lesson</div>
+      <h2 id="${id('h-'+revealLesIdx())}" tabindex="-1" style="margin-top:6px">${esc(DECK.reveal.lessonHeading)}</h2>
+      <p class="lesson" id="${id('lesson')}"></p>
+      <h3 style="margin:6px 0 4px">${esc(DECK.reveal.missesHeading)}</h3>
+      <p class="rv-intro" style="margin-top:0">${esc(DECK.reveal.missesIntro)}</p>
+      ${misses}`;
+  }
+
+  function gateMatch(r){
+    const a=DECK.answers[COS[r].id]; if(!a||!gate[r]) return null;
+    return gate[r]===a.gate;
+  }
+  function renderReveal(){
+    const body=document.getElementById(id('rvbody')); if(!body) return;
+    const setName=DECK.sets[SETKEY].name;
+    const cap=document.getElementById(id('rvcap')); if(cap) cap.textContent='Your calls next to the answer key — '+setName;
+    body.innerHTML=COS.map((c,r)=>{
+      const a=DECK.answers[c.id]||{name:'',gate:'',rel:'',reality:'',verdict:''};
+      const yourGate=gate[r]?GATELAB[gate[r]]:'—', yourRel=relevance[r]?RELLAB[relevance[r]]:'—';
+      const m=gateMatch(r);
+      const note = m===null ? '' : (m
+        ? '<span class="matchnote">Your gate matched the key.</span>'
+        : '<span class="matchnote">Your gate differed from the key — worth a re-read.</span>');
+      return `
+      <tr>
+        <th scope="row">${escHtml(c.id)}${a.name?' — '+escHtml(a.name):''}</th>
+        <td><span class="yourcall">${escHtml(yourGate)} · ${escHtml(yourRel)}</span>${note}</td>
+        <td><span class="keycall">${escHtml(GATELAB[a.gate]||a.gate)} · ${escHtml(a.rel)}</span></td>
+        <td><span class="why">${escHtml(a.reality)} ${escHtml(a.verdict)}</span></td>
+      </tr>`;
+    }).join('');
+    const les=document.getElementById(id('lesson')); if(les) les.innerHTML=esc(DECK.lessons[SETKEY]);
   }
 
   /* =====================================================================
@@ -791,7 +941,8 @@ const DECK = {
   function focusHeading(i){
     const h=document.getElementById(id('h-'+i));
     if(h) h.focus({preventScroll:true});
-    if(i===summaryIdx()){ lastSaveAt=Date.now(); announce('You scored ' + RN + ' companies. Here are your locked calls. Copy them, then open the reveal.'); return; }
+    if(i===revealCmpIdx()){ lastSaveAt=Date.now(); announce('The reveal. Your ' + RN + ' calls now sit next to the answer key — compare them, then read the lesson.'); return; }
+    if(i===summaryIdx()){ lastSaveAt=Date.now(); announce('Your locked calls. Copy them for your records if you like.'); return; }
     setTimeout(()=>{ if(Date.now()-lastSaveAt>1400) announce('Slide '+(i+1)+' of '+N); }, 350);
   }
   function go(n){
@@ -858,6 +1009,12 @@ const DECK = {
       </tr>`).join('');
     const cp=document.getElementById(id('copy'));
     if(cp && !cp.dataset.wired){ cp.dataset.wired='1'; cp.addEventListener('click', copyCalls); }
+    const rst=document.getElementById(id('restart'));
+    if(rst && !rst.dataset.wired){ rst.dataset.wired='1';
+      rst.addEventListener('click', ()=>{
+        if(isStacked()){ const h=document.getElementById(id('h-0')); if(h){ h.scrollIntoView(); h.focus({preventScroll:true}); } announce('Scroll to the top to pick a different challenge, then start again.'); return; }
+        announce('Back to the challenge picker. Choose a challenge and start again.'); go(0);
+      }); }
   }
   function callsAsText(){
     const lines=['PFNYC Blind-Score — '+DECK.sets[SETKEY].name,''];
@@ -896,7 +1053,7 @@ const DECK = {
     if(!built){ scaleDeck(); return; }
     if(isStacked()){
       document.querySelectorAll('#deck-wrapper .slide').forEach(s=>{ if(s.id==='sl0'){ s.hidden=false; s.classList.add('active'); } else { s.hidden=false; s.classList.remove('active'); } });
-      renderSummary();
+      renderReveal(); renderSummary();
     } else {
       showSlide(cur); updateNav();
     }
@@ -910,27 +1067,26 @@ const DECK = {
     wrapper.style.transform='translate('+ox+'px,'+oy+'px) scale('+s+')';
   }
 
-  /* re-render summary on entering it (covers edits made on earlier slides) */
+  /* re-render reveal + summary on entering them (covers edits made on earlier slides) */
   const _go = go;
-  go = function(n){ _go(n); if(cur===summaryIdx()) refreshDynamic(); };
+  go = function(n){ _go(n); if(cur===revealCmpIdx()) renderReveal(); if(cur===summaryIdx()) refreshDynamic(); };
 
   /* =====================================================================
      BOOT
      ===================================================================== */
   buildTitle();
   ensureGateReason();
-  // auto-resume a prior in-progress set (so a refresh inside Notion keeps the learner's place)
+  // Preselect a saved set on the picker (so re-picking THAT challenge restores its calls), but ALWAYS land on
+  // the title/set-picker — reloading the page is how a learner switches to a different challenge and starts fresh.
   const saved = load();
   if(saved && saved.set){ SETKEY=saved.set;
-    // reflect the saved set selection on the title picker
     const so=document.querySelector('#'+id('setgrp')+' .opt[data-set="'+SETKEY+'"]');
     if(so){ [...document.querySelectorAll('#'+id('setgrp')+' .opt')].forEach(o=>{o.setAttribute('aria-checked','false');o.tabIndex=-1;}); so.setAttribute('aria-checked','true'); so.tabIndex=0; }
     const st=document.getElementById(id('start')); if(st){ st.setAttribute('aria-disabled','false'); st.removeAttribute('aria-describedby'); }
-    buildDeck();
-    if(!isStacked()){ cur=Math.min(Math.max(0, saved.cur|0), N-1); }
   }
+  cur = 0;
   if(isStacked()){ syncMode(); }
-  else { showSlide(cur); updateNav(); scaleDeck(); if(cur===summaryIdx()) refreshDynamic(); }
+  else { showSlide(0); updateNav(); scaleDeck(); }
   window.addEventListener('resize', syncMode);
   window.addEventListener('orientationchange', syncMode);
 })();
