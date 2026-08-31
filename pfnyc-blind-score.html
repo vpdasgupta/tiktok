@@ -81,12 +81,13 @@
   .navbtn[aria-disabled="true"]:focus-visible{
     outline:2px solid var(--on-highlight);outline-offset:2px;box-shadow:none}
 
-  #deck-wrapper{width:960px;height:540px;overflow:hidden;position:relative;flex-shrink:0;background:var(--bg)}
-  .slide{width:960px;height:492px;padding:26px 46px 14px;position:absolute;inset:0;display:none;flex-direction:column;overflow:auto}
+  /* canvas is 960×600 (a bit taller than 16:9) so the content-dense slides breathe without clipping controls */
+  #deck-wrapper{width:960px;height:600px;overflow:hidden;position:relative;flex-shrink:0;background:var(--bg)}
+  .slide{width:960px;height:552px;padding:28px 50px 16px;position:absolute;inset:0;display:none;flex-direction:column;overflow:auto}
   .slide.active{display:flex}
 
-  h1{font-size:2rem;font-weight:800;line-height:1.15;color:var(--title)}
-  h2{font-size:1.4rem;font-weight:800;color:var(--title)}
+  h1{font-size:2rem;font-weight:800;line-height:1.18;color:var(--title)}
+  h2{font-size:1.4rem;font-weight:800;line-height:1.2;color:var(--title)}
   h3{font-size:1rem;font-weight:800;color:var(--title);letter-spacing:.01em}
   .muted{color:var(--body)}
   .btn{appearance:none;border:2px solid var(--on-highlight);border-radius:10px;padding:11px 19px;
@@ -114,20 +115,22 @@
   .dt.on{background:var(--on-highlight);border-color:var(--on-highlight)}
 
   /* ---- title / set-picker slide ---- */
-  .s-title{justify-content:center;gap:14px}
+  /* top-aligned (NOT centered) so tall content never clips at the top of the fixed canvas */
+  .s-title{justify-content:flex-start;gap:13px}
   .s-title h1{display:flex;align-items:baseline;gap:.3em;flex-wrap:wrap}
   .s-title .emoji{font-size:1.05em}
+  .s-title .opt{padding:10px 15px}          /* the set-picker cards are 2-line; keep them compact so all 3 + Start fit */
   .warnbox{font-size:.9rem;line-height:1.5;color:var(--title);background:var(--highlight);
-    border-left:4px solid var(--on-highlight);border-radius:0 10px 10px 0;padding:11px 15px;max-width:80ch}
+    border-left:4px solid var(--on-highlight);border-radius:0 10px 10px 0;padding:11px 16px;max-width:80ch}
 
   /* ---- generic option pickers (set picker, gate, relevance) reuse one look ---- */
-  .opts{display:grid;gap:9px;margin-top:8px}
+  .opts{display:grid;gap:11px;margin-top:10px}
   .opts.two{grid-template-columns:repeat(2,1fr)}
-  .opt{border:1.5px solid var(--body);background:var(--bg);border-radius:11px;padding:11px 14px;
+  .opt{border:1.5px solid var(--body);background:var(--bg);border-radius:11px;padding:13px 15px;
     font-size:.9rem;font-weight:700;color:var(--title);cursor:pointer;display:flex;align-items:flex-start;gap:9px;
     text-align:left;transition:border-color var(--t-fast) var(--ease-out),background var(--t-fast) var(--ease-out)}
   .opt:hover{border-color:var(--on-highlight)}
-  .opt .otext{flex:1;display:flex;flex-direction:column;gap:2px}
+  .opt .otext{flex:1;display:flex;flex-direction:column;gap:3px}
   .opt .olab{font-weight:800}
   .opt .oq{font-weight:400;font-size:.76rem;color:var(--body);line-height:1.35}
   .opt .chk{margin-left:auto;font-weight:800;font-size:.72rem;color:var(--on-highlight);opacity:0;white-space:nowrap;flex-shrink:0}
@@ -136,65 +139,65 @@
   .opt[aria-checked="true"] .chk{opacity:1}
 
   /* ---- company slide: two columns ---- */
-  .co-head{margin-bottom:8px}
-  .co-focus{font-size:.8rem;color:var(--body);line-height:1.4;margin-top:5px;max-width:96ch}
-  .co-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;align-items:start}
-  .co-col h3{margin-bottom:7px}
+  .co-head{margin-bottom:14px}
+  .co-focus{font-size:.8rem;color:var(--body);line-height:1.45;margin-top:8px;max-width:96ch}
+  .co-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1;align-items:start}
+  .co-col h3{margin-bottom:9px}
   .co-snip{background:var(--highlight);border:1px solid var(--on-highlight);border-radius:12px;
-    padding:12px 15px}
-  .snip-list{list-style:none;display:flex;flex-direction:column;gap:9px}
-  .snip-list li{font-size:.86rem;line-height:1.45;color:var(--title)}
+    padding:15px 17px}
+  .snip-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .snip-list li{font-size:.86rem;line-height:1.55;color:var(--title)}
   .snip-list .src{font-weight:800;color:var(--on-highlight)}
-  .co-hint{font-size:.76rem;color:var(--body);margin-top:8px;line-height:1.4}
+  .co-hint{font-size:.76rem;color:var(--body);margin-top:11px;line-height:1.45}
 
   /* right column form */
-  .field{margin:0 0 12px}
-  .field > .flab{display:block;font-weight:800;color:var(--title);font-size:.9rem;margin:0 0 5px}
-  .flab .step{color:var(--on-highlight);font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:1px}
+  .field{margin:0 0 18px}
+  .field > .flab{display:block;font-weight:800;color:var(--title);font-size:.9rem;margin:0 0 8px}
+  .flab .step{color:var(--on-highlight);font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:2px}
   .req{font-weight:700;color:var(--on-highlight);font-size:.78rem}
   select,input[type=text]{width:100%;max-width:100%;font:inherit;font-size:.88rem;color:var(--title);
-    background:var(--bg);border:2px solid var(--on-highlight);border-radius:9px;padding:9px 10px;min-height:42px}
-  .fhint{font-size:.76rem;color:var(--body);margin-top:4px;line-height:1.35}
+    background:var(--bg);border:2px solid var(--on-highlight);border-radius:9px;padding:10px 11px;min-height:44px}
+  .fhint{font-size:.76rem;color:var(--body);margin-top:7px;line-height:1.45}
   /* landscape rectangular chips — gate in one row of 3, relevance in one row of 4 */
   .opts.gate{grid-template-columns:repeat(3,1fr)}
   .opts.rel{grid-template-columns:repeat(4,1fr)}
-  .opts.gate .opt,.opts.rel .opt{padding:11px 8px;font-size:.86rem;justify-content:center;align-items:center;
-    text-align:center;min-height:50px}
+  .opts.gate .opt,.opts.rel .opt{padding:14px 8px;font-size:.86rem;justify-content:center;align-items:center;
+    text-align:center;min-height:56px}
   .opts.gate .opt .olab,.opts.rel .opt .olab{font-weight:800;line-height:1.18}
   .opts.gate .opt .chk,.opts.rel .opt .chk{margin-left:6px;font-size:.85rem}
-  .saved-tick{font-size:.78rem;font-weight:800;color:var(--on-highlight);margin-top:6px;opacity:0}
+  .saved-tick{font-size:.78rem;font-weight:800;color:var(--on-highlight);margin-top:9px;opacity:0}
   .saved-tick.show{opacity:1}
 
   /* ---- reflection slide ---- */
-  .s-reflect{gap:6px}
-  .reflect-note{font-size:.9rem;color:var(--body);line-height:1.5;max-width:80ch}
+  .s-reflect{gap:10px}
+  .reflect-note{font-size:.9rem;color:var(--body);line-height:1.55;max-width:80ch}
 
   /* ---- summary / done slide ---- */
   .sum-set{font-size:.95rem;font-weight:700;color:var(--title);margin:2px 0 8px}
   .sum-scroll{overflow-x:auto;border:1px solid var(--on-highlight);border-radius:11px}
   table.sum{border-collapse:collapse;width:100%;min-width:720px}
-  table.sum caption{text-align:left;padding:9px 12px;font-weight:700;color:var(--title);font-size:.9rem}
+  table.sum caption{text-align:left;padding:10px 12px;font-weight:700;color:var(--title);font-size:.9rem}
   table.sum thead th{position:sticky;top:0;background:var(--highlight);color:var(--on-highlight);
-    text-align:left;border-bottom:2px solid var(--on-highlight);padding:8px 10px;font-size:.8rem}
-  table.sum tbody th,table.sum tbody td{border-bottom:1px solid var(--on-highlight);padding:8px 10px;
-    font-size:.83rem;vertical-align:top;color:var(--title)}
+    text-align:left;border-bottom:2px solid var(--on-highlight);padding:10px 11px;font-size:.8rem}
+  table.sum tbody th,table.sum tbody td{border-bottom:1px solid var(--on-highlight);padding:10px 11px;
+    font-size:.83rem;line-height:1.5;vertical-align:top;color:var(--title)}
   table.sum tbody th[scope=row]{text-align:left;font-weight:800;white-space:nowrap}
-  table.sum tbody td .reason{white-space:normal;line-height:1.4}
-  .sum-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0 8px}
-  .bridge{font-size:1rem;font-weight:700;padding:12px 16px;border-left:4px solid var(--on-highlight);
-    background:var(--highlight);border-radius:0 10px 10px 0;line-height:1.5;color:var(--title);max-width:92ch}
+  table.sum tbody td .reason{white-space:normal;line-height:1.45}
+  .sum-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0 10px}
+  .bridge{font-size:1rem;font-weight:700;padding:14px 18px;border-left:4px solid var(--on-highlight);
+    background:var(--highlight);border-radius:0 10px 10px 0;line-height:1.55;color:var(--title);max-width:92ch}
 
   /* ---- reveal slides ---- */
-  .rv-intro{font-size:.9rem;color:var(--body);line-height:1.5;max-width:96ch;margin:2px 0 8px}
-  table.sum td .why{white-space:normal;line-height:1.4}
+  .rv-intro{font-size:.9rem;color:var(--body);line-height:1.55;max-width:96ch;margin:4px 0 12px}
+  table.sum td .why{white-space:normal;line-height:1.5}
   .yourcall{font-weight:700;color:var(--title);white-space:normal}
   .keycall{font-weight:800;color:var(--on-highlight);white-space:normal}
-  .matchnote{display:block;font-size:.72rem;color:var(--body);margin-top:3px}
-  .lesson{font-size:.94rem;line-height:1.55;color:var(--title);background:var(--highlight);
-    border-left:4px solid var(--on-highlight);border-radius:0 10px 10px 0;padding:13px 16px;max-width:96ch;margin:0 0 12px}
-  .miss{border:1px solid var(--on-highlight);border-radius:11px;padding:10px 14px;margin:0 0 9px}
+  .matchnote{display:block;font-size:.72rem;color:var(--body);margin-top:5px;line-height:1.4}
+  .lesson{font-size:.94rem;line-height:1.6;color:var(--title);background:var(--highlight);
+    border-left:4px solid var(--on-highlight);border-radius:0 10px 10px 0;padding:15px 17px;max-width:96ch;margin:0 0 16px}
+  .miss{border:1px solid var(--on-highlight);border-radius:11px;padding:13px 15px;margin:0 0 11px}
   .miss .missh{font-weight:800;color:var(--on-highlight);font-size:.9rem}
-  .miss .missr{font-size:.84rem;color:var(--title);line-height:1.45;margin-top:3px}
+  .miss .missr{font-size:.84rem;color:var(--title);line-height:1.5;margin-top:5px}
 
   /* ================= REFLOW / MOBILE FALLBACK (≤640px CSS width, ≈400% zoom) =================
      Abandon the fixed 960x540 scaled canvas: fluid, vertically-scrolling, ALL slides visible,
@@ -247,10 +250,9 @@ const DECK = {
 
   emoji: '⚖️',
   title: 'Blind-Score Your Challenge Set',
-  intro: "Read the public snippets for a set of real companies and make your call on each — "
-       + "pass or fail the eligibility gate, then a relevance rating. You score only the challenge "
-       + "set you locked in Week 1; commit every call <b>before</b> the reveal, which you'll see right "
-       + "here once you're done. Move fast, commit to an answer, and resist the urge to look ahead.",
+  intro: "Read the public snippets for a set of real companies and make your call on each — pass or fail "
+       + "the eligibility gate, then a relevance rating. You score only the challenge you locked in Week 1, "
+       + "and see the reveal right here once every call is in. Move fast, commit, and don't look <b>ahead</b>.",
   warn: "Do not look ahead. A call you already know the answer to teaches you nothing — score first, reveal second.",
   pickLegend: "Which challenge set are you scoring?",
   pickHint: "Pick only the challenge you locked in Week 1 — you score that one set. Curious about the others afterward? "
@@ -583,7 +585,8 @@ const DECK = {
       opts.forEach(o=>{ const on=o.dataset.set===k; o.setAttribute('aria-checked',on?'true':'false'); o.tabIndex=on?0:-1; });
       const st = t.querySelector('#'+id('start'));
       st.setAttribute('aria-disabled','false'); st.removeAttribute('aria-describedby');
-      announce(DECK.sets[k].name + ' selected, ' + DECK.sets[k].count + ' companies. Start scoring is now available.');
+      syncTitleNav();   // Next now advances too
+      announce(DECK.sets[k].name + ' selected, ' + DECK.sets[k].count + ' companies. Start scoring — or Next — is now available.');
     }
     grp.addEventListener('click', e=>{ const b=e.target.closest('.opt'); if(b) pickSet(b.dataset.set); });
     grp.addEventListener('keydown', e=>{
@@ -599,6 +602,7 @@ const DECK = {
       if(this.getAttribute('aria-disabled')==='true'){ announce('Choose a challenge set to begin.', true); opts[0].focus(); return; }
       startSet();
     });
+    syncTitleNav();
   }
 
   /* =====================================================================
@@ -968,9 +972,28 @@ const DECK = {
     if(document.getElementById(id('gatereason'))) return;
     const s=document.createElement('span'); s.id=id('gatereason'); s.className='sr-only'; document.body.appendChild(s);
   }
+  // Configure the bottom nav while on the title/set-picker (before any deck is built) so the
+  // Next button mirrors the Start button: enabled once a challenge is chosen, disabled otherwise.
+  function syncTitleNav(){
+    const prev=document.getElementById('prevb'); if(prev) prev.setAttribute('aria-disabled','true');
+    const nb=document.getElementById('nextb'); if(!nb) return;
+    if(SETKEY){ nb.setAttribute('aria-disabled','false'); nb.removeAttribute('aria-describedby'); nb.classList.add('ready'); }
+    else { ensureGateReason(); nb.setAttribute('aria-disabled','true'); nb.setAttribute('aria-describedby', id('gatereason'));
+      document.getElementById(id('gatereason')).textContent='Choose a challenge set to begin.'; nb.classList.remove('ready'); }
+    const pos=document.getElementById('pos'); if(pos) pos.textContent='';
+  }
 
-  document.getElementById('prevb').addEventListener('click', ()=>go(cur-1));
+  document.getElementById('prevb').addEventListener('click', function(){
+    if(this.getAttribute('aria-disabled')==='true') return;
+    go(cur-1);
+  });
   document.getElementById('nextb').addEventListener('click', function(){
+    // On the title/set-picker slide, Next behaves like "Start scoring" — advance once a set is chosen.
+    if(cur===0){
+      if(SETKEY){ startSet(); }
+      else { announce('Choose a challenge set to begin.', true); const o=document.querySelector('#'+id('setgrp')+' .opt'); if(o) o.focus(); }
+      return;
+    }
     if(this.getAttribute('aria-disabled')==='true'){ announce(gateReason(cur), true); focusFirstMissing(cur); return; }
     go(cur+1);
   });
@@ -1061,8 +1084,8 @@ const DECK = {
   }
   function scaleDeck(){
     if(isStacked()){ wrapper.style.transform='none'; return; }
-    const s=Math.min(window.innerWidth/960, window.innerHeight/540, 1);
-    const ox=Math.max(0,(window.innerWidth-960*s)/2), oy=Math.max(0,(window.innerHeight-540*s)/2);
+    const s=Math.min(window.innerWidth/960, window.innerHeight/600, 1);
+    const ox=Math.max(0,(window.innerWidth-960*s)/2), oy=Math.max(0,(window.innerHeight-600*s)/2);
     wrapper.style.transformOrigin='top left';
     wrapper.style.transform='translate('+ox+'px,'+oy+'px) scale('+s+')';
   }
@@ -1085,6 +1108,7 @@ const DECK = {
     const st=document.getElementById(id('start')); if(st){ st.setAttribute('aria-disabled','false'); st.removeAttribute('aria-describedby'); }
   }
   cur = 0;
+  syncTitleNav();   // reflect any preselected set on the bottom Next button
   if(isStacked()){ syncMode(); }
   else { showSlide(0); updateNav(); scaleDeck(); }
   window.addEventListener('resize', syncMode);
