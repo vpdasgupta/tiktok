@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evidence-driven — How The Home Depot thinks</title>
+<style>
+  :root {
+    --bg: #ffffff; --card: #ffffff; --text: #1a1a1a; --muted: #4a4a4a;
+    --border: #d9d9d9; --accent: #b34700; --accent-bar: #f96302;
+    --tip-bg: #fbf3ee; --tip-border: #f96302;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #191919; --card: #202020; --text: #ededed; --muted: #bcbcbc;
+      --border: #3a3a3a; --accent: #ff9147; --accent-bar: #f96302;
+      --tip-bg: #2a2117; --tip-border: #f96302;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5; padding: 12px;
+  }
+  .card {
+    max-width: 760px; margin: 0 auto; background: var(--card);
+    border: 1px solid var(--border); border-left: 5px solid var(--accent-bar);
+    border-radius: 10px; padding: 16px 20px;
+  }
+  h1 { font-size: 1.15rem; margin: 0 0 8px; }
+  p { margin: 0 0 12px; color: var(--text); }
+  .tips { list-style: none; margin: 0; padding: 12px 14px; background: var(--tip-bg);
+    border-left: 4px solid var(--tip-border); border-radius: 0 8px 8px 0; }
+  .tips li { margin: 6px 0; padding-left: 20px; position: relative; }
+  .tips li::before { content: "\2713"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Evidence-driven</h1>
+    <p>Decisions here run on checked numbers and facts, not opinions or vendor claims. Any statement you make is only as strong as the source behind it.</p>
+    <ul class="tips" aria-label="Ways to put it into practice">
+      <li><strong>Cite every claim.</strong> Attach a real number and where it came from to each point, and skip anything you can't back up.</li>
+      <li><strong>Check the source.</strong> Favor The Home Depot's own data or a credible outside source over marketing copy, and note it so others can verify.</li>
+    </ul>
+  </div>
+</body>
+</html>
