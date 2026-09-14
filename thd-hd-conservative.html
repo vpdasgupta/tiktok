@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conservative — How The Home Depot thinks</title>
+<style>
+  :root {
+    --bg: #ffffff; --card: #ffffff; --text: #1a1a1a; --muted: #4a4a4a;
+    --border: #d9d9d9; --accent: #b34700; --accent-bar: #f96302;
+    --tip-bg: #fbf3ee; --tip-border: #f96302;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #191919; --card: #202020; --text: #ededed; --muted: #bcbcbc;
+      --border: #3a3a3a; --accent: #ff9147; --accent-bar: #f96302;
+      --tip-bg: #2a2117; --tip-border: #f96302;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5; padding: 12px;
+  }
+  .card {
+    max-width: 760px; margin: 0 auto; background: var(--card);
+    border: 1px solid var(--border); border-left: 5px solid var(--accent-bar);
+    border-radius: 10px; padding: 16px 20px;
+  }
+  h1 { font-size: 1.15rem; margin: 0 0 8px; }
+  p { margin: 0 0 12px; color: var(--text); }
+  .tips { list-style: none; margin: 0; padding: 12px 14px; background: var(--tip-bg);
+    border-left: 4px solid var(--tip-border); border-radius: 0 8px 8px 0; }
+  .tips li { margin: 6px 0; padding-left: 20px; position: relative; }
+  .tips li::before { content: "\2713"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Conservative</h1>
+    <p>The Home Depot moves in careful, tested steps and tends to lean on what has worked before rather than betting big on the untried. A pitch that asks for a sweeping change reads as risky; one that starts small reads as smart.</p>
+    <ul class="tips" aria-label="Ways to put it into practice">
+      <li><strong>Frame it as a pilot.</strong> Propose testing your idea in one store, one aisle, or one product category first, with a plan to expand only if it works.</li>
+      <li><strong>Point to precedent.</strong> Note a time the idea (or a close cousin) already worked, so it feels proven rather than experimental.</li>
+    </ul>
+  </div>
+</body>
+</html>
