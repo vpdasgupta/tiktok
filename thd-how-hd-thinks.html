@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How The Home Depot Thinks — a closer look</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --muted: #4a4a4a;
+    --border: #d9d9d9;
+    --accent: #b34700;      /* darkened HD orange, AA on white */
+    --accent-bar: #f96302;  /* brand orange, decorative bar only */
+    --hover: #f5f5f5;
+    --focus: #0b5cad;
+    --tip-bg: #fbf3ee;
+    --tip-border: #f96302;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #191919;
+      --card: #202020;
+      --text: #ededed;
+      --muted: #bcbcbc;
+      --border: #3a3a3a;
+      --accent: #ff9147;
+      --accent-bar: #f96302;
+      --hover: #2a2a2a;
+      --focus: #7db7ff;
+      --tip-bg: #2a2117;
+      --tip-border: #f96302;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 16px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 {
+    font-size: 1.25rem;
+    margin: 0 0 4px;
+  }
+  .intro { color: var(--muted); margin: 0 0 16px; font-size: 0.95rem; }
+  .controls { margin: 0 0 12px; }
+  .controls button {
+    font: inherit;
+    font-size: 0.85rem;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  .controls button:hover { background: var(--hover); }
+  .item { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; background: var(--card); }
+  .item-header { margin: 0; }
+  .acc-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    font: inherit;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+    background: transparent;
+    border: 0;
+    border-left: 5px solid var(--accent-bar);
+    padding: 14px 16px;
+    cursor: pointer;
+  }
+  .acc-trigger:hover { background: var(--hover); }
+  .acc-trigger .chev {
+    margin-left: auto;
+    flex: none;
+    transition: transform 0.18s ease;
+    color: var(--accent);
+    font-size: 0.9rem;
+  }
+  .acc-trigger[aria-expanded="true"] .chev { transform: rotate(90deg); }
+  .panel {
+    padding: 0 16px 4px 21px;
+  }
+  .panel p { margin: 12px 0; color: var(--text); }
+  .panel .tips {
+    list-style: none;
+    margin: 12px 0 16px;
+    padding: 12px 14px;
+    background: var(--tip-bg);
+    border-left: 4px solid var(--tip-border);
+    border-radius: 0 8px 8px 0;
+  }
+  .panel .tips li { margin: 6px 0; padding-left: 20px; position: relative; }
+  .panel .tips li::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  /* Focus visibility (WCAG 2.4.7 / 2.4.13) */
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .acc-trigger .chev { transition: none; }
+  }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>How The Home Depot thinks: a closer look</h1>
+    <p class="intro">Select any trait to see a quick take and a couple of ways to put it into practice.</p>
+    <div class="controls">
+      <button type="button" id="toggle-all" aria-pressed="false">Expand all</button>
+    </div>
+
+    <div id="accordion"></div>
+  </div>
+
+<script>
+(function () {
+  var items = [
+    {
+      id: "conservative",
+      title: "Conservative",
+      body: "The Home Depot moves in careful, tested steps and tends to lean on what has worked before rather than betting big on the untried. A pitch that asks for a sweeping change reads as risky; one that starts small reads as smart.",
+      tips: [
+        "Frame it as a pilot. Propose testing your idea in one store, one aisle, or one product category first, with a plan to expand only if it works.",
+        "Point to precedent. Note a time the idea (or a close cousin) already worked, so it feels proven rather than experimental."
+      ]
+    },
+    {
+      id: "visual",
+      title: "Highly visual",
+      body: "Presentation carries weight here. Clean, on-brand slides and signage are the norm, so a cluttered slide can quietly undercut an otherwise strong idea.",
+      tips: [
+        "Keep slides simple. One clear point per slide, plenty of white space, and a chart or image instead of a wall of text.",
+        "Show, don't just tell. A quick before/after visual or mockup of your recommendation lands faster than a paragraph describing it."
+      ]
+    },
+    {
+      id: "formulaic",
+      title: "Formulaic",
+      body: "The Home Depot prefers repeatable methods and clear steps over improvising a new approach each time. That is good news when you are learning: you can follow the method instead of guessing.",
+      tips: [
+        "Show your steps. Lay out how you got to your recommendation so someone else could repeat it and reach the same result.",
+        "Reuse the standard format. Match the structure and templates the team already uses rather than inventing your own."
+      ]
+    },
+    {
+      id: "evidence",
+      title: "Evidence-driven",
+      body: "Decisions here run on checked numbers and facts, not opinions or vendor claims. Any statement you make is only as strong as the source behind it.",
+      tips: [
+        "Cite every claim. Attach a real number and where it came from to each point, and skip anything you can't back up.",
+        "Check the source. Favor The Home Depot's own data or a credible outside source over marketing copy, and note it so others can verify."
+      ]
+    }
+  ];
+
+  var container = document.getElementById("accordion");
+
+  items.forEach(function (it) {
+    var wrap = document.createElement("div");
+    wrap.className = "item";
+
+    var h = document.createElement("h2");
+    h.className = "item-header";
+
+    var btn = document.createElement("button");
+    btn.className = "acc-trigger";
+    btn.type = "button";
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-controls", "panel-" + it.id);
+    btn.id = "trigger-" + it.id;
+
+    var label = document.createElement("span");
+    label.textContent = it.title;
+    btn.appendChild(label);
+
+    var chev = document.createElement("span");
+    chev.className = "chev";
+    chev.setAttribute("aria-hidden", "true");
+    chev.textContent = "❯";
+    btn.appendChild(chev);
+
+    h.appendChild(btn);
+
+    var panel = document.createElement("div");
+    panel.className = "panel";
+    panel.id = "panel-" + it.id;
+    panel.setAttribute("role", "region");
+    panel.setAttribute("aria-labelledby", "trigger-" + it.id);
+    panel.hidden = true;
+
+    var p = document.createElement("p");
+    p.textContent = it.body;
+    panel.appendChild(p);
+
+    var ul = document.createElement("ul");
+    ul.className = "tips";
+    ul.setAttribute("aria-label", "Ways to put it into practice");
+    it.tips.forEach(function (t) {
+      var li = document.createElement("li");
+      var parts = t.split(/^([^.]+\.)/);
+      // Bold the leading short instruction (up to first period)
+      var m = t.match(/^([^.]+\.)\s*(.*)$/);
+      if (m) {
+        var strong = document.createElement("strong");
+        strong.textContent = m[1] + " ";
+        li.appendChild(strong);
+        li.appendChild(document.createTextNode(m[2]));
+      } else {
+        li.textContent = t;
+      }
+      ul.appendChild(li);
+    });
+    panel.appendChild(ul);
+
+    btn.addEventListener("click", function () {
+      var expanded = btn.getAttribute("aria-expanded") === "true";
+      setOpen(btn, panel, !expanded);
+      syncToggleAll();
+    });
+
+    wrap.appendChild(h);
+    wrap.appendChild(panel);
+    container.appendChild(wrap);
+  });
+
+  function setOpen(btn, panel, open) {
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    panel.hidden = !open;
+  }
+
+  var toggleAll = document.getElementById("toggle-all");
+  toggleAll.addEventListener("click", function () {
+    var anyClosed = Array.prototype.some.call(
+      document.querySelectorAll(".acc-trigger"),
+      function (b) { return b.getAttribute("aria-expanded") !== "true"; }
+    );
+    Array.prototype.forEach.call(document.querySelectorAll(".item"), function (item) {
+      var b = item.querySelector(".acc-trigger");
+      var pnl = item.querySelector(".panel");
+      setOpen(b, pnl, anyClosed);
+    });
+    syncToggleAll();
+  });
+
+  function syncToggleAll() {
+    var allOpen = Array.prototype.every.call(
+      document.querySelectorAll(".acc-trigger"),
+      function (b) { return b.getAttribute("aria-expanded") === "true"; }
+    );
+    toggleAll.textContent = allOpen ? "Collapse all" : "Expand all";
+    toggleAll.setAttribute("aria-pressed", allOpen ? "true" : "false");
+  }
+})();
+</script>
+</body>
+</html>
