@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formulaic — How The Home Depot thinks</title>
+<style>
+  :root {
+    --bg: #ffffff; --card: #ffffff; --text: #1a1a1a; --muted: #4a4a4a;
+    --border: #d9d9d9; --accent: #b34700; --accent-bar: #f96302;
+    --tip-bg: #fbf3ee; --tip-border: #f96302;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #191919; --card: #202020; --text: #ededed; --muted: #bcbcbc;
+      --border: #3a3a3a; --accent: #ff9147; --accent-bar: #f96302;
+      --tip-bg: #2a2117; --tip-border: #f96302;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5; padding: 12px;
+  }
+  .card {
+    max-width: 760px; margin: 0 auto; background: var(--card);
+    border: 1px solid var(--border); border-left: 5px solid var(--accent-bar);
+    border-radius: 10px; padding: 16px 20px;
+  }
+  h1 { font-size: 1.15rem; margin: 0 0 8px; }
+  p { margin: 0 0 12px; color: var(--text); }
+  .tips { list-style: none; margin: 0; padding: 12px 14px; background: var(--tip-bg);
+    border-left: 4px solid var(--tip-border); border-radius: 0 8px 8px 0; }
+  .tips li { margin: 6px 0; padding-left: 20px; position: relative; }
+  .tips li::before { content: "\2713"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Formulaic</h1>
+    <p>The Home Depot prefers repeatable methods and clear steps over improvising a new approach each time. That is good news when you are learning: you can follow the method instead of guessing.</p>
+    <ul class="tips" aria-label="Ways to put it into practice">
+      <li><strong>Show your steps.</strong> Lay out how you got to your recommendation so someone else could repeat it and reach the same result.</li>
+      <li><strong>Reuse the standard format.</strong> Match the structure and templates the team already uses rather than inventing your own.</li>
+    </ul>
+  </div>
+</body>
+</html>
