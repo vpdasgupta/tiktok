@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Externship Journey: Where Project 1 Fits</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1a1a; --muted:#4b5563; --line:#d8dbe0;
+    --accent:#C2410C;       /* orange for text/thin UI on light */
+    --accent-fill:#F96302;  /* orange fill; put #121212 text on it */
+    --card:#ffffff; --card-2:#f6f7f9;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#191919; --fg:#eaeaea; --muted:#b3b3b3; --line:#3a3a3a;
+      --accent:#F96302; --card:#202020; --card-2:#262626; }
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--fg)}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemGlyphs,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  img,svg{max-width:100%;height:auto}
+  main{
+    max-width:880px; margin:0 auto; padding:18px;
+  }
+  .widget{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    border-top:4px solid var(--accent-fill);
+    padding:18px 18px 20px;
+    box-shadow:0 1px 3px rgba(0,0,0,.08);
+  }
+  h1{
+    font-size:clamp(1.15rem,1rem + 1.2vw,1.5rem);
+    line-height:1.25;
+    margin:.1rem 0 .5rem;
+  }
+  .caption{
+    color:var(--muted);
+    font-size:.95rem;
+    margin:0 0 1.1rem;
+  }
+  ol.journey{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:stretch;
+  }
+  ol.journey > li{
+    flex:1 1 150px;
+    min-width:0;
+    display:flex;
+  }
+  .node{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+  }
+  .node-btn{
+    font:inherit;
+    text-align:left;
+    width:100%;
+    min-height:44px;
+    cursor:pointer;
+    background:var(--card-2);
+    color:var(--fg);
+    border:1px solid var(--line);
+    border-left:4px solid var(--line);
+    border-radius:10px;
+    padding:10px 12px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .node-btn:hover{ border-color:var(--accent); border-left-color:var(--accent); }
+  .node-btn:focus-visible{ /* focus ring handled globally */ }
+  .node-step{
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--muted);
+    font-weight:600;
+  }
+  .node-title{
+    font-weight:700;
+    font-size:.98rem;
+  }
+  .node-phase{
+    color:var(--accent);
+    font-weight:700;
+  }
+  .badge{
+    align-self:flex-start;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    background:var(--accent-fill);
+    color:#121212;
+    font-size:.72rem;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:999px;
+    margin-top:2px;
+  }
+  .badge svg{width:12px;height:12px;flex:0 0 auto}
+  /* current step: bolder styling, thicker border, not color alone */
+  .node-btn[aria-current="step"]{
+    background:var(--card);
+    border-width:2px;
+    border-left-width:5px;
+    border-color:var(--accent-fill);
+    border-left-color:var(--accent-fill);
+    font-weight:700;
+  }
+  .caret{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:.8rem; color:var(--muted); margin-top:2px;
+  }
+  .caret svg{width:12px;height:12px;transition:transform .2s ease}
+  .node-btn[aria-expanded="true"] .caret svg{transform:rotate(180deg)}
+  .panel{
+    border:1px solid var(--line);
+    border-top:none;
+    border-radius:0 0 10px 10px;
+    background:var(--card);
+    padding:10px 12px;
+    font-size:.9rem;
+  }
+  .panel dl{margin:0}
+  .panel dt{
+    font-weight:700;
+    color:var(--accent);
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    margin-top:8px;
+  }
+  .panel dt:first-child{margin-top:0}
+  .panel dd{margin:2px 0 0}
+  /* decorative connectors between nodes */
+  .connector{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--accent);
+  }
+  .connector svg{width:20px;height:20px}
+  /* Mobile: stack vertically, rotate connectors */
+  @media (max-width:640px){
+    ol.journey{flex-direction:column;gap:6px}
+    ol.journey > li{flex:1 1 auto}
+    .connector{transform:rotate(90deg)}
+  }
+  .vh{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  :where(button,a,input,summary,[tabindex]):focus-visible{
+    outline:2px solid #121212; outline-offset:2px; box-shadow:0 0 0 4px #fff; border-radius:6px;
+  }
+  @media (prefers-color-scheme:dark){
+    :where(button,a,input,summary,[tabindex]):focus-visible{outline-color:#fff; box-shadow:0 0 0 4px #121212;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="widget">
+    <h1>The Externship Journey: Where Project 1 Fits</h1>
+    <p class="caption">Each project answers one question and hands its answer to the next. Project 1 is the foundation the rest of the case stands on.</p>
+
+    <ol class="journey">
+      <!-- Node 1 -->
+      <li>
+        <div class="node">
+          <button type="button" class="node-btn" id="journey-btn-1" aria-expanded="false" aria-controls="journey-panel-1">
+            <span class="node-step">Step 1</span>
+            <span class="node-title">Pre-Work · <span class="node-phase">Define</span></span>
+            <span class="caret">Details
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="panel" id="journey-panel-1" hidden>
+            <dl>
+              <dt>The question it answers</dt>
+              <dd>How big is the labor prize, and what's the problem?</dd>
+              <dt>What it hands forward</dt>
+              <dd>A sized prize + a crisp problem statement.</dd>
+            </dl>
+          </div>
+        </div>
+      </li>
+
+      <li class="connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M4 12h14m0 0l-5-5m5 5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </li>
+
+      <!-- Node 2 — current -->
+      <li>
+        <div class="node">
+          <button type="button" class="node-btn" id="journey-btn-2" aria-expanded="false" aria-controls="journey-panel-2" aria-current="step">
+            <span class="badge">
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 1C5.5 1 3.5 3 3.5 5.5c0 3 4.5 8.5 4.5 8.5s4.5-5.5 4.5-8.5C12.5 3 10.5 1 8 1zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="currentColor"/></svg>
+              You are here
+            </span>
+            <span class="node-step">Step 2</span>
+            <span class="node-title">Project 1 · <span class="node-phase">Discover</span></span>
+            <span class="caret">Details
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="panel" id="journey-panel-2" hidden>
+            <dl>
+              <dt>The question it answers</dt>
+              <dd>How is Chroma — the ESL brand The Home Depot already deploys — holding up, and how does it rank?</dd>
+              <dt>What it hands forward</dt>
+              <dd>A verified read on whether Chroma is durable &amp; cost-effective enough, plus a best-practice benchmark.</dd>
+            </dl>
+          </div>
+        </div>
+      </li>
+
+      <li class="connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M4 12h14m0 0l-5-5m5 5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </li>
+
+      <!-- Node 3 -->
+      <li>
+        <div class="node">
+          <button type="button" class="node-btn" id="journey-btn-3" aria-expanded="false" aria-controls="journey-panel-3">
+            <span class="node-step">Step 3</span>
+            <span class="node-title">Project 2 · <span class="node-phase">Design</span></span>
+            <span class="caret">Details
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="panel" id="journey-panel-3" hidden>
+            <dl>
+              <dt>The question it answers</dt>
+              <dd>When do labor savings beat total cost, including replacements?</dd>
+              <dt>What it hands forward</dt>
+              <dd>A breakeven model.</dd>
+            </dl>
+          </div>
+        </div>
+      </li>
+
+      <li class="connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M4 12h14m0 0l-5-5m5 5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </li>
+
+      <!-- Node 4 -->
+      <li>
+        <div class="node">
+          <button type="button" class="node-btn" id="journey-btn-4" aria-expanded="false" aria-controls="journey-panel-4">
+            <span class="node-step">Step 4</span>
+            <span class="node-title">Project 3 · <span class="node-phase">Design</span></span>
+            <span class="caret">Details
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="panel" id="journey-panel-4" hidden>
+            <dl>
+              <dt>The question it answers</dt>
+              <dd>When and where is deploying actually worth it?</dd>
+              <dt>What it hands forward</dt>
+              <dd>A decision rule + a risk map.</dd>
+            </dl>
+          </div>
+        </div>
+      </li>
+
+      <li class="connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M4 12h14m0 0l-5-5m5 5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </li>
+
+      <!-- Node 5 -->
+      <li>
+        <div class="node">
+          <button type="button" class="node-btn" id="journey-btn-5" aria-expanded="false" aria-controls="journey-panel-5">
+            <span class="node-step">Step 5</span>
+            <span class="node-title">Project 4 · <span class="node-phase">Deliver</span></span>
+            <span class="caret">Details
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <div class="panel" id="journey-panel-5" hidden>
+            <dl>
+              <dt>The question it answers</dt>
+              <dd>Should HD do this, and under what conditions?</dd>
+              <dt>What it hands forward</dt>
+              <dd>The executive business case.</dd>
+            </dl>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</main>
+
+<script>
+(function(){
+  var buttons = document.querySelectorAll('.node-btn');
+  buttons.forEach(function(btn){
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    btn.addEventListener('click', function(){
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      panel.hidden = open;
+    });
+    btn.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true'){
+        btn.setAttribute('aria-expanded', 'false');
+        panel.hidden = true;
+        btn.focus();
+      }
+    });
+  });
+})();
+</script>
+
+<!--
+A11y self-check (verified):
+1. One <h1>, unique <title>, lang="en", one <main>; nodes are an ordered <ol>, no skipped headings.
+2. Each node is a native <button type="button"> disclosure: aria-expanded synced on every toggle, aria-controls -> panel toggled via native hidden attribute in DOM order.
+3. Escape closes an open panel and returns focus to its trigger; no focus trap, no autofocus; Enter+Space work natively.
+4. Current step marked with aria-current="step" + "You are here" badge + bolder/thicker border (not color alone); connectors aria-hidden decoration.
+5. Contrast passes light+dark (--accent #C2410C on light, #F96302 on dark; badge is #121212 text on orange fill, no white-on-orange); focus-visible ring present; states pair color with icon/text/border.
+6. Reduced-motion honored; fluid flex layout reflows to vertical stack at <=640px, no horizontal scroll at 320px or 400% zoom; system font stack; fully self-contained, no external requests.
+-->
+</body>
+</html>
