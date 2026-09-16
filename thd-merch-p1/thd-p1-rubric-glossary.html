@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project 1 Rubric + Glossary — THD Smart Labels Externship</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1a1a; --muted:#4b5563; --line:#d8dbe0;
+    --accent:#C2410C;       /* orange for text/thin UI on light */
+    --accent-fill:#F96302;  /* orange fill; put #121212 text on it */
+    --card:#ffffff; --card-2:#f6f7f9;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#191919; --fg:#eaeaea; --muted:#b3b3b3; --line:#3a3a3a;
+      --accent:#F96302; --card:#202020; --card-2:#262626; }
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--fg)}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemGlyphs,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  img,svg{max-width:100%;height:auto}
+  main{
+    max-width:880px; margin:0 auto; padding:16px;
+  }
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:18px 18px 20px; box-shadow:0 1px 3px rgba(0,0,0,.08);
+    border-top:4px solid var(--accent-fill);
+  }
+  h1{font-size:1.5rem; line-height:1.25; margin:.2rem 0 .4rem}
+  h2{font-size:1.15rem; margin:1.6rem 0 .5rem; padding-top:.2rem}
+  .section-intro{color:var(--muted); margin:.2rem 0 1rem}
+  .vh{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  :where(button,a,input,summary,[tabindex]):focus-visible{
+    outline:2px solid #121212; outline-offset:2px; box-shadow:0 0 0 4px #fff; border-radius:6px;
+  }
+  @media (prefers-color-scheme:dark){
+    :where(button,a,input,summary,[tabindex]):focus-visible{outline-color:#fff; box-shadow:0 0 0 4px #121212;}
+  }
+
+  /* ---- Section A : rubric bars ---- */
+  .rg-crit{border:1px solid var(--line); border-radius:10px; margin:0 0 12px; background:var(--card-2); overflow:hidden}
+  .rg-bar-btn{
+    display:block; width:100%; text-align:left; background:none; border:0;
+    color:inherit; font:inherit; padding:12px 14px; cursor:pointer; min-height:44px;
+  }
+  .rg-bar-head{display:flex; align-items:baseline; gap:.5rem; flex-wrap:wrap; margin-bottom:8px}
+  .rg-bar-name{font-weight:700}
+  .rg-bar-weight{
+    font-weight:700; color:#121212; background:var(--accent-fill);
+    border-radius:999px; padding:1px 10px; font-size:.9rem;
+  }
+  .rg-chev{margin-left:auto; color:var(--accent); font-weight:700; font-size:1.1rem}
+  .rg-track{
+    position:relative; height:14px; border-radius:999px;
+    background:rgba(120,120,120,.22); border:1px solid var(--line);
+  }
+  .rg-fill{
+    position:absolute; inset:0 auto 0 0; height:100%; border-radius:999px;
+    background:var(--accent-fill); border:1px solid #9a3d00;
+  }
+  @media (prefers-color-scheme:dark){ .rg-fill{border-color:#7a3200} }
+  .rg-panel{padding:0 14px 14px}
+  .rg-level{
+    border-left:4px solid var(--line); padding:8px 0 8px 12px; margin:10px 0;
+  }
+  .rg-level:first-child{margin-top:2px}
+  .rg-level-label{font-weight:700; display:flex; align-items:center; gap:.4rem}
+  .rg-ico{font-weight:700; font-family:inherit}
+  .rg-level.ins{border-left-color:var(--muted)}
+  .rg-level.sol{border-left-color:var(--accent)}
+  .rg-level.exc{border-left-color:var(--accent-fill)}
+  .rg-level p{margin:.25rem 0 0; color:var(--fg)}
+  .rg-note{
+    margin:6px 0 0; font-style:italic; color:var(--muted);
+  }
+
+  /* ---- Section B : glossary ---- */
+  .rg-search-wrap{margin:0 0 10px}
+  .rg-search-wrap label{display:block; font-weight:600; margin-bottom:6px}
+  #rg-search{
+    width:100%; font:inherit; padding:11px 12px; min-height:44px;
+    border:1px solid var(--line); border-radius:10px;
+    background:var(--card); color:var(--fg);
+  }
+  #rg-search::placeholder{color:var(--muted)}
+  #rg-list{list-style:none; margin:8px 0 0; padding:0}
+  #rg-list li{border:1px solid var(--line); border-radius:10px; margin:0 0 8px; background:var(--card-2); overflow:hidden}
+  .rg-term-btn{
+    display:flex; align-items:center; gap:.5rem; width:100%; text-align:left;
+    background:none; border:0; color:inherit; font:inherit; font-weight:600;
+    padding:12px 14px; cursor:pointer; min-height:44px;
+  }
+  .rg-term-btn .rg-chev{color:var(--accent)}
+  .rg-def{padding:0 14px 14px; color:var(--fg)}
+  .rg-empty{color:var(--muted); padding:6px 2px; margin:0}
+  mark{background:var(--accent-fill); color:#121212; border-radius:3px; padding:0 2px}
+  @media (prefers-color-scheme:dark){ mark{background:#F96302; color:#121212} }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>Project 1 Rubric + Glossary</h1>
+
+    <!-- ================= SECTION A ================= -->
+    <h2 id="rg-a-heading">How your work is scored</h2>
+    <p class="section-intro">Three things carry your grade. Open each bar to see what Insufficient, Solid, and Excellent look like.</p>
+
+    <!-- Evidence Rigor -->
+    <div class="rg-crit">
+      <button type="button" class="rg-bar-btn" id="rg-btn-1" aria-expanded="false" aria-controls="rg-panel-1">
+        <span class="rg-bar-head">
+          <span class="rg-bar-name">Evidence Rigor</span>
+          <span class="rg-bar-weight">40%</span>
+          <span class="rg-chev" aria-hidden="true">+</span>
+        </span>
+        <span class="rg-track" aria-hidden="true"><span class="rg-fill" style="width:40%"></span></span>
+      </button>
+      <div class="rg-panel" id="rg-panel-1" role="region" aria-labelledby="rg-btn-1" hidden>
+        <div class="rg-level ins">
+          <span class="rg-level-label"><span class="rg-ico" aria-hidden="true">✕</span> Insufficient</span>
+          <p>Assumption-based; vendor marketing taken as fact; no sources; gaps not acknowledged.</p>
+        </div>
+        <div class="rg-level sol">
+          <span class="rg-level-label"><span class="rg-ico" aria-hidden="true">~</span> Solid</span>
+          <p>Key claims sourced; some verification against primary sources; a few gaps named.</p>
+        </div>
+        <div class="rg-level exc">
+          <span class="rg-level-label"><span class="rg-ico" aria-hidden="true">★</span> Excellent</span>
+          <p>Strong triangulation across primary sources; every damage and spec claim verified or explicitly flagged; gaps named precisely as next questions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- THD Fit & Specificity -->
+    <div class="rg-crit">
+      <button type="button" class="rg-bar-btn" id="rg-btn-2" aria-expanded="false" aria-controls="rg-panel-2">
+        <span class="rg-bar-head">
+          <span class="rg-bar-name">THD Fit &amp; Specificity</span>
+          <span class="rg-bar-weight">30%</span>
+          <span class="rg-chev" aria-hidden="true">+</span>
+        </span>
+        <span class="rg-track" aria-hidden="true"><span class="rg-fill" style="width:30%"></span></span>
+      </button>
+      <div class="rg-panel" id="rg-panel-2" role="region" aria-labelledby="rg-btn-2" hidden>
+        <div class="rg-level ins">
+          <span class="rg-level-label"><span class="rg-ico" aria-hidden="true">✕</span> Insufficient</span>
+          <p>Generic; reads like a traditional-retail ESL case; ignores warehouse constraints.</p>
+        </div>
+        <div class="rg-level sol">
+          <span class="rg-level-label"><span class="rg-ico" aria-hidden="true">~</span> Solid</span>
+          <p>References warehouse constraints; recommendation is selective but light on feasibility.</p>
+        </div>
+        <div class="rg-level exc">
+          <span class="rg-level-label"><span class="rg-ico" aria-hidden="true">★</span> Excellent</span>
+          <p>References MET's specific context (damage, forklift zones, the failed test) throughout AND addresses implementation feasibility.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Integration + Human Judgment -->
+    <div class="rg-crit">
+      <button type="button" class="rg-bar-btn" id="rg-btn-3" aria-expanded="false" aria-controls="rg-panel-3">
+        <span class="rg-bar-head">
+          <span class="rg-bar-name">AI Integration + Human Judgment</span>
+          <span class="rg-bar-weight">30%</span>
+          <span class="rg-chev" aria-hidden="true">+</span>
+        </span>
+        <span class="rg-track" aria-hidden="true"><span class="rg-fill" style="width:30%"></span></span>
+      </button>
+      <div class="rg-panel" id="rg-panel-3" role="region" aria-labelledby="rg-btn-3" hidden>
+        <div class="rg-level ins">
+          <span class="rg-level-label"><span class="rg-ico" aria-hidden="true">✕</span> Insufficient</span>
+          <p>AI outputs used as-is; invented specs/rates/costs; no verification or judgment shown.</p>
+        </div>
+        <div class="rg-level sol">
+          <span class="rg-level-label"><span class="rg-ico" aria-hidden="true">~</span> Solid</span>
+          <p>AI used to accelerate; most AI-surfaced claims checked against a source.</p>
+        </div>
+        <div class="rg-level exc">
+          <span class="rg-level-label"><span class="rg-ico" aria-hidden="true">★</span> Excellent</span>
+          <p>AI used to accelerate, with visible documentation of where you verified, corrected, or overrode it — judgment is clearly yours.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="rg-note">Graded on your thinking, not your polish.</p>
+
+    <!-- ================= SECTION B ================= -->
+    <h2 id="rg-b-heading">Glossary — Project 1 terms</h2>
+    <p class="section-intro">Type to filter. Open any term to read its plain-language definition.</p>
+
+    <div class="rg-search-wrap">
+      <label for="rg-search">Search terms</label>
+      <input type="search" id="rg-search" placeholder="e.g. ESL, damage, Chroma"
+        autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+    </div>
+
+    <p class="rg-empty" id="rg-empty" hidden></p>
+    <span class="vh" role="status" aria-live="polite" id="rg-status"></span>
+
+    <ul id="rg-list">
+      <!-- items injected by JS -->
+    </ul>
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Section A: rubric disclosures ---------- */
+  var barBtns = Array.prototype.slice.call(document.querySelectorAll('.rg-bar-btn'));
+  function toggleBar(btn){
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    var open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    panel.hidden = open;
+    var chev = btn.querySelector('.rg-chev');
+    if(chev){ chev.textContent = open ? '+' : '−'; } /* + / minus */
+  }
+  barBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){ toggleBar(btn); });
+    btn.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true'){
+        toggleBar(btn); btn.focus();
+      }
+    });
+  });
+
+  /* ---------- Section B: glossary ---------- */
+  var TERMS = [
+    ["Electronic Shelf Label (ESL)","A digital price tag — a small screen on the shelf edge that updates remotely instead of by hand."],
+    ["Chroma","The ESL brand The Home Depot's MET currently deploys (a Digitaldata line); the incumbent your assessment centers on."],
+    ["E-paper / e-ink","A display type (like a Kindle) that draws power only when the price changes; long battery life, easy to read, low cost."],
+    ["Form factor","The physical build of a label — how it mounts, what protects it, and what the display is made of."],
+    ["Flush vs. protruding mounting","Whether a label sits flat against the beam (flush, safer) or sticks out into the strike path (protruding, riskier)."],
+    ["Data transmission","How a label receives new prices — usually Wi-Fi/radio (can be blocked by steel) or infrared/optical (needs line of sight)."],
+    ["Damage resistance","How well a label survives impact, contact, and weather in a warehouse — the criterion weighted heaviest in your scoring."],
+    ["High-touch bay","A product area frequently accessed by equipment or associates — higher damage risk for protruding labels."],
+    ["High / Med / Low","The simple three-level scoring you use to rate Chroma against your benchmark — a defensible judgment with a one-line 'why,' not a formula."],
+    ["POS / ERP","POS = point-of-sale system; ERP = enterprise resource planning (manages pricing and inventory). ESL prices must sync with these."],
+    ["VusionGroup","A global ESL leader (formerly SES-imagotag); Walmart's ESL partner. Used as the market-leader yardstick to answer 'how does Chroma rank?'"],
+    ["MET (Merchandising Execution Team)","The Home Depot team responsible for all price changes, signage, and displays across 2,000+ stores."],
+    ["Discover","The 2nd of the 5 Ds of Consulting — the evidence-gathering phase, which is what Project 1 is."],
+    ["Sharing slide","One slide built for work-share feedback — the first visual of your phased final presentation."],
+    ["AI firewall","Use AI to transform inputs you gather, never to generate facts about vendor specs, damage rates, or costs. Verify every AI-surfaced claim against a primary source."],
+    ["Primary source","The original, credible place a fact comes from — a spec sheet, a filing, a study, or solid reporting — not vendor marketing."]
+  ];
+
+  var list = document.getElementById('rg-list');
+  var input = document.getElementById('rg-search');
+  var empty = document.getElementById('rg-empty');
+  var status = document.getElementById('rg-status');
+
+  var rows = TERMS.map(function(pair, i){
+    var li = document.createElement('li');
+    var termId = 'rg-term-' + i;
+    var defId = 'rg-def-' + i;
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'rg-term-btn';
+    btn.id = termId;
+    btn.setAttribute('aria-expanded','false');
+    btn.setAttribute('aria-controls', defId);
+
+    var chev = document.createElement('span');
+    chev.className = 'rg-chev';
+    chev.setAttribute('aria-hidden','true');
+    chev.textContent = '+';
+
+    var label = document.createElement('span');
+    label.className = 'rg-term-label';
+    label.textContent = pair[0];
+
+    btn.appendChild(chev);
+    btn.appendChild(label);
+
+    var def = document.createElement('div');
+    def.className = 'rg-def';
+    def.id = defId;
+    def.hidden = true;
+    def.textContent = pair[1];
+
+    li.appendChild(btn);
+    li.appendChild(def);
+    list.appendChild(li);
+
+    btn.addEventListener('click', function(){
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      def.hidden = open;
+      chev.textContent = open ? '+' : '−';
+    });
+    btn.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true'){
+        btn.setAttribute('aria-expanded','false');
+        def.hidden = true;
+        chev.textContent = '+';
+        btn.focus();
+      }
+    });
+
+    return { li:li, term:pair[0].toLowerCase(), def:pair[1].toLowerCase() };
+  });
+
+  var statusTimer = null;
+  function announce(msg){
+    if(statusTimer){ clearTimeout(statusTimer); }
+    statusTimer = setTimeout(function(){ status.textContent = msg; }, 400);
+  }
+
+  function filter(){
+    var q = input.value.trim().toLowerCase();
+    var count = 0;
+    rows.forEach(function(r){
+      var match = q === '' || r.term.indexOf(q) !== -1 || r.def.indexOf(q) !== -1;
+      r.li.hidden = !match;
+      if(match){ count++; }
+    });
+    if(count === 0){
+      empty.hidden = false;
+      empty.textContent = "No terms match '" + input.value.trim() + "' — try another word";
+    } else {
+      empty.hidden = true;
+    }
+    announce(count + (count === 1 ? ' term' : ' terms') + ' shown');
+  }
+
+  input.addEventListener('input', filter);
+})();
+</script>
+
+<!--
+A11y self-check (verified):
+1. One <h1> "Project 1 Rubric + Glossary"; sequential h2s; lang=en; unique <title>; single <main>.
+2. All controls are native <button type=button>/<input type=search>; Tab-reachable; Enter+Space work; visible :focus-visible ring in both themes.
+3. Disclosure pattern: aria-expanded synced on every toggle (rubric bars + glossary terms); panels via native hidden; Escape closes + returns focus to trigger.
+4. State never color-only: weight shown as number + bar %; rubric levels use ✕/~/★ glyphs + text labels + border; +/− chevron on every toggle.
+5. Contrast AA in light + dark: body #1a1a1a/#eaeaea, --accent #C2410C on light, orange fill only under near-black #121212 text; no white-on-orange small text.
+6. Glossary: visible <label for>, autocomplete/capitalize/correct off + spellcheck false; single vh role=status aria-live=polite (debounced ~400ms, textContent only, NOT on the <ul>); non-matches use native hidden; visible empty message. Reduced-motion honored; reflow works at 320px (fluid, max-width 880px).
+-->
+</body>
+</html>
