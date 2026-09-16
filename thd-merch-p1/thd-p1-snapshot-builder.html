@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anatomy of a First-Look Snapshot — THD Smart Labels warm-up</title>
+<style>
+:root{
+  --bg:#ffffff; --fg:#1a1a1a; --muted:#4b5563; --line:#d8dbe0;
+  --accent:#C2410C;       /* orange for text/thin UI on light */
+  --accent-fill:#F96302;  /* orange fill; put #121212 text on it */
+  --card:#ffffff; --card-2:#f6f7f9;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#191919; --fg:#eaeaea; --muted:#b3b3b3; --line:#3a3a3a;
+    --accent:#F96302; --card:#202020; --card-2:#262626; }
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemGlyphs,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.5;
+}
+img,svg{max-width:100%;height:auto}
+main{
+  max-width:880px;margin:0 auto;padding:18px;
+}
+.wrap{
+  border:1px solid var(--line);border-radius:14px;background:var(--card);
+  box-shadow:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.04);
+  overflow:hidden;
+}
+.accent-bar{height:5px;background:var(--accent-fill)}
+.inner{padding:18px}
+h1{font-size:1.4rem;line-height:1.25;margin:.1rem 0 .5rem}
+.intro{
+  color:var(--muted);font-size:.95rem;margin:0 0 1rem;
+  border-left:3px solid var(--accent);padding-left:.7rem;
+}
+.cards{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+}
+@media (max-width:640px){
+  .cards{grid-template-columns:1fr}
+}
+.card{
+  border:1px solid var(--line);border-radius:12px;background:var(--card-2);
+  display:flex;flex-direction:column;
+}
+.card-btn{
+  font:inherit;text-align:left;width:100%;cursor:pointer;
+  background:transparent;color:var(--fg);border:0;
+  border-radius:12px;padding:14px;
+  display:flex;flex-direction:column;gap:6px;min-height:44px;
+}
+.card-title{
+  font-weight:700;font-size:1.02rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.chev{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;flex:0 0 auto;margin-left:auto;
+  border:1.5px solid var(--accent);border-radius:50%;color:var(--accent);
+  transition:transform .2s ease;font-size:.8rem;line-height:1;
+}
+.card-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.prompt{color:var(--muted);font-size:.9rem}
+.state{
+  font-size:.72rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
+  color:var(--accent);
+}
+.panel{
+  padding:0 14px 14px;border-top:1px solid var(--line);
+}
+.panel h3{font-size:.8rem;text-transform:uppercase;letter-spacing:.03em;
+  color:var(--muted);margin:.9rem 0 .3rem}
+.panel p{margin:.1rem 0}
+.example{
+  background:var(--card);border:1px solid var(--line);
+  border-left:3px solid var(--accent);border-radius:8px;
+  padding:.6rem .7rem;font-size:.92rem;
+}
+.footer{
+  margin-top:1rem;padding:.8rem .9rem;border-radius:10px;
+  background:var(--card-2);border:1px solid var(--line);
+  font-size:.92rem;
+}
+.footer strong{color:var(--accent)}
+.vh{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+:where(button,a,input,summary,[tabindex]):focus-visible{
+  outline:2px solid #121212; outline-offset:2px; box-shadow:0 0 0 4px #fff; border-radius:6px;
+}
+@media (prefers-color-scheme:dark){
+  :where(button,a,input,summary,[tabindex]):focus-visible{outline-color:#fff; box-shadow:0 0 0 4px #121212;}
+}
+.card-btn:hover{background:var(--card)}
+.card-btn:hover .chev{background:var(--accent-fill);border-color:var(--accent-fill);color:#121212}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="wrap">
+    <div class="accent-bar" aria-hidden="true"></div>
+    <div class="inner">
+      <h1>Anatomy of a First-Look Snapshot</h1>
+      <p class="intro">
+        A low-stakes warm-up. Write this snapshot from instinct <em>before</em> you learn the
+        research method — a rough, honest first read is the whole point. Expand each part to see
+        the prompt, guidance, and a short example.
+      </p>
+
+      <h2 class="vh">The three parts of a snapshot</h2>
+      <div class="cards">
+
+        <div class="card">
+          <button type="button" class="card-btn" id="snap-btn-1" aria-expanded="false" aria-controls="snap-panel-1">
+            <span class="card-title">1 · What it is <span class="chev" aria-hidden="true">&#9660;</span></span>
+            <span class="prompt">One plain-English sentence.</span>
+            <span class="state">Tap to reveal</span>
+          </button>
+          <div class="panel" id="snap-panel-1" hidden>
+            <h3>Guidance</h3>
+            <p>Describe the company and its ESL product in plain English.</p>
+            <h3>Example fragment</h3>
+            <p class="example">Chroma makes e-paper digital shelf labels — the ones Home Depot already runs on its shelves.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <button type="button" class="card-btn" id="snap-btn-2" aria-expanded="false" aria-controls="snap-panel-2">
+            <span class="card-title">2 · One strength <span class="chev" aria-hidden="true">&#9660;</span></span>
+            <span class="prompt">The most useful thing for a retailer.</span>
+            <span class="state">Tap to reveal</span>
+          </button>
+          <div class="panel" id="snap-panel-2" hidden>
+            <h3>Guidance</h3>
+            <p>Name the one thing that seems most impressive or useful for a retailer.</p>
+            <h3>Example fragment</h3>
+            <p class="example">Its biggest strength looks like a crisp, low-power display that's easy to update remotely.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <button type="button" class="card-btn" id="snap-btn-3" aria-expanded="false" aria-controls="snap-panel-3">
+            <span class="card-title">3 · One warehouse worry <span class="chev" aria-hidden="true">&#9660;</span></span>
+            <span class="prompt">What makes you nervous in a forklift aisle.</span>
+            <span class="state">Tap to reveal</span>
+          </button>
+          <div class="panel" id="snap-panel-3" hidden>
+            <h3>Guidance</h3>
+            <p>Name the one thing that makes you nervous about this label surviving a Home Depot aisle full of forklifts and ladders.</p>
+            <h3>Example fragment</h3>
+            <p class="example">My worry: the label seems to stick out from the beam — in a forklift aisle that feels like a durability problem I'd want to verify.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="footer">
+        That <strong>"I'd want to verify…"</strong> instinct is the mindset the whole externship rewards.
+      </p>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  var btns = document.querySelectorAll('.card-btn');
+  btns.forEach(function(btn){
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    var state = btn.querySelector('.state');
+    btn.addEventListener('click', function(){
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      panel.hidden = open;
+      if(state){ state.textContent = open ? 'Tap to reveal' : 'Showing'; }
+    });
+    btn.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true'){
+        btn.setAttribute('aria-expanded','false');
+        panel.hidden = true;
+        if(state){ state.textContent = 'Tap to reveal'; }
+        btn.focus();
+      }
+    });
+  });
+})();
+</script>
+
+<!--
+A11y self-check (verified):
+1. One <h1> (widget name); sequential h2 + h3; lang="en"; unique <title>; single <main>.
+2. Reveals are native <button aria-expanded aria-controls> with panel next in DOM, toggled via hidden; aria-expanded synced on every mouse+keyboard toggle.
+3. Escape closes an open card and returns focus to its trigger; no focus trap, no autofocus, focus never on body.
+4. Contrast passes light+dark (accent #C2410C on light / #F96302 on dark); no white-on-orange text; state shown via text label + chevron + ARIA, never color alone.
+5. Reduced-motion honored; fluid grid reflows to one column, no horizontal scroll at 320px or 400% zoom; touch targets >=44px.
+6. Fully self-contained single file: no CDN/fonts/images/fetch; system font stack; inline CSS+JS only.
+-->
+</body>
+</html>
