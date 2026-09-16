@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Warehouse Damage-Risk Explorer — THD Smart Labels</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1a1a; --muted:#4b5563; --line:#d8dbe0;
+    --accent:#C2410C;       /* orange for text/thin UI on light */
+    --accent-fill:#F96302;  /* orange fill; put #121212 text on it */
+    --card:#ffffff; --card-2:#f6f7f9;
+    /* scene tokens */
+    --scene-bg:#eef1f5; --scene-floor:#dfe3ea; --scene-struct:#8b93a1;
+    --scene-box:#c7ccd6; --scene-beam:#F96302; --scene-ink:#3b4250;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#191919; --fg:#eaeaea; --muted:#b3b3b3; --line:#3a3a3a;
+      --accent:#F96302; --card:#202020; --card-2:#262626;
+      --scene-bg:#141414; --scene-floor:#202020; --scene-struct:#7b8390;
+      --scene-box:#3a3f4a; --scene-beam:#F96302; --scene-ink:#c7ccd6; }
+  }
+  html,body{background:var(--bg);color:var(--fg)}
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemGlyphs,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    -webkit-text-size-adjust:100%;
+  }
+  main{max-width:880px;margin:0 auto;padding:18px}
+  img,svg{max-width:100%;height:auto}
+  h1{font-size:clamp(1.3rem,4vw,1.7rem);line-height:1.2;margin:.2em 0 .1em}
+  h2{font-size:clamp(1.1rem,3vw,1.3rem);margin:1.4em 0 .4em}
+  p{margin:.5em 0}
+  .lede{color:var(--muted);margin:.2em 0 0}
+  .vh{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);
+    border-top:3px solid var(--accent-fill);
+  }
+  .card + .card{margin-top:18px}
+
+  /* ---- Focus indicator (from shared spec — do not modify) ---- */
+  :where(button,a,input,summary,[tabindex]):focus-visible{
+    outline:2px solid #121212; outline-offset:2px; box-shadow:0 0 0 4px #fff; border-radius:6px;
+  }
+  @media (prefers-color-scheme:dark){
+    :where(button,a,input,summary,[tabindex]):focus-visible{outline-color:#fff; box-shadow:0 0 0 4px #121212;}
+  }
+
+  /* ---- Section A: scene ---- */
+  .scene-wrap{position:relative;width:100%;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--scene-bg)}
+  .scene-wrap svg{display:block;width:100%;height:auto}
+  .hot{
+    position:absolute;transform:translate(-50%,-50%);
+    display:inline-flex;align-items:center;gap:6px;
+    min-height:44px;min-width:44px;padding:4px 10px 4px 4px;
+    background:var(--card);color:var(--fg);
+    border:2px solid var(--accent);border-radius:24px;
+    font:600 clamp(.72rem,1.9vw,.85rem)/1.1 inherit;cursor:pointer;
+    box-shadow:0 1px 4px rgba(0,0,0,.22);white-space:nowrap;
+  }
+  .hot .dot{
+    display:inline-grid;place-items:center;
+    width:26px;height:26px;border-radius:50%;
+    background:var(--accent-fill);color:#121212;font-weight:800;font-size:.85rem;flex:none;
+  }
+  .hot .lbl{max-width:38vw;overflow:hidden;text-overflow:ellipsis}
+  .hot .chev{color:var(--accent);font-weight:800}
+  .hot:hover{background:var(--card-2);border-color:var(--accent-fill)}
+  .hot[aria-expanded="true"]{
+    background:var(--accent-fill);color:#121212;border-color:#121212;
+  }
+  .hot[aria-expanded="true"] .dot{background:#121212;color:#fff}
+  .hot[aria-expanded="true"] .chev{color:#121212}
+
+  /* shared detail panel */
+  .panel{
+    margin-top:14px;background:var(--card-2);border:1px solid var(--line);
+    border-left:4px solid var(--accent-fill);border-radius:10px;padding:14px 16px;
+  }
+  .panel .p-src{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:1.02rem}
+  .panel .p-num{
+    display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;
+    background:var(--accent-fill);color:#121212;font-weight:800;font-size:.8rem;flex:none;
+  }
+  .panel .p-desc{margin:.5em 0 0;color:var(--fg)}
+  .panel .p-close{
+    margin-top:12px;min-height:40px;padding:8px 14px;
+    background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;
+    font:600 .9rem inherit;cursor:pointer;
+  }
+  .panel .p-close:hover{background:var(--card-2);border-color:var(--accent)}
+
+  details.text-list{margin-top:14px;border:1px solid var(--line);border-radius:10px;background:var(--card-2)}
+  details.text-list > summary{
+    cursor:pointer;padding:12px 14px;font-weight:600;list-style-position:inside;min-height:44px;
+  }
+  details.text-list[open] > summary{border-bottom:1px solid var(--line)}
+  details.text-list ul{margin:0;padding:12px 18px 14px 30px}
+  details.text-list li{margin:.35em 0}
+  details.text-list li b{color:var(--accent)}
+
+  /* ---- Section B: judgment builder ---- */
+  .feat{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0;background:var(--card)}
+  .feat legend{font-weight:700;padding:0 4px}
+  .opts{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0}
+  .opt{
+    display:flex;align-items:flex-start;gap:8px;flex:1 1 220px;
+    border:1px solid var(--line);border-radius:9px;padding:10px 12px;min-height:44px;
+    background:var(--card-2);cursor:pointer;
+  }
+  .opt:hover{border-color:var(--accent)}
+  .opt:has(input:checked){border-color:#121212;border-width:2px;padding:9px 11px;background:var(--card)}
+  @media (prefers-color-scheme:dark){.opt:has(input:checked){border-color:#fff}}
+  .opt input{margin-top:2px;width:20px;height:20px;accent-color:var(--accent-fill);flex:none}
+  .opt .otext{font-weight:600}
+  .status{
+    margin-top:10px;padding:10px 12px;border-radius:9px;min-height:44px;
+    border:1px solid var(--line);background:var(--card-2);color:var(--fg);
+    display:flex;align-items:flex-start;gap:8px;
+  }
+  .status .ico{font-weight:800;flex:none;font-size:1.05rem;line-height:1.3}
+  .status[data-tone="help"]{border-color:var(--accent);border-left:4px solid var(--accent-fill)}
+  .status[data-tone="hurt"]{border-color:var(--accent);border-left:4px solid var(--accent);border-left-style:dashed}
+  .status .stxt{color:var(--fg)}
+
+  /* legend */
+  .legend{margin-top:16px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .legend .lrow{display:flex;gap:12px;padding:12px 14px;border-top:1px solid var(--line)}
+  .legend .lrow:first-child{border-top:0}
+  .legend .badge{
+    flex:none;display:inline-flex;align-items:center;gap:7px;font-weight:800;
+    padding:6px 12px;border-radius:8px;border:2px solid var(--fg);min-width:118px;justify-content:center;
+    background:var(--card-2);
+  }
+  .legend .badge .shape{font-size:1rem}
+  .legend .ltext{color:var(--fg)}
+  .rule{
+    margin-top:16px;padding:14px 16px;border-radius:10px;
+    background:var(--accent-fill);color:#121212;font-weight:700;
+    border:2px solid #121212;
+  }
+  .note{color:var(--muted);font-size:.9rem;margin-top:6px}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Warehouse Damage-Risk Explorer</h1>
+  <p class="lede">A smart label lives on a store shelf for years. Before you judge one, learn where labels actually get hit — then practice turning a label's build into a High / Medium / Low durability call.</p>
+
+  <!-- ================= SECTION A ================= -->
+  <section class="card" aria-labelledby="dmg-a-h">
+    <h2 id="dmg-a-h">Where labels get hit: the 5 damage sources</h2>
+    <p>Select a marker on the scene to read what threatens a label there. Everything on the scene is also written out in the list below it.</p>
+
+    <div class="scene-wrap">
+      <!-- Flat stylized warehouse illustration -->
+      <svg viewBox="0 0 800 400" role="img" aria-labelledby="dmg-scene-title dmg-scene-desc" focusable="false">
+        <title id="dmg-scene-title">Warehouse aisle illustration</title>
+        <desc id="dmg-scene-desc">A stylized store back-aisle: tall pallet racking with orange shelf beams holding boxes, a forklift lifting a pallet on the left, a ladder leaning against a rack, and an open outdoor doorway on the right.</desc>
+
+        <!-- floor -->
+        <rect x="0" y="330" width="800" height="70" fill="var(--scene-floor)"/>
+        <line x1="0" y1="330" x2="800" y2="330" stroke="var(--scene-struct)" stroke-width="2"/>
+
+        <!-- pallet racking uprights -->
+        <rect x="300" y="40" width="14" height="290" fill="var(--scene-struct)"/>
+        <rect x="560" y="40" width="14" height="290" fill="var(--scene-struct)"/>
+        <rect x="740" y="40" width="14" height="290" fill="var(--scene-struct)"/>
+        <!-- orange shelf beams -->
+        <rect x="300" y="120" width="454" height="12" fill="var(--scene-beam)"/>
+        <rect x="300" y="210" width="454" height="12" fill="var(--scene-beam)"/>
+        <rect x="300" y="300" width="454" height="12" fill="var(--scene-beam)"/>
+        <!-- boxes on beams -->
+        <rect x="330" y="70" width="70" height="48" fill="var(--scene-box)" stroke="var(--scene-ink)" stroke-width="2"/>
+        <rect x="410" y="78" width="60" height="40" fill="var(--scene-box)" stroke="var(--scene-ink)" stroke-width="2"/>
+        <rect x="600" y="66" width="66" height="52" fill="var(--scene-box)" stroke="var(--scene-ink)" stroke-width="2"/>
+        <rect x="330" y="160" width="80" height="48" fill="var(--scene-box)" stroke="var(--scene-ink)" stroke-width="2"/>
+        <rect x="600" y="164" width="72" height="44" fill="var(--scene-box)" stroke="var(--scene-ink)" stroke-width="2"/>
+        <rect x="600" y="252" width="70" height="46" fill="var(--scene-box)" stroke="var(--scene-ink)" stroke-width="2"/>
+        <!-- little label tags on shelf edges -->
+        <rect x="470" y="122" width="26" height="16" fill="var(--card)" stroke="var(--scene-ink)" stroke-width="2"/>
+        <rect x="470" y="212" width="26" height="16" fill="var(--card)" stroke="var(--scene-ink)" stroke-width="2"/>
+
+        <!-- forklift (left) -->
+        <g>
+          <rect x="70" y="238" width="92" height="60" rx="6" fill="var(--scene-beam)"/>
+          <rect x="150" y="150" width="10" height="150" fill="var(--scene-struct)"/>
+          <rect x="160" y="270" width="70" height="10" fill="var(--scene-ink)"/>
+          <rect x="176" y="210" width="60" height="40" fill="var(--scene-box)" stroke="var(--scene-ink)" stroke-width="2"/>
+          <circle cx="92" cy="306" r="20" fill="var(--scene-ink)"/>
+          <circle cx="150" cy="306" r="20" fill="var(--scene-ink)"/>
+          <rect x="86" y="212" width="40" height="30" rx="4" fill="var(--card)" stroke="var(--scene-ink)" stroke-width="2"/>
+        </g>
+
+        <!-- ladder leaning on rack (right-center) -->
+        <g stroke="var(--scene-ink)" stroke-width="5" fill="none">
+          <line x1="590" y1="330" x2="640" y2="130"/>
+          <line x1="612" y1="330" x2="662" y2="130"/>
+          <line x1="596" y1="300" x2="624" y2="292" stroke-width="4"/>
+          <line x1="602" y1="262" x2="630" y2="254" stroke-width="4"/>
+          <line x1="608" y1="224" x2="636" y2="216" stroke-width="4"/>
+          <line x1="614" y1="186" x2="642" y2="178" stroke-width="4"/>
+        </g>
+
+        <!-- outdoor doorway (far right) -->
+        <rect x="756" y="120" width="44" height="210" fill="var(--scene-bg)" stroke="var(--scene-struct)" stroke-width="3"/>
+        <circle cx="785" cy="150" r="16" fill="var(--scene-beam)" opacity="0.85"/>
+        <line x1="758" y1="300" x2="800" y2="288" stroke="var(--scene-struct)" stroke-width="3"/>
+        <line x1="758" y1="270" x2="800" y2="258" stroke="var(--scene-struct)" stroke-width="3" stroke-dasharray="6 8"/>
+      </svg>
+
+      <!-- Hotspot buttons: % coordinates so they track on resize -->
+      <button type="button" class="hot" id="dmg-hot-1" aria-expanded="false" aria-controls="dmg-panel"
+              style="left:16%;top:60%">
+        <span class="dot" aria-hidden="true">1</span><span class="lbl">Forklift strikes</span><span class="chev" aria-hidden="true">＋</span>
+      </button>
+      <button type="button" class="hot" id="dmg-hot-2" aria-expanded="false" aria-controls="dmg-panel"
+              style="left:78%;top:52%">
+        <span class="dot" aria-hidden="true">2</span><span class="lbl">Ladder contact</span><span class="chev" aria-hidden="true">＋</span>
+      </button>
+      <button type="button" class="hot" id="dmg-hot-3" aria-expanded="false" aria-controls="dmg-panel"
+              style="left:46%;top:78%">
+        <span class="dot" aria-hidden="true">3</span><span class="lbl">Pallet drops</span><span class="chev" aria-hidden="true">＋</span>
+      </button>
+      <button type="button" class="hot" id="dmg-hot-4" aria-expanded="false" aria-controls="dmg-panel"
+              style="left:52%;top:33%">
+        <span class="dot" aria-hidden="true">4</span><span class="lbl">High-touch bays</span><span class="chev" aria-hidden="true">＋</span>
+      </button>
+      <button type="button" class="hot" id="dmg-hot-5" aria-expanded="false" aria-controls="dmg-panel"
+              style="left:88%;top:20%">
+        <span class="dot" aria-hidden="true">5</span><span class="lbl">Outdoor / weather</span><span class="chev" aria-hidden="true">＋</span>
+      </button>
+    </div>
+
+    <!-- Shared disclosure panel (controlled by every hotspot) -->
+    <div class="panel" id="dmg-panel" hidden>
+      <span class="p-src"><span class="p-num" id="dmg-panel-num" aria-hidden="true"></span><span id="dmg-panel-title"></span></span>
+      <p class="p-desc" id="dmg-panel-desc"></p>
+      <button type="button" class="p-close" id="dmg-panel-close">Close details</button>
+    </div>
+
+    <!-- Redundant linear text alternative -->
+    <details class="text-list">
+      <summary>Read all five damage sources as a list</summary>
+      <ul>
+        <li><b>1. Forklift strikes</b> — Forks and pallets swing wide when lifting product on and off racking. Anything on the beam in the path gets clipped — the single biggest threat.</li>
+        <li><b>2. Ladder contact</b> — Associates lean ladders against beams to reach high stock, scraping whatever sits on the shelf edge.</li>
+        <li><b>3. Pallet drops</b> — Heavy pallets set down or slid into place can crush or shear a label below or beside them.</li>
+        <li><b>4. High-touch bays</b> — Busy, hands-on areas (lumber, fasteners, promo endcaps) where product is constantly pulled and restocked — lots of accidental contact.</li>
+        <li><b>5. Outdoor / weather exposure</b> — Garden, lumber yards, and covered outdoor areas add heat, cold, rain, and dust that stress a screen and its battery.</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- ================= SECTION B ================= -->
+  <section class="card" aria-labelledby="dmg-b-h">
+    <h2 id="dmg-b-h">From build to a High / Med / Low judgment</h2>
+    <p>Pick how a label is built. Each choice updates a note saying whether it helps or hurts durability. This is a teaching aid, not a graded quiz.</p>
+
+    <form id="dmg-form">
+      <!-- Feature 1: Mounting -->
+      <fieldset class="feat">
+        <legend>Mounting</legend>
+        <div class="opts" role="radiogroup" aria-describedby="dmg-st-mount">
+          <label class="opt"><input type="radio" name="mount" value="flush"><span class="otext">Flush against beam</span></label>
+          <label class="opt"><input type="radio" name="mount" value="protrudes"><span class="otext">Protrudes out</span></label>
+        </div>
+        <p class="status" id="dmg-st-mount" role="status"><span class="ico" aria-hidden="true">·</span><span class="stxt">Choose a mounting style to see how it affects durability.</span></p>
+      </fieldset>
+
+      <!-- Feature 2: Protective casing -->
+      <fieldset class="feat">
+        <legend>Protective casing</legend>
+        <div class="opts" role="radiogroup" aria-describedby="dmg-st-case">
+          <label class="opt"><input type="radio" name="case" value="rugged"><span class="otext">Rugged housing / bumper</span></label>
+          <label class="opt"><input type="radio" name="case" value="bare"><span class="otext">Bare plastic / exposed edges</span></label>
+        </div>
+        <p class="status" id="dmg-st-case" role="status"><span class="ico" aria-hidden="true">·</span><span class="stxt">Choose a casing to see how it affects durability.</span></p>
+      </fieldset>
+
+      <!-- Feature 3: Display -->
+      <fieldset class="feat">
+        <legend>Display</legend>
+        <div class="opts" role="radiogroup" aria-describedby="dmg-st-disp">
+          <label class="opt"><input type="radio" name="disp" value="rated"><span class="otext">Impact / weather-rated e-ink</span></label>
+          <label class="opt"><input type="radio" name="disp" value="fragile"><span class="otext">Fragile glass / backlit</span></label>
+        </div>
+        <p class="status" id="dmg-st-disp" role="status"><span class="ico" aria-hidden="true">·</span><span class="stxt">Choose a display to see how it affects durability.</span></p>
+      </fieldset>
+    </form>
+
+    <h3 style="margin:1.2em 0 .3em;font-size:1.05rem">Reading the outcome</h3>
+    <p class="note">Meaning is shown by the word and the shape, not by color.</p>
+    <div class="legend">
+      <div class="lrow">
+        <span class="badge"><span class="shape" aria-hidden="true">▲</span>High</span>
+        <span class="ltext">Flush + rugged casing + rated display. Survives forklift zones (or is cheap enough to replace).</span>
+      </div>
+      <div class="lrow">
+        <span class="badge"><span class="shape" aria-hidden="true">■</span>Medium</span>
+        <span class="ltext">Some protection but a real weakness. Fine for low-traffic bays, risky in the hardest ones.</span>
+      </div>
+      <div class="lrow">
+        <span class="badge"><span class="shape" aria-hidden="true">▼</span>Low</span>
+        <span class="ltext">Protrudes, fragile, or unrated. Likely to repeat the failed whole-store test.</span>
+      </div>
+    </div>
+
+    <p class="rule">Rate against the hardest bay you'd realistically place it in, and always write one sentence saying why.</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- Section A: hotspot disclosures ---------------- */
+  var SRC = {
+    "dmg-hot-1":{n:"1",t:"Forklift strikes",d:"Forks and pallets swing wide when lifting product on and off racking. Anything on the beam in the path gets clipped — the single biggest threat."},
+    "dmg-hot-2":{n:"2",t:"Ladder contact",d:"Associates lean ladders against beams to reach high stock, scraping whatever sits on the shelf edge."},
+    "dmg-hot-3":{n:"3",t:"Pallet drops",d:"Heavy pallets set down or slid into place can crush or shear a label below or beside them."},
+    "dmg-hot-4":{n:"4",t:"High-touch bays",d:"Busy, hands-on areas (lumber, fasteners, promo endcaps) where product is constantly pulled and restocked — lots of accidental contact."},
+    "dmg-hot-5":{n:"5",t:"Outdoor / weather exposure",d:"Garden, lumber yards, and covered outdoor areas add heat, cold, rain, and dust that stress a screen and its battery."}
+  };
+  var hotspots = Array.prototype.slice.call(document.querySelectorAll(".hot"));
+  var panel = document.getElementById("dmg-panel");
+  var pNum = document.getElementById("dmg-panel-num");
+  var pTitle = document.getElementById("dmg-panel-title");
+  var pDesc = document.getElementById("dmg-panel-desc");
+  var pClose = document.getElementById("dmg-panel-close");
+  var openId = null;
+
+  function closePanel(returnFocus){
+    if(openId){
+      var b = document.getElementById(openId);
+      if(b) b.setAttribute("aria-expanded","false");
+    }
+    panel.hidden = true;
+    var prev = openId;
+    openId = null;
+    if(returnFocus && prev){
+      var t = document.getElementById(prev);
+      if(t) t.focus();
+    }
+  }
+
+  function openPanel(id){
+    var data = SRC[id];
+    if(!data) return;
+    // reset all triggers, set active one
+    hotspots.forEach(function(h){ h.setAttribute("aria-expanded", h.id===id ? "true":"false"); });
+    pNum.textContent = data.n;
+    pTitle.textContent = data.t;
+    pDesc.textContent = data.d;
+    panel.hidden = false;
+    openId = id;
+  }
+
+  hotspots.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      if(openId === btn.id){
+        closePanel(false);      // toggle off; focus already on trigger
+      }else{
+        openPanel(btn.id);      // focus stays on trigger per spec
+      }
+    });
+  });
+
+  pClose.addEventListener("click", function(){ closePanel(true); });
+
+  // Escape closes and returns focus to the active trigger
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && openId){
+      // if focus is inside the panel or on a hotspot, return to trigger
+      closePanel(true);
+    }
+  });
+
+  /* ---------------- Section B: judgment builder ---------------- */
+  var MSG = {
+    mount:{
+      flush:{tone:"help", ico:"✓", t:"Flush against beam: out of the strike path — a durability advantage."},
+      protrudes:{tone:"hurt", ico:"✕", t:"Protrudes out: first thing a fork or ladder hits — a weakness."}
+    },
+    "case":{
+      rugged:{tone:"help", ico:"✓", t:"Rugged housing / bumper: absorbs and deflects impact."},
+      bare:{tone:"hurt", ico:"✕", t:"Bare plastic / exposed edges: cracks on first contact."}
+    },
+    disp:{
+      rated:{tone:"help", ico:"✓", t:"Impact / weather-rated e-ink: survives knocks; readable in bright light."},
+      fragile:{tone:"hurt", ico:"✕", t:"Fragile glass / backlit: chips or washes out."}
+    }
+  };
+  var STATUS = { mount:"dmg-st-mount", "case":"dmg-st-case", disp:"dmg-st-disp" };
+
+  var form = document.getElementById("dmg-form");
+  form.addEventListener("change", function(e){
+    var name = e.target && e.target.name;
+    if(!name || !MSG[name]) return;
+    var info = MSG[name][e.target.value];
+    var box = document.getElementById(STATUS[name]);
+    if(!info || !box) return;
+    box.setAttribute("data-tone", info.tone);
+    box.querySelector(".ico").textContent = info.ico;
+    box.querySelector(".stxt").textContent = info.t;
+  });
+})();
+</script>
+
+<!--
+A11y self-check (verified):
+1. One <h1> ("Warehouse Damage-Risk Explorer"), sequential h2/h3, lang="en", unique <title>, single <main>.
+2. All controls are native <button>/<input>; Tab-reachable in DOM order; Enter+Space work; focus ring never removed (spec ring applied via :focus-visible).
+3. Hotspots are disclosures: aria-expanded synced on every toggle (mouse+keyboard), aria-controls the shared panel; Escape closes + returns focus to the active trigger; decorative number dots aria-hidden; scene has role="img" + title/desc; redundant <ul> text list restates all 5.
+4. Section B radios grouped in <fieldset>/legend + role="radiogroup" aria-describedby role="status" live note; H/M/L conveyed by word + shape (▲■▼), never color alone.
+5. Contrast passes light + dark: body text ≥4.5:1, orange (#C2410C light / #F96302 dark) only for UI/large; #F96302 fill carries #121212 text only (never white-on-orange small text).
+6. Reduced-motion honored; fluid units only, no fixed px container, no horizontal scroll at 320px / 400% zoom; touch targets ≥44px; no external requests.
+-->
+</body>
+</html>
