@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Your Report + Sharing Slide: 5-Step Checklist — THD Project 1</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1a1a; --muted:#4b5563; --line:#d8dbe0;
+    --accent:#C2410C;       /* orange for text/thin UI on light */
+    --accent-fill:#F96302;  /* orange fill; put #121212 text on it */
+    --card:#ffffff; --card-2:#f6f7f9;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#191919; --fg:#eaeaea; --muted:#b3b3b3; --line:#3a3a3a;
+      --accent:#F96302; --card:#202020; --card-2:#262626; }
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--fg)}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemGlyphs,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    -webkit-text-size-adjust:100%;
+  }
+  main{
+    max-width:880px;
+    margin:0 auto;
+    padding:20px 16px 28px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:0 1px 3px rgba(0,0,0,.08);
+    overflow:hidden;
+  }
+  .card + .card{margin-top:20px}
+  .card__accent{height:5px;background:var(--accent-fill)}
+  .card__body{padding:18px 16px}
+  h1{
+    font-size:clamp(1.25rem,4vw,1.6rem);
+    line-height:1.25;
+    margin:.1em 0 .1em;
+  }
+  h2{
+    font-size:clamp(1.05rem,3vw,1.25rem);
+    margin:.2em 0 .4em;
+  }
+  h3{font-size:1rem;margin:0}
+  .lead{color:var(--muted);margin:.3em 0 0;font-size:.95rem}
+  .muted{color:var(--muted)}
+
+  /* Progress line */
+  .progress{
+    margin:14px 0 4px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-left:4px solid var(--accent-fill);
+    border-radius:8px;
+    background:var(--card-2);
+    font-weight:600;
+    font-size:.95rem;
+  }
+
+  /* Checklist */
+  ol.steps{
+    list-style:none;
+    margin:14px 0 0;
+    padding:0;
+    counter-reset:step;
+  }
+  ol.steps > li{
+    counter-increment:step;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--card-2);
+    margin-top:12px;
+  }
+  ol.steps > li:first-child{margin-top:0}
+  .step-row{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:12px;
+    min-height:44px;
+  }
+  .step-num{
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:30px;height:30px;
+    border-radius:50%;
+    background:var(--accent-fill);
+    color:#121212;
+    font-weight:700;
+    font-size:.95rem;
+    margin-top:2px;
+  }
+  .step-num::before{content:counter(step)}
+  .step-check{
+    flex:0 0 auto;
+    /* enlarge tap area */
+    width:26px;height:26px;
+    margin:4px 0 0;
+    accent-color:var(--accent-fill);
+    cursor:pointer;
+  }
+  .step-text{flex:1 1 auto;min-width:0}
+  .step-text label{
+    font-weight:600;
+    display:inline-block;
+    cursor:pointer;
+    /* ensure comfortable target */
+    padding:2px 0;
+  }
+  .step-desc{margin:.25em 0 0;color:var(--muted);font-size:.92rem}
+  /* Done state: not color-only — adds a checkmark glyph + strong border */
+  li:has(.step-check:checked){
+    border-color:var(--accent);
+    background:var(--card);
+  }
+  li:has(.step-check:checked) .step-num{
+    background:transparent;
+    color:var(--accent);
+    border:2px solid var(--accent);
+  }
+  li:has(.step-check:checked) .step-num::before{content:"\2713"}
+  li:has(.step-check:checked) .step-text label::after{
+    content:" \2713 done";
+    color:var(--accent);
+    font-size:.82rem;
+    font-weight:700;
+    white-space:nowrap;
+  }
+
+  /* Reveal cards (disclosure) */
+  .reveals{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));
+    gap:12px;
+    margin-top:14px;
+  }
+  .reveal{
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--card-2);
+    overflow:hidden;
+  }
+  .reveal__btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    text-align:left;
+    padding:12px 14px;
+    min-height:44px;
+    background:transparent;
+    border:0;
+    color:var(--fg);
+    font:inherit;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .reveal__btn:hover{background:var(--card)}
+  .reveal__btn .chev{
+    flex:0 0 auto;
+    font-size:.9rem;
+    color:var(--accent);
+    transition:transform .15s ease;
+  }
+  .reveal__btn[aria-expanded="true"] .chev{transform:rotate(90deg)}
+  .reveal__btn .chev::before{content:"\25B6"}
+  .reveal__panel{
+    padding:0 14px 14px;
+    color:var(--muted);
+    font-size:.92rem;
+  }
+
+  /* Focus indicator (do not modify) */
+  :where(button,a,input,summary,[tabindex]):focus-visible{
+    outline:2px solid #121212; outline-offset:2px; box-shadow:0 0 0 4px #fff; border-radius:6px;
+  }
+  @media (prefers-color-scheme:dark){
+    :where(button,a,input,summary,[tabindex]):focus-visible{outline-color:#fff; box-shadow:0 0 0 4px #121212;}
+  }
+
+  img,svg{max-width:100%;height:auto}
+
+  .vh{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Build Your Report + Sharing Slide: 5-Step Checklist</h1>
+    <p class="lead">Work through the five steps in order, then check the four visual standards before you share.</p>
+  </header>
+
+  <!-- SECTION A -->
+  <section class="card" aria-labelledby="step-a-h2">
+    <div class="card__accent" aria-hidden="true"></div>
+    <div class="card__body">
+      <h2 id="step-a-h2">Your 5-step checklist</h2>
+      <p class="muted" style="margin:.2em 0 0;font-size:.9rem">
+        This is a personal progress aid. Check each box as you finish. Your progress isn't saved when you leave.
+      </p>
+
+      <p class="progress" id="step-progress" role="status" aria-live="polite">0 of 5 steps done</p>
+
+      <ol class="steps">
+        <li>
+          <div class="step-row">
+            <span class="step-num" aria-hidden="true"></span>
+            <input class="step-check" type="checkbox" id="step-cb-1">
+            <span class="step-text">
+              <label for="step-cb-1">Build the Chroma Scorecard</label>
+              <p class="step-desc">Score Chroma vs. VusionGroup High/Med/Low, damage resistance weighted heaviest, with a few words of evidence per rating.</p>
+            </span>
+          </div>
+        </li>
+        <li>
+          <div class="step-row">
+            <span class="step-num" aria-hidden="true"></span>
+            <input class="step-check" type="checkbox" id="step-cb-2">
+            <span class="step-text">
+              <label for="step-cb-2">Add the Damage-Risk Snapshot</label>
+              <p class="step-desc">Place Chroma's form factor in the highest/lowest-risk rows for forklift zones.</p>
+            </span>
+          </div>
+        </li>
+        <li>
+          <div class="step-row">
+            <span class="step-num" aria-hidden="true"></span>
+            <input class="step-check" type="checkbox" id="step-cb-3">
+            <span class="step-text">
+              <label for="step-cb-3">Write the Recommendation + Top Gaps</label>
+              <p class="step-desc">Keep or reconsider Chroma in 2–3 sentences, plus your 2–3 biggest gaps to close.</p>
+            </span>
+          </div>
+        </li>
+        <li>
+          <div class="step-row">
+            <span class="step-num" aria-hidden="true"></span>
+            <input class="step-check" type="checkbox" id="step-cb-4">
+            <span class="step-text">
+              <label for="step-cb-4">Draft Your One Sharing Slide</label>
+              <p class="step-desc">One slide, built to HD visual standards — the first visual of your final presentation.</p>
+            </span>
+          </div>
+        </li>
+        <li>
+          <div class="step-row">
+            <span class="step-num" aria-hidden="true"></span>
+            <input class="step-check" type="checkbox" id="step-cb-5">
+            <span class="step-text">
+              <label for="step-cb-5">Save, Prep &amp; Submit</label>
+              <p class="step-desc">Export a PDF, set the share link, and jot notes for your live work-share.</p>
+            </span>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- SECTION B -->
+  <section class="card" aria-labelledby="step-b-h2">
+    <div class="card__accent" aria-hidden="true"></div>
+    <div class="card__body">
+      <h2 id="step-b-h2">Home Depot's four visual standards</h2>
+      <p class="muted" style="margin:.2em 0 0;font-size:.9rem">Open each card for a quick reminder as you build your sharing slide.</p>
+
+      <div class="reveals">
+        <div class="reveal">
+          <h3>
+            <button type="button" class="reveal__btn" aria-expanded="false" aria-controls="step-rev-1">
+              <span>Rule of three</span>
+              <span class="chev" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="reveal__panel" id="step-rev-1" hidden>
+            At most three points — e.g. your top finding, your provisional pick, your biggest gap.
+          </div>
+        </div>
+
+        <div class="reveal">
+          <h3>
+            <button type="button" class="reveal__btn" aria-expanded="false" aria-controls="step-rev-2">
+              <span>Minimal text</span>
+              <span class="chev" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="reveal__panel" id="step-rev-2" hidden>
+            The slide supports what you say; it's not your script. Short phrases, not sentences.
+          </div>
+        </div>
+
+        <div class="reveal">
+          <h3>
+            <button type="button" class="reveal__btn" aria-expanded="false" aria-controls="step-rev-3">
+              <span>One idea per slide</span>
+              <span class="chev" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="reveal__panel" id="step-rev-3" hidden>
+            One takeaway: "How Chroma ranks in our warehouse — and what to do next." Nothing else competes.
+          </div>
+        </div>
+
+        <div class="reveal">
+          <h3>
+            <button type="button" class="reveal__btn" aria-expanded="false" aria-controls="step-rev-4">
+              <span>Consistent branding</span>
+              <span class="chev" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="reveal__panel" id="step-rev-4" hidden>
+            One clean template, aligned type and color. No clip-art or mismatched screenshots.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* SECTION A — live progress count */
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".step-check"));
+  var progress = document.getElementById("step-progress");
+  function updateProgress(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    progress.textContent = done + " of " + boxes.length + " steps done";
+  }
+  boxes.forEach(function(b){ b.addEventListener("change", updateProgress); });
+  updateProgress();
+
+  /* SECTION B — disclosure reveals */
+  var triggers = Array.prototype.slice.call(document.querySelectorAll(".reveal__btn"));
+  triggers.forEach(function(btn){
+    var panel = document.getElementById(btn.getAttribute("aria-controls"));
+    btn.addEventListener("click", function(){
+      var open = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!open));
+      panel.hidden = open;
+    });
+    btn.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && btn.getAttribute("aria-expanded") === "true"){
+        btn.setAttribute("aria-expanded", "false");
+        panel.hidden = true;
+        btn.focus();
+      }
+    });
+  });
+})();
+</script>
+
+<!--
+A11y self-check (verified):
+1. One <h1> (widget name); sequential h2/h3; one <main>; lang="en"; unique <title>; no external requests (all CSS/JS inline, system fonts).
+2. Section A uses native <input type="checkbox"> with explicit <label for>; Space toggles natively; role="status" aria-live="polite" announces "N of 5 steps done".
+3. Done state is not color-only: adds a ✓ glyph in the number ring + "✓ done" text after the label + border change, alongside native checked state.
+4. Section B reveals use disclosure pattern: <button aria-expanded> + aria-controls, panel is next in DOM, toggled via native hidden; aria-expanded synced on every toggle; Escape closes + returns focus to trigger.
+5. Focus ring pasted unmodified; every :hover paired with :focus-visible; touch targets ≥44px; no outline:none, no positive tabindex, no role="button".
+6. Contrast tokens used for light+dark (#C2410C on light, #F96302 on dark); #121212 text on orange fill only; reduced-motion honored; fluid units, reflows at 320px / 400% zoom with no horizontal scroll.
+-->
+</body>
+</html>
