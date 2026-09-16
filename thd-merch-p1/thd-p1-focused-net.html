@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Focused Net + The Verification Legend — THD Smart Labels</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1a1a; --muted:#4b5563; --line:#d8dbe0;
+    --accent:#C2410C;       /* orange for text/thin UI on light */
+    --accent-fill:#F96302;  /* orange fill; put #121212 text on it */
+    --card:#ffffff; --card-2:#f6f7f9;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#191919; --fg:#eaeaea; --muted:#b3b3b3; --line:#3a3a3a;
+      --accent:#F96302; --card:#202020; --card-2:#262626; }
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--fg)}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  img,svg{max-width:100%;height:auto}
+  main{
+    max-width:880px;margin:0 auto;padding:18px;
+  }
+  .card-wrap{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    box-shadow:0 1px 3px rgba(0,0,0,.08);
+    border-top:4px solid var(--accent-fill);
+  }
+  h1{font-size:1.4rem;line-height:1.25;margin:.2em 0 .1em}
+  h2{font-size:1.12rem;margin:1.4em 0 .5em}
+  .intro{color:var(--muted);margin:.2em 0 0}
+  section+section{margin-top:1.6em;padding-top:.4em;border-top:1px solid var(--line)}
+
+  .reveal-list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+  .reveal{
+    border:1px solid var(--line);
+    border-left:4px solid var(--accent);
+    border-radius:10px;
+    background:var(--card-2);
+    overflow:hidden;
+  }
+  .reveal-trigger{
+    display:flex;align-items:center;gap:10px;width:100%;
+    min-height:44px;
+    padding:12px 14px;
+    background:transparent;
+    border:0;
+    color:var(--fg);
+    font:inherit;font-weight:600;
+    text-align:left;cursor:pointer;
+  }
+  .reveal-trigger:hover,.reveal-trigger:focus-visible{background:rgba(194,65,12,.08)}
+  @media (prefers-color-scheme:dark){
+    .reveal-trigger:hover,.reveal-trigger:focus-visible{background:rgba(249,99,2,.14)}
+  }
+  .tri{
+    flex:0 0 auto;color:var(--accent);font-size:.9rem;line-height:1;
+    display:inline-block;transition:transform .18s ease;
+  }
+  .reveal-trigger[aria-expanded="true"] .tri{transform:rotate(90deg)}
+  .reveal-label{flex:1 1 auto}
+  .reveal-panel{
+    padding:2px 14px 14px 14px;color:var(--muted);
+  }
+  .reveal-panel p{margin:.4em 0 0}
+
+  .frame-line{
+    margin:14px 0 0;padding:12px 14px;
+    background:var(--card-2);
+    border:1px dashed var(--line);
+    border-radius:10px;
+    color:var(--fg);font-size:.95rem;
+  }
+
+  .chip-list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+  .chip{
+    display:grid;grid-template-columns:auto 1fr;gap:6px 12px;
+    align-items:start;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--card-2);
+    padding:12px 14px;
+  }
+  .chip-tag{
+    grid-column:1;
+    display:inline-flex;align-items:center;gap:8px;
+    align-self:start;
+    border:1.5px solid var(--accent);
+    border-radius:999px;
+    padding:5px 12px;
+    font-weight:700;font-size:.9rem;
+    white-space:nowrap;color:var(--fg);
+  }
+  .chip-sym{
+    display:inline-grid;place-items:center;
+    width:20px;height:20px;border-radius:50%;
+    background:var(--accent-fill);color:#121212;
+    font-size:.8rem;font-weight:800;line-height:1;
+  }
+  .chip-desc{grid-column:2;color:var(--muted);align-self:center}
+  @media (max-width:460px){
+    .chip{grid-template-columns:1fr}
+    .chip-desc{grid-column:1}
+  }
+
+  .vh{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  :where(button,a,input,summary,[tabindex]):focus-visible{
+    outline:2px solid #121212; outline-offset:2px; box-shadow:0 0 0 4px #fff; border-radius:6px;
+  }
+  @media (prefers-color-scheme:dark){
+    :where(button,a,input,summary,[tabindex]):focus-visible{outline-color:#fff; box-shadow:0 0 0 4px #121212;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="card-wrap">
+    <h1>Your Focused Net + The Verification Legend</h1>
+    <p class="intro">Pick the right three subjects to research, then mark every fact by how well you can trust it.</p>
+
+    <section aria-labelledby="net-a-h">
+      <h2 id="net-a-h">Cast a focused net — three subjects, no more</h2>
+      <ul class="reveal-list">
+        <li class="reveal">
+          <button type="button" class="reveal-trigger" aria-expanded="false" aria-controls="net-panel-1">
+            <span class="tri" aria-hidden="true">&#9654;</span>
+            <span class="reveal-label">Chroma (incumbent)</span>
+          </button>
+          <div class="reveal-panel" id="net-panel-1" hidden>
+            <p>The brand HD already runs — your focal subject. Build a full nine-field profile.</p>
+          </div>
+        </li>
+        <li class="reveal">
+          <button type="button" class="reveal-trigger" aria-expanded="false" aria-controls="net-panel-2">
+            <span class="tri" aria-hidden="true">&#9654;</span>
+            <span class="reveal-label">One market leader — VusionGroup</span>
+          </button>
+          <div class="reveal-panel" id="net-panel-2" hidden>
+            <p>The yardstick for how Chroma ranks on cost, durability, and functionality.</p>
+          </div>
+        </li>
+        <li class="reveal">
+          <button type="button" class="reveal-trigger" aria-expanded="false" aria-controls="net-panel-3">
+            <span class="tri" aria-hidden="true">&#9654;</span>
+            <span class="reveal-label">One tough-environment example</span>
+          </button>
+          <div class="reveal-panel" id="net-panel-3" hidden>
+            <p>An operator that already keeps displays alive near heavy equipment (a warehouse-format peer like Costco, or a fulfillment/logistics e-ink user) — proof the durability problem is solvable, and how.</p>
+          </div>
+        </li>
+      </ul>
+      <p class="frame-line">Frame every finding as &ldquo;what Home Depot is or isn&rsquo;t doing with Chroma&rdquo; — a mirror, not a generic tour.</p>
+    </section>
+
+    <section aria-labelledby="net-b-h">
+      <h2 id="net-b-h">Mark every fact you gather</h2>
+      <ul class="chip-list">
+        <li class="chip">
+          <span class="chip-tag"><span class="chip-sym" aria-hidden="true">&#10003;</span>Verified</span>
+          <span class="chip-desc">You opened a credible primary source and it confirms the fact.</span>
+        </li>
+        <li class="chip">
+          <span class="chip-tag"><span class="chip-sym" aria-hidden="true">!</span>Vendor / source claim only</span>
+          <span class="chip-desc">The only source is marketing — record it, but flag it as unproven.</span>
+        </li>
+        <li class="chip">
+          <span class="chip-tag"><span class="chip-sym" aria-hidden="true">?</span>Unverified / gap</span>
+          <span class="chip-desc">You couldn&rsquo;t find a credible source. Leave the claim out or mark it clearly as unconfirmed.</span>
+        </li>
+      </ul>
+    </section>
+  </div>
+</main>
+
+<script>
+(function(){
+  var triggers = document.querySelectorAll('.reveal-trigger');
+  triggers.forEach(function(btn){
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    btn.addEventListener('click', function(){
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      panel.hidden = open;
+    });
+    btn.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true'){
+        btn.setAttribute('aria-expanded','false');
+        panel.hidden = true;
+        btn.focus();
+      }
+    });
+  });
+})();
+</script>
+
+<!--
+A11y self-check (verified):
+1. One <h1>, sequential h2s, one <main>, lang="en", unique <title>; single self-contained file, no external requests.
+2. Reveals use disclosure pattern: <button type=button aria-expanded> + native hidden panel in DOM order; aria-expanded synced on every toggle; Escape closes + returns focus to trigger.
+3. Status chips are read-only text (symbol + word + description) — meaning never by color alone; no fake buttons, no role=button, no positive tabindex, no outline:none.
+4. Contrast: --accent #C2410C on light / #F96302 on dark for text/borders; orange fill only carries near-black #121212 symbols; all body text >=4.5:1 both themes.
+5. Focus ring from shared spec applied; Enter+Space work natively; touch targets >=44px; :hover always paired with :focus-visible.
+6. Reduced-motion honored (only a decorative triangle rotates); fluid units, wraps/reflows at 320px and 400% zoom; chips stack single-column on narrow screens.
+-->
+</body>
+</html>
