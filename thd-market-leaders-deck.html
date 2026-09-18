@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ESL Market Leaders — 16:9 Benchmark Deck</title>
+<style>
+  :root {
+    --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
+    --bg: #f4f6f5; --accent: #d5581f; --accent-ink: #b8480f; --link: #1a5f7a;
+    --stagew: 1280px; --stageh: 720px; --scale: 1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0c110f; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  /* horizontal scroll-snap deck */
+  .deck {
+    display: flex; flex-direction: row;
+    height: 100vh; width: 100vw;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    background: var(--bg);
+  }
+  .screen {
+    flex: 0 0 100vw; height: 100vh;
+    scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  /* fixed 1280x720 design canvas, scaled to fit the viewport (letterboxed) */
+  .slide {
+    width: var(--stagew); height: var(--stageh);
+    flex: 0 0 auto;
+    transform: scale(var(--scale)); transform-origin: center center;
+    background: var(--card); position: relative; overflow: hidden;
+  }
+
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 17px;
+    font-weight: 700; color: var(--accent-ink); margin: 0 0 12px;
+  }
+
+  /* ---------- summary slide ---------- */
+  .slide--summary { padding: 58px 96px; border-top: 8px solid var(--accent); }
+  h1 { font-size: 50px; line-height: 1.08; margin: 0 0 16px; max-width: 20ch; }
+  .lede { font-size: 20px; color: var(--muted); margin: 0 0 34px; max-width: 92ch; }
+  .sum-grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  .sum-cell {
+    background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--accent);
+    border-radius: 12px; padding: 18px 22px;
+    box-shadow: 0 1px 2px rgba(20,33,31,.04), 0 8px 20px rgba(20,33,31,.05);
+  }
+  .sum-logo { height: 40px; display: flex; align-items: center; margin-bottom: 12px; }
+  .sum-logo img { max-height: 36px; max-width: 168px; width: auto; height: auto; }
+  .sum-name { margin: 0 0 6px; font-weight: 700; font-size: 22px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .sum-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%; background: var(--accent);
+    color: #fff; font-size: 15px; font-weight: 800; flex: 0 0 auto;
+  }
+  .sum-loc { font-size: 15px; font-weight: 500; color: var(--muted); }
+  .sum-desc { margin: 0; font-size: 15.5px; color: var(--muted); line-height: 1.45; }
+
+  /* ---------- company slide ---------- */
+  .slide--company { padding: 52px 96px; border-top: 8px solid var(--accent); display: flex; flex-direction: column; }
+  .c-counter {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 15px;
+    font-weight: 700; color: var(--muted); margin: 0 0 24px;
+  }
+  .c-cols { display: flex; gap: 52px; flex: 1; min-height: 0; }
+  .c-left { flex: 0 0 440px; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+  .c-right { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+  .c-logo { height: 76px; display: flex; align-items: center; margin-bottom: 24px; }
+  .c-logo img { max-height: 72px; max-width: 300px; width: auto; height: auto; }
+  .c-namerow { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+  h2 { font-size: 44px; margin: 0; }
+  .c-alias { font-size: 19px; color: var(--muted); font-style: italic; }
+  .c-origin { font-size: 19px; color: var(--muted); margin: 12px 0 24px; }
+  .c-stat {
+    background: #fbf3ee; border: 1px solid #f2d9c9; border-radius: 14px;
+    padding: 22px 24px;
+  }
+  .c-stat-value { display: block; font-size: 52px; font-weight: 800; color: var(--accent-ink); line-height: 1; margin-bottom: 6px; }
+  .c-stat-label { font-size: 18px; color: var(--muted); }
+  .c-who { margin: 0 0 24px; font-size: 23px; line-height: 1.4; }
+  .c-durability { background: #f4f6f5; border-radius: 14px; padding: 22px 24px; margin-bottom: 26px; }
+  .c-dur-tag {
+    display: inline-block; font-size: 15px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--accent-ink); margin-bottom: 10px;
+  }
+  .c-durability p { margin: 0; font-size: 20px; line-height: 1.45; }
+  .c-links-title {
+    font-size: 15px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--muted); margin: 0 0 10px;
+  }
+  .c-links ul { margin: 0; padding-left: 1.2em; }
+  .c-links li { font-size: 19px; margin-bottom: 8px; }
+  a { color: var(--link); }
+  a:hover { text-decoration: none; }
+  a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+  /* ---------- chrome: arrows + dots ---------- */
+  .navbtn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,.92); border: 1px solid var(--line);
+    color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+    box-shadow: 0 4px 14px rgba(0,0,0,.16);
+  }
+  .navbtn:hover { background: #fff; }
+  .navbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .navbtn[disabled] { opacity: .3; cursor: default; }
+  .navbtn--prev { left: 20px; }
+  .navbtn--next { right: 20px; }
+
+  .dotnav {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+    display: flex; gap: 12px; z-index: 30;
+    background: rgba(255,255,255,.9); padding: 10px 16px; border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.14);
+  }
+  .dot {
+    width: 12px; height: 12px; border-radius: 50%; background: #c2c9c7;
+    border: none; padding: 0; cursor: pointer; transition: background .2s, transform .2s;
+  }
+  .dot:hover { background: var(--accent); transform: scale(1.2); }
+  .dot:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .dot.is-active { background: var(--accent); transform: scale(1.2); }
+
+  @media (prefers-reduced-motion: reduce) { .deck { scroll-behavior: auto; } }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eef1f0; --muted: #a8b2af; --line: #2c3634; --card: #1a2321;
+      --bg: #101615; --accent: #f07a3d; --accent-ink: #f4a06f; --link: #6fc3dd;
+    }
+    .sum-logo, .c-logo { background: #fff; border-radius: 8px; padding: 6px 10px; display: inline-flex; }
+    .c-stat { background: #24211c; border-color: #3a3126; }
+    .c-durability { background: #131a19; }
+    .navbtn, .dotnav { background: rgba(26,35,33,.94); border-color: var(--line); color: var(--ink); }
+    .dot { background: #3a4442; }
+  }
+</style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <section class="screen" id="screen-0" aria-labelledby="summary-title">
+      <div class="slide slide--summary">
+        <p class="eyebrow">Step 1 · Pick one market leader</p>
+        <h1 id="summary-title">The Four ESL Benchmarks vs. Chroma</h1>
+        <p class="lede">Any of these four is a fair yardstick for ranking Chroma on durability, cost, and functionality — with durability weighted heaviest. Scroll through each leader, then commit to the one whose warehouse-durability story you most want to dig into.</p>
+        <ul class="sum-grid">
+          <li class="sum-cell">
+            <div class="sum-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgOTQgMjkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik03OS4wMDU2IDIzLjM5MThWMTQuNDY5N0M3OS4wMDU2IDEwLjMyNjEgODEuNjE2NSA3LjM1MjM2IDg2LjI3NTkgNy4zNTIzNkM5MC45MzYzIDcuMzUyMzYgOTMuNTE0MyAxMC4zMjYxIDkzLjUxNDMgMTQuNDY5N1YyMy4zOTE4SDg5LjM0OTNWMTQuODAzNUM4OS4zNDkzIDEyLjQ5NzUgODguMzI1NSAxMS4wNjE1IDg2LjI3NTkgMTEuMDYxNUM4NC4yMjczIDExLjA2MTUgODMuMjAyNSAxMi40OTc1IDgzLjIwMjUgMTQuODAzNVYyMy4zOTE4SDc5LjAwNTZaIiBmaWxsPSIjMEQyMTI2Ii8+CjxwYXRoIGQ9Ik02MC4zOTc4IDE1LjUzOUM2MC4zOTc4IDEwLjg5NDEgNjMuODY4IDcuMzUyMzYgNjguNjkyOSA3LjM1MjM2QzczLjUxODggNy4zNTIzNiA3Ni45ODkgMTAuODk0MSA3Ni45ODkgMTUuNTM5Qzc2Ljk4OSAyMC4xODM5IDczLjUxODggMjMuNzU4NSA2OC42OTI5IDIzLjc1ODVDNjMuODY4IDIzLjc1ODUgNjAuMzk3OCAyMC4xODM5IDYwLjM5NzggMTUuNTM5Wk03Mi44NTc5IDE1LjUzOUM3Mi44NTc5IDEyLjg5OTEgNzEuMTA2NCAxMS4wMjc2IDY4LjY5MjkgMTEuMDI3NkM2Ni4yODA0IDExLjAyNzYgNjQuNTI4OSAxMi44OTkxIDY0LjUyODkgMTUuNTM5QzY0LjUyODkgMTguMTc4OCA2Ni4yODA0IDIwLjA0OTQgNjguNjkyOSAyMC4wNDk0QzcxLjEwNjQgMjAuMDQ5NCA3Mi44NTc5IDE4LjIxMTcgNzIuODU3OSAxNS41MzlaIiBmaWxsPSIjMEQyMTI2Ii8+CjxwYXRoIGQ9Ik01Mi45OTQ5IDIuNjA2ODRDNTIuOTk0OSAxLjE3MTc3IDU0LjE4NTIgMC4wMDA4NjYwMSA1NS42Mzg3IDAuMDAwODY2MDFDNTUuOTgxNCAtMC4wMDAxNTM0OTkgNTYuMzIxIDAuMDY2NTIwOSA1Ni42Mzc5IDAuMTk3MDYzQzU2Ljk1NDggMC4zMjc2MDUgNTcuMjQyOCAwLjUxOTQ0NCA1Ny40ODU0IDAuNzYxNTcxQzU3LjcyOCAxLjAwMzcgNTcuOTIwMyAxLjI5MTM1IDU4LjA1MTUgMS42MDgwMUM1OC4xODI2IDEuOTI0NjcgNTguMjQ5OSAyLjI2NDExIDU4LjI0OTUgMi42MDY4NEM1OC4yNDk1IDQuMDQzODYgNTcuMDU5MyA1LjE4MDg5IDU1LjYzODcgNS4xODA4OUM1NC4yMTcxIDUuMTgwODkgNTIuOTk0OSA0LjA0Mzg2IDUyLjk5NDkgMi42MDY4NFpNNTMuNTU2MiAyMy4zOTE4VjcuNjg2MjNINTcuNzIwMlYyMy4zOTE4SDUzLjU1NjJaIiBmaWxsPSIjMEQyMTI2Ii8+CjxwYXRoIGQ9Ik0zOC43ODUzIDE4LjY3OTFINDIuNzg0OEM0Mi45ODIyIDE5Ljg4MiA0NC4wMzk5IDIwLjQ1IDQ1LjE5NzIgMjAuNDVDNDYuMzUzNiAyMC40NSA0Ny4xMTMzIDE5Ljg4MiA0Ny4xMTMzIDE5LjExMzZDNDcuMTEzMyAxNi41NzQ0IDM5LjE4MiAxOC4xNDUgMzkuMTgyIDEyLjA2M0MzOS4xODIgOS40NTcwNyA0MS4zMzAzIDcuMzUxMzkgNDQuODMzNCA3LjM1MTM5QzQ4LjIzNzcgNy4zMTg0OSA1MC41NTE1IDkuMTU2MTIgNTAuNzgyOCAxMi4yMzA1SDQ2Ljg0OTFDNDYuNjg0NiAxMS4yOTQ3IDQ1Ljk1NjkgMTAuNjU5OSA0NC44MzM0IDEwLjY1OTlDNDMuNzA5OSAxMC42NTk5IDQzLjA0OSAxMS4yNjA4IDQzLjA0OSAxMi4wNjNDNDMuMDQ5IDE0LjUwMTYgNTEuMDc5OSAxMy4wOTg1IDUxLjA3OTkgMTkuMTEzNkM1MS4wNzk5IDIxLjkxOTkgNDguMzcwMyAyMy43NTg1IDQ1LjE5NjMgMjMuNzU4NUM0MS41OTQ1IDIzLjc1ODUgMzkuMDE2NiAyMS42NTI4IDM4Ljc4NTMgMTguNjc5MVoiIGZpbGw9IiMwRDIxMjYiLz4KPHBhdGggZD0iTTIyLjM1NTcgMTYuNjA3M1Y3LjY4NTI0SDI2LjU1MjZWMTYuMzA3M0MyNi41NTI2IDE4LjU3ODUgMjcuNTQ0NSAxOS45ODI2IDI5LjUyNzMgMjAuMDE1NUMzMS42NDI3IDIwLjA0OTQgMzIuNTY3OCAxOC42NDUzIDMyLjU2NzggMTYuMzA2NFY3LjY4NTI0SDM2Ljc2NDdWMTYuNjQxMkMzNi43NjQ3IDIwLjY1MDMgMzMuODIyOSAyMy43OTI0IDI5LjUyNjMgMjMuNzU4NUMyNC45MzI3IDIzLjcyNDYgMjIuMzU1NyAyMC43NTA5IDIyLjM1NTcgMTYuNjA3M1oiIGZpbGw9IiMwRDIxMjYiLz4KPHBhdGggZD0iTTIyLjQ4OTMgMC42MDI3NzRMMTYuMDI4OSAyMy4zOTE4SDExLjMwMjdMMTcuNzY0IDAuNjAyNzc0SDIyLjQ4OTNaTTYuNDYxMzEgMjMuMzkwOEwwIDAuNjAxODA3SDQuNzI2MjNMMTEuMTg3NSAyMy4zOTA4SDYuNDYxMzFaIiBmaWxsPSIjMEQyMTI2Ii8+Cjwvc3ZnPgo=" alt="VusionGroup logo" /></div>
+            <p class="sum-name"><span class="sum-num">1</span>VusionGroup
+              <span class="sum-loc"><span aria-hidden="true">📍</span> France</span>
+            </p>
+            <p class="sum-desc">The world’s largest ESL vendor and Walmart’s supplier across roughly 4,600 US stores.</p>
+          </li>
+          <li class="sum-cell">
+            <div class="sum-logo"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTIuNDI3IiBoZWlnaHQ9IjM3LjIyNSIgdmlld0JveD0iMCAwIDIxMi40MjcgMzcuMjI1Ij4KICA8ZyBpZD0ibG9nbyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTM0LjQyMyAtMjEuMzQyKSI+CiAgICA8cGF0aCBpZD0iUGF0aF81MzY2IiBkYXRhLW5hbWU9IlBhdGggNTM2NiIgZD0iTTI0MC42NjIsMzYuODZzLTEuMTgzLDEzLjUxNC0xLjI0MSwxNC4xMzUtLjIyMywyLjU1NS0zLjgzOSwyLjU1NS0zLjQtMi41NTUtMy40LTIuNTU1di0uMDExaDBsMS4yMzMtMTQuMTI0aC02LjE5NGwtMS4yMzYsMTQuMTI0aDB2LjAxMXMtLjIyMiwyLjU1NS0zLjgzOSwyLjU1NS0zLjQ1Mi0xLjkzNS0zLjQtMi41NTUsMS4yMzktMTQuMTM1LDEuMjM5LTE0LjEzNUgyMTMuOHMtMS4xNCwxMy4wNTMtMS4yMzUsMTQuMTI0LS42NjgsNy41ODMsOS4xNDcsNy41ODNhMTEuOTA4LDExLjkwOCwwLDAsMCw2Ljg3NS0xLjgyNSwxMC40LDEwLjQsMCwwLDAsNi41NTQsMS44MjVjOS44MTMsMCwxMC4zODMtNi41MTIsMTAuNDc2LTcuNTgzUzI0Ni44NSwzNi44NiwyNDYuODUsMzYuODZaIiBmaWxsPSIjMDAzNTk0Ii8+CiAgICA8cGF0aCBpZD0iUGF0aF81MzY3IiBkYXRhLW5hbWU9IlBhdGggNTM2NyIgZD0iTTEwMi4zMDksMzYuODYzbC0xLjksMjEuNjg4SDEwNi42bDEuNDY0LTE2LjdIMTE3YTMuMDEzLDMuMDEzLDAsMCwxLDMuMDQ5LDMuMzM2TDExOC44OCw1OC41NTFoNi4xODVsMS4xNTQtMTMuMTRhNy43MSw3LjcxLDAsMCwwLTcuOC04LjU0OFoiIGZpbGw9IiMwMDM1OTQiLz4KICAgIDxwYXRoIGlkPSJQYXRoXzUzNjgiIGRhdGEtbmFtZT0iUGF0aCA1MzY4IiBkPSJNMTc0LjQsMzYuODg0aC05LjkyMWwuNjg5LTcuODQ4aC02LjE4OEwxNTYuNCw1OC41NjdoNi4xOTFsMS40NTgtMTYuN2g4Ljk0MWEzLjAxLDMuMDEsMCwwLDEsMy4wNDksMy4zNDFsLTEuMTY3LDEzLjM2M2g2LjE4M2wxLjE1MS0xMy4xMzVBNy43MDUsNy43MDUsMCwwLDAsMTc0LjQsMzYuODg0WiIgZmlsbD0iIzAwMzU5NCIvPgogICAgPHBhdGggaWQ9IlBhdGhfNTM2OSIgZGF0YS1uYW1lPSJQYXRoIDUzNjkiIGQ9Ik0yMDUuMDE3LDM3LjY5NWgwYTIxLjkyNiwyMS45MjYsMCwwLDAtNi42NDQtLjgxNywyMy4zNjYsMjMuMzY2LDAsMCwwLTYuNzg1LjgxN2gwYy0yLjgxMy45MDctNS44NTcsMi44LTYuMiw2Ljc1NmwtLjI4NCwzLjI2NnYuMDA2bC0uMjkxLDMuMjY2Yy0uMzQ1LDMuOTYxLDIuMzcsNS44NDksNS4wMjYsNi43NTYsMC0uMDA2LjAwNi0uMDA2LDAsMGEyMS45NTcsMjEuOTU3LDAsMCwwLDYuNjQ1LjgyMiwyMy4zMzgsMjMuMzM4LDAsMCwwLDYuNzgyLS44MjJjMC0uMDA2LDAtLjAwNi4wMDUsMCwyLjgwOC0uOTA3LDUuODU0LTIuNzk1LDYuMi02Ljc1NmwuMjg0LTMuMjY2di0uMDA2bC4yODQtMy4yNjZDMjEwLjM4Myw0MC40OTUsMjA3LjY3MSwzOC42LDIwNS4wMTcsMzcuNjk1Wm0tMS40NTMsMTAuMDI4Yy0uMSwxLjE0NS0uMiwyLjI1OS0uMjMxLDIuNjQ2LS4wODIuOTQzLS4yNzgsMy4xODEtNC41NTIsMy4xODFoLTMuNzMzYy00LjI2NiwwLTQuMDc4LTIuMjM4LTMuOTktMy4xODEuMDMxLS4zODcuMTMyLTEuNS4yMy0yLjY0NnYtLjAwNmMuMS0xLjE1LjItMi4yNTMuMjM0LTIuNjQ2LjA3OS0uOTQ5LjI3OC0zLjE4MSw0LjU0OS0zLjE4MUgxOTkuOGM0LjI3NCwwLDQuMDc4LDIuMjMyLDQsMy4xODEtLjAzMS4zOTMtLjEzMiwxLjUtLjIzMywyLjY0NloiIGZpbGw9IiMwMDM1OTQiLz4KICAgIDxwYXRoIGlkPSJQYXRoXzUzNzAiIGRhdGEtbmFtZT0iUGF0aCA1MzcwIiBkPSJNNzEuNjQ5LDMzLjc3MWwxLjA4OS0xMi40MjlINjYuNTUzTDY1LjcsMzEuMDY3YTEuMTY2LDEuMTY2LDAsMCwwLC44MzgsMS4yNDZaIiBmaWxsPSIjYWYyMzFjIi8+CiAgICA8cGF0aCBpZD0iUGF0aF81MzcxIiBkYXRhLW5hbWU9IlBhdGggNTM3MSIgZD0iTTQyLjUxLDM2Ljg2OGwuMjcxLTMuMWgwbC44NTEtOS43MjVoMGExLjE1OCwxLjE1OCwwLDAsMC0uODQxLTEuMjQxbC01LjEwNi0xLjQ2M0wzNi42LDMzLjc3MWwtMi4xNzIsMjQuOGg2LjE4NmwxLjQ2NC0xNi43MTRINjQuNzZMNjMuMyw1OC41NjFINjkuNDhsMS45LTIxLjdaIiBmaWxsPSIjMDAzNTk0Ii8+CiAgICA8cGF0aCBpZD0iUGF0aF81MzcyIiBkYXRhLW5hbWU9IlBhdGggNTM3MiIgZD0iTTE0Ny44LDQ1LjJIMTM2LjJhMS40OTMsMS40OTMsMCwwLDEtMS41MTctMS41NTQuNS41LDAsMCwwLDAtLjF2LS4wMTZhMS44NTUsMS44NTUsMCwwLDEsMS44MTEtMS42NmgxNS42ODVhMS40NDEsMS40NDEsMCwwLDAsMS4zLS44OGwxLjcyOS00LjEyNi0xOC40NzQuMDExaC0uMDE5di4wMDVhNy40MjYsNy40MjYsMCwwLDAtNy4yNDEsNi42NzEsNi4wMTcsNi4wMTcsMCwwLDAsNi4wOSw2LjY3NmgxMS42YTEuNSwxLjUsMCwwLDEsMS41MTcsMS41NTRjMCwuMDM3LjAwNS4wNjQuMDA1LjA5NVY1MS45YTEuODUxLDEuODUxLDAsMCwxLTEuODEsMS42NkgxMzEuMTlhMS40NDIsMS40NDIsMCwwLDAtMS4zLjg4bC0xLjcyOSw0LjEyNiwxOC40ODgtLjAxMWE3LjQzMiw3LjQzMiwwLDAsMCw3LjI0Ni02LjY3MUE2LjAxOCw2LjAxOCwwLDAsMCwxNDcuOCw0NS4yWiIgZmlsbD0iIzAwMzU5NCIvPgogICAgPHBhdGggaWQ9IlBhdGhfNTM3MyIgZGF0YS1uYW1lPSJQYXRoIDUzNzMiIGQ9Ik05MC42NjksMzYuODczaC0xNi4xbDEuMDEsNC4xYTEuMTU2LDEuMTU2LDAsMCwwLDEuMTQ4Ljg4MUg4OS4yNTRBMy4wMTYsMy4wMTYsMCwwLDEsOTIuMyw0NS4xODhsLTExLjkuMDA1YTcuNDM3LDcuNDM3LDAsMCwwLTcuMjQzLDYuNjgyLDYuMDIxLDYuMDIxLDAsMCwwLDYuMDksNi42NzZIOTcuMzE5bDEuMTQ1LTEzLjE0QTcuNyw3LjcsMCwwLDAsOTAuNjY5LDM2Ljg3M1ptLjksMTYuNjM1SDc5Ljg4NGExLjQ4NCwxLjQ4NCwwLDAsMS0xLjUxNC0xLjU0OS41LjUsMCwwLDEsMC0uMXYtLjAxYTEuODU1LDEuODU1LDAsMCwxLDEuODExLTEuNjY2SDkxLjg2M1oiIGZpbGw9IiMwMDM1OTQiLz4KICA8L2c+Cjwvc3ZnPgo=" alt="Hanshow logo" /></div>
+            <p class="sum-name"><span class="sum-num">2</span>Hanshow
+              <span class="sum-loc"><span aria-hidden="true">📍</span> China</span>
+            </p>
+            <p class="sum-desc">A global top-three ESL maker, with labels in 55,000+ stores across 70+ countries.</p>
+          </li>
+          <li class="sum-cell">
+            <div class="sum-logo"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtaGlkZGVuPSJ0cnVlIiB2aWV3Qm94PSIwIDAgMTMzIDMxIiBmaWxsPSJub25lIj48cGF0aCBkPSJNNzguMzcuMDk1Yy44OTguMTA0IDEuODIzLjI4NyAyLjcyMi40OTYgMS43MjEuNDE4IDMuMzE0IDEuMjAyIDQuODAzIDIuMjIuNDExLjI4Ny40NjMuNTQ5LjIzMS45OTMtLjg3MyAxLjYxOS0xLjcyIDMuMjM4LTIuNTk0IDQuODU3LS4zMDguNTc1LS40NjIuNjAxLS45NzYuMjEtMS41MTUtMS4xNzYtMy4xNi0xLjk2LTUuMDYtMi4wNjQtMy4xODUtLjE4My01LjYyNSAxLjE3NS03LjE2NyAzLjk5Ni0xLjc3MiAzLjI2NS0xLjY3IDYuNTgxLjIwNiA5Ljc2OCAxLjgyNCAzLjEwOCA1LjAzNCA0LjMzNSA4LjYwNSAzLjQ0NyAxLjI4NC0uMzEzIDIuNDY2LS45MTQgMy41NDQtMS42NzEuNTY2LS4zOTIuNjk0LS4zNjYgMS4wMDIuMjA5LjgyMiAxLjU0IDEuNjQ0IDMuMTA4IDIuNDY2IDQuNjQ5LjMwOC41NzQuMjgzLjY3OS0uMjU3IDEuMDQ0LTIuODc2IDEuOTg1LTYuMDM2IDIuODQ3LTkuNTA0IDIuNzQzLTcuNS0uMjEtMTMuODE5LTYuMDM0LTE0LjcxOC0xMy42MDhDNjAuNzIzIDkuMTU4IDY2LjA0IDEuNzkzIDc0LjA4LjMwNWMuNTEzLS4xMDUgMS4wMjctLjE1NyAxLjU0LS4yMzUuOTI1LS4wNzggMS43NzMtLjEwNSAyLjcyNCAwbC4wMjUuMDI2Wk00MS42ODggMTkuNTI2Yy43NzEgMS4zODQgMS41MTYgMi43MTYgMi4yNiA0LjA3NCAxLjEwNSAxLjk4NSAyLjE4NCAzLjk0NCAzLjI4OSA1LjkyOS4zODUuNzA1LjIzLjk2Ni0uNTY1Ljk2Nkg0MS4wMmMtLjY2OCAwLTEuMTMtLjIzNS0xLjQ2NS0uODM2LTIuMzYzLTQuNDY2LTQuNzUxLTguOTA1LTcuMTE1LTEzLjM0NS0uMDI1LS4wNTMtLjA1LS4xMjgtLjEyOC0uMzE0aDIuOThjLjUxMyAwIDEuMDI3LS4xMDQgMS41NC0uMjA5IDEuNzIyLS40MTggMi44NTItMS45MDYgMi45MDMtMy44MzkuMDc3LTIuNDU1LTEuMTMtMy45Ny0zLjUxOS00LjQ0YTUuODA3IDUuODA3IDAgMCAwLTEuMTU2LS4xM2gtMi44NzZWMjkuNjMzYzAgLjgzNi0uMDUyLjg4OC0uOS44ODhoLTUuODNjLS43MiAwLS44MjItLjEwNC0uODIyLS44MVYxLjQ4YzAtLjczMS4wNzctLjgxLjc3LS44MWg5LjU4MWMxLjcyMSAwIDMuNDE3LjE4MyA1LjExMi42MDEgMy43NS45NCA1Ljg1NiAzLjQ3NCA2LjYyNyA3LjIwOC40MTEgMS45MzMuMzYgMy44NjYtLjI1NyA1Ljc0Ni0uNjY4IDIuMDY0LTEuOSAzLjk0NC00Ljc3OCA1LjMyOHYtLjAyNlpNNy41IDIxLjAxNXY4LjYxOWMwIC42MjYtLjA3Ny43MDUtLjY5My43MDVILjY2N2MtLjU5IDAtLjY2Ny0uMDc5LS42NjctLjY4VjEuMTY3QzAgLjU5LjEwMy40ODYuNjE2LjQ4NmMzLjg1MyAwIDcuNjggMCAxMS41MzQuMTA1IDEuMTU1LjAyNiAyLjMzNy4yMSAzLjQ0Mi41MjMgMi45NTQuNzgzIDQuODU0IDIuNzk0IDUuODU2IDUuNjQgMS4yMzMgMy40NDguODQ4IDYuNzkxLTEuMDAyIDkuOS0xLjM4NyAyLjM1LTMuNTk2IDMuNTc3LTYuMjE2IDQuMDc0LTIuMDAzLjM2NS00LjAwNy4yNi02LjAxLjI4N0g3LjVabS4wMjYtMTMuNzl2Ny4wNTJoMy44MjdjLjQxMSAwIC44NDgtLjEwNSAxLjIzMy0uMjEgMS41NDEtLjQxNyAyLjMxMi0xLjUxNCAyLjMxMi0zLjIxMiAwLTEuNzc2LS43Mi0yLjg0Ni0yLjI4Ni0zLjI5LTEuNjctLjQ3LTMuMzY1LS4yNjItNS4wODYtLjMxNHYtLjAyNlpNOTYuOTkyIDcuMzU1djQuNTk3SDEwNC4zNjJjLjY2OCAwIC43NzEuMTA0Ljc3MS43ODR2NS4yMjNjMCAuNi0uMTAzLjcwNS0uNzE5LjcwNUg5Ni45OTF2NS4wOTNIMTA1LjI2M2MuNzcxIDAgLjgyMi4wNTIuODIyLjgzNnY1LjE3YzAgLjU3NS0uMTI4LjcwNi0uNjY3LjcwNkg5MC4wODJjLS41OSAwLS42NjgtLjEzLS42NjgtLjgxVjEuMjdjMC0uNTc0LjEwMy0uNjUzLjY2OC0uNjUzaDE1LjM4NmMuNTM5IDAgLjY0Mi4xMDUuNjQyLjY4VjYuNTJjMCAuNzA1LS4wNzcuODEtLjc3LjgxSDk3LjAxOGwtLjAyNi4wMjVaTTU4LjQxIDE1LjYwOHYxNC4wNzhjMCAuNzU3LS4wNzcuODM1LS44NDcuODM1SDUxLjY4Yy0uNzE5IDAtLjgyMi0uMDc4LS44MjItLjgzNVYxLjQ1M2MwLS43MzEuMDUyLS43ODQuNzcxLS43ODRoNS45ODVjLjcyIDAgLjc3LjA1My43Ny43ODR2MTQuMTgxbC4wMjYtLjAyNlpNMTI3LjI1IDE5LjUyNmMuNzcxIDEuMzg0IDEuNTE2IDIuNzE2IDIuMjYgNC4wNzQgMS4xMDUgMS45ODUgMi4xODQgMy45NDQgMy4yODggNS45MjkuMzg2LjcwNS4yMzEuOTY2LS41NjUuOTY2aC01LjY1MWMtLjY2OCAwLTEuMTMtLjIzNS0xLjQ2NC0uODM2LTIuMzYzLTQuNDY2LTQuNzUyLTguOTA1LTcuMTE1LTEzLjM0NWEyLjc2NSAyLjc2NSAwIDAgMS0uMTI4LS4zMTRoMi45NzljLjUxNCAwIDEuMDI4LS4xMDQgMS41NDEtLjIwOSAxLjcyMS0uNDE4IDIuODUxLTEuOTA2IDIuOTAzLTMuODM5LjA3Ny0yLjQ1NS0xLjEzLTMuOTctMy41MTktNC40NGE1LjgwOCA1LjgwOCAwIDAgMC0xLjE1Ni0uMTNoLTIuODc3VjI5LjYzM2MwIC44MzYtLjA1MS44ODgtLjg5OS44ODhoLTUuODMxYy0uNzE5IDAtLjgyMi0uMTA0LS44MjItLjgxVjEuNDhjMC0uNzMxLjA3Ny0uODEuNzcxLS44MWg5LjU4MWMxLjcyMSAwIDMuNDE2LjE4MyA1LjExMS42MDEgMy43NTEuOTQgNS44NTcgMy40NzQgNi42MjggNy4yMDguNDExIDEuOTMzLjM1OSAzLjg2Ni0uMjU3IDUuNzQ2LS42NjggMi4wNjQtMS45MDEgMy45NDQtNC43NzggNS4zMjh2LS4wMjZaIiBmaWxsPSIjMDBBMDNFIiAvPjwvc3ZnPg==" alt="Pricer logo" /></div>
+            <p class="sum-name"><span class="sum-num">3</span>Pricer
+              <span class="sum-loc"><span aria-hidden="true">📍</span> Sweden</span>
+            </p>
+            <p class="sum-desc">A Sweden-based ESL pioneer with 380M+ labels deployed across 80+ countries.</p>
+          </li>
+          <li class="sum-cell">
+            <div class="sum-logo"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwIiBoZWlnaHQ9IjI4IiB2aWV3Qm94PSIwIDAgMTYwIDI4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDBfMjc1XzQ3NjcpIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik00NS4xMTAyIDBINDEuNDM1QzMzLjYwNzggMCAyOS4yNjIyIDQuNDcxOTEgMjkuMjYyMiAxMy41NTIyQzI5LjI2MjIgMjIuNjMyNCAzMy41Njk0IDI3IDQxLjQyNTQgMjdINDUuMTAwNkM1Mi45NjYyIDI3IDU3LjI4MTQgMjIuNTkzOSA1Ny4yODE0IDEzLjU1MjJDNTcuMjgxNCA0LjUxMDQzIDUyLjkyNzggMCA0NS4xMTAyIDBaTTQ1LjEwMjIgMjEuMDAxNkg0MS40MjdDMzYuOTU4MiAyMS4wMDE2IDM1LjI4MyAxOC45MDg1IDM1LjI4MyAxMy41MTM2QzM1LjI4MyA4LjExODc4IDM2Ljk1ODIgNS45OTgzOSA0MS40MzY2IDUuOTk4MzlINDUuMTExOEM0OS42MTkgNS45OTgzOSA1MS4yNjU0IDguMTU3MyA1MS4yNjU0IDEzLjUxMzZDNTEuMjY1NCAxOC44NyA0OS42MjA2IDIxLjAwMTYgNDUuMTAzOCAyMS4wMDE2SDQ1LjEwMjJaIiBmaWxsPSIjMkYwMDZEIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTQuNzI2NCAxMC42ODIySDkuMDYwOEM2Ljc0NTYgMTAuNjgyMiA2LjAyNzIgOS41NTg1OSA2LjAyNzIgOC4yODI1QzYuMDI3MiA3LjAwNjQyIDYuODY4OCA2LjAwODAzIDguNTgyNCA2LjAwODAzSDIxLjk2OTZWMEg4Ljc4NEMyLjUxNjggMCAwIDMuMzk4MDcgMCA4LjA4MTg2QzAgMTIuNzY1NiAxLjc5ODQgMTYuMTE1NiA5LjI2MjQgMTYuMTE1NkgxNC45MjhDMTcuMzI5NiAxNi4xMTU2IDE4LjA4NjQgMTcuMzE0NiAxOC4wODY0IDE4LjY0MDRDMTguMDg2NCAxOS45NjYzIDE3LjIwNjQgMjEuMDAzMiAxNS40NDQ4IDIxLjAwMzJIMC45ODU2VjI3LjAwMTZIMTUuMjQzMkMyMS41NDg4IDI3LjAwMTYgMjQuMDY1NiAyMy41NTU0IDI0LjA2NTYgMTguODA0MkMyNC4wNjU2IDE0LjA1MyAyMi4zMDU2IDEwLjY4MzggMTQuNzI2NCAxMC42ODM4VjEwLjY4MjJaIiBmaWxsPSIjMkYwMDZEIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNODMuNjc1MSAyMS4wMDE2SDcyLjY4OTVDNzAuMTcyNyAyMS4wMDE2IDY5LjE3NzUgMTkuNzE1OSA2OS4xNzc1IDE3LjY4MDZWMEg2My4wMjM5VjE4LjIwODdDNjMuMDIzOSAyNC4wMDY0IDY2LjA5NTkgMjcgNzEuOTYxNSAyN0g4My42NzUxVjIxLjAwMTZaIiBmaWxsPSIjMkYwMDZEIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTEzLjEzNSAyMy4yNjY1QzExMy44ODIgMjEuOTI5NCAxMTQuMjcxIDIwLjI0NTYgMTE0LjI3MSAxOC4yMDcxVjBIMTA4LjExN1YxNy42ODA2QzEwOC4xMTcgMTkuNzI1NSAxMDcuMTIyIDIxLjAwMTYgMTA0LjYwNSAyMS4wMDE2SDk4LjQ2MUM5NS45NDQyIDIxLjAwMTYgOTQuOTQ5IDE5LjcyNTUgOTQuOTQ5IDE3LjY4MDZWMEg4OC43OTU0VjE4LjIwNzFDODguNzk1NCAyNC4wMDQ4IDkxLjg2NzQgMjYuOTk4NCA5Ny43NDI2IDI2Ljk5ODRIMTA1LjM3QzEwOC45NTUgMjYuOTk4NCAxMTEuNDkzIDI1Ljg1NzEgMTEyLjkxOSAyMy42MzRDMTEzLjAwNyAyMy41MjE3IDExMy4wNjYgMjMuMzkxNyAxMTMuMTMzIDIzLjI2NjVIMTEzLjEzNVoiIGZpbGw9IiMyRjAwNkQiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMTguMTgzIDI3SDEyNC41MjJMMTMwLjk2NyA2LjUzNzcyQzEzMC45NzYgNi41MTg0NiAxMzAuOTgzIDYuNDk5MiAxMzAuOTkxIDYuNDc5OTRDMTMwLjk5NyA2LjQ2MDY3IDEzMS4wMDUgNi40NDE0MSAxMzEuMDE1IDYuNDIyMTVDMTMxLjIxNiA1Ljk5MDM3IDEzMS41MjIgNS43Mzk5NyAxMzIuMDI5IDUuNzM5OTdDMTMyLjUzNiA1LjczOTk3IDEzMi45NzYgNi4xMzMyMyAxMzIuOTc2IDYuNzk2MTVWMjAuMzAwMkMxMzIuOTc2IDI0LjE4NzggMTM1LjY5NSAyNi43Nzg1IDEzOS43OTkgMjYuNzc4NUMxNDMuOTAzIDI2Ljc3ODUgMTQ1LjkwNCAyNC42Njc3IDE0Ny4wNTEgMjEuMTM0OEwxNTEuNjU1IDYuNDY4N0MxNTEuODA4IDUuOTk4MzkgMTUyLjEwNCA1LjczMDM0IDE1Mi42NSA1LjczMDM0QzE1My4xOTUgNS43MzAzNCAxNTMuNTk3IDYuMTIzNiAxNTMuNTk3IDYuNzg2NTJWMjdIMTU5Ljk5OVY2LjQ3ODMzQzE2MCAyLjU5MDY5IDE1Ni45MzggMCAxNTIuNzk0IDBDMTQ4LjY1IDAgMTQ2LjcyNyAyLjExMDc1IDE0NS41NzggNS42NDM2NkwxNDAuOTg2IDIwLjMwOThDMTQwLjgyMyAyMC43MzE5IDE0MC40NTkgMjEuMDQ4MiAxMzkuOTQzIDIxLjA0ODJDMTM5LjQyNiAyMS4wNDgyIDEzOC45ODYgMjAuNjU0OSAxMzguOTg2IDE5Ljk5MlY2LjQ3ODMzQzEzOC45ODYgMi41OTA2OSAxMzYuMzA2IDAgMTMyLjE2MyAwQzEyOC4wMjEgMCAxMjYuMTA2IDIuMTEwNzUgMTI0LjkxMSA1LjY0NTI2TDExOC4xODQgMjdIMTE4LjE4M1oiIGZpbGw9IiMyRjAwNkQiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMF8yNzVfNDc2NyI+CjxyZWN0IHdpZHRoPSIxNjAiIGhlaWdodD0iMjciIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==" alt="SOLUM logo" /></div>
+            <p class="sum-name"><span class="sum-num">4</span>SOLUM
+              <span class="sum-loc"><span aria-hidden="true">📍</span> South Korea</span>
+            </p>
+            <p class="sum-desc">A South Korea-based ESL and display maker with deep e-paper expertise (the Newton line).</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="screen" id="screen-1" aria-labelledby="h-vusion">
+      <div class="slide slide--company">
+        <p class="c-counter">Leader 1 of 4</p>
+        <div class="c-cols">
+          <div class="c-left">
+            <div class="c-logo"><img src="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgOTQgMjkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik03OS4wMDU2IDIzLjM5MThWMTQuNDY5N0M3OS4wMDU2IDEwLjMyNjEgODEuNjE2NSA3LjM1MjM2IDg2LjI3NTkgNy4zNTIzNkM5MC45MzYzIDcuMzUyMzYgOTMuNTE0MyAxMC4zMjYxIDkzLjUxNDMgMTQuNDY5N1YyMy4zOTE4SDg5LjM0OTNWMTQuODAzNUM4OS4zNDkzIDEyLjQ5NzUgODguMzI1NSAxMS4wNjE1IDg2LjI3NTkgMTEuMDYxNUM4NC4yMjczIDExLjA2MTUgODMuMjAyNSAxMi40OTc1IDgzLjIwMjUgMTQuODAzNVYyMy4zOTE4SDc5LjAwNTZaIiBmaWxsPSIjMEQyMTI2Ii8+CjxwYXRoIGQ9Ik02MC4zOTc4IDE1LjUzOUM2MC4zOTc4IDEwLjg5NDEgNjMuODY4IDcuMzUyMzYgNjguNjkyOSA3LjM1MjM2QzczLjUxODggNy4zNTIzNiA3Ni45ODkgMTAuODk0MSA3Ni45ODkgMTUuNTM5Qzc2Ljk4OSAyMC4xODM5IDczLjUxODggMjMuNzU4NSA2OC42OTI5IDIzLjc1ODVDNjMuODY4IDIzLjc1ODUgNjAuMzk3OCAyMC4xODM5IDYwLjM5NzggMTUuNTM5Wk03Mi44NTc5IDE1LjUzOUM3Mi44NTc5IDEyLjg5OTEgNzEuMTA2NCAxMS4wMjc2IDY4LjY5MjkgMTEuMDI3NkM2Ni4yODA0IDExLjAyNzYgNjQuNTI4OSAxMi44OTkxIDY0LjUyODkgMTUuNTM5QzY0LjUyODkgMTguMTc4OCA2Ni4yODA0IDIwLjA0OTQgNjguNjkyOSAyMC4wNDk0QzcxLjEwNjQgMjAuMDQ5NCA3Mi44NTc5IDE4LjIxMTcgNzIuODU3OSAxNS41MzlaIiBmaWxsPSIjMEQyMTI2Ii8+CjxwYXRoIGQ9Ik01Mi45OTQ5IDIuNjA2ODRDNTIuOTk0OSAxLjE3MTc3IDU0LjE4NTIgMC4wMDA4NjYwMSA1NS42Mzg3IDAuMDAwODY2MDFDNTUuOTgxNCAtMC4wMDAxNTM0OTkgNTYuMzIxIDAuMDY2NTIwOSA1Ni42Mzc5IDAuMTk3MDYzQzU2Ljk1NDggMC4zMjc2MDUgNTcuMjQyOCAwLjUxOTQ0NCA1Ny40ODU0IDAuNzYxNTcxQzU3LjcyOCAxLjAwMzcgNTcuOTIwMyAxLjI5MTM1IDU4LjA1MTUgMS42MDgwMUM1OC4xODI2IDEuOTI0NjcgNTguMjQ5OSAyLjI2NDExIDU4LjI0OTUgMi42MDY4NEM1OC4yNDk1IDQuMDQzODYgNTcuMDU5MyA1LjE4MDg5IDU1LjYzODcgNS4xODA4OUM1NC4yMTcxIDUuMTgwODkgNTIuOTk0OSA0LjA0Mzg2IDUyLjk5NDkgMi42MDY4NFpNNTMuNTU2MiAyMy4zOTE4VjcuNjg2MjNINTcuNzIwMlYyMy4zOTE4SDUzLjU1NjJaIiBmaWxsPSIjMEQyMTI2Ii8+CjxwYXRoIGQ9Ik0zOC43ODUzIDE4LjY3OTFINDIuNzg0OEM0Mi45ODIyIDE5Ljg4MiA0NC4wMzk5IDIwLjQ1IDQ1LjE5NzIgMjAuNDVDNDYuMzUzNiAyMC40NSA0Ny4xMTMzIDE5Ljg4MiA0Ny4xMTMzIDE5LjExMzZDNDcuMTEzMyAxNi41NzQ0IDM5LjE4MiAxOC4xNDUgMzkuMTgyIDEyLjA2M0MzOS4xODIgOS40NTcwNyA0MS4zMzAzIDcuMzUxMzkgNDQuODMzNCA3LjM1MTM5QzQ4LjIzNzcgNy4zMTg0OSA1MC41NTE1IDkuMTU2MTIgNTAuNzgyOCAxMi4yMzA1SDQ2Ljg0OTFDNDYuNjg0NiAxMS4yOTQ3IDQ1Ljk1NjkgMTAuNjU5OSA0NC44MzM0IDEwLjY1OTlDNDMuNzA5OSAxMC42NTk5IDQzLjA0OSAxMS4yNjA4IDQzLjA0OSAxMi4wNjNDNDMuMDQ5IDE0LjUwMTYgNTEuMDc5OSAxMy4wOTg1IDUxLjA3OTkgMTkuMTEzNkM1MS4wNzk5IDIxLjkxOTkgNDguMzcwMyAyMy43NTg1IDQ1LjE5NjMgMjMuNzU4NUM0MS41OTQ1IDIzLjc1ODUgMzkuMDE2NiAyMS42NTI4IDM4Ljc4NTMgMTguNjc5MVoiIGZpbGw9IiMwRDIxMjYiLz4KPHBhdGggZD0iTTIyLjM1NTcgMTYuNjA3M1Y3LjY4NTI0SDI2LjU1MjZWMTYuMzA3M0MyNi41NTI2IDE4LjU3ODUgMjcuNTQ0NSAxOS45ODI2IDI5LjUyNzMgMjAuMDE1NUMzMS42NDI3IDIwLjA0OTQgMzIuNTY3OCAxOC42NDUzIDMyLjU2NzggMTYuMzA2NFY3LjY4NTI0SDM2Ljc2NDdWMTYuNjQxMkMzNi43NjQ3IDIwLjY1MDMgMzMuODIyOSAyMy43OTI0IDI5LjUyNjMgMjMuNzU4NUMyNC45MzI3IDIzLjcyNDYgMjIuMzU1NyAyMC43NTA5IDIyLjM1NTcgMTYuNjA3M1oiIGZpbGw9IiMwRDIxMjYiLz4KPHBhdGggZD0iTTIyLjQ4OTMgMC42MDI3NzRMMTYuMDI4OSAyMy4zOTE4SDExLjMwMjdMMTcuNzY0IDAuNjAyNzc0SDIyLjQ4OTNaTTYuNDYxMzEgMjMuMzkwOEwwIDAuNjAxODA3SDQuNzI2MjNMMTEuMTg3NSAyMy4zOTA4SDYuNDYxMzFaIiBmaWxsPSIjMEQyMTI2Ii8+Cjwvc3ZnPgo=" alt="VusionGroup logo" /></div>
+            <div class="c-namerow">
+              <h2 id="h-vusion">VusionGroup</h2>
+              <span class="c-alias">formerly SES-imagotag</span>
+            </div>
+            <p class="c-origin"><span aria-hidden="true">📍</span> HQ: France</p>
+            <div class="c-stat">
+              <span class="c-stat-value">~4,600</span>
+              <span class="c-stat-label">US stores supplied (Walmart)</span>
+            </div>
+          </div>
+          <div class="c-right">
+            <p class="c-who">The world’s largest ESL vendor and Walmart’s supplier across roughly 4,600 US stores.</p>
+            <div class="c-durability">
+              <span class="c-dur-tag"><span aria-hidden="true">🛡️</span> Warehouse-durability angle</span>
+              <p>Publishes hardened lines — a waterproof <strong>IP68</strong> unit and a freezer variant — backed by real deployment scale.</p>
+            </div>
+            <div class="c-links">
+              <p class="c-links-title">Start here</p>
+              <ul>
+              <li><a href="https://www.vusion.com/products/sesimagotag/electronic-shelf-labels/" target="_blank" rel="noopener noreferrer">VusionGroup ESL products</a></li>
+              <li><a href="https://retailtechinnovationhub.com/home/2024/1/11/ses-imagotag-becomes-vusiongroup" target="_blank" rel="noopener noreferrer">Trade press on the VusionGroup rebrand</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="screen" id="screen-2" aria-labelledby="h-hanshow">
+      <div class="slide slide--company">
+        <p class="c-counter">Leader 2 of 4</p>
+        <div class="c-cols">
+          <div class="c-left">
+            <div class="c-logo"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTIuNDI3IiBoZWlnaHQ9IjM3LjIyNSIgdmlld0JveD0iMCAwIDIxMi40MjcgMzcuMjI1Ij4KICA8ZyBpZD0ibG9nbyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTM0LjQyMyAtMjEuMzQyKSI+CiAgICA8cGF0aCBpZD0iUGF0aF81MzY2IiBkYXRhLW5hbWU9IlBhdGggNTM2NiIgZD0iTTI0MC42NjIsMzYuODZzLTEuMTgzLDEzLjUxNC0xLjI0MSwxNC4xMzUtLjIyMywyLjU1NS0zLjgzOSwyLjU1NS0zLjQtMi41NTUtMy40LTIuNTU1di0uMDExaDBsMS4yMzMtMTQuMTI0aC02LjE5NGwtMS4yMzYsMTQuMTI0aDB2LjAxMXMtLjIyMiwyLjU1NS0zLjgzOSwyLjU1NS0zLjQ1Mi0xLjkzNS0zLjQtMi41NTUsMS4yMzktMTQuMTM1LDEuMjM5LTE0LjEzNUgyMTMuOHMtMS4xNCwxMy4wNTMtMS4yMzUsMTQuMTI0LS42NjgsNy41ODMsOS4xNDcsNy41ODNhMTEuOTA4LDExLjkwOCwwLDAsMCw2Ljg3NS0xLjgyNSwxMC40LDEwLjQsMCwwLDAsNi41NTQsMS44MjVjOS44MTMsMCwxMC4zODMtNi41MTIsMTAuNDc2LTcuNTgzUzI0Ni44NSwzNi44NiwyNDYuODUsMzYuODZaIiBmaWxsPSIjMDAzNTk0Ii8+CiAgICA8cGF0aCBpZD0iUGF0aF81MzY3IiBkYXRhLW5hbWU9IlBhdGggNTM2NyIgZD0iTTEwMi4zMDksMzYuODYzbC0xLjksMjEuNjg4SDEwNi42bDEuNDY0LTE2LjdIMTE3YTMuMDEzLDMuMDEzLDAsMCwxLDMuMDQ5LDMuMzM2TDExOC44OCw1OC41NTFoNi4xODVsMS4xNTQtMTMuMTRhNy43MSw3LjcxLDAsMCwwLTcuOC04LjU0OFoiIGZpbGw9IiMwMDM1OTQiLz4KICAgIDxwYXRoIGlkPSJQYXRoXzUzNjgiIGRhdGEtbmFtZT0iUGF0aCA1MzY4IiBkPSJNMTc0LjQsMzYuODg0aC05LjkyMWwuNjg5LTcuODQ4aC02LjE4OEwxNTYuNCw1OC41NjdoNi4xOTFsMS40NTgtMTYuN2g4Ljk0MWEzLjAxLDMuMDEsMCwwLDEsMy4wNDksMy4zNDFsLTEuMTY3LDEzLjM2M2g2LjE4M2wxLjE1MS0xMy4xMzVBNy43MDUsNy43MDUsMCwwLDAsMTc0LjQsMzYuODg0WiIgZmlsbD0iIzAwMzU5NCIvPgogICAgPHBhdGggaWQ9IlBhdGhfNTM2OSIgZGF0YS1uYW1lPSJQYXRoIDUzNjkiIGQ9Ik0yMDUuMDE3LDM3LjY5NWgwYTIxLjkyNiwyMS45MjYsMCwwLDAtNi42NDQtLjgxNywyMy4zNjYsMjMuMzY2LDAsMCwwLTYuNzg1LjgxN2gwYy0yLjgxMy45MDctNS44NTcsMi44LTYuMiw2Ljc1NmwtLjI4NCwzLjI2NnYuMDA2bC0uMjkxLDMuMjY2Yy0uMzQ1LDMuOTYxLDIuMzcsNS44NDksNS4wMjYsNi43NTYsMC0uMDA2LjAwNi0uMDA2LDAsMGEyMS45NTcsMjEuOTU3LDAsMCwwLDYuNjQ1LjgyMiwyMy4zMzgsMjMuMzM4LDAsMCwwLDYuNzgyLS44MjJjMC0uMDA2LDAtLjAwNi4wMDUsMCwyLjgwOC0uOTA3LDUuODU0LTIuNzk1LDYuMi02Ljc1NmwuMjg0LTMuMjY2di0uMDA2bC4yODQtMy4yNjZDMjEwLjM4Myw0MC40OTUsMjA3LjY3MSwzOC42LDIwNS4wMTcsMzcuNjk1Wm0tMS40NTMsMTAuMDI4Yy0uMSwxLjE0NS0uMiwyLjI1OS0uMjMxLDIuNjQ2LS4wODIuOTQzLS4yNzgsMy4xODEtNC41NTIsMy4xODFoLTMuNzMzYy00LjI2NiwwLTQuMDc4LTIuMjM4LTMuOTktMy4xODEuMDMxLS4zODcuMTMyLTEuNS4yMy0yLjY0NnYtLjAwNmMuMS0xLjE1LjItMi4yNTMuMjM0LTIuNjQ2LjA3OS0uOTQ5LjI3OC0zLjE4MSw0LjU0OS0zLjE4MUgxOTkuOGM0LjI3NCwwLDQuMDc4LDIuMjMyLDQsMy4xODEtLjAzMS4zOTMtLjEzMiwxLjUtLjIzMywyLjY0NloiIGZpbGw9IiMwMDM1OTQiLz4KICAgIDxwYXRoIGlkPSJQYXRoXzUzNzAiIGRhdGEtbmFtZT0iUGF0aCA1MzcwIiBkPSJNNzEuNjQ5LDMzLjc3MWwxLjA4OS0xMi40MjlINjYuNTUzTDY1LjcsMzEuMDY3YTEuMTY2LDEuMTY2LDAsMCwwLC44MzgsMS4yNDZaIiBmaWxsPSIjYWYyMzFjIi8+CiAgICA8cGF0aCBpZD0iUGF0aF81MzcxIiBkYXRhLW5hbWU9IlBhdGggNTM3MSIgZD0iTTQyLjUxLDM2Ljg2OGwuMjcxLTMuMWgwbC44NTEtOS43MjVoMGExLjE1OCwxLjE1OCwwLDAsMC0uODQxLTEuMjQxbC01LjEwNi0xLjQ2M0wzNi42LDMzLjc3MWwtMi4xNzIsMjQuOGg2LjE4NmwxLjQ2NC0xNi43MTRINjQuNzZMNjMuMyw1OC41NjFINjkuNDhsMS45LTIxLjdaIiBmaWxsPSIjMDAzNTk0Ii8+CiAgICA8cGF0aCBpZD0iUGF0aF81MzcyIiBkYXRhLW5hbWU9IlBhdGggNTM3MiIgZD0iTTE0Ny44LDQ1LjJIMTM2LjJhMS40OTMsMS40OTMsMCwwLDEtMS41MTctMS41NTQuNS41LDAsMCwwLDAtLjF2LS4wMTZhMS44NTUsMS44NTUsMCwwLDEsMS44MTEtMS42NmgxNS42ODVhMS40NDEsMS40NDEsMCwwLDAsMS4zLS44OGwxLjcyOS00LjEyNi0xOC40NzQuMDExaC0uMDE5di4wMDVhNy40MjYsNy40MjYsMCwwLDAtNy4yNDEsNi42NzEsNi4wMTcsNi4wMTcsMCwwLDAsNi4wOSw2LjY3NmgxMS42YTEuNSwxLjUsMCwwLDEsMS41MTcsMS41NTRjMCwuMDM3LjAwNS4wNjQuMDA1LjA5NVY1MS45YTEuODUxLDEuODUxLDAsMCwxLTEuODEsMS42NkgxMzEuMTlhMS40NDIsMS40NDIsMCwwLDAtMS4zLjg4bC0xLjcyOSw0LjEyNiwxOC40ODgtLjAxMWE3LjQzMiw3LjQzMiwwLDAsMCw3LjI0Ni02LjY3MUE2LjAxOCw2LjAxOCwwLDAsMCwxNDcuOCw0NS4yWiIgZmlsbD0iIzAwMzU5NCIvPgogICAgPHBhdGggaWQ9IlBhdGhfNTM3MyIgZGF0YS1uYW1lPSJQYXRoIDUzNzMiIGQ9Ik05MC42NjksMzYuODczaC0xNi4xbDEuMDEsNC4xYTEuMTU2LDEuMTU2LDAsMCwwLDEuMTQ4Ljg4MUg4OS4yNTRBMy4wMTYsMy4wMTYsMCwwLDEsOTIuMyw0NS4xODhsLTExLjkuMDA1YTcuNDM3LDcuNDM3LDAsMCwwLTcuMjQzLDYuNjgyLDYuMDIxLDYuMDIxLDAsMCwwLDYuMDksNi42NzZIOTcuMzE5bDEuMTQ1LTEzLjE0QTcuNyw3LjcsMCwwLDAsOTAuNjY5LDM2Ljg3M1ptLjksMTYuNjM1SDc5Ljg4NGExLjQ4NCwxLjQ4NCwwLDAsMS0xLjUxNC0xLjU0OS41LjUsMCwwLDEsMC0uMXYtLjAxYTEuODU1LDEuODU1LDAsMCwxLDEuODExLTEuNjY2SDkxLjg2M1oiIGZpbGw9IiMwMDM1OTQiLz4KICA8L2c+Cjwvc3ZnPgo=" alt="Hanshow logo" /></div>
+            <div class="c-namerow">
+              <h2 id="h-hanshow">Hanshow</h2>
+              
+            </div>
+            <p class="c-origin"><span aria-hidden="true">📍</span> HQ: China</p>
+            <div class="c-stat">
+              <span class="c-stat-value">55,000+</span>
+              <span class="c-stat-label">stores across 70+ countries</span>
+            </div>
+          </div>
+          <div class="c-right">
+            <p class="c-who">A global top-three ESL maker, with labels in 55,000+ stores across 70+ countries.</p>
+            <div class="c-durability">
+              <span class="c-dur-tag"><span aria-hidden="true">🛡️</span> Warehouse-durability angle</span>
+              <p>The strongest rough-environment messaging — <strong>anti-collision casing</strong> claimed to survive forklift impacts, plus high dust/water ratings.</p>
+            </div>
+            <div class="c-links">
+              <p class="c-links-title">Start here</p>
+              <ul>
+              <li><a href="https://www.hanshow.com/en/solutions/category/electronic-shelf-labels" target="_blank" rel="noopener noreferrer">Hanshow ESL solutions</a></li>
+              <li><a href="https://www.hanshow.com/en/case/leroy-merlin-takes-a-major-step-in-achieving-digital-store-transformation-with-hanshow-esl-solution" target="_blank" rel="noopener noreferrer">Case study — Leroy Merlin DIY</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="screen" id="screen-3" aria-labelledby="h-pricer">
+      <div class="slide slide--company">
+        <p class="c-counter">Leader 3 of 4</p>
+        <div class="c-cols">
+          <div class="c-left">
+            <div class="c-logo"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGFyaWEtaGlkZGVuPSJ0cnVlIiB2aWV3Qm94PSIwIDAgMTMzIDMxIiBmaWxsPSJub25lIj48cGF0aCBkPSJNNzguMzcuMDk1Yy44OTguMTA0IDEuODIzLjI4NyAyLjcyMi40OTYgMS43MjEuNDE4IDMuMzE0IDEuMjAyIDQuODAzIDIuMjIuNDExLjI4Ny40NjMuNTQ5LjIzMS45OTMtLjg3MyAxLjYxOS0xLjcyIDMuMjM4LTIuNTk0IDQuODU3LS4zMDguNTc1LS40NjIuNjAxLS45NzYuMjEtMS41MTUtMS4xNzYtMy4xNi0xLjk2LTUuMDYtMi4wNjQtMy4xODUtLjE4My01LjYyNSAxLjE3NS03LjE2NyAzLjk5Ni0xLjc3MiAzLjI2NS0xLjY3IDYuNTgxLjIwNiA5Ljc2OCAxLjgyNCAzLjEwOCA1LjAzNCA0LjMzNSA4LjYwNSAzLjQ0NyAxLjI4NC0uMzEzIDIuNDY2LS45MTQgMy41NDQtMS42NzEuNTY2LS4zOTIuNjk0LS4zNjYgMS4wMDIuMjA5LjgyMiAxLjU0IDEuNjQ0IDMuMTA4IDIuNDY2IDQuNjQ5LjMwOC41NzQuMjgzLjY3OS0uMjU3IDEuMDQ0LTIuODc2IDEuOTg1LTYuMDM2IDIuODQ3LTkuNTA0IDIuNzQzLTcuNS0uMjEtMTMuODE5LTYuMDM0LTE0LjcxOC0xMy42MDhDNjAuNzIzIDkuMTU4IDY2LjA0IDEuNzkzIDc0LjA4LjMwNWMuNTEzLS4xMDUgMS4wMjctLjE1NyAxLjU0LS4yMzUuOTI1LS4wNzggMS43NzMtLjEwNSAyLjcyNCAwbC4wMjUuMDI2Wk00MS42ODggMTkuNTI2Yy43NzEgMS4zODQgMS41MTYgMi43MTYgMi4yNiA0LjA3NCAxLjEwNSAxLjk4NSAyLjE4NCAzLjk0NCAzLjI4OSA1LjkyOS4zODUuNzA1LjIzLjk2Ni0uNTY1Ljk2Nkg0MS4wMmMtLjY2OCAwLTEuMTMtLjIzNS0xLjQ2NS0uODM2LTIuMzYzLTQuNDY2LTQuNzUxLTguOTA1LTcuMTE1LTEzLjM0NS0uMDI1LS4wNTMtLjA1LS4xMjgtLjEyOC0uMzE0aDIuOThjLjUxMyAwIDEuMDI3LS4xMDQgMS41NC0uMjA5IDEuNzIyLS40MTggMi44NTItMS45MDYgMi45MDMtMy44MzkuMDc3LTIuNDU1LTEuMTMtMy45Ny0zLjUxOS00LjQ0YTUuODA3IDUuODA3IDAgMCAwLTEuMTU2LS4xM2gtMi44NzZWMjkuNjMzYzAgLjgzNi0uMDUyLjg4OC0uOS44ODhoLTUuODNjLS43MiAwLS44MjItLjEwNC0uODIyLS44MVYxLjQ4YzAtLjczMS4wNzctLjgxLjc3LS44MWg5LjU4MWMxLjcyMSAwIDMuNDE3LjE4MyA1LjExMi42MDEgMy43NS45NCA1Ljg1NiAzLjQ3NCA2LjYyNyA3LjIwOC40MTEgMS45MzMuMzYgMy44NjYtLjI1NyA1Ljc0Ni0uNjY4IDIuMDY0LTEuOSAzLjk0NC00Ljc3OCA1LjMyOHYtLjAyNlpNNy41IDIxLjAxNXY4LjYxOWMwIC42MjYtLjA3Ny43MDUtLjY5My43MDVILjY2N2MtLjU5IDAtLjY2Ny0uMDc5LS42NjctLjY4VjEuMTY3QzAgLjU5LjEwMy40ODYuNjE2LjQ4NmMzLjg1MyAwIDcuNjggMCAxMS41MzQuMTA1IDEuMTU1LjAyNiAyLjMzNy4yMSAzLjQ0Mi41MjMgMi45NTQuNzgzIDQuODU0IDIuNzk0IDUuODU2IDUuNjQgMS4yMzMgMy40NDguODQ4IDYuNzkxLTEuMDAyIDkuOS0xLjM4NyAyLjM1LTMuNTk2IDMuNTc3LTYuMjE2IDQuMDc0LTIuMDAzLjM2NS00LjAwNy4yNi02LjAxLjI4N0g3LjVabS4wMjYtMTMuNzl2Ny4wNTJoMy44MjdjLjQxMSAwIC44NDgtLjEwNSAxLjIzMy0uMjEgMS41NDEtLjQxNyAyLjMxMi0xLjUxNCAyLjMxMi0zLjIxMiAwLTEuNzc2LS43Mi0yLjg0Ni0yLjI4Ni0zLjI5LTEuNjctLjQ3LTMuMzY1LS4yNjItNS4wODYtLjMxNHYtLjAyNlpNOTYuOTkyIDcuMzU1djQuNTk3SDEwNC4zNjJjLjY2OCAwIC43NzEuMTA0Ljc3MS43ODR2NS4yMjNjMCAuNi0uMTAzLjcwNS0uNzE5LjcwNUg5Ni45OTF2NS4wOTNIMTA1LjI2M2MuNzcxIDAgLjgyMi4wNTIuODIyLjgzNnY1LjE3YzAgLjU3NS0uMTI4LjcwNi0uNjY3LjcwNkg5MC4wODJjLS41OSAwLS42NjgtLjEzLS42NjgtLjgxVjEuMjdjMC0uNTc0LjEwMy0uNjUzLjY2OC0uNjUzaDE1LjM4NmMuNTM5IDAgLjY0Mi4xMDUuNjQyLjY4VjYuNTJjMCAuNzA1LS4wNzcuODEtLjc3LjgxSDk3LjAxOGwtLjAyNi4wMjVaTTU4LjQxIDE1LjYwOHYxNC4wNzhjMCAuNzU3LS4wNzcuODM1LS44NDcuODM1SDUxLjY4Yy0uNzE5IDAtLjgyMi0uMDc4LS44MjItLjgzNVYxLjQ1M2MwLS43MzEuMDUyLS43ODQuNzcxLS43ODRoNS45ODVjLjcyIDAgLjc3LjA1My43Ny43ODR2MTQuMTgxbC4wMjYtLjAyNlpNMTI3LjI1IDE5LjUyNmMuNzcxIDEuMzg0IDEuNTE2IDIuNzE2IDIuMjYgNC4wNzQgMS4xMDUgMS45ODUgMi4xODQgMy45NDQgMy4yODggNS45MjkuMzg2LjcwNS4yMzEuOTY2LS41NjUuOTY2aC01LjY1MWMtLjY2OCAwLTEuMTMtLjIzNS0xLjQ2NC0uODM2LTIuMzYzLTQuNDY2LTQuNzUyLTguOTA1LTcuMTE1LTEzLjM0NWEyLjc2NSAyLjc2NSAwIDAgMS0uMTI4LS4zMTRoMi45NzljLjUxNCAwIDEuMDI4LS4xMDQgMS41NDEtLjIwOSAxLjcyMS0uNDE4IDIuODUxLTEuOTA2IDIuOTAzLTMuODM5LjA3Ny0yLjQ1NS0xLjEzLTMuOTctMy41MTktNC40NGE1LjgwOCA1LjgwOCAwIDAgMC0xLjE1Ni0uMTNoLTIuODc3VjI5LjYzM2MwIC44MzYtLjA1MS44ODgtLjg5OS44ODhoLTUuODMxYy0uNzE5IDAtLjgyMi0uMTA0LS44MjItLjgxVjEuNDhjMC0uNzMxLjA3Ny0uODEuNzcxLS44MWg5LjU4MWMxLjcyMSAwIDMuNDE2LjE4MyA1LjExMS42MDEgMy43NTEuOTQgNS44NTcgMy40NzQgNi42MjggNy4yMDguNDExIDEuOTMzLjM1OSAzLjg2Ni0uMjU3IDUuNzQ2LS42NjggMi4wNjQtMS45MDEgMy45NDQtNC43NzggNS4zMjh2LS4wMjZaIiBmaWxsPSIjMDBBMDNFIiAvPjwvc3ZnPg==" alt="Pricer logo" /></div>
+            <div class="c-namerow">
+              <h2 id="h-pricer">Pricer</h2>
+              <span class="c-alias">founded 1991</span>
+            </div>
+            <p class="c-origin"><span aria-hidden="true">📍</span> HQ: Sweden</p>
+            <div class="c-stat">
+              <span class="c-stat-value">380M+</span>
+              <span class="c-stat-label">labels across 80+ countries</span>
+            </div>
+          </div>
+          <div class="c-right">
+            <p class="c-who">A Sweden-based ESL pioneer with 380M+ labels deployed across 80+ countries.</p>
+            <div class="c-durability">
+              <span class="c-dur-tag"><span aria-hidden="true">🛡️</span> Warehouse-durability angle</span>
+              <p>The clearest <strong>DIY / home-improvement</strong> track record of the four — Busy Beaver is a direct US analog to Home Depot.</p>
+            </div>
+            <div class="c-links">
+              <p class="c-links-title">Start here</p>
+              <ul>
+              <li><a href="https://www.pricer.com/products/electronic-shelf-labels" target="_blank" rel="noopener noreferrer">Pricer ESL products</a></li>
+              <li><a href="https://www.pricer.com/case-studies" target="_blank" rel="noopener noreferrer">Case studies — incl. Busy Beaver &amp; Mitre 10 DIY</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="screen" id="screen-4" aria-labelledby="h-solum">
+      <div class="slide slide--company">
+        <p class="c-counter">Leader 4 of 4</p>
+        <div class="c-cols">
+          <div class="c-left">
+            <div class="c-logo"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwIiBoZWlnaHQ9IjI4IiB2aWV3Qm94PSIwIDAgMTYwIDI4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDBfMjc1XzQ3NjcpIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik00NS4xMTAyIDBINDEuNDM1QzMzLjYwNzggMCAyOS4yNjIyIDQuNDcxOTEgMjkuMjYyMiAxMy41NTIyQzI5LjI2MjIgMjIuNjMyNCAzMy41Njk0IDI3IDQxLjQyNTQgMjdINDUuMTAwNkM1Mi45NjYyIDI3IDU3LjI4MTQgMjIuNTkzOSA1Ny4yODE0IDEzLjU1MjJDNTcuMjgxNCA0LjUxMDQzIDUyLjkyNzggMCA0NS4xMTAyIDBaTTQ1LjEwMjIgMjEuMDAxNkg0MS40MjdDMzYuOTU4MiAyMS4wMDE2IDM1LjI4MyAxOC45MDg1IDM1LjI4MyAxMy41MTM2QzM1LjI4MyA4LjExODc4IDM2Ljk1ODIgNS45OTgzOSA0MS40MzY2IDUuOTk4MzlINDUuMTExOEM0OS42MTkgNS45OTgzOSA1MS4yNjU0IDguMTU3MyA1MS4yNjU0IDEzLjUxMzZDNTEuMjY1NCAxOC44NyA0OS42MjA2IDIxLjAwMTYgNDUuMTAzOCAyMS4wMDE2SDQ1LjEwMjJaIiBmaWxsPSIjMkYwMDZEIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTQuNzI2NCAxMC42ODIySDkuMDYwOEM2Ljc0NTYgMTAuNjgyMiA2LjAyNzIgOS41NTg1OSA2LjAyNzIgOC4yODI1QzYuMDI3MiA3LjAwNjQyIDYuODY4OCA2LjAwODAzIDguNTgyNCA2LjAwODAzSDIxLjk2OTZWMEg4Ljc4NEMyLjUxNjggMCAwIDMuMzk4MDcgMCA4LjA4MTg2QzAgMTIuNzY1NiAxLjc5ODQgMTYuMTE1NiA5LjI2MjQgMTYuMTE1NkgxNC45MjhDMTcuMzI5NiAxNi4xMTU2IDE4LjA4NjQgMTcuMzE0NiAxOC4wODY0IDE4LjY0MDRDMTguMDg2NCAxOS45NjYzIDE3LjIwNjQgMjEuMDAzMiAxNS40NDQ4IDIxLjAwMzJIMC45ODU2VjI3LjAwMTZIMTUuMjQzMkMyMS41NDg4IDI3LjAwMTYgMjQuMDY1NiAyMy41NTU0IDI0LjA2NTYgMTguODA0MkMyNC4wNjU2IDE0LjA1MyAyMi4zMDU2IDEwLjY4MzggMTQuNzI2NCAxMC42ODM4VjEwLjY4MjJaIiBmaWxsPSIjMkYwMDZEIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNODMuNjc1MSAyMS4wMDE2SDcyLjY4OTVDNzAuMTcyNyAyMS4wMDE2IDY5LjE3NzUgMTkuNzE1OSA2OS4xNzc1IDE3LjY4MDZWMEg2My4wMjM5VjE4LjIwODdDNjMuMDIzOSAyNC4wMDY0IDY2LjA5NTkgMjcgNzEuOTYxNSAyN0g4My42NzUxVjIxLjAwMTZaIiBmaWxsPSIjMkYwMDZEIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTEzLjEzNSAyMy4yNjY1QzExMy44ODIgMjEuOTI5NCAxMTQuMjcxIDIwLjI0NTYgMTE0LjI3MSAxOC4yMDcxVjBIMTA4LjExN1YxNy42ODA2QzEwOC4xMTcgMTkuNzI1NSAxMDcuMTIyIDIxLjAwMTYgMTA0LjYwNSAyMS4wMDE2SDk4LjQ2MUM5NS45NDQyIDIxLjAwMTYgOTQuOTQ5IDE5LjcyNTUgOTQuOTQ5IDE3LjY4MDZWMEg4OC43OTU0VjE4LjIwNzFDODguNzk1NCAyNC4wMDQ4IDkxLjg2NzQgMjYuOTk4NCA5Ny43NDI2IDI2Ljk5ODRIMTA1LjM3QzEwOC45NTUgMjYuOTk4NCAxMTEuNDkzIDI1Ljg1NzEgMTEyLjkxOSAyMy42MzRDMTEzLjAwNyAyMy41MjE3IDExMy4wNjYgMjMuMzkxNyAxMTMuMTMzIDIzLjI2NjVIMTEzLjEzNVoiIGZpbGw9IiMyRjAwNkQiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMTguMTgzIDI3SDEyNC41MjJMMTMwLjk2NyA2LjUzNzcyQzEzMC45NzYgNi41MTg0NiAxMzAuOTgzIDYuNDk5MiAxMzAuOTkxIDYuNDc5OTRDMTMwLjk5NyA2LjQ2MDY3IDEzMS4wMDUgNi40NDE0MSAxMzEuMDE1IDYuNDIyMTVDMTMxLjIxNiA1Ljk5MDM3IDEzMS41MjIgNS43Mzk5NyAxMzIuMDI5IDUuNzM5OTdDMTMyLjUzNiA1LjczOTk3IDEzMi45NzYgNi4xMzMyMyAxMzIuOTc2IDYuNzk2MTVWMjAuMzAwMkMxMzIuOTc2IDI0LjE4NzggMTM1LjY5NSAyNi43Nzg1IDEzOS43OTkgMjYuNzc4NUMxNDMuOTAzIDI2Ljc3ODUgMTQ1LjkwNCAyNC42Njc3IDE0Ny4wNTEgMjEuMTM0OEwxNTEuNjU1IDYuNDY4N0MxNTEuODA4IDUuOTk4MzkgMTUyLjEwNCA1LjczMDM0IDE1Mi42NSA1LjczMDM0QzE1My4xOTUgNS43MzAzNCAxNTMuNTk3IDYuMTIzNiAxNTMuNTk3IDYuNzg2NTJWMjdIMTU5Ljk5OVY2LjQ3ODMzQzE2MCAyLjU5MDY5IDE1Ni45MzggMCAxNTIuNzk0IDBDMTQ4LjY1IDAgMTQ2LjcyNyAyLjExMDc1IDE0NS41NzggNS42NDM2NkwxNDAuOTg2IDIwLjMwOThDMTQwLjgyMyAyMC43MzE5IDE0MC40NTkgMjEuMDQ4MiAxMzkuOTQzIDIxLjA0ODJDMTM5LjQyNiAyMS4wNDgyIDEzOC45ODYgMjAuNjU0OSAxMzguOTg2IDE5Ljk5MlY2LjQ3ODMzQzEzOC45ODYgMi41OTA2OSAxMzYuMzA2IDAgMTMyLjE2MyAwQzEyOC4wMjEgMCAxMjYuMTA2IDIuMTEwNzUgMTI0LjkxMSA1LjY0NTI2TDExOC4xODQgMjdIMTE4LjE4M1oiIGZpbGw9IiMyRjAwNkQiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMF8yNzVfNDc2NyI+CjxyZWN0IHdpZHRoPSIxNjAiIGhlaWdodD0iMjciIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==" alt="SOLUM logo" /></div>
+            <div class="c-namerow">
+              <h2 id="h-solum">SOLUM</h2>
+              <span class="c-alias">Samsung spin-off</span>
+            </div>
+            <p class="c-origin"><span aria-hidden="true">📍</span> HQ: South Korea</p>
+            <div class="c-stat">
+              <span class="c-stat-value">~10-yr</span>
+              <span class="c-stat-label">stated Newton label lifespan</span>
+            </div>
+          </div>
+          <div class="c-right">
+            <p class="c-who">A South Korea-based ESL and display maker with deep e-paper expertise (the Newton line).</p>
+            <div class="c-durability">
+              <span class="c-dur-tag"><span aria-hidden="true">🛡️</span> Warehouse-durability angle</span>
+              <p>Clean, specific ruggedness numbers — Newton labels carry a concrete <strong>IP67</strong> dust/water rating and a stated ~10-year lifespan.</p>
+            </div>
+            <div class="c-links">
+              <p class="c-links-title">Start here</p>
+              <ul>
+              <li><a href="https://www.solum-group.com/us/en/esl-n-iot/product-lineup/special-esl/newton-x" target="_blank" rel="noopener noreferrer">SOLUM ESL (Newton)</a></li>
+              <li><a href="https://www.solum-group.com/us/en/solum/press-release-detail.solum-currys-and-vestcom-win-digital-transformation-project-of-the-year-at-the-rtih-innovation-awards-2025" target="_blank" rel="noopener noreferrer">RTIH Digital Transformation Project of the Year 2025</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button type="button" class="navbtn navbtn--prev" id="prev" aria-label="Previous slide">‹</button>
+  <button type="button" class="navbtn navbtn--next" id="next" aria-label="Next slide">›</button>
+  <nav class="dotnav" id="dotnav" aria-label="Jump to slide">
+      <button type="button" class="dot" data-i="0" aria-label="Summary slide"></button>
+      <button type="button" class="dot" data-i="1" aria-label="VusionGroup slide"></button>
+      <button type="button" class="dot" data-i="2" aria-label="Hanshow slide"></button>
+      <button type="button" class="dot" data-i="3" aria-label="Pricer slide"></button>
+      <button type="button" class="dot" data-i="4" aria-label="SOLUM slide"></button>
+  </nav>
+
+<script>
+  var deck = document.getElementById('deck');
+  var screens = Array.prototype.slice.call(deck.querySelectorAll('.screen'));
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var current = 0;
+
+  // Scale the fixed 1280x720 canvas to fit the viewport (letterbox), keeping 16:9.
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    document.documentElement.style.setProperty('--scale', s);
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(screens.length - 1, i));
+    deck.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' });
+  }
+  function setActive(i) {
+    current = i;
+    dots.forEach(function (d, di) { d.classList.toggle('is-active', di === i); });
+    prev.disabled = (i === 0);
+    next.disabled = (i === screens.length - 1);
+  }
+  setActive(0);
+
+  prev.addEventListener('click', function () { goTo(current - 1); });
+  next.addEventListener('click', function () { goTo(current + 1); });
+  dots.forEach(function (d) { d.addEventListener('click', function () { goTo(+d.dataset.i); }); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End')  { e.preventDefault(); goTo(screens.length - 1); }
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) setActive(screens.indexOf(e.target));
+      });
+    }, { root: deck, threshold: 0.6 });
+    screens.forEach(function (s) { io.observe(s); });
+  }
+
+  // Let a vertical mouse wheel drive the horizontal deck.
+  deck.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      deck.scrollLeft += e.deltaY;
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
