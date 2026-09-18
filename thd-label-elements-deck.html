@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Four Smart Label Elements — 16:9 Deck</title>
+<style>
+  :root {
+    --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
+    --bg: #f4f6f5; --accent: #d5581f; --accent-ink: #b8480f; --link: #1a5f7a;
+    --ok: #2f7a49; --ok-bg: #eaf4ee;
+    --stagew: 1280px; --stageh: 720px; --scale: 1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0c110f; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  .deck {
+    display: flex; flex-direction: row;
+    height: 100vh; width: 100vw;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    background: var(--bg);
+  }
+  .screen {
+    flex: 0 0 100vw; height: 100vh;
+    scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .slide {
+    width: var(--stagew); height: var(--stageh);
+    flex: 0 0 auto;
+    transform: scale(var(--scale)); transform-origin: center center;
+    background: var(--card); position: relative; overflow: hidden;
+  }
+
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 17px;
+    font-weight: 700; color: var(--accent-ink); margin: 0 0 12px;
+  }
+
+  /* ---------- summary slide ---------- */
+  .slide--summary { padding: 54px 96px; border-top: 8px solid var(--accent); display: flex; flex-direction: column; }
+  h1 { font-size: 48px; line-height: 1.08; margin: 0 0 14px; max-width: 24ch; }
+  .lede { font-size: 20px; color: var(--muted); margin: 0 0 30px; max-width: 96ch; }
+  .sum-grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  .sum-cell {
+    background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--accent);
+    border-radius: 12px; padding: 18px 22px;
+    box-shadow: 0 1px 2px rgba(20,33,31,.04), 0 8px 20px rgba(20,33,31,.05);
+  }
+  .sum-name { margin: 0 0 8px; font-weight: 700; font-size: 21px; display: flex; align-items: center; gap: 10px; }
+  .sum-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
+    color: #fff; font-size: 16px; font-weight: 800; flex: 0 0 auto;
+  }
+  .sum-emoji { font-size: 20px; }
+  .sum-desc { margin: 0; font-size: 16px; color: var(--muted); line-height: 1.45; }
+
+  /* ---------- element slide ---------- */
+  .slide--row { padding: 46px 84px; border-top: 8px solid var(--accent); display: flex; flex-direction: column; }
+  .r-counter {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 15px;
+    font-weight: 700; color: var(--muted); margin: 0 0 18px;
+  }
+  .r-cols { display: flex; gap: 48px; flex: 1; min-height: 0; align-items: center; }
+  .r-art { flex: 0 0 600px; min-width: 0; }
+  .r-art svg {
+    width: 100%; height: auto; display: block; border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(20,33,31,.05), 0 12px 30px rgba(20,33,31,.10);
+  }
+  .r-body { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+  .r-namerow { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+  .r-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 46px; height: 46px; border-radius: 50%; background: var(--accent);
+    color: #fff; font-size: 24px; font-weight: 800; flex: 0 0 auto;
+  }
+  h2 { font-size: 36px; margin: 0; line-height: 1.1; }
+  .r-sub { font-size: 18px; color: var(--muted); font-style: italic; margin: 0 0 22px 62px; }
+  .r-contrast { display: flex; flex-direction: column; gap: 16px; }
+  .r-hold, .r-give { border-radius: 14px; padding: 16px 20px; font-size: 19px; line-height: 1.4; }
+  .r-hold { background: var(--ok-bg); border-left: 5px solid var(--ok); }
+  .r-give { background: #fbf3ee; border-left: 5px solid var(--accent); }
+  .r-tag { font-weight: 700; text-transform: uppercase; letter-spacing: .05em; font-size: 14px; display: block; margin-bottom: 5px; }
+  .r-hold .r-tag { color: var(--ok); }
+  .r-give .r-tag { color: var(--accent-ink); }
+
+  /* ---------- chrome: arrows + dots ---------- */
+  .navbtn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,.92); border: 1px solid var(--line);
+    color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+    box-shadow: 0 4px 14px rgba(0,0,0,.16);
+  }
+  .navbtn:hover { background: #fff; }
+  .navbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .navbtn[disabled] { opacity: .3; cursor: default; }
+  .navbtn--prev { left: 20px; }
+  .navbtn--next { right: 20px; }
+
+  .dotnav {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+    display: flex; gap: 12px; z-index: 30;
+    background: rgba(255,255,255,.9); padding: 10px 16px; border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.14);
+  }
+  .dot {
+    width: 12px; height: 12px; border-radius: 50%; background: #c2c9c7;
+    border: none; padding: 0; cursor: pointer; transition: background .2s, transform .2s;
+  }
+  .dot:hover { background: var(--accent); transform: scale(1.2); }
+  .dot:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .dot.is-active { background: var(--accent); transform: scale(1.2); }
+
+  @media (prefers-reduced-motion: reduce) { .deck { scroll-behavior: auto; } }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eef1f0; --muted: #a8b2af; --line: #2c3634; --card: #1a2321;
+      --bg: #101615; --accent: #f07a3d; --accent-ink: #f4a06f; --link: #6fc3dd;
+      --ok: #67c88a; --ok-bg: #14231b;
+    }
+    .r-give { background: #241a13; }
+    .navbtn, .dotnav { background: rgba(26,35,33,.94); border-color: var(--line); color: var(--ink); }
+    .dot { background: #3a4442; }
+  }
+</style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <section class="screen" id="screen-0" aria-labelledby="summary-title">
+      <div class="slide slide--summary">
+        <p class="eyebrow">Step 2 · Match threats to elements</p>
+        <h1 id="summary-title">The Four Smart Label Elements</h1>
+        <p class="lede">Every smart label is built from the same four physical elements — and each one is what stands between a specific threat and a working label. Two labels can show the same price yet survive very differently, because their elements are built differently. Match the elements to the bay.</p>
+        <ul class="sum-grid">
+          <li class="sum-cell">
+            <p class="sum-name"><span class="sum-num">1</span><span class="sum-emoji" aria-hidden="true">📐</span> How it mounts</p>
+            <p class="sum-desc">Flush against the beam and out of the strike path — or sticking out where a fork or cart hits it first.</p>
+          </li>
+          <li class="sum-cell">
+            <p class="sum-name"><span class="sum-num">2</span><span class="sum-emoji" aria-hidden="true">🛡️</span> What protects it</p>
+            <p class="sum-desc">The casing: a rugged housing and bumpers that absorb hits — or bare plastic edges that crack.</p>
+          </li>
+          <li class="sum-cell">
+            <p class="sum-name"><span class="sum-num">3</span><span class="sum-emoji" aria-hidden="true">🖥️</span> The screen</p>
+            <p class="sum-desc">The display: shatter-resistant and readable in bright light — or fragile glass that washes out.</p>
+          </li>
+          <li class="sum-cell">
+            <p class="sum-name"><span class="sum-num">4</span><span class="sum-emoji" aria-hidden="true">🔌</span> The electronics</p>
+            <p class="sum-desc">Sealing, battery, and connection that keep it alive — or let dust, damp, and dead radios in.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-1" aria-labelledby="h-mount">
+      <div class="slide slide--row">
+        <p class="r-counter">Element 1 of 4</p>
+        <div class="r-cols">
+          <div class="r-art">
+<svg viewBox="0 0 720 440" role="img" aria-labelledby="t1 d1" xmlns="http://www.w3.org/2000/svg">
+  <title id="t1">How a smart label mounts</title>
+  <desc id="d1">A flush-mounted label stays out of the strike path while a protruding one gets clipped.</desc>
+  <rect x="8" y="8" width="704" height="424" rx="24" fill="#fbf3ee" stroke="#e7c9b6" stroke-width="2"/>
+  <line x1="360" y1="40" x2="360" y2="400" stroke="#14211f" stroke-width="3" stroke-dasharray="10 10" stroke-linecap="round" opacity="0.55"/>
+  <circle cx="40" cy="42" r="16" fill="#3e8e5a" stroke="#14211f" stroke-width="5"/>
+  <path d="M32 42 l6 6 l10 -13" fill="none" stroke="#fbf3ee" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="66" y="50" font-family="sans-serif" font-size="22" font-weight="700" fill="#2f7a49">HOLDS UP</text>
+  <circle cx="392" cy="42" r="16" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+  <path d="M385 35 l14 14 M399 35 l-14 14" fill="none" stroke="#fbf3ee" stroke-width="5" stroke-linecap="round"/>
+  <text x="418" y="50" font-family="sans-serif" font-size="22" font-weight="700" fill="#b8480f">GIVES WAY</text>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <rect x="60" y="230" width="240" height="46" rx="8" fill="#b8c0bd" stroke="#14211f" stroke-width="5"/>
+    <rect x="60" y="264" width="240" height="14" rx="6" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="150" y="238" width="80" height="30" rx="6" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+    <rect x="158" y="244" width="64" height="18" rx="3" fill="#f4f6f5" stroke="#14211f" stroke-width="3"/>
+    <line x1="164" y1="250" x2="200" y2="250" stroke="#14211f" stroke-width="3"/>
+    <line x1="164" y1="256" x2="188" y2="256" stroke="#14211f" stroke-width="3"/>
+    <rect x="72" y="330" width="150" height="18" rx="4" fill="#f2c14e" stroke="#14211f" stroke-width="5"/>
+    <rect x="72" y="300" width="18" height="48" rx="4" fill="#f2c14e" stroke="#14211f" stroke-width="5"/>
+    <circle cx="255" cy="212" r="15" fill="#3e8e5a" stroke="#14211f" stroke-width="5"/>
+    <path d="M247 212 l6 6 l10 -13" fill="none" stroke="#fbf3ee" stroke-width="5"/>
+    <path d="M100 356 q30 8 60 0" fill="none" stroke="#8a938f" stroke-width="4" opacity="0.7"/>
+  </g>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <rect x="420" y="230" width="200" height="46" rx="8" fill="#b8c0bd" stroke="#14211f" stroke-width="5"/>
+    <rect x="420" y="264" width="200" height="14" rx="6" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="616" y="240" width="34" height="12" rx="3" fill="#9aa7a3" stroke="#14211f" stroke-width="5"/>
+    <rect x="640" y="224" width="46" height="44" rx="6" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+    <rect x="646" y="231" width="34" height="30" rx="3" fill="#f4f6f5" stroke="#14211f" stroke-width="3"/>
+    <path d="M663 234 l-6 10 l8 5 l-5 9" fill="none" stroke="#14211f" stroke-width="3"/>
+    <rect x="500" y="300" width="120" height="16" rx="4" fill="#9aa7a3" stroke="#14211f" stroke-width="5"/>
+    <rect x="604" y="255" width="16" height="60" rx="4" fill="#9aa7a3" stroke="#14211f" stroke-width="5"/>
+    <g stroke="#14211f" stroke-width="5" fill="#f2c14e">
+      <path d="M636 246 l14 -6 l-4 14 l14 2 l-11 10 l8 12 l-15 -3 l-3 15 l-9 -12 l-13 6 l4 -14 l-14 -3 l12 -9 l-8 -12 l15 3 z"/>
+    </g>
+    <text x="628" y="252" font-family="sans-serif" font-size="16" font-weight="700" fill="#b8480f" text-anchor="middle">POW</text>
+  </g>
+</svg>
+          </div>
+          <div class="r-body">
+            <div class="r-namerow"><span class="r-num" aria-hidden="true">1</span><h2 id="h-mount">How it mounts</h2></div>
+            <p class="r-sub">flush vs. sticking out</p>
+            <div class="r-contrast">
+              <div class="r-hold"><span class="r-tag">Holds up when…</span>The label sits <strong>flush</strong> against the beam, out of the strike path.</div>
+              <div class="r-give"><span class="r-tag">Gives way when…</span>The label <strong>sticks out</strong> — the first thing a fork, a ladder, or a cart hits.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-2" aria-labelledby="h-casing">
+      <div class="slide slide--row">
+        <p class="r-counter">Element 2 of 4</p>
+        <div class="r-cols">
+          <div class="r-art">
+<svg viewBox="0 0 720 440" role="img" aria-labelledby="t2 d2" xmlns="http://www.w3.org/2000/svg">
+  <title id="t2">What protects a smart label</title>
+  <desc id="d2">A rugged housing absorbs a strike while bare plastic edges crack.</desc>
+  <rect x="8" y="8" width="704" height="424" rx="24" fill="#fbf3ee" stroke="#e7c9b6" stroke-width="2"/>
+  <line x1="360" y1="40" x2="360" y2="400" stroke="#14211f" stroke-width="3" stroke-dasharray="10 10" stroke-linecap="round" opacity="0.55"/>
+  <circle cx="40" cy="42" r="16" fill="#3e8e5a" stroke="#14211f" stroke-width="5"/>
+  <path d="M32 42 l6 6 l10 -13" fill="none" stroke="#fbf3ee" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="66" y="50" font-family="sans-serif" font-size="22" font-weight="700" fill="#2f7a49">HOLDS UP</text>
+  <circle cx="392" cy="42" r="16" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+  <path d="M385 35 l14 14 M399 35 l-14 14" fill="none" stroke="#fbf3ee" stroke-width="5" stroke-linecap="round"/>
+  <text x="418" y="50" font-family="sans-serif" font-size="22" font-weight="700" fill="#b8480f">GIVES WAY</text>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <rect x="120" y="300" width="120" height="30" rx="6" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="120" y="170" width="120" height="120" rx="22" fill="#14211f"/>
+    <rect x="130" y="180" width="100" height="100" rx="16" fill="#b8c0bd" stroke="#14211f" stroke-width="5"/>
+    <rect x="126" y="176" width="24" height="24" rx="8" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="210" y="176" width="24" height="24" rx="8" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="126" y="260" width="24" height="24" rx="8" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="210" y="260" width="24" height="24" rx="8" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="150" y="202" width="60" height="56" rx="6" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+    <rect x="157" y="210" width="46" height="40" rx="3" fill="#f4f6f5" stroke="#14211f" stroke-width="3"/>
+    <line x1="164" y1="222" x2="196" y2="222" stroke="#14211f" stroke-width="3"/>
+    <line x1="164" y1="232" x2="184" y2="232" stroke="#14211f" stroke-width="3"/>
+    <g stroke="#14211f" stroke-width="4" fill="#f2c14e">
+      <path d="M96 200 l16 -8 l-2 16 l14 6 l-14 8 l4 14 l-15 -8 l-10 8 l2 -15 l-13 -5 l14 -8 z"/>
+    </g>
+    <circle cx="230" cy="150" r="14" fill="#3e8e5a" stroke="#14211f" stroke-width="5"/>
+    <path d="M223 150 l5 6 l9 -12" fill="none" stroke="#fbf3ee" stroke-width="5"/>
+  </g>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <rect x="480" y="300" width="120" height="30" rx="6" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="490" y="200" width="100" height="86" rx="4" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+    <rect x="500" y="210" width="80" height="66" rx="2" fill="#f4f6f5" stroke="#14211f" stroke-width="3"/>
+    <line x1="510" y1="228" x2="566" y2="228" stroke="#14211f" stroke-width="3"/>
+    <line x1="510" y1="244" x2="548" y2="244" stroke="#14211f" stroke-width="3"/>
+    <path d="M540 200 l-10 30 l16 18 l-12 38" fill="none" stroke="#14211f" stroke-width="4"/>
+    <path d="M530 236 l-24 6 M546 248 l22 -4" fill="none" stroke="#14211f" stroke-width="4"/>
+    <path d="M584 196 l14 -10 l4 12 z" fill="#d5581f" stroke="#14211f" stroke-width="4"/>
+    <path d="M600 214 l14 -4 l-2 12 z" fill="#d5581f" stroke="#14211f" stroke-width="4"/>
+    <path d="M490 288 l-14 8 l-2 -12 z" fill="#d5581f" stroke="#14211f" stroke-width="4"/>
+    <g stroke="#14211f" stroke-width="4" fill="#f2c14e">
+      <path d="M576 178 l16 -8 l-2 16 l16 4 l-14 10 l4 14 l-15 -8 l-10 8 l2 -15 l-13 -5 l14 -8 z"/>
+    </g>
+    <text x="588" y="188" font-family="sans-serif" font-size="15" font-weight="700" fill="#b8480f" text-anchor="middle">CRACK</text>
+  </g>
+</svg>
+          </div>
+          <div class="r-body">
+            <div class="r-namerow"><span class="r-num" aria-hidden="true">2</span><h2 id="h-casing">What protects it</h2></div>
+            <p class="r-sub">the casing</p>
+            <div class="r-contrast">
+              <div class="r-hold"><span class="r-tag">Holds up when…</span>A rugged housing or bumper absorbs and deflects strikes, drops, and bumps.</div>
+              <div class="r-give"><span class="r-tag">Gives way when…</span>Bare plastic and exposed edges crack on first contact.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-3" aria-labelledby="h-screen">
+      <div class="slide slide--row">
+        <p class="r-counter">Element 3 of 4</p>
+        <div class="r-cols">
+          <div class="r-art">
+<svg viewBox="0 0 720 440" role="img" aria-labelledby="t3 d3" xmlns="http://www.w3.org/2000/svg">
+  <title id="t3">The smart label screen</title>
+  <desc id="d3">A tough readable screen versus a shattered, sun-washed one.</desc>
+  <rect x="8" y="8" width="704" height="424" rx="24" fill="#fbf3ee" stroke="#e7c9b6" stroke-width="2"/>
+  <line x1="360" y1="40" x2="360" y2="400" stroke="#14211f" stroke-width="3" stroke-dasharray="10 10" stroke-linecap="round" opacity="0.55"/>
+  <circle cx="40" cy="42" r="16" fill="#3e8e5a" stroke="#14211f" stroke-width="5"/>
+  <path d="M32 42 l6 6 l10 -13" fill="none" stroke="#fbf3ee" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="66" y="50" font-family="sans-serif" font-size="22" font-weight="700" fill="#2f7a49">HOLDS UP</text>
+  <circle cx="392" cy="42" r="16" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+  <path d="M385 35 l14 14 M399 35 l-14 14" fill="none" stroke="#fbf3ee" stroke-width="5" stroke-linecap="round"/>
+  <text x="418" y="50" font-family="sans-serif" font-size="22" font-weight="700" fill="#b8480f">GIVES WAY</text>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <rect x="110" y="316" width="150" height="28" rx="6" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="128" y="150" width="120" height="168" rx="14" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+    <rect x="144" y="168" width="88" height="132" rx="8" fill="#f4f6f5" stroke="#14211f" stroke-width="4"/>
+    <text x="188" y="206" font-family="sans-serif" font-size="26" font-weight="700" fill="#14211f" text-anchor="middle">$24</text>
+    <line x1="158" y1="228" x2="218" y2="228" stroke="#14211f" stroke-width="4"/>
+    <line x1="158" y1="244" x2="208" y2="244" stroke="#14211f" stroke-width="4"/>
+    <line x1="158" y1="260" x2="218" y2="260" stroke="#14211f" stroke-width="4"/>
+    <line x1="158" y1="276" x2="196" y2="276" stroke="#14211f" stroke-width="4"/>
+    <circle cx="290" cy="140" r="20" fill="#f2c14e" stroke="#14211f" stroke-width="5"/>
+    <g stroke="#14211f" stroke-width="5">
+      <line x1="290" y1="104" x2="290" y2="114"/>
+      <line x1="322" y1="122" x2="314" y2="128"/>
+      <line x1="258" y1="122" x2="266" y2="128"/>
+      <line x1="326" y1="158" x2="316" y2="156"/>
+    </g>
+    <circle cx="240" cy="140" r="14" fill="#3e8e5a" stroke="#14211f" stroke-width="5"/>
+    <path d="M233 140 l5 6 l9 -12" fill="none" stroke="#fbf3ee" stroke-width="5"/>
+  </g>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <rect x="470" y="316" width="150" height="28" rx="6" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="466" y="150" width="120" height="168" rx="14" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+    <rect x="482" y="168" width="88" height="132" rx="8" fill="#e9ecec" stroke="#14211f" stroke-width="4"/>
+    <g stroke="#14211f" stroke-width="3" fill="none">
+      <path d="M526 234 l-40 -60 M526 234 l44 -54 M526 234 l-42 62 M526 234 l40 58 M526 234 l-52 -8 M526 234 l56 4"/>
+      <path d="M498 210 l24 8 l6 26 l-22 10 l-20 -18 z"/>
+      <path d="M552 208 l-4 26 l18 22"/>
+    </g>
+    <path d="M492 180 l40 -6 l-20 40 z" fill="#ffffff" opacity="0.7"/>
+    <circle cx="628" cy="132" r="22" fill="#f2c14e" stroke="#14211f" stroke-width="5"/>
+    <g stroke="#14211f" stroke-width="5">
+      <line x1="628" y1="94" x2="628" y2="104"/>
+      <line x1="662" y1="112" x2="654" y2="118"/>
+      <line x1="594" y1="112" x2="602" y2="118"/>
+      <line x1="666" y1="150" x2="656" y2="148"/>
+    </g>
+    <g stroke="#f2c14e" stroke-width="4" opacity="0.85">
+      <line x1="612" y1="150" x2="572" y2="196"/>
+      <line x1="624" y1="156" x2="588" y2="200"/>
+    </g>
+  </g>
+</svg>
+          </div>
+          <div class="r-body">
+            <div class="r-namerow"><span class="r-num" aria-hidden="true">3</span><h2 id="h-screen">The screen</h2></div>
+            <p class="r-sub">the display</p>
+            <div class="r-contrast">
+              <div class="r-hold"><span class="r-tag">Holds up when…</span>The screen resists shattering and reads clearly after knocks and in bright light.</div>
+              <div class="r-give"><span class="r-tag">Gives way when…</span>A fragile glass screen chips or spiders, or washes out in sunlight.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-4" aria-labelledby="h-elec">
+      <div class="slide slide--row">
+        <p class="r-counter">Element 4 of 4</p>
+        <div class="r-cols">
+          <div class="r-art">
+<svg viewBox="0 0 720 440" role="img" aria-labelledby="t4 d4" xmlns="http://www.w3.org/2000/svg">
+  <title id="t4">The smart label electronics</title>
+  <desc id="d4">Sealed electronics with full battery and strong signal versus dust and water intrusion, a dead battery, and a lost connection.</desc>
+  <rect x="8" y="8" width="704" height="424" rx="24" fill="#fbf3ee" stroke="#e7c9b6" stroke-width="2"/>
+  <line x1="360" y1="40" x2="360" y2="400" stroke="#14211f" stroke-width="3" stroke-dasharray="10 10" stroke-linecap="round" opacity="0.55"/>
+  <circle cx="40" cy="42" r="16" fill="#3e8e5a" stroke="#14211f" stroke-width="5"/>
+  <path d="M32 42 l6 6 l10 -13" fill="none" stroke="#fbf3ee" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="66" y="50" font-family="sans-serif" font-size="22" font-weight="700" fill="#2f7a49">HOLDS UP</text>
+  <circle cx="392" cy="42" r="16" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+  <path d="M385 35 l14 14 M399 35 l-14 14" fill="none" stroke="#fbf3ee" stroke-width="5" stroke-linecap="round"/>
+  <text x="418" y="50" font-family="sans-serif" font-size="22" font-weight="700" fill="#b8480f">GIVES WAY</text>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <rect x="110" y="300" width="150" height="28" rx="6" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="132" y="180" width="110" height="120" rx="12" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+    <rect x="146" y="196" width="82" height="60" rx="6" fill="#f4f6f5" stroke="#14211f" stroke-width="4"/>
+    <line x1="156" y1="214" x2="212" y2="214" stroke="#14211f" stroke-width="3"/>
+    <line x1="156" y1="228" x2="196" y2="228" stroke="#14211f" stroke-width="3"/>
+    <path d="M175 268 l0 -6 l14 -6 l14 6 l0 6 q0 16 -14 24 q-14 -8 -14 -24 z" fill="#3e8e5a" stroke="#14211f" stroke-width="5"/>
+    <text x="189" y="284" font-family="sans-serif" font-size="12" font-weight="700" fill="#fbf3ee" text-anchor="middle">IP</text>
+    <rect x="72" y="196" width="52" height="26" rx="5" fill="#f4f6f5" stroke="#14211f" stroke-width="5"/>
+    <rect x="124" y="203" width="7" height="12" rx="2" fill="#14211f"/>
+    <rect x="78" y="202" width="40" height="14" rx="2" fill="#3e8e5a"/>
+    <g fill="none" stroke="#3e8e5a" stroke-width="5">
+      <path d="M258 150 q34 -34 68 0"/>
+      <path d="M270 162 q22 -22 44 0"/>
+    </g>
+    <circle cx="292" cy="176" r="6" fill="#3e8e5a" stroke="#14211f" stroke-width="3"/>
+    <path d="M232 150 q-8 10 0 18 q8 -8 0 -18 z" fill="#5aa9c9" stroke="#14211f" stroke-width="4"/>
+    <path d="M244 168 l6 8" stroke="#5aa9c9" stroke-width="4"/>
+  </g>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <rect x="470" y="300" width="150" height="28" rx="6" fill="#8a938f" stroke="#14211f" stroke-width="5"/>
+    <rect x="492" y="180" width="110" height="120" rx="12" fill="#d5581f" stroke="#14211f" stroke-width="5"/>
+    <rect x="506" y="196" width="82" height="60" rx="6" fill="#dfe3e2" stroke="#14211f" stroke-width="4"/>
+    <g stroke="#14211f" stroke-width="4">
+      <path d="M524 214 l12 12 M536 214 l-12 12"/>
+      <path d="M556 214 l12 12 M568 214 l-12 12"/>
+    </g>
+    <path d="M528 242 q10 8 20 0" fill="none" stroke="#14211f" stroke-width="4"/>
+    <path d="M540 180 l0 -14" stroke="#14211f" stroke-width="4"/>
+    <path d="M528 158 q-6 8 0 14 q6 -6 0 -14 z" fill="#5aa9c9" stroke="#14211f" stroke-width="4"/>
+    <path d="M552 152 q-5 7 0 12 q5 -5 0 -12 z" fill="#5aa9c9" stroke="#14211f" stroke-width="4"/>
+    <g fill="#8a938f" stroke="#14211f" stroke-width="2">
+      <circle cx="516" cy="170" r="4"/>
+      <circle cx="566" cy="172" r="3"/>
+      <circle cx="548" cy="176" r="3"/>
+    </g>
+    <rect x="626" y="196" width="52" height="26" rx="5" fill="#f4f6f5" stroke="#14211f" stroke-width="5"/>
+    <rect x="678" y="203" width="7" height="12" rx="2" fill="#14211f"/>
+    <rect x="632" y="202" width="10" height="14" rx="2" fill="#d5581f"/>
+    <g fill="none" stroke="#b8480f" stroke-width="5">
+      <path d="M618 150 q34 -34 68 0"/>
+      <path d="M630 162 q22 -22 44 0"/>
+    </g>
+    <line x1="622" y1="140" x2="682" y2="188" stroke="#b8480f" stroke-width="6"/>
+    <g stroke="#14211f" stroke-width="4" fill="#f2c14e">
+      <path d="M470 250 l14 -6 l-2 14 l14 4 l-12 8 l4 12 l-14 -7 l-8 7 l2 -13 l-12 -4 l12 -7 z"/>
+    </g>
+    <text x="478" y="264" font-family="sans-serif" font-size="14" font-weight="700" fill="#b8480f" text-anchor="middle">!</text>
+  </g>
+</svg>
+          </div>
+          <div class="r-body">
+            <div class="r-namerow"><span class="r-num" aria-hidden="true">4</span><h2 id="h-elec">The electronics</h2></div>
+            <p class="r-sub">sealing, battery, connection</p>
+            <div class="r-contrast">
+              <div class="r-hold"><span class="r-tag">Holds up when…</span>The housing is sealed against dust and moisture (look for an IP rating), with a long-life battery and a robust connection.</div>
+              <div class="r-give"><span class="r-tag">Gives way when…</span>Unsealed electronics let dust and damp in; a weak battery or flaky radio makes it freeze or show a stale price.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button type="button" class="navbtn navbtn--prev" id="prev" aria-label="Previous slide">‹</button>
+  <button type="button" class="navbtn navbtn--next" id="next" aria-label="Next slide">›</button>
+  <nav class="dotnav" id="dotnav" aria-label="Jump to slide">
+      <button type="button" class="dot" data-i="0" aria-label="Overview slide"></button>
+      <button type="button" class="dot" data-i="1" aria-label="How it mounts"></button>
+      <button type="button" class="dot" data-i="2" aria-label="What protects it"></button>
+      <button type="button" class="dot" data-i="3" aria-label="The screen"></button>
+      <button type="button" class="dot" data-i="4" aria-label="The electronics"></button>
+  </nav>
+
+<script>
+  var deck = document.getElementById('deck');
+  var screens = Array.prototype.slice.call(deck.querySelectorAll('.screen'));
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var current = 0;
+
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    document.documentElement.style.setProperty('--scale', s);
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(screens.length - 1, i));
+    deck.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' });
+  }
+  function setActive(i) {
+    current = i;
+    dots.forEach(function (d, di) { d.classList.toggle('is-active', di === i); });
+    prev.disabled = (i === 0);
+    next.disabled = (i === screens.length - 1);
+  }
+  setActive(0);
+
+  prev.addEventListener('click', function () { goTo(current - 1); });
+  next.addEventListener('click', function () { goTo(current + 1); });
+  dots.forEach(function (d) { d.addEventListener('click', function () { goTo(+d.dataset.i); }); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End')  { e.preventDefault(); goTo(screens.length - 1); }
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) setActive(screens.indexOf(e.target));
+      });
+    }, { root: deck, threshold: 0.6 });
+    screens.forEach(function (s) { io.observe(s); });
+  }
+
+  deck.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      deck.scrollLeft += e.deltaY;
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
