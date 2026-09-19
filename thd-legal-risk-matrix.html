@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Risk Matrix: How Likely vs. How Bad — THD Legal Externship</title>
+<style>
+  :root{
+    --orange:#F96302;          /* brand fill only, paired with dark text */
+    --orange-text:#B34700;     /* orange as text on white (5.5:1) */
+    --ink:#1A1A1A;             /* text on orange / primary text */
+    --bg:#f7f7f6;
+    --card:#ffffff;
+    --border:#d9d6d0;          /* decorative dividers only */
+    --border-strong:#b7b3ac;   /* decorative only */
+    --border-control:#767268;  /* interactive control boundaries (3.6:1) */
+    --ok:#146A34;              /* ~5.0:1 on white and on green tint */
+    --ok-bg:#e9f6ee;
+    --retry:#B91C1C;
+    --text:#1e2130;
+    --muted:#4b5060;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.55;
+    padding:20px;max-width:1000px;margin:0 auto;
+  }
+  header{margin-bottom:18px}
+  h1{font-size:1.5rem;line-height:1.2;margin-bottom:8px}
+  h1 .accent{color:var(--orange-text)}
+  h2{font-size:1.1rem;margin:0 0 10px}
+  h3{font-size:.98rem;margin:0}
+  .intro{color:var(--muted);max-width:66ch}
+
+  .how{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin:16px 0}
+  .how ul{margin:6px 0 0 1.1em}
+  .how li{margin:4px 0}
+  kbd{font-family:inherit;background:#f0eee9;border:1px solid var(--border-strong);border-bottom-width:2px;border-radius:5px;padding:1px 6px;font-size:.85em}
+
+  section.block{margin:18px 0}
+
+  /* Add-a-problem toolbar, kept near top of DOM */
+  .add{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 18px}
+  .add-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:8px}
+  .add-field{flex:1 1 320px;display:flex;flex-direction:column;gap:4px}
+  .add label{font-weight:600;font-size:.92rem}
+  input[type="text"],select,textarea{
+    font:inherit;color:var(--text);background:#fff;
+    border:1px solid var(--border-control);border-radius:8px;padding:8px 10px;width:100%;
+  }
+  textarea{resize:vertical;min-height:150px;line-height:1.5}
+  .field-error{color:var(--retry);font-weight:600;font-size:.88rem;margin-top:6px;display:none}
+  .field-error.show{display:block}
+
+  button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border-control);
+    background:#fff;color:var(--ink);padding:8px 12px;font-size:.9rem;font-weight:600;
+  }
+  button.primary{background:var(--orange);border-color:var(--orange);color:var(--ink)}
+  button:hover{background:#f3f1ec}
+  button.primary:hover{background:#e85c02}
+  button[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+  button[hidden]{display:none}
+
+  /* two-color focus ring: survives white, orange, tinted surfaces */
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--ink);outline-offset:2px;
+    box-shadow:0 0 0 4px #fff, 0 0 0 6px var(--ink);
+  }
+  @media (forced-colors:active){
+    a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+      outline:3px solid Highlight;outline-offset:2px;box-shadow:none;
+    }
+  }
+
+  /* Axis labels — plain styled text, not headings */
+  .grid-wrap{margin-top:12px}
+  .axis-y{font-weight:700;color:var(--orange-text);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+  .axis-x{font-weight:700;color:var(--orange-text);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;margin-top:6px;text-align:center}
+  .grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:760px){.grid{grid-template-columns:1fr 1fr}}
+
+  .square{background:#fff;border:2px solid var(--border-control);border-radius:14px;padding:14px}
+  .square .sub{display:block;font-weight:400;font-size:.82rem;color:var(--muted);margin-top:3px}
+  .square-top{border-top:6px solid var(--retry)}
+  .square-mid{border-top:6px solid var(--orange)}
+  .square-low{border-top:6px solid var(--ok)}
+  .square .empty{color:var(--muted);font-style:italic;font-size:.9rem;padding:8px 2px;margin-top:8px}
+  .list{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:10px}
+
+  .unsorted{border-style:dashed}
+
+  .card{
+    background:var(--card);border:1px solid var(--border-control);border-left:6px solid var(--orange);
+    border-radius:10px;padding:12px;
+  }
+  .card-text{font-weight:700;font-size:1rem;word-break:break-word}
+  .card-controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+  .card-controls .cc{flex:1 1 220px;display:flex;flex-direction:column;gap:4px}
+  .card-controls label{font-weight:600;font-size:.85rem}
+  .card-check{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .card-check input{width:18px;height:18px}
+  .card-check label{font-weight:600;font-size:.9rem;min-height:24px;display:flex;align-items:center}
+  .placed-in{margin-top:10px;font-size:.85rem;color:var(--muted)}
+  .placed-in strong{color:var(--text)}
+
+  .card-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .card-actions .move-group{display:flex;flex-wrap:wrap;gap:8px}
+  .btn-remove{border-color:var(--retry);color:var(--retry)}
+  .btn-remove:hover{background:var(--retry-bg,#fbeaea)}
+
+  .toolbar{margin-top:8px;display:flex;gap:10px;flex-wrap:wrap}
+  .export .out-row{margin-top:10px}
+  .export .copy-note{color:var(--ok);font-weight:600;margin-top:8px;min-height:1.2em}
+  .export .copy-note.err{color:var(--retry)}
+
+  .visually-hidden{
+    position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+  }
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Risk Matrix: <span class="accent">How Likely</span> vs. <span class="accent">How Bad</span></h1>
+  <p class="intro">Sort each problem two ways: <strong>how likely</strong> it is to cause real legal trouble, and <strong>how bad</strong> it would be if it did. The problems that are both <strong>likely and bad</strong> are the ones your recommendation is for. Add each problem, place it in the square that fits, note your reasoning, then export the whole ranking.</p>
+</header>
+
+<main id="main">
+  <section class="how block" aria-labelledby="how-h">
+    <h2 id="how-h">How to use this tool</h2>
+    <ul>
+      <li>Type a problem in the box below and select <strong>Add problem</strong>. It appears in the <strong>Problems to place</strong> list.</li>
+      <li>On each problem, use the <strong>Move to…</strong> buttons to drop it into the square that fits. These work with a mouse, touch, or keyboard (<kbd>Tab</kbd> to a button, then <kbd>Enter</kbd> or <kbd>Space</kbd>).</li>
+      <li>On each problem, add a one-line <strong>reason</strong>, choose <strong>what sets it off</strong>, and tick <strong>This rests on a guess</strong> if your placement leans on something you're assuming about Home Depot.</li>
+      <li>When your placements are set, select <strong>Export</strong> to build a clean text block you can copy into your research doc.</li>
+    </ul>
+  </section>
+
+  <!-- Add a problem: the ONLY real form on the page -->
+  <section class="add block" aria-labelledby="add-h">
+    <h2 id="add-h">Add a problem</h2>
+    <form id="add-form" novalidate>
+      <div class="add-row">
+        <div class="add-field">
+          <label for="add-input">Describe the problem in one line</label>
+          <input type="text" id="add-input" name="problem" autocomplete="off"
+                 aria-describedby="add-hint add-error" maxlength="200">
+          <p id="add-hint" class="intro" style="font-size:.85rem;margin-top:2px">For example: "Store cameras scan faces without written consent — runs into the biometric-privacy law."</p>
+          <p id="add-error" class="field-error" role="alert">Type a problem before adding.</p>
+        </div>
+        <div>
+          <button type="submit" class="primary" id="add-btn">Add problem</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- The grid -->
+  <section class="block" aria-labelledby="grid-h">
+    <h2 id="grid-h">The risk grid</h2>
+    <p class="intro">This grid sorts problems two ways: how likely they are (left means unlikely, right means likely) and how bad it would be if they happened (bottom means not that bad, top means bad). The worst problems are the ones that are both likely and bad.</p>
+    <p class="visually-hidden">The grid has four squares, listed worst first: likely to happen and bad if it does; unlikely to happen but bad if it does; likely to happen but not that bad if it does; unlikely to happen and not that bad if it does. Each square's full name tells you where it sits, so you never need to see the layout.</p>
+
+    <div class="grid-wrap">
+      <p class="axis-y" aria-hidden="true">How bad ↑ (top = bad, bottom = not that bad)</p>
+      <div class="grid" role="presentation">
+
+        <!-- Top row: BAD -->
+        <section class="square square-top" id="sq-unlikely-bad" aria-labelledby="h-unlikely-bad">
+          <h3 id="h-unlikely-bad">Unlikely to happen, but bad if it does
+            <span class="sub">Watch it and mention it — don't let it run the plan.</span>
+          </h3>
+          <ul class="list" data-square="unlikely-bad"></ul>
+          <p class="empty" data-empty-for="unlikely-bad">No problems here yet.</p>
+        </section>
+
+        <section class="square square-top" id="sq-likely-bad" aria-labelledby="h-likely-bad">
+          <h3 id="h-likely-bad">Likely to happen, and bad if it does
+            <span class="sub">Act first. This is what your recommendation is for.</span>
+          </h3>
+          <ul class="list" data-square="likely-bad"></ul>
+          <p class="empty" data-empty-for="likely-bad">No problems here yet.</p>
+        </section>
+
+        <!-- Bottom row: NOT THAT BAD -->
+        <section class="square square-low" id="sq-unlikely-mild" aria-labelledby="h-unlikely-mild">
+          <h3 id="h-unlikely-mild">Unlikely to happen, and not that bad if it does
+            <span class="sub">Note it and move on.</span>
+          </h3>
+          <ul class="list" data-square="unlikely-mild"></ul>
+          <p class="empty" data-empty-for="unlikely-mild">No problems here yet.</p>
+        </section>
+
+        <section class="square square-mid" id="sq-likely-mild" aria-labelledby="h-likely-mild">
+          <h3 id="h-likely-mild">Likely to happen, but not that bad if it does
+            <span class="sub">Fix it with routine cleanup; keep it off the executive's page.</span>
+          </h3>
+          <ul class="list" data-square="likely-mild"></ul>
+          <p class="empty" data-empty-for="likely-mild">No problems here yet.</p>
+        </section>
+
+      </div>
+      <p class="axis-x" aria-hidden="true">How likely → (left = unlikely, right = likely)</p>
+    </div>
+  </section>
+
+  <!-- Unsorted problems -->
+  <section class="square unsorted block" id="sq-unsorted" aria-labelledby="h-unsorted">
+    <h2 id="h-unsorted">Problems to place <span class="sub">Newly added problems land here. Move each one into a square above.</span></h2>
+    <ul class="list" data-square="unsorted"></ul>
+    <p class="empty" data-empty-for="unsorted">Nothing to place. Add a problem above, or every problem is already on the grid.</p>
+  </section>
+
+  <!-- Export -->
+  <section class="export block" aria-labelledby="export-h">
+    <h2 id="export-h">Export your ranking</h2>
+    <p class="intro">Build a clean text block of every problem, its square, reason, trigger, and any guess flag — then copy it into your research doc under the heading <strong>Risk Ranking</strong>.</p>
+    <div class="toolbar">
+      <button type="button" class="primary" id="export-btn">Export</button>
+      <button type="button" id="copy-btn" hidden>Copy to clipboard</button>
+      <button type="button" id="reset-btn">Reset and start over</button>
+    </div>
+    <div class="out-row" hidden id="out-wrap">
+      <label for="export-out" class="visually-hidden">Exported risk ranking (read-only). Select all and copy.</label>
+      <textarea id="export-out" readonly></textarea>
+      <p class="copy-note" id="copy-note" aria-hidden="true"></p>
+    </div>
+  </section>
+</main>
+
+<div class="visually-hidden" role="status" aria-atomic="true" id="live-polite"></div>
+<div class="visually-hidden" role="alert" aria-atomic="true" id="live-alert"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // canonical square names — identical string in heading, Move button, announcement
+  var SQUARES = {
+    "likely-bad":     "Likely to happen, and bad if it does",
+    "unlikely-bad":   "Unlikely to happen, but bad if it does",
+    "likely-mild":    "Likely to happen, but not that bad if it does",
+    "unlikely-mild":  "Unlikely to happen, and not that bad if it does"
+  };
+  // order used in the export
+  var SQUARE_ORDER = ["likely-bad","unlikely-bad","likely-mild","unlikely-mild"];
+
+  var TRIGGERS = {
+    "sue":    "People can sue directly",
+    "agency": "A government agency steps in",
+    "notice": "The law requires you to say something"
+  };
+
+  var uidCounter = 0;
+  // model: id -> {id, text, location, reason, trigger, guess}
+  var problems = {};
+
+  // ---- announcer (queued; double rAF + clear so repeats re-announce) ----
+  var polite = document.getElementById("live-polite");
+  var alertRegion = document.getElementById("live-alert");
+  var queue = [], busy = false;
+  function announce(msg, assertive){
+    queue.push({msg:msg, region: assertive ? alertRegion : polite});
+    if(!busy) drain();
+  }
+  function drain(){
+    if(!queue.length){busy=false;return;}
+    busy=true;
+    var item = queue.shift();
+    item.region.textContent = "";
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        item.region.textContent = item.msg;
+        setTimeout(drain, 350);
+      });
+    });
+  }
+
+  function sanitize(str){
+    var s = (str||"").replace(/\s+/g," ").trim();
+    if(s.length > 60) s = s.slice(0,57) + "…";
+    return s;
+  }
+
+  function focusNoScroll(el){
+    if(!el) return;
+    try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); }
+    if(el.scrollIntoView) el.scrollIntoView({block:"nearest"});
+  }
+
+  function listFor(square){ return document.querySelector('.list[data-square="'+square+'"]'); }
+  function emptyFor(square){ return document.querySelector('[data-empty-for="'+square+'"]'); }
+
+  function refreshEmpty(){
+    Object.keys(SQUARES).concat(["unsorted"]).forEach(function(sq){
+      var list = listFor(sq), empty = emptyFor(sq);
+      if(list && empty) empty.style.display = list.children.length ? "none" : "block";
+    });
+  }
+
+  // ---- build a card ----
+  function makeCard(p){
+    var li = document.createElement("li");
+    li.className = "card";
+    li.id = "card-"+p.id;
+    li.setAttribute("role","group");
+    li.setAttribute("aria-labelledby","prob-"+p.id);
+
+    // problem text
+    var h = document.createElement("p");
+    h.className = "card-text";
+    h.id = "prob-"+p.id;
+    h.textContent = p.text;
+    li.appendChild(h);
+
+    // where it's placed (text label, not color/position)
+    var placed = document.createElement("p");
+    placed.className = "placed-in";
+    placed.id = "placed-"+p.id;
+    li.appendChild(placed);
+
+    // reason + trigger controls
+    var controls = document.createElement("div");
+    controls.className = "card-controls";
+
+    var ccReason = document.createElement("div"); ccReason.className="cc";
+    var lReason = document.createElement("label");
+    lReason.setAttribute("for","reason-"+p.id);
+    lReason.textContent = "Reason for where you placed it";
+    var iReason = document.createElement("input");
+    iReason.type="text"; iReason.id="reason-"+p.id; iReason.autocomplete="off"; iReason.maxLength=200;
+    iReason.value = p.reason || "";
+    iReason.addEventListener("input", function(){ problems[p.id].reason = iReason.value; });
+    ccReason.appendChild(lReason); ccReason.appendChild(iReason);
+
+    var ccTrig = document.createElement("div"); ccTrig.className="cc";
+    var lTrig = document.createElement("label");
+    lTrig.setAttribute("for","trigger-"+p.id);
+    lTrig.textContent = "What sets it off";
+    var sTrig = document.createElement("select");
+    sTrig.id="trigger-"+p.id;
+    var ph = document.createElement("option");
+    ph.value=""; ph.textContent="Choose what sets it off"; sTrig.appendChild(ph);
+    Object.keys(TRIGGERS).forEach(function(key){
+      var o = document.createElement("option"); o.value=key; o.textContent=TRIGGERS[key];
+      sTrig.appendChild(o);
+    });
+    sTrig.value = p.trigger || "";
+    sTrig.addEventListener("change", function(){ problems[p.id].trigger = sTrig.value; });
+    ccTrig.appendChild(lTrig); ccTrig.appendChild(sTrig);
+
+    controls.appendChild(ccReason); controls.appendChild(ccTrig);
+    li.appendChild(controls);
+
+    // guess checkbox
+    var check = document.createElement("div"); check.className="card-check";
+    var cbox = document.createElement("input");
+    cbox.type="checkbox"; cbox.id="guess-"+p.id; cbox.checked = !!p.guess;
+    cbox.addEventListener("change", function(){ problems[p.id].guess = cbox.checked; });
+    var lc = document.createElement("label"); lc.setAttribute("for","guess-"+p.id);
+    lc.textContent = "This rests on a guess";
+    check.appendChild(cbox); check.appendChild(lc);
+    li.appendChild(check);
+
+    // actions: move buttons + remove
+    var actions = document.createElement("div"); actions.className="card-actions";
+    var moveGroup = document.createElement("div");
+    moveGroup.className="move-group";
+    moveGroup.setAttribute("role","group");
+    moveGroup.setAttribute("aria-label","Place this problem in a square");
+
+    SQUARE_ORDER.forEach(function(sq){
+      var b = document.createElement("button");
+      b.type="button"; b.className="primary"; b.dataset.dest=sq;
+      b.textContent = "Move to: " + SQUARES[sq];
+      b.addEventListener("click", function(){ move(p.id, sq); });
+      moveGroup.appendChild(b);
+    });
+    // return to unsorted
+    var bUn = document.createElement("button");
+    bUn.type="button"; bUn.dataset.dest="unsorted";
+    bUn.textContent = "Return to Problems to place";
+    bUn.addEventListener("click", function(){ move(p.id, "unsorted"); });
+    moveGroup.appendChild(bUn);
+    actions.appendChild(moveGroup);
+
+    // remove (last, so an accidental Enter earlier doesn't destroy it)
+    var bRm = document.createElement("button");
+    bRm.type="button"; bRm.className="btn-remove";
+    bRm.setAttribute("aria-label","Remove problem: " + p.text);
+    bRm.textContent = "Remove";
+    bRm.addEventListener("click", function(){ remove(p.id); });
+    actions.appendChild(bRm);
+
+    li.appendChild(actions);
+    return li;
+  }
+
+  function updatePlacedLabel(p){
+    var li = document.getElementById("card-"+p.id);
+    if(!li) return;
+    var placed = li.querySelector(".placed-in");
+    if(p.location === "unsorted"){
+      placed.innerHTML = "";
+      placed.appendChild(document.createTextNode("Not yet placed."));
+    } else {
+      placed.innerHTML = "";
+      placed.appendChild(document.createTextNode("Placed in: "));
+      var st = document.createElement("strong"); st.textContent = SQUARES[p.location];
+      placed.appendChild(st);
+    }
+    // disable the current-location move button; show/hide return button
+    li.querySelectorAll(".move-group button").forEach(function(b){
+      var dest = b.dataset.dest;
+      if(dest === "unsorted"){
+        b.hidden = (p.location === "unsorted");
+      } else if(dest === p.location){
+        b.setAttribute("aria-disabled","true");
+      } else {
+        b.removeAttribute("aria-disabled");
+      }
+    });
+  }
+
+  function focusUsableButton(li){
+    var b = li.querySelector('.move-group button:not([hidden]):not([aria-disabled="true"])');
+    if(b) focusNoScroll(b);
+  }
+
+  // ---- actions ----
+  function addProblem(text){
+    var clean = (text||"").replace(/\s+/g," ").trim();
+    var input = document.getElementById("add-input");
+    var err = document.getElementById("add-error");
+    if(!clean){
+      err.classList.add("show");
+      input.setAttribute("aria-invalid","true");
+      announce("Type a problem before adding.", true);
+      focusNoScroll(input);
+      return;
+    }
+    err.classList.remove("show");
+    input.removeAttribute("aria-invalid");
+
+    var id = "p" + (++uidCounter);
+    var p = {id:id, text:clean, location:"unsorted", reason:"", trigger:"", guess:false};
+    problems[id] = p;
+    var li = makeCard(p);
+    listFor("unsorted").appendChild(li);
+    updatePlacedLabel(p);
+    refreshEmpty();
+
+    input.value = "";
+    focusNoScroll(input); // keep focus for rapid multi-entry
+    announce(sanitize(clean) + " added. Use its Move buttons to place it in a square.");
+  }
+
+  function move(id, dest){
+    var p = problems[id];
+    if(!p) return;
+    var li = document.getElementById("card-"+id);
+    listFor(dest).appendChild(li);
+    p.location = dest;
+    updatePlacedLabel(p);
+    refreshEmpty();
+
+    if(dest === "unsorted"){
+      announce(sanitize(p.text) + " returned to the Problems to place list.");
+    } else {
+      announce(sanitize(p.text) + " moved to " + SQUARES[dest] + ".");
+    }
+    focusUsableButton(li);
+  }
+
+  function remove(id){
+    var p = problems[id];
+    if(!p) return;
+    var li = document.getElementById("card-"+id);
+    var list = li.parentNode;
+    var nextFocus = li.nextElementSibling || li.previousElementSibling;
+    var square = p.location;
+
+    li.parentNode.removeChild(li);
+    delete problems[id];
+    refreshEmpty();
+
+    var count = Object.keys(problems).length;
+    var tail = count === 0 ? "The board is empty." : (count === 1 ? "1 problem remaining." : count + " problems remaining.");
+    announce(sanitize(p.text) + " removed. " + tail);
+
+    // focus a sibling card's first move button, else the square heading, else the add input
+    if(nextFocus){
+      var b = nextFocus.querySelector('.move-group button:not([hidden]):not([aria-disabled="true"])');
+      if(b){ focusNoScroll(b); return; }
+    }
+    if(list && list.children.length === 0){
+      var sec = document.getElementById("sq-" + (square==="unsorted" ? "unsorted" : square));
+      var head = sec ? sec.querySelector("h2,h3") : null;
+      if(head){ head.setAttribute("tabindex","-1"); focusNoScroll(head); return; }
+    }
+    focusNoScroll(document.getElementById("add-input"));
+  }
+
+  // ---- export ----
+  function buildExport(){
+    var lines = [];
+    lines.push("Risk Ranking");
+    lines.push("============");
+    lines.push("");
+    var total = 0;
+    SQUARE_ORDER.forEach(function(sq){
+      var inSquare = Object.keys(problems).map(function(k){return problems[k];})
+        .filter(function(p){ return p.location === sq; });
+      if(!inSquare.length) return;
+      lines.push("## " + SQUARES[sq]);
+      inSquare.forEach(function(p){
+        total++;
+        lines.push("- Problem: " + p.text);
+        lines.push("  Reason: " + (p.reason ? p.reason : "(none given)"));
+        lines.push("  What sets it off: " + (p.trigger ? TRIGGERS[p.trigger] : "(not chosen)"));
+        lines.push("  Rests on a guess: " + (p.guess ? "YES — placement depends on an unconfirmed Home Depot practice" : "no"));
+        lines.push("");
+      });
+    });
+    // unsorted, if any
+    var unsorted = Object.keys(problems).map(function(k){return problems[k];})
+      .filter(function(p){ return p.location === "unsorted"; });
+    if(unsorted.length){
+      lines.push("## Not yet placed");
+      unsorted.forEach(function(p){
+        total++;
+        lines.push("- Problem: " + p.text);
+        lines.push("  Reason: " + (p.reason ? p.reason : "(none given)"));
+        lines.push("  What sets it off: " + (p.trigger ? TRIGGERS[p.trigger] : "(not chosen)"));
+        lines.push("  Rests on a guess: " + (p.guess ? "YES" : "no"));
+        lines.push("");
+      });
+    }
+    return {text: lines.join("\n").replace(/\n+$/,"\n"), count: total};
+  }
+
+  function doExport(){
+    var count = Object.keys(problems).length;
+    if(count === 0){
+      announce("Add at least one problem before exporting.", true);
+      focusNoScroll(document.getElementById("add-input"));
+      return;
+    }
+    var res = buildExport();
+    var wrap = document.getElementById("out-wrap");
+    var out = document.getElementById("export-out");
+    var copyBtn = document.getElementById("copy-btn");
+    out.value = res.text;
+    wrap.hidden = false;
+    copyBtn.hidden = false;
+    setCopyNote("");
+    announce("Risk matrix exported. " + res.count + (res.count===1?" problem":" problems") + " in the text box below. Use the Copy to clipboard button, or select the text and copy it.");
+  }
+
+  function setCopyNote(msg, isErr){
+    var note = document.getElementById("copy-note");
+    note.textContent = msg;
+    note.classList.toggle("err", !!isErr);
+  }
+
+  function copyOut(){
+    var out = document.getElementById("export-out");
+    var text = out.value;
+    var count = Object.keys(problems).length;
+    function fallback(){
+      out.focus(); out.select();
+      var key = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? "Command" : "Control";
+      setCopyNote("Couldn't copy automatically — the text is selected. Press " + key + " plus C to copy.", true);
+      announce("Couldn't copy automatically. The text is selected in the box below — press " + key + " plus C to copy.", true);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        setCopyNote("Copied to clipboard.");
+        announce("Risk matrix copied to clipboard. " + count + (count===1?" problem":" problems") + " exported.");
+      }, fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  function reset(){
+    problems = {};
+    uidCounter = 0;
+    Object.keys(SQUARES).concat(["unsorted"]).forEach(function(sq){
+      var list = listFor(sq); if(list) list.innerHTML = "";
+    });
+    document.getElementById("out-wrap").hidden = true;
+    document.getElementById("copy-btn").hidden = true;
+    document.getElementById("export-out").value = "";
+    setCopyNote("");
+    refreshEmpty();
+    announce("Board reset. All problems cleared.");
+    focusNoScroll(document.getElementById("add-input"));
+  }
+
+  // ---- wire up ----
+  document.getElementById("add-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    addProblem(document.getElementById("add-input").value);
+  });
+  document.getElementById("add-input").addEventListener("input", function(){
+    if(this.value.trim()){
+      document.getElementById("add-error").classList.remove("show");
+      this.removeAttribute("aria-invalid");
+    }
+  });
+  document.getElementById("export-btn").addEventListener("click", doExport);
+  document.getElementById("copy-btn").addEventListener("click", copyOut);
+  document.getElementById("reset-btn").addEventListener("click", reset);
+
+  refreshEmpty();
+})();
+</script>
+</body>
+</html>

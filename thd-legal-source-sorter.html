@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Source Sorter — THD Legal Externship</title>
+<style>
+  :root{
+    --orange:#F96302;          /* brand fill only, paired with dark text */
+    --orange-text:#B34700;     /* orange as text on white (5.5:1) */
+    --ink:#1A1A1A;             /* text on orange / primary text */
+    --bg:#f7f7f6;
+    --card:#ffffff;
+    --border:#d9d6d0;
+    --border-strong:#b7b3ac;
+    --ok:#15803D;              /* 5.0:1 on white */
+    --ok-bg:#e9f6ee;
+    --retry:#B91C1C;           /* 6.5:1 on white */
+    --retry-bg:#fbeaea;
+    --text:#1e2130;
+    --muted:#4b5060;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.55;
+    padding:20px;max-width:960px;margin:0 auto;
+  }
+  header{margin-bottom:20px}
+  h1{font-size:1.5rem;line-height:1.2;margin-bottom:8px}
+  h1 .accent{color:var(--orange-text)}
+  h2{font-size:1.05rem;margin:0 0 10px}
+  .intro{color:var(--muted);max-width:62ch}
+  .how{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin:16px 0}
+  .how ul{margin:6px 0 0 1.1em}
+  .how li{margin:4px 0}
+  kbd{font-family:inherit;background:#f0eee9;border:1px solid var(--border-strong);border-bottom-width:2px;border-radius:5px;padding:1px 6px;font-size:.85em}
+
+  .board{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:720px){.board{grid-template-columns:1fr 1fr}.sources{grid-column:1 / -1}}
+
+  .bin{background:#fff;border:2px solid var(--border);border-radius:14px;padding:14px}
+  .bin.sources{border-style:dashed}
+  .bin h2 .sub{display:block;font-weight:400;font-size:.82rem;color:var(--muted);margin-top:2px}
+  .bin[data-empty="true"] .list::after{
+    content:attr(data-empty-label);display:block;color:var(--muted);
+    font-style:italic;padding:10px 4px;font-size:.9rem;
+  }
+  .list{list-style:none;margin-top:10px;min-height:56px;display:flex;flex-direction:column;gap:10px}
+
+  .card{
+    background:var(--card);border:1px solid var(--border-strong);border-left:6px solid var(--border-strong);
+    border-radius:10px;padding:12px;
+  }
+  .card.correct{border-left-color:var(--ok)}
+  .card.retry{border-left-color:var(--retry)}
+  .card-body{display:flex;align-items:flex-start;gap:10px}
+  .card-icon{font-size:1.25rem;line-height:1.3}
+  .card-text{font-weight:600}
+  .card-status{margin-top:8px;font-size:.9rem;font-weight:600;display:none}
+  .card.placed .card-status{display:flex;align-items:center;gap:6px}
+  .card-status.correct{color:var(--ok)}
+  .card-status.retry{color:var(--retry)}
+  .card-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+  button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border-strong);
+    background:#fff;color:var(--ink);padding:8px 12px;font-size:.9rem;font-weight:600;
+  }
+  button.primary{background:var(--orange);border-color:var(--orange);color:var(--ink)}
+  button:hover{background:#f3f1ec}
+  button.primary:hover{background:#e85c02}
+  button[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+  button[hidden]{display:none}
+
+  /* two-color focus ring: survives white, orange, tinted surfaces */
+  a:focus-visible,button:focus-visible{
+    outline:2px solid var(--ink);outline-offset:2px;
+    box-shadow:0 0 0 4px #fff, 0 0 0 6px var(--ink);
+  }
+
+  .result{margin-top:18px;padding:14px 16px;border-radius:12px;background:var(--ok-bg);
+    border:1px solid var(--ok);color:var(--ok);font-weight:600;display:none;align-items:center;gap:8px}
+  .result.show{display:flex}
+  .toolbar{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+
+  .visually-hidden{
+    position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+  }
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Source Sorter: <span class="accent">Original Document</span> or Just a Lead?</h1>
+  <p class="intro">Sort each source into the right bin. An <strong>original document</strong> is the actual law on an official government site — you can trust it. Everything else is <strong>just a lead</strong>: useful for finding things, but you still have to open the original to confirm.</p>
+</header>
+
+<main id="main">
+  <section class="how" aria-labelledby="how-h">
+    <h2 id="how-h">How to use this tool</h2>
+    <ul>
+      <li>Use the <strong>Move to…</strong> buttons on each card. They work with a mouse, touch, or keyboard.</li>
+      <li>By keyboard: press <kbd>Tab</kbd> to reach a button, then <kbd>Enter</kbd> or <kbd>Space</kbd> to move the card.</li>
+      <li>You get instant feedback on every move. Keep going until all four are correct.</li>
+    </ul>
+  </section>
+
+  <div class="board">
+    <section class="bin sources" id="bin-sources" data-empty="false" aria-labelledby="h-sources">
+      <h2 id="h-sources">Sources to sort <span class="sub">Move each card into a bin below</span></h2>
+      <ul class="list" id="list-sources" data-empty-label="All cards sorted."></ul>
+    </section>
+
+    <section class="bin" id="bin-original" data-empty="true" aria-labelledby="h-original">
+      <h2 id="h-original">Original document <span class="sub">Trust it</span></h2>
+      <ul class="list" id="list-original" data-empty-label="No cards here yet."></ul>
+    </section>
+
+    <section class="bin" id="bin-lead" data-empty="true" aria-labelledby="h-lead">
+      <h2 id="h-lead">Just a lead <span class="sub">Go find the original</span></h2>
+      <ul class="list" id="list-lead" data-empty-label="No cards here yet."></ul>
+    </section>
+  </div>
+
+  <p class="result" id="result" role="status">
+    <span aria-hidden="true">🎉</span><span id="result-text"></span>
+  </p>
+
+  <div class="toolbar">
+    <button type="button" id="reset">Reset and start over</button>
+  </div>
+</main>
+
+<div class="visually-hidden" role="status" aria-atomic="true" id="live-polite"></div>
+<div class="visually-hidden" role="alert" aria-atomic="true" id="live-alert"></div>
+
+<script>
+(function(){
+  "use strict";
+  var BINS = {
+    sources:{list:"list-sources", bin:"bin-sources", label:"Sources"},
+    original:{list:"list-original", bin:"bin-original", label:"Original document"},
+    lead:{list:"list-lead", bin:"bin-lead", label:"Just a lead"}
+  };
+  // answer = the correct bin for each card
+  var CARDS = [
+    {id:"legislature", icon:"🏛️", text:"The Illinois state legislature's official statute page", answer:"original"},
+    {id:"blog",        icon:"📝", text:"A law-firm blog post",                                       answer:"lead"},
+    {id:"chatbot",     icon:"🤖", text:"An AI chatbot answer",                                       answer:"lead"},
+    {id:"news",        icon:"📰", text:"A news article about a new law",                             answer:"lead"}
+  ];
+
+  var polite = document.getElementById("live-polite");
+  var alertRegion = document.getElementById("live-alert");
+  var queue = [], busy = false;
+  function announce(msg, assertive){
+    queue.push({msg:msg, region: assertive ? alertRegion : polite});
+    if(!busy) drain();
+  }
+  function drain(){
+    if(!queue.length){busy=false;return;}
+    busy=true;
+    var item = queue.shift();
+    item.region.textContent = "";
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        item.region.textContent = item.msg;
+        setTimeout(drain, 350);
+      });
+    });
+  }
+
+  function binById(key){ return document.getElementById(BINS[key].bin); }
+  function refreshEmpty(){
+    Object.keys(BINS).forEach(function(k){
+      var list = document.getElementById(BINS[k].list);
+      binById(k).setAttribute("data-empty", list.children.length ? "false":"true");
+    });
+  }
+
+  function makeCard(c){
+    var li = document.createElement("li");
+    li.className = "card";
+    li.id = "card-"+c.id;
+    li.dataset.answer = c.answer;
+    li.dataset.text = c.text;
+    li.setAttribute("aria-describedby","status-"+c.id);
+
+    var body = document.createElement("div"); body.className="card-body";
+    var ic = document.createElement("span"); ic.className="card-icon"; ic.setAttribute("aria-hidden","true"); ic.textContent=c.icon;
+    var tx = document.createElement("span"); tx.className="card-text"; tx.textContent=c.text;
+    body.appendChild(ic); body.appendChild(tx);
+
+    var status = document.createElement("p"); status.className="card-status"; status.id="status-"+c.id;
+
+    var actions = document.createElement("div"); actions.className="card-actions";
+    ["original","lead","sources"].forEach(function(dest){
+      var b = document.createElement("button");
+      b.type="button";
+      b.dataset.dest = dest;
+      if(dest==="original"){b.textContent="Move to Original document"; b.className="primary";}
+      else if(dest==="lead"){b.textContent="Move to Just a lead"; b.className="primary";}
+      else {b.textContent="Return to sources"; b.hidden=true;}
+      b.addEventListener("click", function(){ move(c.id, dest); });
+      actions.appendChild(b);
+    });
+
+    li.appendChild(body); li.appendChild(status); li.appendChild(actions);
+    return li;
+  }
+
+  function updateButtons(li, location){
+    li.querySelectorAll(".card-actions button").forEach(function(b){
+      var dest = b.dataset.dest;
+      if(dest==="sources"){ b.hidden = (location==="sources"); }
+      else {
+        b.hidden = false;
+        if(dest===location){ b.setAttribute("aria-disabled","true"); }
+        else { b.removeAttribute("aria-disabled"); }
+      }
+    });
+  }
+
+  function focusUsableButton(li){
+    var b = li.querySelector('.card-actions button:not([hidden]):not([aria-disabled="true"])');
+    if(b) b.focus();
+  }
+
+  function move(cardId, dest){
+    var li = document.getElementById("card-"+cardId);
+    if(!li) return;
+    var list = document.getElementById(BINS[dest].list);
+    list.appendChild(li);
+    li.dataset.location = dest;
+    updateButtons(li, dest);
+    refreshEmpty();
+
+    var status = li.querySelector(".card-status");
+    var name = li.dataset.text;
+
+    if(dest==="sources"){
+      li.classList.remove("placed","correct","retry");
+      status.className="card-status";
+      status.textContent="";
+      announce(name + " returned to Sources.");
+      focusUsableButton(li);
+      updateResult();
+      return;
+    }
+
+    var correct = (dest === li.dataset.answer);
+    li.classList.add("placed");
+    li.classList.toggle("correct", correct);
+    li.classList.toggle("retry", !correct);
+    status.className = "card-status " + (correct ? "correct":"retry");
+    // text + icon (icon aria-hidden, word carries meaning)
+    status.innerHTML = "";
+    var si = document.createElement("span"); si.setAttribute("aria-hidden","true"); si.textContent = correct ? "✓" : "↻";
+    var sw = document.createElement("span");
+    sw.textContent = correct
+      ? "Correct — this is an original document you can trust."
+      : "Try again — this is not an original document. It is just a lead.";
+    status.appendChild(si); status.appendChild(sw);
+
+    var binLabel = BINS[dest].label;
+    announce(name + " placed in " + binLabel + ". " + (correct ? "Correct." : "Not quite — try a different bin."));
+    focusUsableButton(li);
+    updateResult();
+  }
+
+  function updateResult(){
+    var all = CARDS.every(function(c){
+      var li = document.getElementById("card-"+c.id);
+      return li.dataset.location === c.answer;
+    });
+    var result = document.getElementById("result");
+    if(all){
+      document.getElementById("result-text").textContent =
+        "All four sorted correctly. That instinct — trust the original, treat everything else as a lead — is exactly the habit this project runs on.";
+      result.classList.add("show");
+      announce("All four sorted correctly. Great work.");
+    } else {
+      result.classList.remove("show");
+    }
+  }
+
+  function init(){
+    var src = document.getElementById("list-sources");
+    src.innerHTML="";
+    CARDS.forEach(function(c){
+      var li = makeCard(c);
+      li.dataset.location="sources";
+      updateButtons(li,"sources");
+      src.appendChild(li);
+    });
+    refreshEmpty();
+    document.getElementById("result").classList.remove("show");
+  }
+
+  document.getElementById("reset").addEventListener("click", function(){
+    init();
+    announce("Board reset. All four cards are back in Sources.");
+    var first = document.querySelector("#list-sources .card-actions button:not([hidden])");
+    if(first) first.focus();
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>

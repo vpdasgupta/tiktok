@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-State Survey Tracker — THD Emerging Tech Regulations</title>
+    <style>
+        :root {
+            --bg-primary: #f7f7f6;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f2f1ef;
+            --accent-primary: #F96302;   /* Home Depot orange */
+            --accent-secondary: #d95302;
+            --accent-gradient: linear-gradient(135deg, #F96302, #ff7a29);
+            --lane-a: #F96302;   /* orange */
+            --lane-b: #2563eb;   /* blue   */
+            /* status colors */
+            --ok: #10b981;  --ok-bg: rgba(16,185,129,.12);   /* enacted / effective */
+            --warn: #f59e0b; --warn-bg: rgba(245,158,11,.14); /* pending / in process */
+            --bad: #ef4444;  --bad-bg: rgba(239,68,68,.12);   /* failed */
+            --gray: #94a3b8; --gray-bg: rgba(148,163,184,.14);
+            --text-primary: #1e2130;
+            --text-secondary: #4b5060;
+            --text-muted: #969bab;
+            --border: #e5e3df;
+            --shadow-sm: 0 1px 2px rgba(40,30,10,0.06);
+            --shadow: 0 4px 6px -1px rgba(40,30,10,0.10), 0 2px 4px -2px rgba(40,30,10,0.08);
+            --shadow-lg: 0 12px 28px -8px rgba(60,40,10,0.22);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* ---------- Header ---------- */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .header-inner {
+            max-width: 1120px; margin: 0 auto;
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            width: 44px; height: 44px; flex-shrink: 0;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 23px;
+        }
+        .logo h1 { font-size: 1.05rem; font-weight: 800; line-height: 1.2; letter-spacing: -.01em; }
+        .logo p { font-size: 0.78rem; color: var(--text-muted); }
+        .header-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .name-field {
+            display: flex; align-items: center; gap: 8px;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 9px; padding: 4px 10px;
+        }
+        .name-field label { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; }
+        .name-field input {
+            border: none; background: transparent; font-family: inherit;
+            font-size: 0.85rem; color: var(--text-primary); width: 120px; outline: none;
+        }
+
+        .btn {
+            font-family: inherit; font-size: 0.85rem; font-weight: 700;
+            border: 1px solid var(--border); background: var(--bg-secondary);
+            color: var(--text-secondary); padding: 9px 15px; border-radius: 9px;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+            min-height: 40px; transition: all .15s ease;
+        }
+        .btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+        .btn-primary {
+            background: var(--accent-gradient); color: #fff; border: none;
+            box-shadow: var(--shadow);
+        }
+        .btn-primary:hover { color: #fff; opacity: .93; }
+        .btn-danger:hover { border-color: #ef4444; color: #ef4444; }
+        .save-pill {
+            font-size: 0.72rem; color: var(--ok); font-weight: 700;
+            display: inline-flex; align-items: center; gap: 5px; opacity: 0;
+            transition: opacity .3s ease;
+        }
+        .save-pill.show { opacity: 1; }
+        .save-pill::before { content: "\25CF"; font-size: 0.6rem; }
+
+        /* ---------- Layout ---------- */
+        .main {
+            max-width: 1120px; margin: 0 auto; width: 100%;
+            padding: 20px; display: flex; flex-direction: column; gap: 18px;
+        }
+
+        /* ---------- Instruction banner ---------- */
+        .hint {
+            background: linear-gradient(135deg, rgba(249,99,2,.08), rgba(255,122,41,.06));
+            border: 1px solid rgba(249,99,2,.22);
+            border-radius: 12px; padding: 13px 16px; font-size: 0.85rem;
+            color: var(--text-secondary); display: flex; gap: 10px; align-items: flex-start;
+        }
+        .hint b { color: var(--text-primary); }
+
+        /* ---------- Lane selector ---------- */
+        .lane-bar {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 16px; box-shadow: var(--shadow-sm);
+            display: flex; flex-wrap: wrap; gap: 16px; align-items: center;
+        }
+        .lane-bar .lb-label { font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
+        .lane-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .lane-tab {
+            font-family: inherit; font-size: 0.85rem; font-weight: 700;
+            border: 1.5px solid var(--border); background: var(--bg-input);
+            color: var(--text-secondary); padding: 9px 16px; border-radius: 999px;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+            transition: all .15s ease;
+        }
+        .lane-tab:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+        .lane-tab .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .lane-tab[data-l="A"] .dot { background: var(--lane-a); }
+        .lane-tab[data-l="B"] .dot { background: var(--lane-b); }
+        .lane-tab.active[data-l="A"] { border-color: var(--lane-a); color: var(--lane-a); background: rgba(249,99,2,.08); }
+        .lane-tab.active[data-l="B"] { border-color: var(--lane-b); color: var(--lane-b); background: rgba(37,99,235,.08); }
+        .lane-note { margin-left: auto; font-size: 0.76rem; color: var(--text-muted); max-width: 460px; }
+        .lane-note b { color: var(--text-secondary); }
+
+        /* ---------- Summary strip ---------- */
+        .summary {
+            display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 14px 18px; box-shadow: var(--shadow-sm);
+        }
+        .summary .lane-chip {
+            font-size: 0.8rem; font-weight: 800; padding: 5px 12px; border-radius: 999px;
+            display: inline-flex; align-items: center; gap: 7px;
+        }
+        .summary .stat { display: flex; flex-direction: column; gap: 1px; }
+        .summary .stat .k { font-size: 0.68rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); font-weight: 700; }
+        .summary .stat .v { font-size: 1.15rem; font-weight: 800; }
+        .summary .stat .v.warn { color: var(--warn); }
+        .summary .stat .v.ok { color: var(--ok); }
+        .summary .divider { width: 1px; align-self: stretch; background: var(--border); }
+        .summary .nudge {
+            margin-left: auto; font-size: 0.76rem; font-weight: 700;
+            border-radius: 999px; padding: 6px 13px;
+        }
+        .summary .nudge.clean { color: var(--ok); background: var(--ok-bg); }
+        .summary .nudge.pending { color: #b45309; background: var(--warn-bg); }
+
+        /* ---------- Row cards ---------- */
+        .rows { display: flex; flex-direction: column; gap: 16px; }
+        .row-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-left: 5px solid var(--accent-primary);
+            border-radius: 14px; padding: 16px 18px; box-shadow: var(--shadow-sm);
+            transition: border-color .15s ease;
+        }
+        .row-card.unverified { border-left-color: var(--warn); }
+        .row-head { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+        .row-head .idx {
+            width: 28px; height: 28px; flex-shrink: 0; border-radius: 8px;
+            background: var(--bg-input); color: var(--text-secondary);
+            font-weight: 800; font-size: 0.82rem; display: flex; align-items: center; justify-content: center;
+        }
+        .row-head .head-fields { flex: 1; min-width: 220px; display: flex; gap: 8px; flex-wrap: wrap; }
+        .row-head .head-fields .grow { flex: 1; min-width: 150px; }
+        .verify-badge {
+            flex-shrink: 0; font-size: 0.72rem; font-weight: 800;
+            border-radius: 999px; padding: 5px 11px; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .verify-badge.on { color: #047857; background: var(--ok-bg); }
+        .verify-badge.off { color: #b45309; background: var(--warn-bg); }
+        .card-x {
+            border: none; background: transparent; color: var(--text-muted);
+            cursor: pointer; border-radius: 7px; font-size: 1.15rem; line-height: 1;
+            width: 30px; height: 30px; flex-shrink: 0;
+        }
+        .card-x:hover { background: rgba(239,68,68,.12); color: #ef4444; }
+        .card-x:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+        .field-inp, .field-sel, .field-ta {
+            border: 1px solid var(--border); background: var(--bg-input);
+            border-radius: 8px; padding: 8px 11px; font-family: inherit; font-size: 0.88rem;
+            outline: none; color: var(--text-primary); width: 100%;
+        }
+        .field-inp:focus, .field-sel:focus, .field-ta:focus { border-color: var(--accent-primary); background: var(--bg-secondary); }
+        .field-inp.state { font-weight: 700; }
+        .field-ta { resize: vertical; min-height: 58px; }
+        .field-sel { cursor: pointer; }
+
+        /* status select colour cue */
+        .status-wrap { position: relative; }
+        .status-chip-preview {
+            position: absolute; right: 34px; top: 50%; transform: translateY(-50%);
+            width: 9px; height: 9px; border-radius: 50%; pointer-events: none;
+        }
+
+        .row-grid { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+        @media (max-width: 720px) { .row-grid { grid-template-columns: 1fr; } }
+        .fld { display: flex; flex-direction: column; }
+        .fld.span2 { grid-column: 1 / -1; }
+        .fld-top { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+        .fld-label { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); }
+
+        .info {
+            width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+            background: var(--bg-input); color: var(--text-muted);
+            font-size: 0.66rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;
+            cursor: help; position: relative; border: 1px solid var(--border);
+        }
+        .info:hover, .info:focus { color: var(--accent-primary); border-color: var(--accent-primary); }
+        .info .tip {
+            display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+            width: 250px; background: var(--text-primary); color: #fff; font-weight: 500;
+            font-size: 0.74rem; line-height: 1.4; border-radius: 8px; padding: 9px 11px;
+            box-shadow: var(--shadow-lg); z-index: 30; text-align: left;
+        }
+        .info .tip::after {
+            content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            border: 6px solid transparent; border-top-color: var(--text-primary);
+        }
+        .info:hover .tip, .info:focus .tip { display: block; }
+
+        /* verify toggle row */
+        .verify-row {
+            margin-top: 14px; display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap;
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 10px; padding: 11px 13px;
+        }
+        .verify-row.on { background: var(--ok-bg); border-color: rgba(16,185,129,.3); }
+        .verify-check { display: flex; align-items: center; gap: 9px; cursor: pointer; user-select: none; }
+        .verify-check input { width: 17px; height: 17px; accent-color: var(--ok); cursor: pointer; }
+        .verify-check .lbl { font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 6px; }
+        .verify-row.on .verify-check .lbl { color: #047857; }
+
+        /* ---------- add / footer controls ---------- */
+        .add-row-btn {
+            width: 100%; border: 2px dashed var(--border); background: transparent;
+            color: var(--text-secondary); font-family: inherit; font-weight: 700; font-size: 0.9rem;
+            padding: 14px; border-radius: 12px; cursor: pointer; transition: all .15s ease;
+        }
+        .add-row-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); background: rgba(249,99,2,.04); }
+        .add-row-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+        .empty {
+            text-align: center; color: var(--text-muted); font-style: italic;
+            padding: 20px; font-size: 0.9rem;
+        }
+
+        .status-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.72rem; color: var(--text-secondary); align-items: center; }
+        .status-legend span { display: inline-flex; align-items: center; gap: 5px; }
+        .status-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+        .footer-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+        .footer-actions .left, .footer-actions .right { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        /* ---------- Export modal ---------- */
+        .modal-backdrop {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            background: rgba(45,30,10,.42); align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-backdrop.show { display: flex; }
+        .modal {
+            background: #fff; border-radius: 16px; box-shadow: var(--shadow-lg);
+            width: 100%; max-width: 820px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .modal-head { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .modal-head h3 { font-size: 1.05rem; font-weight: 800; }
+        .modal-head .close { margin-left: auto; }
+        .modal-body { padding: 16px 20px; overflow: auto; }
+        .modal-body textarea {
+            width: 100%; min-height: 320px; border: 1px solid var(--border); border-radius: 10px;
+            padding: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.8rem; line-height: 1.55; resize: vertical; outline: none; color: var(--text-primary);
+            background: var(--bg-input); white-space: pre;
+        }
+        .modal-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: var(--text-primary); color: #fff; padding: 11px 20px; border-radius: 10px;
+            font-size: 0.85rem; font-weight: 700; box-shadow: var(--shadow-lg); opacity: 0;
+            transition: all .25s ease; pointer-events: none; z-index: 200;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ---------- Clean report (preview + print) ---------- */
+        .report { color: #1e2130; background: #fff; font-size: 0.86rem; line-height: 1.5; }
+        .report .r-head { border-bottom: 2px solid #e5e3df; padding-bottom: 14px; margin-bottom: 18px; }
+        .report .r-badge {
+            display: inline-block; color: #fff; font-weight: 800; font-size: 0.72rem;
+            letter-spacing: .04em; text-transform: uppercase; padding: 4px 11px; border-radius: 999px; margin-bottom: 10px;
+        }
+        .report h2 { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: 4px; }
+        .report .r-sub { font-size: 0.82rem; color: #4b5060; margin-bottom: 12px; }
+        .report .r-meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 0.8rem; color: #4b5060; }
+        .report .r-meta b { color: #1e2130; }
+        .report h3 { font-size: 0.95rem; font-weight: 800; margin: 22px 0 10px; letter-spacing: -.01em; }
+        .report table { border-collapse: collapse; width: 100%; font-size: 0.78rem; }
+        .report th, .report td { border: 1px solid #e5e3df; padding: 7px 9px; text-align: left; vertical-align: top; }
+        .report thead th { background: #f2f1ef; font-weight: 800; color: #4b5060; font-size: 0.7rem; text-transform: uppercase; letter-spacing: .03em; }
+        .report .st { display: inline-block; padding: 2px 8px; border-radius: 999px; font-weight: 800; font-size: 0.72rem; white-space: nowrap; }
+        .report .st-ok { color: #047857; background: rgba(16,185,129,.14); }
+        .report .st-warn { color: #b45309; background: rgba(245,158,11,.16); }
+        .report .st-bad { color: #b91c1c; background: rgba(239,68,68,.14); }
+        .report .st-gray { color: #64748b; background: rgba(148,163,184,.16); }
+        .report .vflag { font-weight: 800; font-size: 0.72rem; white-space: nowrap; }
+        .report .vflag.on { color: #047857; }
+        .report .vflag.off { color: #b45309; }
+        .report .finding { border: 1px solid #e5e3df; border-left: 4px solid var(--accent-primary); border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; page-break-inside: avoid; }
+        .report .finding.off { border-left-color: #f59e0b; }
+        .report .finding .f-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+        .report .finding .f-name { font-weight: 800; font-size: 0.95rem; }
+        .report .finding .f-line { font-size: 0.82rem; color: #1e2130; margin-top: 4px; }
+        .report .finding .f-line .lab { font-weight: 800; color: #4b5060; }
+        .report .finding .f-url { font-size: 0.76rem; color: #64748b; word-break: break-all; }
+        .report .r-callout {
+            margin-top: 18px; border: 1px solid rgba(249,99,2,.25); background: rgba(249,99,2,.06);
+            border-radius: 10px; padding: 11px 14px; font-size: 0.82rem; color: #4b5060;
+        }
+        .report .r-callout.warn { border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.09); }
+        .report .r-callout b { color: #1e2130; }
+        .report .r-empty { color: #969bab; font-style: italic; padding: 16px 0; }
+        .report .r-foot { margin-top: 22px; padding-top: 12px; border-top: 1px solid #e5e3df; font-size: 0.72rem; color: #969bab; }
+
+        #reportView { display: none; }
+
+        @media (max-width: 620px) {
+            .header-actions { width: 100%; }
+            .name-field { flex: 1; } .name-field input { width: 100%; }
+            .lane-note { display: none; }
+        }
+
+        /* ---------- Print: show only the clean report ---------- */
+        @media print {
+            .app, .modal-backdrop, .toast { display: none !important; }
+            body { background: #fff; }
+            #reportView { display: block !important; padding: 0; }
+            .report .finding { break-inside: avoid; }
+            .report table { font-size: 0.72rem; }
+            @page { margin: 14mm; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">&#9878;&#65039;</div>
+                <div>
+                    <h1>Multi-State Survey Tracker</h1>
+                    <p>The Home Depot &middot; Emerging Tech Regulations &middot; Project 1</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="save-pill" id="savePill">Saved</span>
+                <div class="name-field">
+                    <label for="studentName">Name</label>
+                    <input type="text" id="studentName" placeholder="Your name" autocomplete="off">
+                </div>
+                <button class="btn btn-danger" id="resetAllBtn" type="button" title="Clear the whole survey and start fresh">&#8635; Reset</button>
+                <button class="btn" id="copyAiBtn" type="button" title="Copy your whole survey as text you can paste into Claude or Perplexity">&#129302; Copy for AI</button>
+                <button class="btn btn-primary" id="exportBtn" type="button">&#8593; Export</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="hint">
+            <span style="font-size:1.15rem;">&#128161;</span>
+            <div><b>Build your multi-state survey one verified row at a time.</b> Pick your lane below, then add a row for each state/law you are tracking. <b>Open the actual statute or bill before you fill a row</b> &mdash; then record what it requires, who it targets, and its status. Toggle <b>Verified</b> only after you have confirmed the entry against a primary source. Unverified rows stay flagged in amber, because source verification is the graded backbone of this program. Hit <b>Export</b> for a print-ready <b>Focus Brief Part A</b> (PDF). Your work auto-saves in this browser.</div>
+        </div>
+
+        <!-- Lane selector -->
+        <section class="lane-bar" aria-label="Lane selector">
+            <span class="lb-label">Your lane:</span>
+            <div class="lane-tabs" id="laneTabs" role="tablist">
+                <button class="lane-tab" data-l="A" role="tab" type="button"><span class="dot"></span>Lane A &middot; Surveillance &amp; Algorithmic Pricing</button>
+                <button class="lane-tab" data-l="B" role="tab" type="button"><span class="dot"></span>Lane B &middot; Biometrics &amp; Facial Recognition</button>
+            </div>
+            <p class="lane-note" id="laneNote"></p>
+        </section>
+
+        <!-- Summary strip -->
+        <section class="summary" id="summary" aria-live="polite"></section>
+
+        <!-- Row cards -->
+        <section class="rows" id="rows"></section>
+
+        <button class="add-row-btn" id="addRowBtn" type="button">+ Add a state / law to your survey</button>
+
+        <div class="status-legend">
+            <b style="color:var(--text-secondary);font-weight:800;">Status colors:</b>
+            <span><i style="background:var(--ok)"></i>Enacted / Effective</span>
+            <span><i style="background:var(--warn)"></i>Pending / In process / Carryover</span>
+            <span><i style="background:var(--bad)"></i>Failed</span>
+        </div>
+
+        <div class="footer-actions">
+            <div class="left">
+                <button class="btn btn-danger" id="clearLaneBtn" type="button">&#8635; Clear this lane's rows</button>
+            </div>
+            <div class="right">
+                <button class="btn" id="copyAiBtn2" type="button" title="Copy your whole survey as text you can paste into an AI tool">&#129302; Copy survey for AI</button>
+                <button class="btn btn-primary" id="exportBtn2" type="button">&#8593; Export Focus Brief Part A</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Export modal -->
+<div class="modal-backdrop" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="exportTitle">
+    <div class="modal">
+        <div class="modal-head">
+            <h3 id="exportTitle">Export &mdash; Focus Brief Part A</h3>
+            <button class="btn close" id="exportClose" type="button">Close</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:12px;">A clean, print-ready <b>Regulatory Landscape Survey (Focus Brief Part A)</b>. Click <b>Save as PDF</b>, then in the print dialog choose <b>&ldquo;Save as PDF&rdquo;</b> as the destination and name the file <code id="exportFilename">RegulatoryLandscapeSurvey_Project1_YourName</code>.</p>
+            <div id="exportReport" class="report"></div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn" id="exportClose2" type="button">Close</button>
+            <button class="btn btn-primary" id="savePdfBtn" type="button">&#8595; Save as PDF</button>
+        </div>
+    </div>
+</div>
+
+<!-- Print-only clean report (rendered on export) -->
+<div id="reportView" class="report" aria-hidden="true"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const CONFIG = {
+    storageKey: "thd-legal-multistate-survey",
+    version: "1.0",
+    lanes: {
+        A: {
+            label: "Lane A — Surveillance & Algorithmic Pricing",
+            short: "Lane A · Surveillance & Algorithmic Pricing",
+            color: "#F96302",
+            // Research prompts — NOT pre-filled row data. Learners must verify from primary sources.
+            note: "States driving this lane to research: <b>NY, MD, CT</b>, plus <b>California candidate bills</b> and the <b>FTC 6(b) surveillance-pricing study</b>. These are leads to open and verify — never facts to copy."
+        },
+        B: {
+            label: "Lane B — Biometrics & Facial Recognition",
+            short: "Lane B · Biometrics & Facial Recognition",
+            color: "#2563eb",
+            note: "States driving this lane to research: <b>IL (BIPA), TX, WA, CO</b>, plus the <b>FTC v. Rite Aid</b> facial-recognition order. These are leads to open and verify — never facts to copy."
+        }
+    },
+    // Status options + color bucket. ok = enacted/effective, warn = in process, bad = failed.
+    statuses: [
+        { v: "",                      label: "— Select status —", bucket: "gray" },
+        { v: "Enacted",               label: "Enacted",               bucket: "ok" },
+        { v: "Effective",             label: "Effective",             bucket: "ok" },
+        { v: "Pending",               label: "Pending",               bucket: "warn" },
+        { v: "In committee",          label: "In committee",          bucket: "warn" },
+        { v: "Passed one chamber",    label: "Passed one chamber",    bucket: "warn" },
+        { v: "Carryover candidate",   label: "Carryover candidate",   bucket: "warn" },
+        { v: "Failed",                label: "Failed",                bucket: "bad" }
+    ],
+    // Field tooltips (info pattern)
+    tips: {
+        status: "Where the law actually stands. Enacted/Effective = it is real law (green). Pending, in committee, passed one chamber, or a carryover candidate = still a proposal (amber) — never describe it as a requirement. Failed = dead this session (red). Read the bill's history page to confirm.",
+        requires: "Summarize the requirement precisely and without overstating it. Say exactly what the text obligates — a disclosure, a consent, an opt-out, a ban — not what a headline claims. If the statute is narrower than it sounds, capture the narrowness.",
+        targets: "Who the law actually binds: retailers, employers, data controllers/processors, businesses over a size threshold, etc. Get this from the definitions section, not from a summary — coverage often turns on a threshold or a carve-out.",
+        source: "The primary source you actually opened: the statute, the bill text, or the regulator's order/complaint — ideally the official .gov URL. A blog, news article, or AI summary is a lead, not a source.",
+        verified: "Toggle this ON only after you have opened the primary source and confirmed the law exists, says what your row claims, and is at the status you recorded. Verification is graded: in Mata v. Avianca (2023) lawyers were sanctioned for citing AI-invented cases they never opened. Treat every AI-surfaced citation as 'to verify' until you have read the primary source yourself."
+    }
+};
+
+/* ---------- State ---------- */
+// state.data.A = { rows: [ {id, state, law, status, requires, targets, effDate, source, verified, vnote} ] }
+let state = { studentName: "", activeLane: "A", data: {}, metadata: { version: CONFIG.version, timestamp: 0 } };
+let uidCounter = 1;
+
+const $ = (s, el = document) => el.querySelector(s);
+function uid() { return "rw-" + (uidCounter++) + "-" + (Date.now() % 100000); }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+function blankLane() { return { rows: [] }; }
+function ensureLane(l) { if (!state.data[l]) state.data[l] = blankLane(); return state.data[l]; }
+function newRow() {
+    return { id: uid(), state: "", law: "", status: "", requires: "", targets: "", effDate: "", source: "", verified: false, vnote: "" };
+}
+function statusBucket(v) {
+    const s = CONFIG.statuses.find(s => s.v === v);
+    return s ? s.bucket : "gray";
+}
+
+/* ---------- Persistence ---------- */
+let saveTimer = null;
+function save(flash = true) {
+    state.metadata.timestamp = Date.now();
+    try {
+        localStorage.setItem(CONFIG.storageKey, JSON.stringify(state));
+        if (flash) showSaved();
+    } catch (e) { /* storage blocked/full — non-fatal */ }
+}
+function load() {
+    try {
+        const raw = localStorage.getItem(CONFIG.storageKey);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.data) { state = parsed; state.metadata = state.metadata || { version: CONFIG.version }; return true; }
+        }
+    } catch (e) { /* ignore corrupt */ }
+    return false;
+}
+function showSaved() {
+    const pill = $("#savePill");
+    pill.classList.add("show");
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => pill.classList.remove("show"), 1400);
+}
+
+/* ---------- Row math / summary ---------- */
+function laneStats(lane) {
+    const rows = ensureLane(lane).rows;
+    const verified = rows.filter(r => r.verified).length;
+    const unverified = rows.length - verified;
+    const enacted = rows.filter(r => statusBucket(r.status) === "ok").length;
+    const pending = rows.filter(r => statusBucket(r.status) === "warn").length;
+    const failed = rows.filter(r => statusBucket(r.status) === "bad").length;
+    return { total: rows.length, verified, unverified, enacted, pending, failed };
+}
+
+/* ---------- Rendering ---------- */
+function render() {
+    $("#studentName").value = state.studentName || "";
+    document.querySelectorAll(".lane-tab").forEach(t => {
+        const l = t.dataset.l;
+        t.classList.toggle("active", l === state.activeLane);
+        t.setAttribute("aria-selected", l === state.activeLane ? "true" : "false");
+    });
+    $("#laneNote").innerHTML = CONFIG.lanes[state.activeLane].note;
+    renderSummary();
+    renderRows();
+}
+
+function renderSummary() {
+    const l = state.activeLane;
+    const cfg = CONFIG.lanes[l];
+    const s = laneStats(l);
+    const nudge = s.unverified > 0
+        ? `<span class="nudge pending">&#9888; ${s.unverified} row${s.unverified === 1 ? "" : "s"} still unverified</span>`
+        : (s.total > 0 ? `<span class="nudge clean">&#10003; All rows verified</span>` : "");
+    $("#summary").innerHTML =
+        `<span class="lane-chip" style="color:${cfg.color};background:${cfg.color}18;">
+            <span style="width:9px;height:9px;border-radius:50%;background:${cfg.color};display:inline-block;"></span>${escapeHtml(cfg.short)}
+         </span>
+         <div class="divider"></div>
+         <div class="stat"><span class="k">States / rows</span><span class="v">${s.total}</span></div>
+         <div class="stat"><span class="k">Verified</span><span class="v ok">${s.verified}</span></div>
+         <div class="stat"><span class="k">Unverified</span><span class="v ${s.unverified ? "warn" : ""}">${s.unverified}</span></div>
+         <div class="divider"></div>
+         <div class="stat"><span class="k">Enacted / effective</span><span class="v">${s.enacted}</span></div>
+         <div class="stat"><span class="k">Pending</span><span class="v">${s.pending}</span></div>
+         ${nudge}`;
+}
+
+function renderRows() {
+    const wrap = $("#rows");
+    wrap.innerHTML = "";
+    const ld = ensureLane(state.activeLane);
+    if (!ld.rows.length) {
+        wrap.innerHTML = `<div class="empty">No rows yet. Click &ldquo;Add a state / law&rdquo; to start mapping the ${escapeHtml(CONFIG.lanes[state.activeLane].short)} landscape.</div>`;
+        return;
+    }
+    ld.rows.forEach((row, i) => wrap.appendChild(makeCard(row, i)));
+}
+
+function statusSelectHtml(row) {
+    const opts = CONFIG.statuses.map(s =>
+        `<option value="${escapeHtml(s.v)}" ${row.status === s.v ? "selected" : ""}>${escapeHtml(s.label)}</option>`
+    ).join("");
+    const bucket = statusBucket(row.status);
+    const dotColor = { ok: "var(--ok)", warn: "var(--warn)", bad: "var(--bad)", gray: "transparent" }[bucket];
+    return `<div class="status-wrap">
+        <select class="field-sel" data-f="status" aria-label="Status">${opts}</select>
+        <span class="status-chip-preview" style="background:${dotColor};"></span>
+    </div>`;
+}
+
+function makeCard(row, index) {
+    const card = document.createElement("div");
+    card.className = "row-card" + (row.verified ? "" : " unverified");
+
+    const badge = row.verified
+        ? `<span class="verify-badge on">&#10003; Verified</span>`
+        : `<span class="verify-badge off">&#9888; Unverified</span>`;
+
+    card.innerHTML = `
+        <div class="row-head">
+            <div class="idx">${index + 1}</div>
+            <div class="head-fields">
+                <input class="field-inp state grow" data-f="state" placeholder="State (e.g. New York)" value="${escapeHtml(row.state)}" aria-label="State">
+                <input class="field-inp grow" data-f="law" placeholder="Law / Bill — name + number (e.g. SB 123, Algorithmic Pricing Disclosure Act)" value="${escapeHtml(row.law)}" aria-label="Law or bill">
+            </div>
+            ${badge}
+            <button class="card-x" data-act="remove" title="Remove this row" aria-label="Remove row">&times;</button>
+        </div>
+
+        <div class="row-grid">
+            <div class="fld">
+                <div class="fld-top">
+                    <span class="fld-label">Status</span>
+                    ${infoHtml("status")}
+                </div>
+                ${statusSelectHtml(row)}
+            </div>
+            <div class="fld">
+                <div class="fld-top">
+                    <span class="fld-label">Effective date</span>
+                </div>
+                <input class="field-inp" data-f="effDate" placeholder='e.g. Jan 1, 2026 — or "N/A / not yet in force"' value="${escapeHtml(row.effDate)}" aria-label="Effective date">
+            </div>
+
+            <div class="fld span2">
+                <div class="fld-top">
+                    <span class="fld-label">What it requires</span>
+                    ${infoHtml("requires")}
+                </div>
+                <textarea class="field-ta" data-f="requires" placeholder="Summarize the requirement precisely — exactly what the text obligates, without overstating it.">${escapeHtml(row.requires)}</textarea>
+            </div>
+
+            <div class="fld">
+                <div class="fld-top">
+                    <span class="fld-label">Who it targets</span>
+                    ${infoHtml("targets")}
+                </div>
+                <input class="field-inp" data-f="targets" placeholder="e.g. retailers, employers, data controllers" value="${escapeHtml(row.targets)}" aria-label="Who it targets">
+            </div>
+            <div class="fld">
+                <div class="fld-top">
+                    <span class="fld-label">Primary source</span>
+                    ${infoHtml("source")}
+                </div>
+                <input class="field-inp" data-f="source" placeholder="Statute / bill-text / order URL you actually opened" value="${escapeHtml(row.source)}" aria-label="Primary source">
+            </div>
+        </div>
+
+        <div class="verify-row ${row.verified ? "on" : ""}">
+            <label class="verify-check">
+                <input type="checkbox" data-f="verified" ${row.verified ? "checked" : ""}>
+                <span class="lbl">Verified against primary source ${infoHtml("verified")}</span>
+            </label>
+            <textarea class="field-ta" data-f="vnote" style="flex:1;min-width:220px;" placeholder="Verification note: authority checked, source consulted, date, status confirmed, anything discarded.">${escapeHtml(row.vnote)}</textarea>
+        </div>`;
+
+    // text / select field bindings (no rerender to keep focus)
+    card.querySelectorAll('[data-f]:not([type="checkbox"])').forEach(el => {
+        const evt = el.tagName === "SELECT" ? "change" : "input";
+        el.addEventListener(evt, () => {
+            row[el.dataset.f] = el.value;
+            save();
+            if (el.dataset.f === "status") render();      // status drives the color dot + summary
+        });
+    });
+    // verified checkbox — rerender to update border / badge / summary
+    const chk = card.querySelector('[data-f="verified"]');
+    chk.addEventListener("change", () => { row.verified = chk.checked; save(); render(); });
+
+    // remove
+    card.querySelector('[data-act="remove"]').addEventListener("click", () => {
+        const hasContent = row.state || row.law || row.requires || row.source || row.vnote;
+        if (hasContent && !confirm("Remove " + (row.state ? '"' + row.state + '"' : "this row") + " from your survey?")) return;
+        const ld = ensureLane(state.activeLane);
+        ld.rows = ld.rows.filter(r => r.id !== row.id);
+        save(); render();
+    });
+    return card;
+}
+
+function infoHtml(key) {
+    return `<span class="info" tabindex="0" role="button" aria-label="More about this field">i<span class="tip">${escapeHtml(CONFIG.tips[key])}</span></span>`;
+}
+
+/* ---------- Add / lane switch / clear ---------- */
+function addRow() {
+    const ld = ensureLane(state.activeLane);
+    ld.rows.push(newRow());
+    save(); render();
+    const cards = $("#rows").querySelectorAll(".row-card");
+    const last = cards[cards.length - 1];
+    if (last) { const nm = last.querySelector('[data-f="state"]'); nm && nm.focus(); last.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+}
+$("#addRowBtn").addEventListener("click", addRow);
+
+document.querySelectorAll(".lane-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+        if (state.activeLane === tab.dataset.l) return;
+        state.activeLane = tab.dataset.l;
+        // seed a blank row when opening an empty lane for the first time
+        if (!ensureLane(state.activeLane).rows.length) ensureLane(state.activeLane).rows.push(newRow());
+        save(false); render();
+    });
+});
+
+$("#clearLaneBtn").addEventListener("click", () => {
+    const cfg = CONFIG.lanes[state.activeLane];
+    if (confirm("Clear every row in " + cfg.short + "? Your other lane stays intact. This can't be undone.")) {
+        state.data[state.activeLane] = blankLane();
+        ensureLane(state.activeLane).rows.push(newRow());
+        save(); render(); toast(cfg.short + " cleared");
+    }
+});
+
+$("#resetAllBtn").addEventListener("click", () => {
+    if (confirm("Reset the whole tool? This clears both lanes and your name so you can start a fresh survey. This can't be undone.")) {
+        state = { studentName: "", activeLane: "A", data: {}, metadata: { version: CONFIG.version, timestamp: 0 } };
+        ["A", "B"].forEach(l => ensureLane(l));
+        ensureLane("A").rows.push(newRow());
+        save(); render(); toast("Tool reset — ready for a fresh survey");
+    }
+});
+
+$("#studentName").addEventListener("input", e => { state.studentName = e.target.value; save(); });
+
+/* ---------- Export: clean PDF report (Focus Brief Part A) ---------- */
+function pdfFileName() {
+    const safeName = (state.studentName || "").trim().replace(/[^a-z0-9]+/gi, "");
+    return "RegulatoryLandscapeSurvey_Project1" + (safeName ? "_" + safeName : "_YourName");
+}
+function statusChip(v) {
+    if (!v) return `<span class="st st-gray">not set</span>`;
+    const b = statusBucket(v);
+    const cls = { ok: "st-ok", warn: "st-warn", bad: "st-bad", gray: "st-gray" }[b];
+    return `<span class="st ${cls}">${escapeHtml(v)}</span>`;
+}
+
+function buildReportHTML(lane) {
+    const cfg = CONFIG.lanes[lane];
+    const ld = ensureLane(lane);
+    const rows = ld.rows;
+    const s = laneStats(lane);
+    const date = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+
+    let html = `
+        <div class="r-head">
+            <span class="r-badge" style="background:${cfg.color};">Focus Brief Part A</span>
+            <h2>Regulatory Landscape Survey</h2>
+            <div class="r-sub">THE HOME DEPOT — Emerging Tech Regulations Externship &middot; Project 1: Map the Regulatory Landscape</div>
+            <div class="r-meta">
+                <span><b>Analyst:</b> ${escapeHtml(state.studentName || "—")}</span>
+                <span><b>Lane:</b> ${escapeHtml(cfg.label)}</span>
+                <span><b>Date:</b> ${escapeHtml(date)}</span>
+                <span><b>States / rows:</b> ${s.total}</span>
+                <span><b>Verified:</b> ${s.verified} / ${s.total}</span>
+                <span><b>Enacted / effective:</b> ${s.enacted} &middot; <b>Pending:</b> ${s.pending}</span>
+            </div>
+        </div>`;
+
+    if (!rows.length) {
+        html += `<p class="r-empty">No states surveyed yet. Add and verify at least the states driving your lane, then export.</p>`;
+        return html;
+    }
+
+    // Landscape table
+    html += `<h3>Landscape Survey</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:22px;">#</th>
+                    <th>State</th>
+                    <th>Law / Bill</th>
+                    <th>Status</th>
+                    <th>What it requires</th>
+                    <th>Who it targets</th>
+                    <th>Effective date</th>
+                    <th>Verified</th>
+                </tr>
+            </thead>
+            <tbody>`;
+    rows.forEach((r, i) => {
+        html += `<tr>
+            <td>${i + 1}</td>
+            <td><b>${escapeHtml(r.state || "—")}</b></td>
+            <td>${escapeHtml(r.law || "—")}</td>
+            <td>${statusChip(r.status)}</td>
+            <td>${r.requires ? escapeHtml(r.requires) : "—"}</td>
+            <td>${escapeHtml(r.targets || "—")}</td>
+            <td>${escapeHtml(r.effDate || "—")}</td>
+            <td><span class="vflag ${r.verified ? "on" : "off"}">${r.verified ? "&#10003; yes" : "&#9888; no"}</span></td>
+        </tr>`;
+    });
+    html += `</tbody></table>`;
+
+    // Verification note section
+    html += `<h3>Verification Note</h3>`;
+    rows.forEach((r, i) => {
+        html += `<div class="finding ${r.verified ? "" : "off"}">
+            <div class="f-head">
+                <span class="f-name">${i + 1}. ${escapeHtml(r.state || "Untitled")}${r.law ? " — " + escapeHtml(r.law) : ""}</span>
+                <span class="vflag ${r.verified ? "on" : "off"}">${r.verified ? "&#10003; Verified against primary source" : "&#9888; NOT yet verified"}</span>
+            </div>
+            <div class="f-line"><span class="lab">Primary source:</span> ${r.source ? `<span class="f-url">${escapeHtml(r.source)}</span>` : "<i>— none recorded —</i>"}</div>
+            <div class="f-line"><span class="lab">Verification note:</span> ${r.vnote ? escapeHtml(r.vnote).replace(/\n/g, "<br>") : "<i>— no note recorded —</i>"}</div>
+        </div>`;
+    });
+
+    // Unverified callout
+    if (s.unverified > 0) {
+        html += `<div class="r-callout warn"><b>&#9888; ${s.unverified} row${s.unverified === 1 ? " is" : "s are"} not yet verified against a primary source.</b> Verification is graded in this program — open the primary source and confirm each entry, or explicitly flag it as unverified, before you submit.</div>`;
+    } else {
+        html += `<div class="r-callout"><b>&#10003; Every row is verified against a primary source.</b> Carry this survey forward as Final Presentation Slide 1 (WHAT) and the input for your Project 2 impact analysis.</div>`;
+    }
+
+    html += `<div class="r-foot">Regulatory Landscape &amp; Focus Brief, Part A &middot; ${escapeHtml(cfg.label)} &middot; Generated with the Multi-State Survey Tracker.</div>`;
+    return html;
+}
+
+function openExport() {
+    const lane = state.activeLane;
+    const reportHTML = buildReportHTML(lane);
+    $("#exportReport").innerHTML = reportHTML;
+    $("#reportView").innerHTML = reportHTML;
+    $("#exportFilename").textContent = pdfFileName();
+    $("#exportModal").classList.add("show");
+}
+function closeExport() { $("#exportModal").classList.remove("show"); }
+$("#exportBtn").addEventListener("click", openExport);
+$("#exportBtn2").addEventListener("click", openExport);
+$("#exportClose").addEventListener("click", closeExport);
+$("#exportClose2").addEventListener("click", closeExport);
+$("#exportModal").addEventListener("click", e => { if (e.target === $("#exportModal")) closeExport(); });
+
+$("#savePdfBtn").addEventListener("click", () => {
+    // Ensure the print-only report is current, then hint the file name via the tab title.
+    $("#reportView").innerHTML = buildReportHTML(state.activeLane);
+    const prevTitle = document.title;
+    document.title = pdfFileName();
+    window.print();
+    setTimeout(() => { document.title = prevTitle; }, 600);
+});
+
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("#exportModal").classList.contains("show")) closeExport(); });
+
+/* ---------- Copy for AI: plain-text dump of the whole survey ---------- */
+function buildAIExport() {
+    const lane = state.activeLane;
+    const cfg = CONFIG.lanes[lane];
+    const ld = ensureLane(lane);
+    const s = laneStats(lane);
+    const lines = [];
+
+    lines.push("# The Home Depot — Emerging Tech Regulations · Project 1");
+    lines.push("# Regulatory Landscape Survey (Focus Brief Part A)");
+    lines.push("Analyst: " + (state.studentName || "(unnamed)"));
+    lines.push("Lane: " + cfg.label);
+    lines.push("Rows: " + s.total + "  |  Verified: " + s.verified + "  |  Unverified: " + s.unverified);
+    lines.push("");
+    lines.push("IMPORTANT FOR THE AI: The rows below are MY OWN findings, each meant to be verified against a primary source.");
+    lines.push("Do NOT invent, add, or 'complete' states, laws, bill numbers, effective dates, or citations that are not present below.");
+    lines.push("If a field is blank or a row is marked UNVERIFIED, treat it as unknown — do not fill it in from memory.");
+    lines.push("Help only by organizing, tightening wording, or flagging gaps in what I have actually recorded.");
+    lines.push("");
+
+    if (!ld.rows.length) {
+        lines.push("(No rows yet — build your survey first, then copy.)");
+        return lines.join("\n");
+    }
+
+    ld.rows.forEach((r, i) => {
+        lines.push("## Row " + (i + 1) + ": " + (r.state || "(state not set)") + (r.law ? " — " + r.law : ""));
+        lines.push("   - Status: " + (r.status || "(not set)"));
+        lines.push("   - What it requires: " + (r.requires ? r.requires.replace(/\s*\n\s*/g, " ") : "(blank)"));
+        lines.push("   - Who it targets: " + (r.targets || "(blank)"));
+        lines.push("   - Effective date: " + (r.effDate || "(blank)"));
+        lines.push("   - Primary source: " + (r.source || "(none recorded)"));
+        lines.push("   - Verified against primary source: " + (r.verified ? "YES" : "NO — TO VERIFY"));
+        if (r.vnote) lines.push("   - Verification note: " + r.vnote.replace(/\s*\n\s*/g, " "));
+        lines.push("");
+    });
+
+    if (s.unverified > 0) {
+        lines.push("NOTE: " + s.unverified + " row(s) are not yet verified against a primary source. These must be verified or flagged before submission.");
+    }
+    return lines.join("\n");
+}
+
+function copyAIExport() {
+    const text = buildAIExport();
+    const done = () => toast("Survey copied — paste into Claude or Perplexity");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+        fallbackCopy(text, done);
+    }
+}
+function fallbackCopy(text, done) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed"; ta.style.top = "-1000px";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand("copy"); done(); }
+    catch (e) { toast("Copy failed — select the text manually"); }
+    document.body.removeChild(ta);
+}
+$("#copyAiBtn").addEventListener("click", copyAIExport);
+$("#copyAiBtn2").addEventListener("click", copyAIExport);
+
+/* ---------- Toast ---------- */
+let toastTimer = null;
+function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ---------- Init ---------- */
+(function init() {
+    if (!load()) {
+        // seed both lanes; open Lane A with one blank row to lower the barrier
+        ["A", "B"].forEach(l => ensureLane(l));
+        ensureLane("A").rows.push(newRow());
+        state.activeLane = "A";
+        save(false);
+    }
+    ["A", "B"].forEach(l => ensureLane(l));
+    render();
+})();
+</script>
+</body>
+</html>
