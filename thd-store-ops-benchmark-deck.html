@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 Benchmark Deck — Home Depot Store Ops Externship</title>
+<style>
+  :root{
+    --orange:#F96302;          /* brand fill only, paired with dark text */
+    --orange-text:#B34700;     /* orange as text on white (~5.5:1) */
+    --ink:#1A1A1A;
+    --bg:#f7f7f6;
+    --card:#ffffff;
+    --border:#d9d6d0;
+    --border-strong:#b7b3ac;
+    --text:#1e2130;
+    --muted:#4b5060;
+    --ok:#15803D;
+    --ok-bg:#e9f6ee;
+    --warn:#B45309;            /* amber text ~4.7:1 */
+    --warn-bg:#fdf3e3;
+    --stop:#B91C1C;
+    --stop-bg:#fbeaea;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.55;
+    padding:20px;max-width:1040px;margin:0 auto;
+  }
+  header{margin-bottom:18px}
+  h1{font-size:1.5rem;line-height:1.2;margin-bottom:8px}
+  h1 .accent{color:var(--orange-text)}
+  .intro{color:var(--muted);max-width:70ch}
+  .how{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin:14px 0 6px;font-size:.92rem;color:var(--muted)}
+  kbd{font-family:inherit;background:#f0eee9;border:1px solid var(--border-strong);border-bottom-width:2px;border-radius:5px;padding:1px 6px;font-size:.85em;color:var(--ink)}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px}
+  @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+  @media(min-width:960px){.grid{grid-template-columns:1fr 1fr 1fr}}
+
+  .card{
+    background:var(--card);border:1px solid var(--border-strong);
+    border-top:6px solid var(--orange);border-radius:14px;padding:0;
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .card.anchor{border-top-color:var(--ok)}
+  .card.caution{border-top-color:var(--stop)}
+
+  .card-head{padding:16px 16px 4px}
+  .role-tag{
+    display:inline-block;font-size:.72rem;font-weight:800;text-transform:uppercase;
+    letter-spacing:.05em;color:var(--orange-text);margin-bottom:8px;
+  }
+  .card.anchor .role-tag{color:var(--ok)}
+  .card.caution .role-tag{color:var(--stop)}
+  .card h2{font-size:1.18rem;line-height:1.2;margin:0 0 2px}
+  .card .alias{font-size:.85rem;color:var(--muted);font-style:italic}
+
+  .field{padding:0 16px}
+  .field-label{
+    display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.04em;color:var(--muted);margin:12px 0 3px;
+  }
+  .field p{font-size:.95rem}
+
+  .flip-btn{
+    margin:14px 16px 4px;font:inherit;cursor:pointer;
+    background:var(--orange);border:1px solid var(--orange);color:var(--ink);
+    font-weight:700;font-size:.9rem;border-radius:9px;padding:9px 12px;
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+  }
+  .flip-btn:hover{background:#e85c02}
+  .flip-btn .chev{transition:transform .2s ease}
+  .flip-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+
+  .back{padding:0 16px 16px;display:none}
+  .card.open .back{display:block}
+  .card.open .front-extra{display:none}
+
+  .verdict{
+    margin:12px 0 0;border-radius:10px;padding:10px 12px;font-size:.92rem;
+    border:1px solid var(--border);display:flex;gap:8px;align-items:flex-start;
+  }
+  .verdict .vlabel{font-weight:800}
+  .verdict.fit{background:var(--ok-bg);border-color:var(--ok)}
+  .verdict.fit .vlabel{color:var(--ok)}
+  .verdict.partial{background:var(--warn-bg);border-color:var(--warn)}
+  .verdict.partial .vlabel{color:var(--warn)}
+  .verdict.nofit{background:var(--stop-bg);border-color:var(--stop)}
+  .verdict.nofit .vlabel{color:var(--stop)}
+
+  a:focus-visible,button:focus-visible{
+    outline:2px solid var(--ink);outline-offset:2px;
+    box-shadow:0 0 0 4px #fff, 0 0 0 6px var(--ink);
+  }
+  .toolbar{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap}
+  .toolbar button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border-strong);
+    background:#fff;color:var(--ink);padding:8px 14px;font-size:.9rem;font-weight:600;
+  }
+  .toolbar button:hover{background:#f3f1ec}
+  .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>The 2026 Benchmark Set: <span class="accent">what they do, and does it fit Home Depot?</span></h1>
+  <p class="intro">Six competitor moves worth studying. Each card front shows <strong>what they do</strong>. Reveal the back for <strong>why they did it</strong>, <strong>whether it worked</strong>, and the filter question — <strong>does it fit a warehouse-size store full of big, heavy, cut-to-order products?</strong></p>
+  <p class="how">Select <strong>Reveal the back</strong> on any card. By keyboard: press <kbd>Tab</kbd> to a card's button, then <kbd>Enter</kbd> or <kbd>Space</kbd>.</p>
+</header>
+
+<main id="main">
+  <ul class="grid" id="grid" style="list-style:none"></ul>
+
+  <div class="toolbar">
+    <button type="button" id="expand-all">Reveal all backs</button>
+    <button type="button" id="collapse-all">Hide all backs</button>
+  </div>
+</main>
+
+<div class="visually-hidden" role="status" aria-atomic="true" id="live"></div>
+
+<script>
+(function(){
+  "use strict";
+  var CARDS = [
+    {
+      id:"lowes", role:"Your anchor — study this most", cls:"anchor",
+      name:"Lowe's — Mylow", alias:"same-industry AI proof",
+      what:"An AI helper in every associate's hands across 1,700+ stores (2025) — product specs, project advice, live inventory.",
+      why:"Put expert answers in every associate's pocket so no customer waits for the one person who knows plumbing.",
+      work:"Yes. In-store satisfaction rose after rollout. This is the strongest, most current, same-industry proof you have.",
+      fit:"fit", fitLabel:"Fits Home Depot",
+      fitText:"Directly. Same industry, same store type, same associate-first shape. Weight your comparison on this one."
+    },
+    {
+      id:"apple", role:"The mechanic", cls:"",
+      name:"Apple — EasyPay", alias:"untethered checkout",
+      what:"An associate rings you up anywhere in the store on a handheld — no register, no line.",
+      why:"Kill the checkout line and keep the sale inside the conversation the associate is already having.",
+      work:"Yes — it's the model the rest of retail copies for mobile associate checkout.",
+      fit:"fit", fitLabel:"Fits Home Depot",
+      fitText:"Yes. This is exactly the untethered checkout the scenario imagines. Lean on Apple for the checkout mechanic itself."
+    },
+    {
+      id:"target", role:"The scale proof", cls:"",
+      name:"Target — myDevices + RFID", alias:"big-box scale",
+      what:"Associate handhelds plus RFID inventory tracking across roughly 2,000 large-format stores.",
+      why:"Give associates checkout and real-time inventory power in a store far bigger than a boutique.",
+      work:"Yes — proof the associate-handheld + RFID model holds up at big-box scale, not just small stores.",
+      fit:"fit", fitLabel:"Fits Home Depot",
+      fitText:"Yes. Target is your evidence that this model survives at Home Depot's size."
+    },
+    {
+      id:"bestbuy", role:"Consultative selling", cls:"",
+      name:"Best Buy", alias:"expert help + endless aisle",
+      what:"Expert 'blue-shirt' associates plus endless-aisle ordering for anything not on the shelf.",
+      why:"Win on expertise and selection instead of racing to the lowest price.",
+      work:"Yes for consultative selling. But public detail on its mobile-checkout tech is thin.",
+      fit:"partial", fitLabel:"Partly fits",
+      fitText:"Good for the expert-help and endless-aisle angle. For the checkout mechanic, don't infer from thin sources — lean on Apple instead, and say so."
+    },
+    {
+      id:"walmart", role:"Read this one carefully", cls:"",
+      name:"Walmart — “Check Out With Me”", alias:"not Scan & Go",
+      what:"An associate walks a handheld and belt printer out to you in Lawn & Garden and checks you out on the spot. This is NOT customer self-scan (Scan & Go).",
+      why:"Check out big, awkward garden items where the customer is standing, instead of hauling them to a register.",
+      work:"The associate-run version works. Walmart's customer self-scan Scan & Go, by contrast, mostly failed in stores — don't confuse the two.",
+      fit:"fit", fitLabel:"Fits Home Depot",
+      fitText:"The associate-run model is a near-perfect analog for Home Depot Garden, Lumber, and curbside. Customer self-scan of a full cart does not fit."
+    },
+    {
+      id:"amazon", role:"Cautionary tale — not the aspiration", cls:"caution",
+      name:"Amazon — Just Walk Out", alias:"the lesson, not the dream",
+      what:"Fully cashierless stores: cameras and sensors track what you take, and you simply walk out — no checkout at all.",
+      why:"Remove checkout friction entirely.",
+      work:"No. Amazon pulled it from its own grocery stores (April 2024) — too costly to run, and shoppers wanted receipts it didn't show.",
+      fit:"nofit", fitLabel:"Does not fit",
+      fitText:"Teach the lesson, not the dream: frictionless is expensive and can erode trust. Bulky, weighed, and cut-to-order products choke fully cashierless checkout."
+    }
+  ];
+
+  var live = document.getElementById("live");
+  function announce(msg){ live.textContent=""; requestAnimationFrame(function(){ requestAnimationFrame(function(){ live.textContent=msg; }); }); }
+
+  function el(tag, cls, text){ var e=document.createElement(tag); if(cls)e.className=cls; if(text!=null)e.textContent=text; return e; }
+
+  function fieldBlock(label, text, extraClass){
+    var wrap = el("div","field"+(extraClass?" "+extraClass:""));
+    wrap.appendChild(el("span","field-label",label));
+    wrap.appendChild(el("p",null,text));
+    return wrap;
+  }
+
+  function makeCard(c){
+    var li = el("li","card"+(c.cls?" "+c.cls:""));
+    li.id = "card-"+c.id;
+
+    var head = el("div","card-head");
+    head.appendChild(el("span","role-tag",c.role));
+    head.appendChild(el("h2",null,c.name));
+    head.appendChild(el("span","alias",c.alias));
+    li.appendChild(head);
+
+    li.appendChild(fieldBlock("What they do", c.what));
+
+    var btn = el("button","flip-btn");
+    btn.type="button";
+    btn.id="flip-"+c.id;
+    btn.setAttribute("aria-expanded","false");
+    var back = el("div","back");
+    back.id="back-"+c.id;
+    btn.setAttribute("aria-controls", back.id);
+    var lbl = el("span","flip-label","Reveal the back");
+    var chev = el("span","chev"); chev.setAttribute("aria-hidden","true"); chev.textContent="▼";
+    btn.appendChild(lbl); btn.appendChild(chev);
+
+    back.appendChild(fieldBlock("Why they did it", c.why));
+    back.appendChild(fieldBlock("Did it work?", c.work));
+
+    var verdict = el("div","verdict "+c.fit);
+    verdict.appendChild(el("span","vlabel",c.fitLabel+": "));
+    verdict.appendChild(el("span",null,c.fitText));
+    var fitField = el("div","field");
+    fitField.appendChild(el("span","field-label","Does it fit Home Depot?"));
+    fitField.appendChild(verdict);
+    back.appendChild(fitField);
+
+    btn.addEventListener("click", function(){ toggle(c.id); });
+    li.appendChild(btn);
+    li.appendChild(back);
+    return li;
+  }
+
+  function toggle(id, force){
+    var li = document.getElementById("card-"+id);
+    var btn = document.getElementById("flip-"+id);
+    var open = force==null ? !li.classList.contains("open") : force;
+    li.classList.toggle("open", open);
+    btn.setAttribute("aria-expanded", open ? "true":"false");
+    btn.querySelector(".flip-label").textContent = open ? "Hide the back" : "Reveal the back";
+    return open;
+  }
+
+  var grid = document.getElementById("grid");
+  CARDS.forEach(function(c){ grid.appendChild(makeCard(c)); });
+
+  document.getElementById("expand-all").addEventListener("click", function(){
+    CARDS.forEach(function(c){ toggle(c.id, true); });
+    announce("All card backs revealed.");
+  });
+  document.getElementById("collapse-all").addEventListener("click", function(){
+    CARDS.forEach(function(c){ toggle(c.id, false); });
+    announce("All card backs hidden.");
+  });
+})();
+</script>
+</body>
+</html>
