@@ -55,7 +55,14 @@
   }
   .card.anchor .role-tag{color:var(--ok)}
   .card.caution .role-tag{color:var(--stop)}
-  .card h2{font-size:1.18rem;line-height:1.2;margin:0 0 2px}
+  .card h3{font-size:1.18rem;line-height:1.2;margin:0 0 2px}
+
+  .group-heading{
+    font-size:1.05rem;line-height:1.3;margin:26px 0 2px;color:var(--ink);
+    padding-top:18px;border-top:2px solid var(--border-strong);
+  }
+  .group-heading:first-child{border-top:0;padding-top:0;margin-top:8px}
+  .group-sub{color:var(--muted);font-size:.92rem;max-width:70ch;margin-bottom:2px}
   .card .alias{font-size:.85rem;color:var(--muted);font-style:italic}
 
   .field{padding:0 16px}
@@ -108,12 +115,12 @@
 <body>
 <header>
   <h1>The 2026 Benchmark Set: <span class="accent">what they do, and does it fit Home Depot?</span></h1>
-  <p class="intro">Six competitor moves worth studying. Each card front shows <strong>what they do</strong>. Reveal the back for <strong>why they did it</strong>, <strong>whether it worked</strong>, and the filter question — <strong>does it fit a warehouse-size store full of big, heavy, cut-to-order products?</strong></p>
+  <p class="intro">Twelve moves worth studying, in two groups: <strong>direct competitors</strong>, then experiences <strong>beyond home improvement</strong> that feel unified. Each card front shows <strong>what they do</strong>. Reveal the back for <strong>why they did it</strong>, <strong>whether it worked</strong>, and the filter question — <strong>does it fit a warehouse-size store full of big, heavy, cut-to-order products?</strong></p>
   <p class="how">Select <strong>Reveal the back</strong> on any card. By keyboard: press <kbd>Tab</kbd> to a card's button, then <kbd>Enter</kbd> or <kbd>Space</kbd>.</p>
 </header>
 
 <main id="main">
-  <ul class="grid" id="grid" style="list-style:none"></ul>
+  <div id="groups"></div>
 
   <div class="toolbar">
     <button type="button" id="expand-all">Reveal all backs</button>
@@ -126,7 +133,11 @@
 <script>
 (function(){
   "use strict";
-  var CARDS = [
+  var GROUPS = [
+   {
+    heading:"Group 1 — Direct competitors: same industry, same store type",
+    sub:"Start here. These are the moves closest to Home Depot's own scenario.",
+    cards:[
     {
       id:"lowes", role:"Your anchor — study this most", cls:"anchor",
       name:"Lowe's — Mylow", alias:"same-industry AI proof",
@@ -181,7 +192,84 @@
       fit:"nofit", fitLabel:"Does not fit",
       fitText:"Teach the lesson, not the dream: frictionless is expensive and can erode trust. Bulky, weighed, and cut-to-order products choke fully cashierless checkout."
     }
+    ]
+   },
+   {
+    heading:"Look beyond your category — the best unified experiences aren't home-improvement stores",
+    sub:"Benchmark past your direct competitors. Each front shows the move; the back asks whether it could fit a warehouse store.",
+    cards:[
+    {
+      id:"sephora", role:"Beauty", cls:"",
+      name:"Sephora", alias:"advised selling on one identity",
+      what:"The associate's device shows your history and runs a quick diagnostic — the visit becomes advised selling on one identity, not a cold transaction.",
+      whyLabel:"Why it feels connected",
+      why:"One Beauty Insider profile follows you across app, web, and store.",
+      work:"Directionally yes — a very large, sticky loyalty base.",
+      fit:"fit", fitLabel:"High",
+      fitQuestion:"Could it fit a warehouse store?",
+      fitText:"Imagine a “Project IQ”: an associate pulls a Pro's past projects to advise the next job — fits high-consideration buys (paint, flooring, cut-to-order lumber) far better than beauty's small basket."
+    },
+    {
+      id:"heb", role:"Grocery", cls:"",
+      name:"H-E-B", alias:"fulfillment tied to the shelf",
+      what:"Curbside and delivery are tightly tied to what's actually on the shelf, with smart substitutions when something's out.",
+      whyLabel:"Why it feels connected",
+      why:"The invisible back-of-house fulfillment work is what customers actually judge.",
+      work:"Yes — top-rated U.S. grocery online experience (Ipsos, 2024).",
+      fit:"fit", fitLabel:"High",
+      fitQuestion:"Could it fit a warehouse store?",
+      fitText:"Attacks Home Depot's “system says 4, the shelf has 0” problem; the hdPhone's Sidekick (overhead-inventory accuracy) is exactly this bet."
+    },
+    {
+      id:"disney", role:"Theme parks", cls:"",
+      name:"Disney parks", alias:"one identity, everywhere",
+      what:"One band or phone is your ticket, payment, reservations, and photos — you never re-authenticate or start over.",
+      whyLabel:"Why it feels connected",
+      why:"Every touchpoint already knows who you are.",
+      work:"Yes — the field's benchmark for “everything works together.” (Disney doesn't publish clean ROI today — study the design.)",
+      fit:"partial", fitLabel:"Partial",
+      fitQuestion:"Could it fit a warehouse store?",
+      fitText:"A unified Pro/DIY account spanning quote → purchase → will-call → delivery → rental transfers well; it won't move heavy goods, but the continuity layer is the point."
+    },
+    {
+      id:"starbucks", role:"Food & beverage", cls:"",
+      name:"Starbucks", alias:"order-ahead as one loop",
+      what:"Order-ahead + Rewards is one loop: commit and pay before you arrive, walk in to a ready order.",
+      whyLabel:"Why it feels connected",
+      why:"The store becomes fulfillment of a pre-placed order — no register wait.",
+      work:"Yes — ~31% of U.S. transactions in 2024, so popular it congested stores.",
+      fit:"partial", fitLabel:"Yes, with a caution",
+      fitQuestion:"Could it fit a warehouse store?",
+      fitText:"Maps to Home Depot's strong pickup/curbside — but staff the pickup surge or you recreate Starbucks' bottleneck at the contractor pickup lane."
+    },
+    {
+      id:"ikea", role:"Furniture", cls:"",
+      name:"IKEA", alias:"AR before the trip",
+      what:"AR “see it in your space” lets customers visualize a big item at home before hauling it in.",
+      whyLabel:"Why it feels connected",
+      why:"De-risks big, hard-to-transport purchases before the trip.",
+      work:"Yes — an AR pioneer, credited with real online-sales lift.",
+      fit:"fit", fitLabel:"Direct",
+      fitQuestion:"Could it fit a warehouse store?",
+      fitText:"Arguably underused by Home Depot. Appliances, vanities, sheds, patio sets: AR “will it fit / how will it look” reduces costly returns of bulky goods."
+    },
+    {
+      id:"warby", role:"Eyewear", cls:"",
+      name:"Warby Parker", alias:"services only the store can do",
+      what:"Adds a real in-store service the app can't do (eye exams) — the store does something online can't.",
+      whyLabel:"Why it feels connected",
+      why:"Unifies channels instead of duplicating them.",
+      work:"Yes — ~$771M FY2024 net revenue with strong online growth alongside store expansion.",
+      fit:"fit", fitLabel:"High",
+      fitQuestion:"Could it fit a warehouse store?",
+      fitText:"Home Depot's cut-to-order, measure, tool rental, and install ARE this — lean into the services only the warehouse can provide as the anchor, not just faster checkout."
+    }
+    ]
+   }
   ];
+
+  var CARDS = [];
+  GROUPS.forEach(function(g){ g.cards.forEach(function(c){ CARDS.push(c); }); });
 
   var live = document.getElementById("live");
   function announce(msg){ live.textContent=""; requestAnimationFrame(function(){ requestAnimationFrame(function(){ live.textContent=msg; }); }); }
@@ -201,11 +289,11 @@
 
     var head = el("div","card-head");
     head.appendChild(el("span","role-tag",c.role));
-    head.appendChild(el("h2",null,c.name));
+    head.appendChild(el("h3",null,c.name));
     head.appendChild(el("span","alias",c.alias));
     li.appendChild(head);
 
-    li.appendChild(fieldBlock("What they do", c.what));
+    li.appendChild(fieldBlock(c.whatLabel || "What they do", c.what));
 
     var btn = el("button","flip-btn");
     btn.type="button";
@@ -218,14 +306,14 @@
     var chev = el("span","chev"); chev.setAttribute("aria-hidden","true"); chev.textContent="▼";
     btn.appendChild(lbl); btn.appendChild(chev);
 
-    back.appendChild(fieldBlock("Why they did it", c.why));
+    back.appendChild(fieldBlock(c.whyLabel || "Why they did it", c.why));
     back.appendChild(fieldBlock("Did it work?", c.work));
 
     var verdict = el("div","verdict "+c.fit);
     verdict.appendChild(el("span","vlabel",c.fitLabel+": "));
     verdict.appendChild(el("span",null,c.fitText));
     var fitField = el("div","field");
-    fitField.appendChild(el("span","field-label","Does it fit Home Depot?"));
+    fitField.appendChild(el("span","field-label",c.fitQuestion || "Does it fit Home Depot?"));
     fitField.appendChild(verdict);
     back.appendChild(fitField);
 
@@ -245,8 +333,18 @@
     return open;
   }
 
-  var grid = document.getElementById("grid");
-  CARDS.forEach(function(c){ grid.appendChild(makeCard(c)); });
+  var groupsWrap = document.getElementById("groups");
+  GROUPS.forEach(function(g, gi){
+    var h = el("h2","group-heading",g.heading);
+    h.id = "group-"+gi;
+    groupsWrap.appendChild(h);
+    if(g.sub){ groupsWrap.appendChild(el("p","group-sub",g.sub)); }
+    var grid = el("ul","grid");
+    grid.style.listStyle = "none";
+    grid.setAttribute("aria-labelledby", h.id);
+    g.cards.forEach(function(c){ grid.appendChild(makeCard(c)); });
+    groupsWrap.appendChild(grid);
+  });
 
   document.getElementById("expand-all").addEventListener("click", function(){
     CARDS.forEach(function(c){ toggle(c.id, true); });
