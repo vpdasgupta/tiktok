@@ -3,147 +3,313 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>The Four Lanes — Choose Your Focus</title>
+<title>The Four Lanes — 16:9 Deck</title>
 <style>
   :root {
     --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
     --bg: #f4f6f5; --accent: #d5581f; --accent-ink: #b8480f;
-    --chip-bg: #fbf3ee; --chip-border: #e7c9b6;
+    --stagew: 1280px; --stageh: 720px; --scale: 1;
   }
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0c110f; }
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: var(--ink); background: var(--bg); line-height: 1.55;
-    margin: 0; padding: 28px 20px 48px; -webkit-font-smoothing: antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 1040px; margin: 0 auto; }
+  .deck {
+    display: flex; flex-direction: row;
+    height: 100vh; width: 100vw;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    background: var(--bg);
+  }
+  .screen {
+    flex: 0 0 100vw; height: 100vh;
+    scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .slide {
+    width: var(--stagew); height: var(--stageh);
+    flex: 0 0 auto;
+    transform: scale(var(--scale)); transform-origin: center center;
+    background: var(--card); position: relative; overflow: hidden;
+  }
 
-  header { border-top: 8px solid var(--accent); padding-top: 20px; margin-bottom: 26px; }
   .eyebrow {
-    text-transform: uppercase; letter-spacing: .1em; font-size: .8rem;
-    font-weight: 700; color: var(--accent-ink); margin: 0 0 8px;
+    text-transform: uppercase; letter-spacing: .1em; font-size: 17px;
+    font-weight: 700; color: var(--accent-ink); margin: 0 0 12px;
   }
-  h1 { font-size: 1.9rem; line-height: 1.12; margin: 0 0 12px; max-width: 22ch; }
-  .lede { font-size: 1.05rem; color: var(--muted); margin: 0; max-width: 74ch; }
 
-  .grid { display: grid; grid-template-columns: 1fr; gap: 22px; }
-  @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
-
-  .lane {
-    background: var(--card); border: 1px solid var(--line);
-    border-top: 5px solid var(--accent); border-radius: 16px;
-    padding: 18px 20px 22px; display: flex; flex-direction: column;
-    box-shadow: 0 1px 2px rgba(20,33,31,.04), 0 10px 24px rgba(20,33,31,.05);
+  /* ---------- summary slide ---------- */
+  .slide--summary { padding: 54px 88px; border-top: 8px solid var(--accent); display: flex; flex-direction: column; }
+  h1 { font-size: 48px; line-height: 1.08; margin: 0 0 14px; max-width: 22ch; }
+  .lede { font-size: 20px; color: var(--muted); margin: 0 0 28px; max-width: 94ch; }
+  .sum-grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
   }
-  .lane-art { margin: 0 0 16px; }
-  .lane-art svg {
-    width: 100%; height: auto; display: block; border-radius: 14px;
-    box-shadow: 0 1px 2px rgba(20,33,31,.05), 0 6px 16px rgba(20,33,31,.08);
+  .sum-cell {
+    background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--accent);
+    border-radius: 12px; padding: 18px 22px;
+    box-shadow: 0 1px 2px rgba(20,33,31,.04), 0 8px 20px rgba(20,33,31,.05);
   }
-  .lane-num {
+  .sum-name { margin: 0 0 8px; font-weight: 700; font-size: 22px; display: flex; align-items: center; gap: 11px; }
+  .sum-num {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 34px; height: 34px; border-radius: 50%; background: var(--accent);
-    color: #fff; font-size: 1.05rem; font-weight: 800; flex: 0 0 auto;
+    width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
+    color: #fff; font-size: 16px; font-weight: 800; flex: 0 0 auto;
   }
-  .lane-namerow { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-  h2 { font-size: 1.35rem; margin: 0; line-height: 1.15; }
+  .sum-emoji { font-size: 22px; }
+  .sum-desc { margin: 0; font-size: 16px; color: var(--muted); line-height: 1.45; }
 
-  .lane-q {
-    background: var(--chip-bg); border: 1px solid var(--chip-border);
-    border-radius: 12px; padding: 12px 14px; margin: 0 0 14px;
+  /* ---------- lane slide ---------- */
+  .slide--row { padding: 46px 84px; border-top: 8px solid var(--accent); display: flex; flex-direction: column; }
+  .r-counter {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 15px;
+    font-weight: 700; color: var(--muted); margin: 0 0 18px;
   }
-  .lane-q .q-tag {
+  .r-cols { display: flex; gap: 52px; flex: 1; min-height: 0; align-items: center; }
+  .r-art { flex: 0 0 600px; min-width: 0; }
+  .r-art svg {
+    width: 100%; height: auto; display: block; border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(20,33,31,.05), 0 12px 30px rgba(20,33,31,.10);
+  }
+  .r-body { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+  .r-namerow { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .r-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px; border-radius: 50%; background: var(--accent);
+    color: #fff; font-size: 25px; font-weight: 800; flex: 0 0 auto;
+  }
+  h2 { font-size: 38px; margin: 0; line-height: 1.1; }
+  .r-q {
+    background: #fbf3ee; border: 1px solid #f2d9c9; border-radius: 14px;
+    padding: 18px 22px; margin-bottom: 22px;
+  }
+  .r-q-tag {
     display: block; text-transform: uppercase; letter-spacing: .05em;
-    font-size: .72rem; font-weight: 700; color: var(--accent-ink); margin-bottom: 4px;
+    font-size: 14px; font-weight: 700; color: var(--accent-ink); margin-bottom: 8px;
   }
-  .lane-q p { margin: 0; font-weight: 600; font-size: .98rem; }
-  .lane-desc { margin: 0; color: var(--muted); font-size: .96rem; }
-  .lane-desc strong { color: var(--ink); }
+  .r-q p { margin: 0; font-weight: 600; font-size: 22px; line-height: 1.4; }
+  .r-desc { margin: 0; font-size: 20px; line-height: 1.5; color: var(--muted); }
+  .r-desc strong { color: var(--ink); }
 
+  /* ---------- chrome: arrows + dots ---------- */
+  .navbtn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,.92); border: 1px solid var(--line);
+    color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+    box-shadow: 0 4px 14px rgba(0,0,0,.16);
+  }
+  .navbtn:hover { background: #fff; }
+  .navbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .navbtn[disabled] { opacity: .3; cursor: default; }
+  .navbtn--prev { left: 20px; }
+  .navbtn--next { right: 20px; }
+
+  .dotnav {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+    display: flex; gap: 12px; z-index: 30;
+    background: rgba(255,255,255,.9); padding: 10px 16px; border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.14);
+  }
+  .dot {
+    width: 12px; height: 12px; border-radius: 50%; background: #c2c9c7;
+    border: none; padding: 0; cursor: pointer; transition: background .2s, transform .2s;
+  }
+  .dot:hover { background: var(--accent); transform: scale(1.2); }
+  .dot:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .dot.is-active { background: var(--accent); transform: scale(1.2); }
+
+  @media (prefers-reduced-motion: reduce) { .deck { scroll-behavior: auto; } }
   @media (prefers-color-scheme: dark) {
     :root {
       --ink: #eef1f0; --muted: #a8b2af; --line: #2c3634; --card: #1a2321;
       --bg: #101615; --accent: #f07a3d; --accent-ink: #f4a06f;
-      --chip-bg: #241a13; --chip-border: #4a382b;
     }
+    .r-q { background: #241a13; border-color: #4a382b; }
+    .navbtn, .dotnav { background: rgba(26,35,33,.94); border-color: var(--line); color: var(--ink); }
+    .dot { background: #3a4442; }
   }
-  :root[data-theme="dark"] {
-    --ink: #eef1f0; --muted: #a8b2af; --line: #2c3634; --card: #1a2321;
-    --bg: #101615; --accent: #f07a3d; --accent-ink: #f4a06f;
-    --chip-bg: #241a13; --chip-border: #4a382b;
-  }
-  :root[data-theme="light"] {
-    --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
-    --bg: #f4f6f5; --accent: #d5581f; --accent-ink: #b8480f;
-    --chip-bg: #fbf3ee; --chip-border: #e7c9b6;
-  }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <p class="eyebrow">Project 1 · Step 1</p>
-    <h1>Pick your lane</h1>
-    <p class="lede">Creating one unified store experience for The Home Depot is too big for anyone to cover alone. The work splits across four lanes — each a purposeful guardrail, narrow enough to keep you focused, open enough to be creative. You'll do all of Project 1 through the lens of the one you choose. Read each lane's question below and pick the one that pulls at you.</p>
-  </header>
+  <main class="deck" id="deck">
 
-  <div class="grid">
+    <!-- ===== Summary slide ===== -->
+    <section class="screen" id="screen-0" aria-labelledby="summary-title">
+      <div class="slide slide--summary">
+        <p class="eyebrow">Project 1 · Step 1</p>
+        <h1 id="summary-title">Pick Your Lane</h1>
+        <p class="lede">Creating one unified store experience for The Home Depot is too big for anyone to cover alone, so the work splits across four lanes — each a purposeful guardrail, narrow enough to keep you focused, open enough to be creative. You'll do all of Project 1 through the lens of the one you choose. Scroll through each lane, then commit to the question that pulls at you.</p>
+        <ul class="sum-grid">
+          <li class="sum-cell">
+            <p class="sum-name"><span class="sum-num">1</span><span class="sum-emoji" aria-hidden="true">🛒</span> Customer Experience</p>
+            <p class="sum-desc">Where does the trip break as a customer moves between online, in-aisle, checkout, delivery, and pickup?</p>
+          </li>
+          <li class="sum-cell">
+            <p class="sum-name"><span class="sum-num">2</span><span class="sum-emoji" aria-hidden="true">🔌</span> Technology</p>
+            <p class="sum-desc">Where do the separate systems fail to talk — so the customer's info doesn't follow them?</p>
+          </li>
+          <li class="sum-cell">
+            <p class="sum-name"><span class="sum-num">3</span><span class="sum-emoji" aria-hidden="true">🧑‍🔧</span> Workforce &amp; Training</p>
+            <p class="sum-desc">When anyone can sell anywhere, what does an associate need to know to help outside their department?</p>
+          </li>
+          <li class="sum-cell">
+            <p class="sum-name"><span class="sum-num">4</span><span class="sum-emoji" aria-hidden="true">🛡️</span> Asset Protection</p>
+            <p class="sum-desc">When anyone can sell anywhere, how do you know the customer paid — without killing the smooth experience?</p>
+          </li>
+        </ul>
+      </div>
+    </section>
 
-    <!-- Lane 1: Customer Experience -->
-    <section class="lane" aria-labelledby="lane-ce">
-      <div class="lane-art">
+    <!-- ===== Lane 1: Customer Experience ===== -->
+    <section class="screen" id="screen-1" aria-labelledby="h-ce">
+      <div class="slide slide--row">
+        <p class="r-counter">Lane 1 of 4</p>
+        <div class="r-cols">
+          <div class="r-art">
 <svg viewBox="0 0 640 400" role="img" aria-labelledby="ce-t ce-d" xmlns="http://www.w3.org/2000/svg"><title id="ce-t">A customer's trip breaking between online and in-store</title><desc id="ce-d">A shopper starts an order on their phone, then the path to the store's aisle and checkout breaks in the middle, forcing them to start over.</desc><rect x="8" y="8" width="624" height="384" rx="24" fill="#fbf3ee" stroke="#e7c9b6" stroke-width="2"/><g stroke="#14211f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M70 320 h60" fill="none" stroke="#b8c0bd"/><path d="M150 320 h55" fill="none" stroke="#b8c0bd"/><path d="M430 320 h55" fill="none" stroke="#b8c0bd"/><path d="M505 320 h60" fill="none" stroke="#b8c0bd"/><path d="M225 320 l30 6 l-8 18" fill="none"/><path d="M410 320 l-30 6 l8 18" fill="none"/><circle cx="115" cy="150" r="26" fill="#f2c14e"/><path d="M115 176 v58" fill="none"/><path d="M115 200 l-30 22" fill="none"/><path d="M115 200 l30 -14" fill="none"/><path d="M115 234 l-22 40" fill="none"/><path d="M115 234 l22 40" fill="none"/><rect x="140" y="150" width="42" height="60" rx="8" fill="#f4f6f5"/><path d="M148 168 h26" fill="none" stroke="#3e8e5a" stroke-width="4"/><path d="M150 182 l6 6 l12 -14" fill="none" stroke="#3e8e5a" stroke-width="4"/><circle cx="70" cy="110" r="17" fill="#3e8e5a"/><path d="M62 110 l6 7 l12 -15" fill="none" stroke="#f4f6f5" stroke-width="4"/><path d="M318 218 l10 -34 l10 34 l33 -6 l-24 26 l17 30 l-32 -14 l-24 22 l3 -33 l-34 -3 l31 -18 l-30 -20 z" fill="#d5581f"/><path d="M318 202 v22" fill="none" stroke="#14211f" stroke-width="4"/><circle cx="318" cy="234" r="2.5" fill="#14211f" stroke="none"/><path d="M395 285 a70 55 0 0 0 -150 0" fill="none" stroke="#8a938f"/><path d="M245 285 l-12 -14 M245 285 l16 -8" fill="none" stroke="#8a938f"/><rect x="440" y="150" width="130" height="120" rx="6" fill="#f4f6f5"/><path d="M440 190 h130 M440 230 h130 M505 150 v120" fill="none" stroke-width="4"/><rect x="452" y="162" width="20" height="20" rx="3" fill="#5aa9c9"/><rect x="520" y="162" width="20" height="20" rx="3" fill="#d5581f"/><rect x="452" y="202" width="20" height="20" rx="3" fill="#3e8e5a"/><rect x="520" y="202" width="20" height="20" rx="3" fill="#f2c14e"/><rect x="452" y="242" width="20" height="20" rx="3" fill="#f2c14e"/><rect x="520" y="242" width="20" height="20" rx="3" fill="#5aa9c9"/></g></svg>
+          </div>
+          <div class="r-body">
+            <div class="r-namerow"><span class="r-num" aria-hidden="true">1</span><h2 id="h-ce">Customer Experience</h2></div>
+            <div class="r-q">
+              <span class="r-q-tag">The question you own</span>
+              <p>Where does the trip break as a customer moves between online, in-aisle, checkout, delivery, and pickup?</p>
+            </div>
+            <p class="r-desc">This lane is about <strong>friction</strong> — the moments a customer has to start over, wait, or do the store's stitching for it. Think Disney, where one identity carries your ticket and payments so nothing resets, or Sephora, where an associate advises from your history. Both build a trip that never makes the customer backtrack.</p>
+          </div>
+        </div>
       </div>
-      <div class="lane-namerow"><span class="lane-num" aria-hidden="true">1</span><h2 id="lane-ce">Customer Experience</h2></div>
-      <div class="lane-q">
-        <span class="q-tag">The question you own</span>
-        <p>Where does the trip break as a customer moves between online, in-aisle, checkout, delivery, and pickup?</p>
-      </div>
-      <p class="lane-desc">This lane is about <strong>friction</strong> — the moments a customer has to start over, wait, or do the store's stitching for it. Think Disney, where one identity carries your ticket, payments, and reservations so nothing resets, or Sephora, where an associate advises from your history. Both build a trip that never makes the customer backtrack.</p>
     </section>
 
-    <!-- Lane 2: Technology -->
-    <section class="lane" aria-labelledby="lane-tech">
-      <div class="lane-art">
+    <!-- ===== Lane 2: Technology ===== -->
+    <section class="screen" id="screen-2" aria-labelledby="h-tech">
+      <div class="slide slide--row">
+        <p class="r-counter">Lane 2 of 4</p>
+        <div class="r-cols">
+          <div class="r-art">
 <svg viewBox="0 0 640 400" role="img" aria-labelledby="tech-t tech-d" xmlns="http://www.w3.org/2000/svg"><title id="tech-t">Store systems that fail to connect</title><desc id="tech-d">Separate systems such as mobile checkout, the website, and inventory are drawn as boxes, with a broken, unplugged cable between them so the customer's information cannot pass across.</desc><rect x="8" y="8" width="624" height="384" rx="24" fill="#fbf3ee" stroke="#e7c9b6" stroke-width="2"/><g stroke="#14211f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><rect x="60" y="120" width="90" height="150" rx="14" fill="#f4f6f5"/><rect x="72" y="140" width="66" height="90" rx="6" fill="#5aa9c9"/><line x1="95" y1="250" x2="115" y2="250" stroke-width="4"/><g stroke-width="3.5"><circle cx="98" cy="200" r="4" fill="#14211f"/><circle cx="120" cy="200" r="4" fill="#14211f"/><path d="M86 168 h8 l7 24 h20 l7 -18 h-30" fill="none"/></g><rect x="470" y="110" width="120" height="90" rx="10" fill="#f4f6f5"/><rect x="482" y="122" width="96" height="52" rx="4" fill="#3e8e5a"/><line x1="530" y1="200" x2="530" y2="222" stroke-width="5"/><line x1="505" y1="224" x2="555" y2="224" stroke-width="5"/><g stroke-width="3.5"><circle cx="530" cy="148" r="18" fill="none" stroke="#f4f6f5"/><line x1="512" y1="148" x2="548" y2="148" stroke="#f4f6f5"/><path d="M530 130 q-13 18 0 36 q13 -18 0 -36" fill="none" stroke="#f4f6f5"/></g><rect x="240" y="290" width="120" height="80" rx="10" fill="#f4f6f5"/><g stroke-width="3.5"><rect x="258" y="308" width="38" height="30" fill="#f2c14e"/><rect x="304" y="308" width="38" height="30" fill="#f2c14e"/><rect x="281" y="332" width="38" height="26" fill="#d5581f"/></g><path d="M360 320 Q 440 300 478 210" fill="none" stroke="#3e8e5a" stroke-width="6"/><circle cx="478" cy="210" r="7" fill="#3e8e5a"/><circle cx="360" cy="320" r="7" fill="#3e8e5a"/><path d="M155 175 h50" fill="none" stroke="#8a938f" stroke-width="7"/><rect x="205" y="166" width="26" height="18" rx="3" fill="#b8c0bd"/><line x1="231" y1="171" x2="240" y2="171" stroke-width="4"/><line x1="231" y1="179" x2="240" y2="179" stroke-width="4"/><path d="M462 150 h-40" fill="none" stroke="#8a938f" stroke-width="7"/><rect x="392" y="141" width="26" height="18" rx="3" fill="#b8c0bd"/><line x1="392" y1="146" x2="383" y2="146" stroke-width="4"/><line x1="392" y1="154" x2="383" y2="154" stroke-width="4"/><g stroke-width="3.5"><path d="M320 120 l10 -22 l6 18 l20 -8 l-14 18 l20 10 l-22 4 l6 20 l-18 -14 l-14 16 l4 -22 l-22 -2 l18 -12 l-14 -16 z" fill="#d5581f"/></g><g stroke-width="3.5"><rect x="298" y="188" width="56" height="40" rx="4" fill="#f2c14e"/><path d="M298 192 l28 20 l28 -20" fill="none"/></g></g></svg>
+          </div>
+          <div class="r-body">
+            <div class="r-namerow"><span class="r-num" aria-hidden="true">2</span><h2 id="h-tech">Technology</h2></div>
+            <div class="r-q">
+              <span class="r-q-tag">The question you own</span>
+              <p>Where do the separate systems — mobile checkout, website, tool rental, delivery, inventory — fail to talk, so the customer's info doesn't follow them?</p>
+            </div>
+            <p class="r-desc">This lane is about the <strong>plumbing</strong> that makes a unified experience possible or impossible. The "endless aisle" only works if the inventory system, the ordering system, and the associate's device are actually connected. When systems don't talk, the customer feels it as "start over."</p>
+          </div>
+        </div>
       </div>
-      <div class="lane-namerow"><span class="lane-num" aria-hidden="true">2</span><h2 id="lane-tech">Technology</h2></div>
-      <div class="lane-q">
-        <span class="q-tag">The question you own</span>
-        <p>Where do the separate systems — mobile checkout, website, tool rental, delivery, inventory — fail to talk, so the customer's info doesn't follow them?</p>
-      </div>
-      <p class="lane-desc">This lane is about the <strong>plumbing</strong> that makes a unified experience possible or impossible. The "endless aisle" only works if the inventory system, the ordering system, and the associate's device are actually connected. When systems don't talk, the customer feels it as "start over."</p>
     </section>
 
-    <!-- Lane 3: Workforce & Training -->
-    <section class="lane" aria-labelledby="lane-wf">
-      <div class="lane-art">
+    <!-- ===== Lane 3: Workforce & Training ===== -->
+    <section class="screen" id="screen-3" aria-labelledby="h-wf">
+      <div class="slide slide--row">
+        <p class="r-counter">Lane 3 of 4</p>
+        <div class="r-cols">
+          <div class="r-art">
 <svg viewBox="0 0 640 400" role="img" aria-labelledby="wf-t wf-d" xmlns="http://www.w3.org/2000/svg"><title id="wf-t">An associate helping across departments</title><desc id="wf-d">A friendly store associate in an orange apron stands between two different department aisles, with a question-mark thought bubble showing the new knowledge needed to help outside their usual area.</desc><rect x="8" y="8" width="624" height="384" rx="24" fill="#fbf3ee" stroke="#e7c9b6" stroke-width="2"/><g stroke-linecap="round" stroke-linejoin="round"><g stroke="#14211f" stroke-width="5"><rect x="48" y="70" width="132" height="46" rx="8" fill="#3e8e5a"/><line x1="88" y1="116" x2="88" y2="150" stroke-width="4"/><line x1="140" y1="116" x2="140" y2="150" stroke-width="4"/><rect x="52" y="150" width="124" height="90" rx="6" fill="#f4f6f5"/><line x1="52" y1="196" x2="176" y2="196" stroke-width="4"/><ellipse cx="84" cy="176" rx="16" ry="14" fill="#3e8e5a"/><path d="M84 162v14" stroke-width="3"/><rect x="110" y="164" width="30" height="24" rx="4" fill="#d5581f"/><rect x="70" y="208" width="40" height="24" rx="4" fill="#f2c14e"/><rect x="122" y="208" width="40" height="24" rx="4" fill="#5aa9c9"/></g><g stroke="#14211f" stroke-width="5"><rect x="460" y="70" width="132" height="46" rx="8" fill="#5aa9c9"/><line x1="500" y1="116" x2="500" y2="150" stroke-width="4"/><line x1="552" y1="116" x2="552" y2="150" stroke-width="4"/><rect x="464" y="150" width="124" height="90" rx="6" fill="#f4f6f5"/><line x1="464" y1="196" x2="588" y2="196" stroke-width="4"/><path d="M490 186v-24l14-6 14 6v24" fill="#b8c0bd"/><line x1="504" y1="156" x2="504" y2="186" stroke-width="3"/><path d="M540 162h28v20h-28z" fill="#8a938f"/><line x1="554" y1="182" x2="554" y2="234" stroke-width="4"/><line x1="540" y1="234" x2="568" y2="234" stroke-width="4"/></g><g stroke="#14211f" stroke-width="5"><path d="M262 360v-70a58 58 0 0 1 116 0v70" fill="#f4f6f5"/><rect x="288" y="300" width="64" height="62" rx="8" fill="#d5581f"/><line x1="320" y1="240" x2="320" y2="300" stroke-width="4"/><circle cx="320" cy="212" r="30" fill="#e8b48c"/><path d="M293 205a27 27 0 0 1 54 0" fill="#14211f"/><circle cx="310" cy="212" r="3.5" fill="#14211f" stroke="none"/><circle cx="330" cy="212" r="3.5" fill="#14211f" stroke="none"/><path d="M311 224a12 8 0 0 0 18 0" fill="none" stroke-width="3.5"/><path d="M288 300l-30 18v40" fill="none"/><path d="M352 300l30 18" fill="none"/><rect x="372" y="316" width="44" height="30" rx="5" fill="#f2c14e"/><line x1="382" y1="326" x2="406" y2="326" stroke-width="3"/><line x1="382" y1="336" x2="400" y2="336" stroke-width="3"/><path d="M300 322l10 10 18-18" fill="none" stroke="#3e8e5a" stroke-width="5"/></g><g stroke="#14211f" stroke-width="5"><ellipse cx="392" cy="120" rx="46" ry="34" fill="#f4f6f5"/><circle cx="352" cy="162" r="8" fill="#f4f6f5"/><circle cx="338" cy="182" r="5" fill="#f4f6f5"/><text x="392" y="134" font-family="sans-serif" font-weight="700" font-size="42" fill="#b8480f" text-anchor="middle" stroke="none">?</text></g><circle cx="228" cy="150" r="5" fill="#f2c14e" stroke="#14211f" stroke-width="3"/><circle cx="252" cy="128" r="5" fill="#3e8e5a" stroke="#14211f" stroke-width="3"/><circle cx="440" cy="160" r="5" fill="#f2c14e" stroke="#14211f" stroke-width="3"/></g></svg>
+          </div>
+          <div class="r-body">
+            <div class="r-namerow"><span class="r-num" aria-hidden="true">3</span><h2 id="h-wf">Workforce &amp; Training</h2></div>
+            <div class="r-q">
+              <span class="r-q-tag">The question you own</span>
+              <p>When anyone can sell anywhere, what happens to roles, hierarchy, and what an associate needs to know to help outside their department?</p>
+            </div>
+            <p class="r-desc">This lane is about the <strong>people</strong> the tool empowers — and what they now need. Selling culture only works if an associate can confidently help a customer in an aisle that isn't theirs. The tool is only as good as the person holding it.</p>
+          </div>
+        </div>
       </div>
-      <div class="lane-namerow"><span class="lane-num" aria-hidden="true">3</span><h2 id="lane-wf">Workforce &amp; Training</h2></div>
-      <div class="lane-q">
-        <span class="q-tag">The question you own</span>
-        <p>When anyone can sell anywhere, what happens to roles, hierarchy, and what an associate needs to know to help outside their department?</p>
-      </div>
-      <p class="lane-desc">This lane is about the <strong>people</strong> the tool empowers — and what they now need. Selling culture only works if an associate can confidently help a customer in an aisle that isn't theirs. The tool is only as good as the person holding it.</p>
     </section>
 
-    <!-- Lane 4: Asset Protection -->
-    <section class="lane" aria-labelledby="lane-ap">
-      <div class="lane-art">
+    <!-- ===== Lane 4: Asset Protection ===== -->
+    <section class="screen" id="screen-4" aria-labelledby="h-ap">
+      <div class="slide slide--row">
+        <p class="r-counter">Lane 4 of 4</p>
+        <div class="r-cols">
+          <div class="r-art">
 <svg viewBox="0 0 640 400" role="img" aria-labelledby="ap-t ap-d" xmlns="http://www.w3.org/2000/svg"><title id="ap-t">Confirming payment at the store exit</title><desc id="ap-d">A customer pushes a loaded flatbed cart toward the store exit while a shield with a green check at the doorway confirms the items were paid for, balancing a smooth exit with security.</desc><rect x="8" y="8" width="624" height="384" rx="24" fill="#fbf3ee" stroke="#e7c9b6" stroke-width="2"/><g stroke="#14211f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><line x1="40" y1="340" x2="600" y2="340" fill="none"/><path d="M470 340 L470 110 Q470 90 490 90 L560 90 Q580 90 580 110 L580 340" fill="#f4f6f5"/><line x1="525" y1="90" x2="525" y2="340" fill="none" stroke-width="4"/><rect x="470" y="52" width="110" height="30" rx="6" fill="#3e8e5a"/><text x="525" y="74" font-family="sans-serif" font-weight="700" font-size="18" fill="#f4f6f5" text-anchor="middle" stroke="none">EXIT</text><g stroke="#8a938f" stroke-width="4"><line x1="497" y1="300" x2="553" y2="300" fill="none"/><path d="M540 288 L556 300 L540 312" fill="none"/></g><g stroke="#5aa9c9" stroke-width="4"><line x1="150" y1="150" x2="200" y2="150" fill="none"/><line x1="135" y1="175" x2="195" y2="175" fill="none"/><line x1="150" y1="200" x2="200" y2="200" fill="none"/></g><g><rect x="235" y="180" width="120" height="95" rx="6" fill="#d5581f"/><line x1="235" y1="215" x2="355" y2="215" fill="none" stroke-width="4"/><line x1="295" y1="180" x2="295" y2="215" fill="none" stroke-width="4"/><rect x="220" y="288" width="160" height="14" rx="4" fill="#b8c0bd"/><path d="M220 295 L195 235 L180 235" fill="none"/><circle cx="248" cy="322" r="16" fill="#f4f6f5"/><circle cx="352" cy="322" r="16" fill="#f4f6f5"/></g><g><circle cx="130" cy="200" r="24" fill="#f2c14e"/><path d="M130 224 L130 300" fill="none"/><path d="M130 300 L112 345" fill="none"/><path d="M130 300 L150 345" fill="none"/><path d="M130 250 L180 240" fill="none"/></g><path d="M525 130 L575 148 L575 205 Q575 245 525 268 Q475 245 475 205 L475 148 Z" fill="#f2c14e"/><path d="M503 195 L520 214 L550 172" fill="none" stroke="#3e8e5a" stroke-width="8"/><circle cx="360" cy="165" r="20" fill="#3e8e5a"/><path d="M350 165 L358 174 L372 156" fill="none" stroke="#f4f6f5" stroke-width="5"/></g></svg>
+          </div>
+          <div class="r-body">
+            <div class="r-namerow"><span class="r-num" aria-hidden="true">4</span><h2 id="h-ap">Asset Protection</h2></div>
+            <div class="r-q">
+              <span class="r-q-tag">The question you own</span>
+              <p>When anyone can sell anywhere, how do you know the customer paid — and keep people and products safe — without killing the smooth experience?</p>
+            </div>
+            <p class="r-desc">This lane lives on a real tension: <strong>frictionless vs. secure</strong>. The question is how to keep a checkout-anywhere store trustworthy when the basket is a flatbed, not a phone case — removing the register choke-point without inviting loss.</p>
+          </div>
+        </div>
       </div>
-      <div class="lane-namerow"><span class="lane-num" aria-hidden="true">4</span><h2 id="lane-ap">Asset Protection</h2></div>
-      <div class="lane-q">
-        <span class="q-tag">The question you own</span>
-        <p>When anyone can sell anywhere, how do you know the customer paid — and keep people and products safe — without killing the smooth experience?</p>
-      </div>
-      <p class="lane-desc">This lane lives on a real tension: <strong>frictionless vs. secure</strong>. The question is how to keep a checkout-anywhere store trustworthy when the basket is a flatbed, not a phone case — removing the register choke-point without inviting loss.</p>
     </section>
 
-  </div>
-</div>
+  </main>
+
+  <button type="button" class="navbtn navbtn--prev" id="prev" aria-label="Previous slide">‹</button>
+  <button type="button" class="navbtn navbtn--next" id="next" aria-label="Next slide">›</button>
+  <nav class="dotnav" id="dotnav" aria-label="Jump to slide">
+      <button type="button" class="dot" data-i="0" aria-label="Overview: all four lanes"></button>
+      <button type="button" class="dot" data-i="1" aria-label="Customer Experience"></button>
+      <button type="button" class="dot" data-i="2" aria-label="Technology"></button>
+      <button type="button" class="dot" data-i="3" aria-label="Workforce and Training"></button>
+      <button type="button" class="dot" data-i="4" aria-label="Asset Protection"></button>
+  </nav>
+
+<script>
+  var deck = document.getElementById('deck');
+  var screens = Array.prototype.slice.call(deck.querySelectorAll('.screen'));
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var current = 0;
+
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    document.documentElement.style.setProperty('--scale', s);
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(screens.length - 1, i));
+    deck.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' });
+  }
+  function setActive(i) {
+    current = i;
+    dots.forEach(function (d, di) { d.classList.toggle('is-active', di === i); });
+    prev.disabled = (i === 0);
+    next.disabled = (i === screens.length - 1);
+  }
+  setActive(0);
+
+  prev.addEventListener('click', function () { goTo(current - 1); });
+  next.addEventListener('click', function () { goTo(current + 1); });
+  dots.forEach(function (d) { d.addEventListener('click', function () { goTo(+d.dataset.i); }); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End')  { e.preventDefault(); goTo(screens.length - 1); }
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) setActive(screens.indexOf(e.target));
+      });
+    }, { root: deck, threshold: 0.6 });
+    screens.forEach(function (s) { io.observe(s); });
+  }
+
+  deck.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      deck.scrollLeft += e.deltaY;
+    }
+  }, { passive: true });
+</script>
 </body>
 </html>
