@@ -15,79 +15,108 @@
     --border-strong:#b7b3ac;
     --text:#1e2130;
     --muted:#4b5060;
-    --ok:#15803D;
+    --ok:#136c34;              /* darkened to ~5.0:1 for small labels */
     --ok-bg:#e9f6ee;
     --warn:#B45309;            /* amber text ~4.7:1 */
     --warn-bg:#fdf3e3;
     --stop:#B91C1C;
     --stop-bg:#fbeaea;
+
+    /* Container-query-driven type: min keeps 1.4.4 zoom working; cqi scales to embed width */
+    --fs-body:clamp(0.82rem, 1.55cqi, 0.95rem);
+    --fs-small:clamp(0.78rem, 1.35cqi, 0.9rem);
+    --fs-h3:clamp(1rem, 2.1cqi, 1.18rem);
+    --fs-cap:clamp(0.72rem, 1.15cqi, 0.75rem);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
   body{
     font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    background:var(--bg);color:var(--text);line-height:1.55;
-    padding:20px;max-width:1040px;margin:0 auto;
+    background:var(--bg);color:var(--text);line-height:1.5;
+    padding:18px;max-width:1120px;margin:0 auto;
   }
-  header{margin-bottom:18px}
-  h1{font-size:1.5rem;line-height:1.2;margin-bottom:8px}
+
+  header{margin-bottom:12px}
+  h1{font-size:clamp(1.15rem,2.6cqi,1.5rem);line-height:1.2;margin-bottom:6px}
   h1 .accent{color:var(--orange-text)}
-  .intro{color:var(--muted);max-width:70ch}
-  .how{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin:14px 0 6px;font-size:.92rem;color:var(--muted)}
+  .intro{color:var(--muted);max-width:78ch;font-size:var(--fs-small)}
+  .how{background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 14px;margin:10px 0 0;font-size:var(--fs-small);color:var(--muted)}
   kbd{font-family:inherit;background:#f0eee9;border:1px solid var(--border-strong);border-bottom-width:2px;border-radius:5px;padding:1px 6px;font-size:.85em;color:var(--ink)}
 
-  .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px}
-  @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
-  @media(min-width:960px){.grid{grid-template-columns:1fr 1fr 1fr}}
+  /* ---- Carousel / slides ---- */
+  .deck{container-type:inline-size;margin-top:14px}
+  .viewport{position:relative}
+
+  .slide{
+    /* 16:9 is a FLOOR, not a cage: grows when content or zoom needs more room */
+    min-height:56.25cqi;
+    display:flex;flex-direction:column;
+  }
+  .slide[hidden]{display:none}
+
+  .group-heading{
+    font-size:clamp(1rem,2.1cqi,1.12rem);line-height:1.25;margin:2px 0 2px;color:var(--ink);
+  }
+  .group-sub{color:var(--muted);font-size:var(--fs-small);max-width:82ch;margin-bottom:10px}
+
+  .grid{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:clamp(10px,1.4cqi,16px);flex:1;align-content:start;list-style:none;
+  }
 
   .card{
     background:var(--card);border:1px solid var(--border-strong);
-    border-top:6px solid var(--orange);border-radius:14px;padding:0;
-    display:flex;flex-direction:column;overflow:hidden;
+    border-top:6px solid var(--orange);border-radius:14px;
+    display:flex;flex-direction:column;
   }
   .card.anchor{border-top-color:var(--ok)}
   .card.caution{border-top-color:var(--stop)}
 
-  .card-head{padding:16px 16px 4px}
+  /* ---- Real 3D flip ---- */
+  .flip-viewport{perspective:1400px;flex:1}
+  .flip-inner{
+    position:relative;display:grid;height:100%;
+    transform-style:preserve-3d;transition:transform .45s ease;
+  }
+  .card.open .flip-inner{transform:rotateY(180deg)}
+  .face{
+    grid-area:1 / 1;                 /* both faces share the cell → taller one sets height */
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    display:flex;flex-direction:column;padding:14px 15px;
+  }
+  .face-back{transform:rotateY(180deg)}
+  @media (prefers-reduced-motion: reduce){.flip-inner{transition:none}}
+
   .role-tag{
-    display:inline-block;font-size:.72rem;font-weight:800;text-transform:uppercase;
-    letter-spacing:.05em;color:var(--orange-text);margin-bottom:8px;
+    display:inline-block;font-size:var(--fs-cap);font-weight:800;text-transform:uppercase;
+    letter-spacing:.02em;color:var(--orange-text);margin-bottom:6px;
   }
   .card.anchor .role-tag{color:var(--ok)}
   .card.caution .role-tag{color:var(--stop)}
-  .card h3{font-size:1.18rem;line-height:1.2;margin:0 0 2px}
+  .card h3{font-size:var(--fs-h3);line-height:1.2;margin:0 0 2px}
+  .alias{font-size:var(--fs-small);color:var(--muted);font-style:italic;margin-bottom:8px}
 
-  .group-heading{
-    font-size:1.05rem;line-height:1.3;margin:26px 0 2px;color:var(--ink);
-    padding-top:18px;border-top:2px solid var(--border-strong);
-  }
-  .group-heading:first-child{border-top:0;padding-top:0;margin-top:8px}
-  .group-sub{color:var(--muted);font-size:.92rem;max-width:70ch;margin-bottom:2px}
-  .card .alias{font-size:.85rem;color:var(--muted);font-style:italic}
-
-  .field{padding:0 16px}
+  .field{margin-top:8px}
+  .field:first-of-type{margin-top:2px}
   .field-label{
-    display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;
-    letter-spacing:.04em;color:var(--muted);margin:12px 0 3px;
+    display:block;font-size:var(--fs-cap);font-weight:700;text-transform:uppercase;
+    letter-spacing:.02em;color:var(--muted);margin:0 0 2px;
   }
-  .field p{font-size:.95rem}
+  .field p{font-size:var(--fs-body)}
 
   .flip-btn{
-    margin:14px 16px 4px;font:inherit;cursor:pointer;
+    margin:0;font:inherit;cursor:pointer;
     background:var(--orange);border:1px solid var(--orange);color:var(--ink);
-    font-weight:700;font-size:.9rem;border-radius:9px;padding:9px 12px;
+    font-weight:700;font-size:.875rem;border-radius:0 0 12px 12px;padding:10px 14px;
     display:flex;align-items:center;justify-content:space-between;gap:8px;
+    min-height:44px;
   }
   .flip-btn:hover{background:#e85c02}
   .flip-btn .chev{transition:transform .2s ease}
-  .flip-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
-
-  .back{padding:0 16px 16px;display:none}
-  .card.open .back{display:block}
-  .card.open .front-extra{display:none}
+  .card.open .flip-btn .chev{transform:rotate(180deg)}
 
   .verdict{
-    margin:12px 0 0;border-radius:10px;padding:10px 12px;font-size:.92rem;
+    margin-top:8px;border-radius:10px;padding:9px 11px;font-size:var(--fs-small);
     border:1px solid var(--border);display:flex;gap:8px;align-items:flex-start;
   }
   .verdict .vlabel{font-weight:800}
@@ -98,33 +127,69 @@
   .verdict.nofit{background:var(--stop-bg);border-color:var(--stop)}
   .verdict.nofit .vlabel{color:var(--stop)}
 
+  /* ---- Pager + toolbar ---- */
+  .pager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px}
+  .pager button{
+    font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--border-strong);
+    background:#fff;color:var(--ink);font-weight:700;font-size:.95rem;
+    min-height:44px;min-width:44px;padding:8px 16px;display:inline-flex;align-items:center;gap:6px;
+  }
+  .pager button:hover{background:#f3f1ec}
+  .pager button[aria-disabled="true"]{opacity:.4;cursor:default}
+  .pager button[aria-disabled="true"]:hover{background:#fff}
+  .pager .indicator{font-size:var(--fs-small);color:var(--muted);font-weight:600;min-width:9ch;text-align:center}
+
+  .toolbar{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .toolbar button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border-strong);
+    background:#fff;color:var(--ink);padding:8px 14px;font-size:.9rem;font-weight:600;min-height:44px;
+  }
+  .toolbar button:hover{background:#f3f1ec}
+
   a:focus-visible,button:focus-visible{
     outline:2px solid var(--ink);outline-offset:2px;
     box-shadow:0 0 0 4px #fff, 0 0 0 6px var(--ink);
   }
-  .toolbar{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap}
-  .toolbar button{
-    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border-strong);
-    background:#fff;color:var(--ink);padding:8px 14px;font-size:.9rem;font-weight:600;
-  }
-  .toolbar button:hover{background:#f3f1ec}
   .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-  @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+  /* ---- Reflow escape hatch: single column, drop the 16:9 floor ---- */
+  @container (max-width:560px){
+    .grid{grid-template-columns:1fr}
+    .slide{min-height:0}
+  }
+  @media (max-width:560px){
+    .grid{grid-template-columns:1fr}
+    .slide{min-height:0}
+  }
 </style>
 </head>
 <body>
 <header>
   <h1>The 2026 Benchmark Set: <span class="accent">what they do, and does it fit Home Depot?</span></h1>
-  <p class="intro">Twelve moves worth studying, in two groups: <strong>direct competitors</strong>, then experiences <strong>beyond home improvement</strong> that feel unified. Each card front shows <strong>what they do</strong>. Reveal the back for <strong>why they did it</strong>, <strong>whether it worked</strong>, and the filter question — <strong>does it fit a warehouse-size store full of big, heavy, cut-to-order products?</strong></p>
-  <p class="how">Select <strong>Reveal the back</strong> on any card. By keyboard: press <kbd>Tab</kbd> to a card's button, then <kbd>Enter</kbd> or <kbd>Space</kbd>.</p>
+  <p class="intro">Twelve moves worth studying, split across two slides: first the <strong>store-ops mechanic itself</strong> — putting checkout and answers in the associate's hands — then <strong>unified experiences beyond home improvement</strong>. Each card front shows <strong>what they do</strong>; flip it for <strong>why they did it</strong>, <strong>whether it worked</strong>, and the filter question: <strong>does it fit a warehouse-size store full of big, heavy, cut-to-order products?</strong></p>
+  <p class="how">Select <strong>Reveal the back</strong> to flip any card. By keyboard: press <kbd>Tab</kbd> to a card's button, then <kbd>Enter</kbd> or <kbd>Space</kbd>. Use <strong>Previous</strong> / <strong>Next</strong> to move between the two slides.</p>
 </header>
 
 <main id="main">
-  <div id="groups"></div>
+  <div class="deck" role="group" aria-roledescription="carousel" aria-label="Benchmark slides">
+    <div class="viewport" id="viewport"></div>
 
-  <div class="toolbar">
-    <button type="button" id="expand-all">Reveal all backs</button>
-    <button type="button" id="collapse-all">Hide all backs</button>
+    <div class="pager">
+      <button type="button" id="prev">
+        <span aria-hidden="true">‹</span><span class="btn-text">Previous</span>
+        <span class="visually-hidden"> slide</span>
+      </button>
+      <span class="indicator" id="indicator">Slide 1 of 2</span>
+      <button type="button" id="next">
+        <span class="btn-text">Next</span><span aria-hidden="true">›</span>
+        <span class="visually-hidden"> slide</span>
+      </button>
+    </div>
+
+    <div class="toolbar">
+      <button type="button" id="expand-all">Reveal all backs on this slide</button>
+      <button type="button" id="collapse-all">Hide all backs on this slide</button>
+    </div>
   </div>
 </main>
 
@@ -135,8 +200,8 @@
   "use strict";
   var GROUPS = [
    {
-    heading:"Group 1 — Direct competitors: same industry, same store type",
-    sub:"Start here. These are the moves closest to Home Depot's own scenario.",
+    heading:"Group 1 — The store-ops mechanic: checkout and answers in the associate's hands",
+    sub:"Start here. These retailers show the core move you're studying — associate handhelds, untethered mobile checkout, and live inventory. Lowe's is your same-industry anchor; the rest prove the model scales, and Amazon is the cautionary counterpoint to removing the associate entirely.",
     cards:[
     {
       id:"lowes", role:"Your anchor — study this most", cls:"anchor",
@@ -195,8 +260,8 @@
     ]
    },
    {
-    heading:"Look beyond your category — the best unified experiences aren't home-improvement stores",
-    sub:"Benchmark past your direct competitors. Each front shows the move; the back asks whether it could fit a warehouse store.",
+    heading:"Group 2 — Unified experiences beyond home improvement",
+    sub:"Benchmark past your direct competitors. These leaders outside the category show what “everything works together” actually feels like — one identity, fulfillment tied to the shelf, and services only a store can do. Each front shows the move; the back asks whether it could fit a warehouse store.",
     cards:[
     {
       id:"sephora", role:"Beauty", cls:"",
@@ -268,16 +333,13 @@
    }
   ];
 
-  var CARDS = [];
-  GROUPS.forEach(function(g){ g.cards.forEach(function(c){ CARDS.push(c); }); });
-
   var live = document.getElementById("live");
   function announce(msg){ live.textContent=""; requestAnimationFrame(function(){ requestAnimationFrame(function(){ live.textContent=msg; }); }); }
 
   function el(tag, cls, text){ var e=document.createElement(tag); if(cls)e.className=cls; if(text!=null)e.textContent=text; return e; }
 
-  function fieldBlock(label, text, extraClass){
-    var wrap = el("div","field"+(extraClass?" "+extraClass:""));
+  function fieldBlock(label, text){
+    var wrap = el("div","field");
     wrap.appendChild(el("span","field-label",label));
     wrap.appendChild(el("p",null,text));
     return wrap;
@@ -287,28 +349,23 @@
     var li = el("li","card"+(c.cls?" "+c.cls:""));
     li.id = "card-"+c.id;
 
-    var head = el("div","card-head");
-    head.appendChild(el("span","role-tag",c.role));
-    head.appendChild(el("h3",null,c.name));
-    head.appendChild(el("span","alias",c.alias));
-    li.appendChild(head);
+    var vp = el("div","flip-viewport");
+    var inner = el("div","flip-inner");
 
-    li.appendChild(fieldBlock(c.whatLabel || "What they do", c.what));
+    // FRONT
+    var front = el("div","face face-front");
+    front.appendChild(el("span","role-tag",c.role));
+    front.appendChild(el("h3",null,c.name));
+    front.appendChild(el("span","alias",c.alias));
+    front.appendChild(fieldBlock(c.whatLabel || "What they do", c.what));
 
-    var btn = el("button","flip-btn");
-    btn.type="button";
-    btn.id="flip-"+c.id;
-    btn.setAttribute("aria-expanded","false");
-    var back = el("div","back");
-    back.id="back-"+c.id;
-    btn.setAttribute("aria-controls", back.id);
-    var lbl = el("span","flip-label","Reveal the back");
-    var chev = el("span","chev"); chev.setAttribute("aria-hidden","true"); chev.textContent="▼";
-    btn.appendChild(lbl); btn.appendChild(chev);
-
+    // BACK (pre-gated from AT + tab order until flipped)
+    var back = el("div","face face-back");
+    back.id = "back-"+c.id;
+    back.setAttribute("aria-hidden","true");
+    back.setAttribute("inert","");
     back.appendChild(fieldBlock(c.whyLabel || "Why they did it", c.why));
     back.appendChild(fieldBlock("Did it work?", c.work));
-
     var verdict = el("div","verdict "+c.fit);
     verdict.appendChild(el("span","vlabel",c.fitLabel+": "));
     verdict.appendChild(el("span",null,c.fitText));
@@ -317,43 +374,132 @@
     fitField.appendChild(verdict);
     back.appendChild(fitField);
 
+    inner.appendChild(front);
+    inner.appendChild(back);
+    vp.appendChild(inner);
+    li.appendChild(vp);
+
+    // Button lives in the STATIC shell, outside the rotating element
+    var btn = el("button","flip-btn");
+    btn.type="button";
+    btn.id="flip-"+c.id;
+    btn.setAttribute("aria-expanded","false");
+    btn.setAttribute("aria-controls", back.id);
+    btn.appendChild(el("span","flip-label","Reveal the back"));
+    var chev = el("span","chev"); chev.setAttribute("aria-hidden","true"); chev.textContent="▼";
+    btn.appendChild(chev);
     btn.addEventListener("click", function(){ toggle(c.id); });
     li.appendChild(btn);
-    li.appendChild(back);
+
     return li;
   }
 
   function toggle(id, force){
     var li = document.getElementById("card-"+id);
     var btn = document.getElementById("flip-"+id);
-    var open = force==null ? !li.classList.contains("open") : force;
+    var inner = li.querySelector(".flip-inner");
+    var front = li.querySelector(".face-front");
+    var back  = li.querySelector(".face-back");
+    var open  = force==null ? !li.classList.contains("open") : force;
+
     li.classList.toggle("open", open);
     btn.setAttribute("aria-expanded", open ? "true":"false");
     btn.querySelector(".flip-label").textContent = open ? "Hide the back" : "Reveal the back";
+
+    var showing = open ? back  : front;   // rotating IN  -> expose now
+    var hiding  = open ? front : back;    // rotating OUT -> hide after transition
+    showing.removeAttribute("aria-hidden");
+    showing.removeAttribute("inert");
+
+    function hideNow(){
+      var stillOpen = li.classList.contains("open");
+      var faceIsOut = (hiding === front) ? stillOpen : !stillOpen; // guard fast reversals
+      if(faceIsOut){ hiding.setAttribute("aria-hidden","true"); hiding.setAttribute("inert",""); }
+    }
+    var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(reduce){ hideNow(); }
+    else{
+      inner.addEventListener("transitionend", function te(e){
+        if(e.propertyName!=="transform" || e.target!==inner) return;
+        inner.removeEventListener("transitionend", te);
+        hideNow();
+      });
+    }
     return open;
   }
 
-  var groupsWrap = document.getElementById("groups");
+  // ---- Build slides ----
+  var viewport = document.getElementById("viewport");
+  var slides = [];
   GROUPS.forEach(function(g, gi){
+    var slide = el("section","slide");
+    slide.id = "slide-"+gi;
+    slide.setAttribute("role","group");
+    slide.setAttribute("aria-roledescription","slide");
+    slide.setAttribute("aria-label","Slide "+(gi+1)+" of "+GROUPS.length);
+
     var h = el("h2","group-heading",g.heading);
-    h.id = "group-"+gi;
-    groupsWrap.appendChild(h);
-    if(g.sub){ groupsWrap.appendChild(el("p","group-sub",g.sub)); }
+    h.id = "heading-"+gi;
+    slide.appendChild(h);
+    if(g.sub){ slide.appendChild(el("p","group-sub",g.sub)); }
+
     var grid = el("ul","grid");
-    grid.style.listStyle = "none";
     grid.setAttribute("aria-labelledby", h.id);
     g.cards.forEach(function(c){ grid.appendChild(makeCard(c)); });
-    groupsWrap.appendChild(grid);
+    slide.appendChild(grid);
+
+    viewport.appendChild(slide);
+    slides.push({el:slide, group:g});
   });
 
+  // ---- Pager ----
+  var current = 0;
+  var prevBtn = document.getElementById("prev");
+  var nextBtn = document.getElementById("next");
+  var indicator = document.getElementById("indicator");
+
+  function trim(heading){
+    // drop the "Group N — " prefix for a tighter spoken/visible label
+    return heading.replace(/^Group\s*\d+\s*[—\-:]\s*/,"");
+  }
+
+  function render(initial){
+    slides.forEach(function(s, i){
+      var active = (i===current);
+      s.el.hidden = !active;
+      if(active){ s.el.removeAttribute("inert"); }
+      else{ s.el.setAttribute("inert",""); }
+    });
+    indicator.textContent = "Slide "+(current+1)+" of "+slides.length;
+    prevBtn.setAttribute("aria-disabled", current===0 ? "true":"false");
+    nextBtn.setAttribute("aria-disabled", current===slides.length-1 ? "true":"false");
+    if(!initial){
+      announce("Slide "+(current+1)+" of "+slides.length+", "+trim(slides[current].group.heading));
+    }
+  }
+
+  function go(delta){
+    var target = current + delta;
+    if(target<0 || target>slides.length-1) return;
+    current = target;
+    render(false);
+  }
+
+  prevBtn.addEventListener("click", function(){ if(current>0) go(-1); });
+  nextBtn.addEventListener("click", function(){ if(current<slides.length-1) go(1); });
+
+  // ---- Reveal/Hide all on the ACTIVE slide only ----
+  function activeCards(){ return slides[current].group.cards; }
   document.getElementById("expand-all").addEventListener("click", function(){
-    CARDS.forEach(function(c){ toggle(c.id, true); });
-    announce("All card backs revealed.");
+    activeCards().forEach(function(c){ toggle(c.id, true); });
+    announce("All card backs on this slide revealed.");
   });
   document.getElementById("collapse-all").addEventListener("click", function(){
-    CARDS.forEach(function(c){ toggle(c.id, false); });
-    announce("All card backs hidden.");
+    activeCards().forEach(function(c){ toggle(c.id, false); });
+    announce("All card backs on this slide hidden.");
   });
+
+  render(true);
 })();
 </script>
 </body>
