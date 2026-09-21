@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample journey map — Maya, weekend DIY customer</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#5a5a5a; --line:#d9d9d9; --card:#ffffff; --bg:#f6f6f4;
+    --hd:#f96302;            /* Home Depot orange */
+    --hd-band:#c24d00;       /* header band: white text = 5.13:1 */
+    --hd-ink:#7a3200;
+    --friction-bg:#fff1e6; --friction-line:#f96302; --friction-ink:#8a3a00;
+    --smooth-bg:#eef7ee; --smooth-ink:#1f6b30; --smooth-line:#bfe0c4;
+    --proof-bg:#e7f0fb; --proof-ink:#1c4e86; --proof-line:#c3d9f2;
+    --guess-bg:#f3edf9; --guess-ink:#6a3d9a; --guess-line:#ddccef;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#f2f2f0; --muted:#b8b8b4; --line:#3a3a3a; --card:#1f1f1f; --bg:#141414;
+      --hd:#ff7a1a; --hd-band:#9a3d00; --hd-ink:#ffb680;
+      --friction-bg:#3a2410; --friction-line:#ff7a1a; --friction-ink:#ffc79a;
+      --smooth-bg:#16301b; --smooth-ink:#8fd69c; --smooth-line:#2c5233;
+      --proof-bg:#152a44; --proof-ink:#9ec5f0; --proof-line:#274a72;
+      --guess-bg:#291d3a; --guess-ink:#cbaef0; --guess-line:#4a3568;
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:20px;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+  .persona{
+    background:var(--card); border:1px solid var(--line); border-left:6px solid var(--hd);
+    border-radius:12px; padding:16px 18px; margin-bottom:16px;
+  }
+  .persona .label{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--hd-ink);font-weight:700;margin:0 0 4px}
+  .persona h1{font-size:1.15rem;margin:0 0 4px}
+  .persona p{margin:0;color:var(--muted);font-size:.95rem}
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+  .scroll:focus-visible{outline:2px solid var(--hd);outline-offset:2px}
+  table{border-collapse:collapse;width:100%;min-width:760px}
+  caption{text-align:left;padding:12px 14px;color:var(--muted);font-size:.85rem;border-bottom:1px solid var(--line)}
+  th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+  th:last-child,td:last-child{border-right:0}
+  tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+  thead th{background:var(--hd-band);color:#fff;font-size:.9rem;position:sticky;top:0}
+  thead th .num{display:block;font-size:.72rem;font-weight:600}
+  th[scope="row"]{background:var(--bg);font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);white-space:nowrap;width:120px}
+  td{font-size:.92rem}
+  .friction{background:var(--friction-bg)}
+  .friction .tag{display:inline-block;font-weight:700;color:var(--friction-ink);font-size:.72rem;letter-spacing:.03em;text-transform:uppercase;margin-bottom:4px}
+  .smooth{background:var(--smooth-bg);color:var(--smooth-ink)}
+  .smooth .tag{display:inline-block;font-weight:700;color:var(--smooth-ink);font-size:.72rem;letter-spacing:.03em;text-transform:uppercase;margin-bottom:4px}
+  .chip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:.75rem;font-weight:600;border:1px solid}
+  .chip.proof{background:var(--proof-bg);color:var(--proof-ink);border-color:var(--proof-line)}
+  .chip.guess{background:var(--guess-bg);color:var(--guess-ink);border-color:var(--guess-line)}
+  .chip.none{background:transparent;color:var(--muted);border-color:var(--line)}
+  .readit{margin:16px 2px 0;font-size:.92rem;color:var(--muted)}
+  .readit strong{color:var(--ink)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="persona">
+    <p class="label">Persona</p>
+    <h1>Maya — weekend DIY customer</h1>
+    <p>Browses on the Home Depot app before driving in. Wants to grab one specific tool and some lumber in a single trip.</p>
+  </div>
+
+  <div class="scroll" role="region" aria-label="Sample journey map (scrollable)" tabindex="0">
+    <table>
+      <caption>Sample journey map: five steps left to right. Three friction points marked, each tagged as proof or a guess.</caption>
+      <thead>
+        <tr>
+          <td></td>
+          <th scope="col"><span class="num">Step 1</span>Online</th>
+          <th scope="col"><span class="num">Step 2</span>Arrive &amp; find the aisle</th>
+          <th scope="col"><span class="num">Step 3</span>Ask for help</th>
+          <th scope="col"><span class="num">Step 4</span>Checkout</th>
+          <th scope="col"><span class="num">Step 5</span>Pickup / delivery</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">What Maya does</th>
+          <td>Searches the app for a specific drill, adds it to her cart.</td>
+          <td>Walks in, tries to locate the drill.</td>
+          <td>Flags an associate to help find it.</td>
+          <td>Moves to the register to pay.</td>
+          <td>Carries the drill out; schedules delivery for the lumber.</td>
+        </tr>
+        <tr>
+          <th scope="row">Friction</th>
+          <td class="friction"><span class="tag">Friction</span>App says "in stock" but not which aisle or bay.</td>
+          <td class="friction"><span class="tag">Friction</span>Her online cart doesn't carry over — she re-searches on her phone in-store.</td>
+          <td class="friction"><span class="tag">Friction</span>The associate can't see her online cart, so they start the search over.</td>
+          <td class="smooth"><span class="tag">Smooth</span>No friction once she's there.</td>
+          <td class="smooth"><span class="tag">Smooth</span>No friction.</td>
+        </tr>
+        <tr>
+          <th scope="row">Proof or guess</th>
+          <td><span class="chip proof">Proof — app</span></td>
+          <td><span class="chip guess">Guess</span></td>
+          <td><span class="chip guess">Guess</span></td>
+          <td><span class="chip none">—</span></td>
+          <td><span class="chip none">—</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="readit"><strong>Read it:</strong> the friction clusters at the online-to-in-store handoff (steps 2–3) — the associate can't see what Maya already found online. That's the one break worth naming.</p>
+</main>
+</body>
+</html>
