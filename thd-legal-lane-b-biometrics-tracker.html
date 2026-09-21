@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lane B Biometrics Tracker — 16:9 Benchmark Deck</title>
+<style>
+  :root {
+    --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
+    --bg: #f4f6f5; --accent: #d5581f; --accent-ink: #b8480f; --link: #1a5f7a;
+    --stagew: 1280px; --stageh: 720px; --scale: 1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0c110f; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  /* horizontal scroll-snap deck */
+  .deck {
+    display: flex; flex-direction: row;
+    height: 100vh; width: 100vw;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    background: var(--bg);
+  }
+  .screen {
+    flex: 0 0 100vw; height: 100vh;
+    scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  /* fixed 1280x720 design canvas, scaled to fit the viewport (letterboxed) */
+  .slide {
+    width: var(--stagew); height: var(--stageh);
+    flex: 0 0 auto;
+    transform: scale(var(--scale)); transform-origin: center center;
+    background: var(--card); position: relative; overflow: hidden;
+  }
+
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 17px;
+    font-weight: 700; color: var(--accent-ink); margin: 0 0 12px;
+  }
+
+  /* ---------- summary slide ---------- */
+  .slide--summary { padding: 52px 92px; border-top: 8px solid var(--accent); }
+  h1 { font-size: 46px; line-height: 1.08; margin: 0 0 14px; max-width: 22ch; }
+  .lede { font-size: 18px; color: var(--muted); margin: 0 0 26px; max-width: 96ch; }
+  .sum-grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+  }
+  .sum-cell {
+    background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--accent);
+    border-radius: 12px; padding: 16px 18px;
+    box-shadow: 0 1px 2px rgba(20,33,31,.04), 0 8px 20px rgba(20,33,31,.05);
+  }
+  .sum-cell--wide { grid-column: span 1; }
+  .sum-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 50%; background: var(--accent);
+    color: #fff; font-size: 15px; font-weight: 800; flex: 0 0 auto; margin-bottom: 10px;
+  }
+  .sum-name { margin: 0 0 4px; font-weight: 700; font-size: 19px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .sum-status {
+    display: inline-block; font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .04em; color: var(--accent-ink); background: #fbf3ee;
+    border: 1px solid #f2d9c9; border-radius: 999px; padding: 3px 10px; margin-bottom: 8px;
+  }
+  .sum-desc { margin: 0; font-size: 14.5px; color: var(--muted); line-height: 1.42; }
+
+  /* ---------- item slide ---------- */
+  .slide--item { padding: 52px 96px; border-top: 8px solid var(--accent); display: flex; flex-direction: column; }
+  .c-counter {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 15px;
+    font-weight: 700; color: var(--muted); margin: 0 0 24px;
+  }
+  .c-cols { display: flex; gap: 52px; flex: 1; min-height: 0; }
+  .c-left { flex: 0 0 400px; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+  .c-right { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+  .c-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 56px; height: 56px; border-radius: 50%; background: var(--accent);
+    color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 20px;
+  }
+  .c-namerow { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+  h2 { font-size: 38px; margin: 0; }
+  .c-alias { font-size: 18px; color: var(--muted); font-style: italic; }
+  .c-origin { font-size: 19px; color: var(--muted); margin: 12px 0 24px; }
+  .c-stat {
+    background: #fbf3ee; border: 1px solid #f2d9c9; border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .c-stat-value { display: block; font-size: 26px; font-weight: 800; color: var(--accent-ink); line-height: 1.2; margin-bottom: 6px; }
+  .c-stat-label { font-size: 16px; color: var(--muted); }
+  .c-who { margin: 0 0 22px; font-size: 21px; line-height: 1.4; }
+  .c-durability { background: #f4f6f5; border-radius: 14px; padding: 20px 22px; }
+  .c-dur-tag {
+    display: inline-block; font-size: 15px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--accent-ink); margin-bottom: 10px;
+  }
+  .c-durability p { margin: 0; font-size: 18.5px; line-height: 1.45; }
+  a { color: var(--link); }
+  a:hover { text-decoration: none; }
+  a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+  /* ---------- chrome: arrows + dots ---------- */
+  .navbtn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,.92); border: 1px solid var(--line);
+    color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+    box-shadow: 0 4px 14px rgba(0,0,0,.16);
+  }
+  .navbtn:hover { background: #fff; }
+  .navbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .navbtn[disabled] { opacity: .3; cursor: default; }
+  .navbtn--prev { left: 20px; }
+  .navbtn--next { right: 20px; }
+
+  .dotnav {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+    display: flex; gap: 12px; z-index: 30;
+    background: rgba(255,255,255,.9); padding: 10px 16px; border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.14);
+  }
+  .dot {
+    width: 12px; height: 12px; border-radius: 50%; background: #c2c9c7;
+    border: none; padding: 0; cursor: pointer; transition: background .2s, transform .2s;
+  }
+  .dot:hover { background: var(--accent); transform: scale(1.2); }
+  .dot:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .dot.is-active { background: var(--accent); transform: scale(1.2); }
+
+  @media (prefers-reduced-motion: reduce) { .deck { scroll-behavior: auto; } }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eef1f0; --muted: #a8b2af; --line: #2c3634; --card: #1a2321;
+      --bg: #101615; --accent: #f07a3d; --accent-ink: #f4a06f; --link: #6fc3dd;
+    }
+    .sum-status { background: #24211c; border-color: #3a3126; }
+    .c-stat { background: #24211c; border-color: #3a3126; }
+    .c-durability { background: #131a19; }
+    .navbtn, .dotnav { background: rgba(26,35,33,.94); border-color: var(--line); color: var(--ink); }
+    .dot { background: #3a4442; }
+  }
+</style>
+</head>
+<body>
+  <main class="deck" id="deck">
+    <section class="screen" id="screen-0" aria-labelledby="summary-title">
+      <div class="slide slide--summary">
+        <p class="eyebrow">Step 1 · Scan the patchwork</p>
+        <h1 id="summary-title">Biometrics &amp; Facial Recognition: The Regulatory Landscape</h1>
+        <p class="lede">No single national biometric law — a handful of states regulate it differently, plus one landmark federal enforcement action. Scroll through each entry, then decide whether Illinois, Texas, Washington, Colorado, or the FTC's Rite Aid action is the one you want to map.</p>
+        <ul class="sum-grid">
+          <li class="sum-cell">
+            <span class="sum-badge" aria-hidden="true">1</span>
+            <p class="sum-name">Illinois</p>
+            <span class="sum-status">In effect · strictest</span>
+            <p class="sum-desc">BIPA (740 ILCS 14) — permission required before scanning faces or fingerprints, damages per violation. The leading law in this lane.</p>
+          </li>
+          <li class="sum-cell">
+            <span class="sum-badge" aria-hidden="true">2</span>
+            <p class="sum-name">Federal (FTC)</p>
+            <span class="sum-status">Enforcement action</span>
+            <p class="sum-desc">FTC v. Rite Aid (2023) — a 5-year ban on facial recognition after false "shoplifter" flags hit minority neighborhoods hardest.</p>
+          </li>
+          <li class="sum-cell">
+            <span class="sum-badge" aria-hidden="true">3</span>
+            <p class="sum-name">Texas</p>
+            <span class="sum-status">In effect</span>
+            <p class="sum-desc">CUBI / TRAIGA — regulates biometric capture, enforced by the state rather than by individuals.</p>
+          </li>
+          <li class="sum-cell">
+            <span class="sum-badge" aria-hidden="true">4</span>
+            <p class="sum-name">Washington</p>
+            <span class="sum-status">In effect</span>
+            <p class="sum-desc">Biometric privacy law — a different structure for notice and consent rules.</p>
+          </li>
+          <li class="sum-cell">
+            <span class="sum-badge" aria-hidden="true">5</span>
+            <p class="sum-name">Colorado</p>
+            <span class="sum-status">Enacted</span>
+            <p class="sum-desc">HB 24-1130 — recent additions to Colorado's privacy law covering biometric data specifically.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-1" aria-labelledby="h-il">
+      <div class="slide slide--item">
+        <p class="c-counter">Entry 1 of 5</p>
+        <div class="c-cols">
+          <div class="c-left">
+            <span class="c-badge" aria-hidden="true">1</span>
+            <div class="c-namerow">
+              <h2 id="h-il">Illinois</h2>
+            </div>
+            <p class="c-origin"><span aria-hidden="true">🏛️</span> BIPA — Biometric Information Privacy Act (740 ILCS 14)</p>
+            <div class="c-stat">
+              <span class="c-stat-value">In effect</span>
+              <span class="c-stat-label">strictest in the US</span>
+            </div>
+          </div>
+          <div class="c-right">
+            <p class="c-who">A business must get permission before scanning faces or fingerprints. Damages are charged per violation ($1,000/$5,000), so costs add up fast.</p>
+            <div class="c-durability">
+              <span class="c-dur-tag"><span aria-hidden="true">📌</span> What it does, in plain terms</span>
+              <p>The leading law in this lane, and the most likely candidate for the single focus-area law you'll map in full.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-2" aria-labelledby="h-ftc">
+      <div class="slide slide--item">
+        <p class="c-counter">Entry 2 of 5</p>
+        <div class="c-cols">
+          <div class="c-left">
+            <span class="c-badge" aria-hidden="true">2</span>
+            <div class="c-namerow">
+              <h2 id="h-ftc">Federal (FTC)</h2>
+            </div>
+            <p class="c-origin"><span aria-hidden="true">🏛️</span> FTC v. Rite Aid (2023)</p>
+            <div class="c-stat">
+              <span class="c-stat-value">Enforcement action</span>
+              <span class="c-stat-label">not a statute</span>
+            </div>
+          </div>
+          <div class="c-right">
+            <p class="c-who">A 5-year ban on Rite Aid using facial recognition, after false "shoplifter" flags fell disproportionately on minority neighborhoods.</p>
+            <div class="c-durability">
+              <span class="c-dur-tag"><span aria-hidden="true">📌</span> What it does, in plain terms</span>
+              <p>The canonical retail cautionary tale — choose this framing if you're drawn to enforcement rather than a law on the books.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-3" aria-labelledby="h-tx">
+      <div class="slide slide--item">
+        <p class="c-counter">Entry 3 of 5</p>
+        <div class="c-cols">
+          <div class="c-left">
+            <span class="c-badge" aria-hidden="true">3</span>
+            <div class="c-namerow">
+              <h2 id="h-tx">Texas</h2>
+            </div>
+            <p class="c-origin"><span aria-hidden="true">🏛️</span> CUBI / TRAIGA</p>
+            <div class="c-stat">
+              <span class="c-stat-value">In effect</span>
+              <span class="c-stat-label">state-enforced</span>
+            </div>
+          </div>
+          <div class="c-right">
+            <p class="c-who">Regulates biometric capture — but enforced by the state, not by individuals, unlike Illinois.</p>
+            <div class="c-durability">
+              <span class="c-dur-tag"><span aria-hidden="true">📌</span> What it does, in plain terms</span>
+              <p>Pick it if you want to compare a state that enforces biometrics differently from Illinois — a good angle if you like contrast.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-4" aria-labelledby="h-wa">
+      <div class="slide slide--item">
+        <p class="c-counter">Entry 4 of 5</p>
+        <div class="c-cols">
+          <div class="c-left">
+            <span class="c-badge" aria-hidden="true">4</span>
+            <div class="c-namerow">
+              <h2 id="h-wa">Washington</h2>
+            </div>
+            <p class="c-origin"><span aria-hidden="true">🏛️</span> Biometric privacy law</p>
+            <div class="c-stat">
+              <span class="c-stat-value">In effect</span>
+              <span class="c-stat-label">state-level restriction</span>
+            </div>
+          </div>
+          <div class="c-right">
+            <p class="c-who">Another state approach — notice and consent rules, structured differently again from Illinois and Texas.</p>
+            <div class="c-durability">
+              <span class="c-dur-tag"><span aria-hidden="true">📌</span> What it does, in plain terms</span>
+              <p>A third distinct structure — useful if you want to weigh several state approaches side by side.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-5" aria-labelledby="h-co">
+      <div class="slide slide--item">
+        <p class="c-counter">Entry 5 of 5</p>
+        <div class="c-cols">
+          <div class="c-left">
+            <span class="c-badge" aria-hidden="true">5</span>
+            <div class="c-namerow">
+              <h2 id="h-co">Colorado</h2>
+            </div>
+            <p class="c-origin"><span aria-hidden="true">🏛️</span> HB 24-1130</p>
+            <div class="c-stat">
+              <span class="c-stat-value">Enacted</span>
+              <span class="c-stat-label">state-level addition</span>
+            </div>
+          </div>
+          <div class="c-right">
+            <p class="c-who">Recent additions to Colorado's privacy law covering biometric data specifically.</p>
+            <div class="c-durability">
+              <span class="c-dur-tag"><span aria-hidden="true">📌</span> What it does, in plain terms</span>
+              <p>The newest entry — choose it if you're drawn to a law still settling into practice.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button type="button" class="navbtn navbtn--prev" id="prev" aria-label="Previous slide">‹</button>
+  <button type="button" class="navbtn navbtn--next" id="next" aria-label="Next slide">›</button>
+  <nav class="dotnav" id="dotnav" aria-label="Jump to slide">
+      <button type="button" class="dot" data-i="0" aria-label="Summary slide"></button>
+      <button type="button" class="dot" data-i="1" aria-label="Illinois slide"></button>
+      <button type="button" class="dot" data-i="2" aria-label="Federal FTC slide"></button>
+      <button type="button" class="dot" data-i="3" aria-label="Texas slide"></button>
+      <button type="button" class="dot" data-i="4" aria-label="Washington slide"></button>
+      <button type="button" class="dot" data-i="5" aria-label="Colorado slide"></button>
+  </nav>
+
+<script>
+  var deck = document.getElementById('deck');
+  var screens = Array.prototype.slice.call(deck.querySelectorAll('.screen'));
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var current = 0;
+
+  // Scale the fixed 1280x720 canvas to fit the viewport (letterbox), keeping 16:9.
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    document.documentElement.style.setProperty('--scale', s);
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(screens.length - 1, i));
+    deck.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' });
+  }
+  function setActive(i) {
+    current = i;
+    dots.forEach(function (d, di) { d.classList.toggle('is-active', di === i); });
+    prev.disabled = (i === 0);
+    next.disabled = (i === screens.length - 1);
+  }
+  setActive(0);
+
+  prev.addEventListener('click', function () { goTo(current - 1); });
+  next.addEventListener('click', function () { goTo(current + 1); });
+  dots.forEach(function (d) { d.addEventListener('click', function () { goTo(+d.dataset.i); }); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End')  { e.preventDefault(); goTo(screens.length - 1); }
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) setActive(screens.indexOf(e.target));
+      });
+    }, { root: deck, threshold: 0.6 });
+    screens.forEach(function (s) { io.observe(s); });
+  }
+
+  // Let a vertical mouse wheel drive the horizontal deck.
+  deck.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      deck.scrollLeft += e.deltaY;
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
