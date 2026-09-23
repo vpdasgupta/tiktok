@@ -55,6 +55,7 @@
     display:flex;flex-direction:column;min-height:0;
   }
   .bin.sources{border-style:dashed}
+  .bin.drop-target{border-color:var(--orange);background:#fff7f1;box-shadow:0 0 0 3px rgba(249,99,2,.25)}
   .bin h2 .sub{display:block;font-weight:400;font-size:.8rem;color:var(--muted);margin-top:2px}
   .bin[data-empty="true"] .list::after{
     content:attr(data-empty-label);display:block;color:var(--muted);
@@ -70,6 +71,8 @@
     background:var(--card);border:1px solid var(--border-strong);border-left:6px solid var(--border-strong);
     border-radius:10px;padding:10px 12px;
   }
+  .card[draggable="true"]{cursor:grab}
+  .card.dragging{opacity:.45;cursor:grabbing}
   .card.correct{border-left-color:var(--ok)}
   .card.retry{border-left-color:var(--retry)}
   .card-body{display:flex;align-items:flex-start;gap:9px}
@@ -113,7 +116,7 @@
 <body>
 <header>
   <h1>Source Sorter: <span class="accent">Original Document</span> or Just a Lead?</h1>
-  <p class="intro">Sort each source into the right bin. An <strong>original document</strong> is the actual law on an official government site — you can trust it. Everything else is <strong>just a lead</strong>: useful for finding things, but you still have to open the original to confirm. <span class="hint">Use the <strong>Move to…</strong> buttons on each card (mouse, touch, or keyboard: <kbd>Tab</kbd> then <kbd>Enter</kbd>). You get instant feedback on every move.</span></p>
+  <p class="intro">Sort each source into the right bin. An <strong>original document</strong> is the actual law on an official government site — you can trust it. Everything else is <strong>just a lead</strong>: useful for finding things, but you still have to open the original to confirm. <span class="hint">Drag a card into a bin, or use the <strong>Move to…</strong> buttons (mouse, touch, or keyboard: <kbd>Tab</kbd> then <kbd>Enter</kbd>). You get instant feedback on every move.</span></p>
 </header>
 
 <main id="main">
@@ -196,6 +199,14 @@
     li.dataset.answer = c.answer;
     li.dataset.text = c.text;
     li.setAttribute("aria-describedby","status-"+c.id);
+
+    // Drag-and-drop enhancement (buttons remain the accessible path)
+    li.setAttribute("draggable","true");
+    li.addEventListener("dragstart", function(e){
+      li.classList.add("dragging");
+      if(e.dataTransfer){ e.dataTransfer.setData("text/plain", c.id); e.dataTransfer.effectAllowed = "move"; }
+    });
+    li.addEventListener("dragend", function(){ li.classList.remove("dragging"); });
 
     var body = document.createElement("div"); body.className="card-body";
     var ic = document.createElement("span"); ic.className="card-icon"; ic.setAttribute("aria-hidden","true"); ic.textContent=c.icon;
@@ -307,6 +318,28 @@
     refreshEmpty();
     document.getElementById("result").classList.remove("show");
   }
+
+  function wireDropZones(){
+    Object.keys(BINS).forEach(function(key){
+      var bin = binById(key);
+      bin.addEventListener("dragover", function(e){
+        e.preventDefault();               // allow drop
+        if(e.dataTransfer) e.dataTransfer.dropEffect = "move";
+        bin.classList.add("drop-target");
+      });
+      bin.addEventListener("dragleave", function(e){
+        // only clear when the pointer actually leaves the bin, not its children
+        if(!bin.contains(e.relatedTarget)) bin.classList.remove("drop-target");
+      });
+      bin.addEventListener("drop", function(e){
+        e.preventDefault();
+        bin.classList.remove("drop-target");
+        var id = e.dataTransfer && e.dataTransfer.getData("text/plain");
+        if(id) move(id, key);
+      });
+    });
+  }
+  wireDropZones();
 
   document.getElementById("reset").addEventListener("click", function(){
     init();
