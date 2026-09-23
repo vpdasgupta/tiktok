@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How The Home Depot thinks — the four traits</title>
+<style>
+  :root {
+    --bg: #ffffff; --card: #ffffff; --text: #1a1a1a; --muted: #4a4a4a;
+    --border: #d9d9d9; --accent: #b34700; --accent-bar: #f96302;
+    --tip-bg: #fbf3ee; --tip-border: #f96302;
+    --dot: #c7c7c7; --dot-active: #b34700;
+    --btn-text: #b34700; --btn-border: #d9d9d9; --btn-bg: #ffffff;
+    --focus: #1a5fd6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #191919; --card: #202020; --text: #ededed; --muted: #bcbcbc;
+      --border: #3a3a3a; --accent: #ff9147; --accent-bar: #f96302;
+      --tip-bg: #2a2117; --tip-border: #f96302;
+      --dot: #5a5a5a; --dot-active: #ff9147;
+      --btn-text: #ff9147; --btn-border: #3a3a3a; --btn-bg: #202020;
+      --focus: #7aa7ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5; padding: 12px;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  .carousel {
+    max-width: 760px; margin: 0 auto;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border); border-left: 5px solid var(--accent-bar);
+    border-radius: 10px; padding: 16px 20px;
+  }
+  .slide[hidden] { display: none; }
+  h1 { font-size: 1.15rem; margin: 0 0 8px; }
+  p { margin: 0 0 12px; color: var(--text); }
+  .tips { list-style: none; margin: 0; padding: 12px 14px; background: var(--tip-bg);
+    border-left: 4px solid var(--tip-border); border-radius: 0 8px 8px 0; }
+  .tips li { margin: 6px 0; padding-left: 20px; position: relative; }
+  .tips li::before { content: "\2713"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+  .controls {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; max-width: 760px; margin: 12px auto 0;
+  }
+  .nav-btn {
+    font: inherit; font-weight: 600; color: var(--btn-text);
+    background: var(--btn-bg); border: 1px solid var(--btn-border);
+    border-radius: 8px; padding: 8px 14px; cursor: pointer; min-height: 44px;
+  }
+  .nav-btn:hover { border-color: var(--accent-bar); }
+  .nav-btn:disabled { opacity: 0.4; cursor: default; }
+  .dots { display: flex; gap: 6px; padding: 0; margin: 0; list-style: none; }
+  .dot {
+    width: 44px; height: 44px; padding: 0; border: 0; background: none;
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .dot::before {
+    content: ""; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--dot); display: block;
+  }
+  .dot[aria-current="true"]::before { background: var(--dot-active); }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+</style>
+</head>
+<body>
+  <h1 class="sr-only">How The Home Depot thinks — the four traits</h1>
+
+  <div class="carousel" role="group" aria-roledescription="carousel" aria-label="How The Home Depot thinks: four traits">
+    <div class="sr-only" aria-live="polite" aria-atomic="true" data-live></div>
+
+    <div class="slides">
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="1 of 4: Conservative">
+        <div class="card">
+          <h2>Conservative</h2>
+          <p>The Home Depot moves in careful, tested steps and tends to lean on what has worked before rather than betting big on the untried. A pitch that asks for a sweeping change reads as risky; one that starts small reads as smart.</p>
+          <ul class="tips" aria-label="Ways to put it into practice">
+            <li><strong>Frame it as a pilot.</strong> Propose testing your idea in one store, one aisle, or one product category first, with a plan to expand only if it works.</li>
+            <li><strong>Point to precedent.</strong> Note a time the idea (or a close cousin) already worked, so it feels proven rather than experimental.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="2 of 4: Highly visual" hidden>
+        <div class="card">
+          <h2>Highly visual</h2>
+          <p>Presentation carries weight here. Clean, on-brand slides and signage are the norm, so a cluttered slide can quietly undercut an otherwise strong idea.</p>
+          <ul class="tips" aria-label="Ways to put it into practice">
+            <li><strong>Keep slides simple.</strong> One clear point per slide, plenty of white space, and a chart or image instead of a wall of text.</li>
+            <li><strong>Show, don't just tell.</strong> A quick before/after visual or mockup of your recommendation lands faster than a paragraph describing it.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="3 of 4: Formulaic" hidden>
+        <div class="card">
+          <h2>Formulaic</h2>
+          <p>The Home Depot prefers repeatable methods and clear steps over improvising a new approach each time. That is good news when you are learning: you can follow the method instead of guessing.</p>
+          <ul class="tips" aria-label="Ways to put it into practice">
+            <li><strong>Show your steps.</strong> Lay out how you got to your recommendation so someone else could repeat it and reach the same result.</li>
+            <li><strong>Reuse the standard format.</strong> Match the structure and templates the team already uses rather than inventing your own.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="4 of 4: Evidence-driven" hidden>
+        <div class="card">
+          <h2>Evidence-driven</h2>
+          <p>Decisions here run on checked numbers and facts, not opinions or vendor claims. Any statement you make is only as strong as the source behind it.</p>
+          <ul class="tips" aria-label="Ways to put it into practice">
+            <li><strong>Cite every claim.</strong> Attach a real number and where it came from to each point, and skip anything you can't back up.</li>
+            <li><strong>Check the source.</strong> Favor The Home Depot's own data or a credible outside source over marketing copy, and note it so others can verify.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <div class="controls">
+      <button type="button" class="nav-btn" data-prev><span aria-hidden="true">&larr;</span> Previous</button>
+      <ul class="dots" role="list">
+        <li><button type="button" class="dot" data-goto="0" aria-label="Trait 1: Conservative" aria-current="true"></button></li>
+        <li><button type="button" class="dot" data-goto="1" aria-label="Trait 2: Highly visual"></button></li>
+        <li><button type="button" class="dot" data-goto="2" aria-label="Trait 3: Formulaic"></button></li>
+        <li><button type="button" class="dot" data-goto="3" aria-label="Trait 4: Evidence-driven"></button></li>
+      </ul>
+      <button type="button" class="nav-btn" data-next>Next <span aria-hidden="true">&rarr;</span></button>
+    </div>
+  </div>
+
+<script>
+(function () {
+  var titles = ["Conservative", "Highly visual", "Formulaic", "Evidence-driven"];
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var dots = Array.prototype.slice.call(document.querySelectorAll(".dot"));
+  var prevBtn = document.querySelector("[data-prev]");
+  var nextBtn = document.querySelector("[data-next]");
+  var live = document.querySelector("[data-live]");
+  var carousel = document.querySelector(".carousel");
+  var current = 0;
+
+  function show(i, announce) {
+    current = i;
+    slides.forEach(function (s, n) {
+      if (n === i) { s.removeAttribute("hidden"); }
+      else { s.setAttribute("hidden", ""); }
+    });
+    dots.forEach(function (d, n) {
+      if (n === i) { d.setAttribute("aria-current", "true"); }
+      else { d.removeAttribute("aria-current"); }
+    });
+    prevBtn.disabled = (i === 0);
+    nextBtn.disabled = (i === slides.length - 1);
+    if (announce) {
+      live.textContent = "Slide " + (i + 1) + " of " + slides.length + ": " + titles[i];
+    }
+  }
+
+  // If the button that triggered a move becomes disabled at an end, keep focus
+  // in the widget by moving it to the still-enabled sibling button.
+  function keepFocus(triggered) {
+    if (triggered.disabled) {
+      var sibling = (triggered === prevBtn) ? nextBtn : prevBtn;
+      if (!sibling.disabled) sibling.focus();
+    }
+  }
+
+  prevBtn.addEventListener("click", function () { if (current > 0) { show(current - 1, true); keepFocus(prevBtn); } });
+  nextBtn.addEventListener("click", function () { if (current < slides.length - 1) { show(current + 1, true); keepFocus(nextBtn); } });
+  dots.forEach(function (d) {
+    d.addEventListener("click", function () { show(parseInt(d.getAttribute("data-goto"), 10), true); });
+  });
+
+  carousel.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight" && current < slides.length - 1) { show(current + 1, true); e.preventDefault(); }
+    else if (e.key === "ArrowLeft" && current > 0) { show(current - 1, true); e.preventDefault(); }
+  });
+
+  show(0, false);
+})();
+</script>
+</body>
+</html>
