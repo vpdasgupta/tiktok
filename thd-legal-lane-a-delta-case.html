@@ -1,166 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A real example: Delta and AI airfares</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>A Real Example: Delta &amp; AI Airfares — 16:9 Story Deck</title>
 <style>
-  :root{
-    --bg:#0b1220; --panel:#0f172a; --ink:#ffffff; --muted:#c7d2e1;
-    --accent:#ff7a1a; --accent-2:#ffb066; --ring:#ffffff;
+  :root {
+    --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
+    --bg: #f4f6f5; --accent: #d5581f; --accent-ink: #b8480f; --link: #1a5f7a;
+    --stagew: 1280px; --stageh: 720px; --scale: 1;
   }
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%}
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    display:flex;align-items:center;justify-content:center;
-    min-height:100vh;padding:16px;
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0c110f; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); -webkit-font-smoothing: antialiased;
   }
-  .stage{width:100%;max-width:960px}
-  .deck{
-    position:relative;width:100%;aspect-ratio:16/9;
-    background:linear-gradient(160deg,#0f172a 0%,#131f39 100%);
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:16px;overflow:hidden;
-    box-shadow:0 20px 60px rgba(0,0,0,.45);
+  .deck {
+    display: flex; flex-direction: row;
+    height: 100vh; width: 100vw;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    background: var(--bg);
   }
-  .slide{
-    position:absolute;inset:0;
-    display:flex;flex-direction:column;justify-content:center;
-    padding:clamp(20px,5.2vw,56px);
-    opacity:0;transition:opacity .4s ease;
+  .screen {
+    flex: 0 0 100vw; height: 100vh;
+    scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
   }
-  .slide[aria-hidden="false"]{opacity:1}
-  .slide[hidden]{display:none}
-  .eyebrow{
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:clamp(.72rem,1.6vw,.95rem);font-weight:700;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--accent-2);margin:0 0 14px;
+  .slide {
+    width: var(--stagew); height: var(--stageh);
+    flex: 0 0 auto;
+    transform: scale(var(--scale)); transform-origin: center center;
+    background: var(--card); position: relative; overflow: hidden;
   }
-  .eyebrow .num{
-    background:var(--accent);color:#1a0f00;border-radius:999px;
-    padding:2px 10px;font-weight:800;letter-spacing:0;
+
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 18px;
+    font-weight: 700; color: var(--accent-ink); margin: 0 0 16px;
+    display: inline-flex; align-items: center; gap: 12px;
   }
-  h1{
-    margin:0 0 16px;line-height:1.06;
-    font-size:clamp(1.5rem,5.4vw,3rem);font-weight:800;letter-spacing:-.01em;
+  .eyebrow .num {
+    background: var(--accent); color: #fff; border-radius: 999px;
+    padding: 4px 14px; letter-spacing: .04em; font-size: 14px; font-weight: 800;
   }
-  h1 .hi{color:var(--accent)}
-  p.lede{
-    margin:0;max-width:38ch;color:var(--muted);
-    font-size:clamp(1rem,2.5vw,1.4rem);line-height:1.5;
+
+  /* ---------- story slide ---------- */
+  .slide--story {
+    padding: 64px 96px; border-top: 8px solid var(--accent);
+    display: flex; flex-direction: column; justify-content: center;
   }
-  .big{
-    font-size:clamp(2.4rem,10vw,5.5rem);font-weight:900;color:var(--accent);
-    line-height:1;margin:0 0 6px;letter-spacing:-.02em;
+  .slide--story h1 { font-size: 62px; line-height: 1.05; margin: 0 0 22px; max-width: 20ch; }
+  .hi { color: var(--accent-ink); }
+  .lede { font-size: 26px; color: var(--muted); margin: 0; max-width: 60ch; line-height: 1.5; }
+  .bignum {
+    font-size: 128px; font-weight: 800; color: var(--accent-ink);
+    line-height: 1; margin: 0 0 6px; letter-spacing: -.02em;
   }
-  .tag{
-    display:inline-block;margin-top:18px;padding:8px 14px;border-radius:10px;
-    background:rgba(255,122,26,.14);border:1px solid rgba(255,122,26,.45);
-    color:var(--accent-2);font-weight:600;font-size:clamp(.85rem,2vw,1.05rem);
+  .story-box {
+    align-self: flex-start; margin-top: 30px;
+    background: #fbf3ee; border: 1px solid #f2d9c9; border-radius: 14px;
+    padding: 18px 24px; font-size: 21px; font-weight: 700; color: var(--accent-ink);
   }
-  /* Controls */
-  .controls{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:12px;margin-top:14px;
+  .src { margin-top: 30px; font-size: 17px; color: var(--muted); }
+  a { color: var(--link); }
+  a:hover { text-decoration: none; }
+  a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+  /* ---------- chrome: arrows + dots ---------- */
+  .navbtn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,.92); border: 1px solid var(--line);
+    color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+    box-shadow: 0 4px 14px rgba(0,0,0,.16);
   }
-  .dots{display:flex;gap:10px;align-items:center}
-  .dot{
-    width:12px;height:12px;border-radius:999px;padding:0;
-    border:2px solid var(--accent);background:transparent;cursor:pointer;
+  .navbtn:hover { background: #fff; }
+  .navbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .navbtn[disabled] { opacity: .3; cursor: default; }
+  .navbtn--prev { left: 20px; }
+  .navbtn--next { right: 20px; }
+
+  .dotnav {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+    display: flex; gap: 12px; z-index: 30;
+    background: rgba(255,255,255,.9); padding: 10px 16px; border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.14);
   }
-  .dot[aria-current="true"]{background:var(--accent)}
-  .nav{display:flex;gap:10px}
-  button.arrow{
-    font:inherit;font-weight:700;cursor:pointer;color:var(--ink);
-    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.25);
-    border-radius:10px;padding:10px 16px;
+  .dot {
+    width: 12px; height: 12px; border-radius: 50%; background: #c2c9c7;
+    border: none; padding: 0; cursor: pointer; transition: background .2s, transform .2s;
   }
-  button.arrow:hover:not(:disabled){background:rgba(255,255,255,.14)}
-  button.arrow:disabled{opacity:.35;cursor:default}
-  .counter{color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
-  :focus-visible{outline:3px solid var(--ring);outline-offset:3px;border-radius:6px}
-  .sr-only{
-    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
-    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  .dot:hover { background: var(--accent); transform: scale(1.2); }
+  .dot:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .dot.is-active { background: var(--accent); transform: scale(1.2); }
+
+  @media (prefers-reduced-motion: reduce) { .deck { scroll-behavior: auto; } }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eef1f0; --muted: #a8b2af; --line: #2c3634; --card: #1a2321;
+      --bg: #101615; --accent: #f07a3d; --accent-ink: #f4a06f; --link: #6fc3dd;
+    }
+    .story-box { background: #24211c; border-color: #3a3126; }
+    .navbtn, .dotnav { background: rgba(26,35,33,.94); border-color: var(--line); color: var(--ink); }
+    .dot { background: #3a4442; }
   }
-  @media (prefers-reduced-motion:reduce){.slide{transition:none}}
 </style>
 </head>
 <body>
-  <div class="stage">
-    <section class="deck" id="deck" role="group" aria-roledescription="carousel"
-             aria-label="Case study: Delta and AI airfares, 3 slides">
-
-      <article class="slide" id="s1" role="group" aria-roledescription="slide" aria-label="Slide 1 of 3">
+  <main class="deck" id="deck">
+    <section class="screen" id="screen-0" aria-labelledby="s1-title">
+      <div class="slide slide--story">
         <p class="eyebrow"><span class="num">Real example</span> Surveillance pricing</p>
-        <h1>A price built <span class="hi">just for you?</span></h1>
+        <h1 id="s1-title">A price built <span class="hi">just for you?</span></h1>
         <p class="lede">In 2025, Delta Air Lines said it wanted to use AI to help set ticket prices, on roughly <strong>1 in 5</strong> of its U.S. flights by year&rsquo;s end. The worry: instead of one price everyone sees, the price could be aimed at <em>you</em>.</p>
-      </article>
-
-      <article class="slide" id="s2" role="group" aria-roledescription="slide" aria-label="Slide 2 of 3" hidden>
-        <p class="eyebrow"><span class="num">Real example</span> The pushback</p>
-        <h1>Congress <span class="hi">noticed.</span></h1>
-        <p class="lede">In July 2025, three U.S. Senators sent Delta a letter. Their fear: AI could charge each traveler right up to their &ldquo;pain point,&rdquo; the most they&rsquo;d pay before walking away. Delta pushed back, saying it does <strong>not</strong> use personal data to target individuals.</p>
-        <span class="tag">&ldquo;Pain point&rdquo; = the most you&rsquo;d pay before saying no</span>
-      </article>
-
-      <article class="slide" id="s3" role="group" aria-roledescription="slide" aria-label="Slide 3 of 3" hidden>
-        <p class="eyebrow"><span class="num">Real example</span> Why it matters for the law</p>
-        <h1>New tech <span class="hi">pulls the law toward it.</span></h1>
-        <p class="lede">No law bans this yet. But this is exactly how it starts: lawmakers test whether today&rsquo;s privacy and consumer rules are enough. That pressure is part of what&rsquo;s driving the pricing&#8209;disclosure bills you&rsquo;ll meet next.</p>
-      </article>
-
-      <div class="controls">
-        <div class="dots" role="tablist" aria-label="Choose a slide">
-          <button class="dot" type="button" data-go="0" aria-current="true" aria-label="Slide 1"></button>
-          <button class="dot" type="button" data-go="1" aria-label="Slide 2"></button>
-          <button class="dot" type="button" data-go="2" aria-label="Slide 3"></button>
-        </div>
-        <span class="counter" aria-hidden="true"><span id="cur">1</span> / 3</span>
-        <div class="nav">
-          <button class="arrow" id="prev" type="button" aria-label="Previous slide" disabled>&larr; Back</button>
-          <button class="arrow" id="next" type="button" aria-label="Next slide">Next &rarr;</button>
-        </div>
+        <span class="story-box"><span aria-hidden="true">🛫</span> Same seat, different price, depending on who&rsquo;s buying</span>
       </div>
     </section>
-    <p class="sr-only" id="live" role="status" aria-live="polite"></p>
-  </div>
+
+    <section class="screen" id="screen-1" aria-labelledby="s2-title">
+      <div class="slide slide--story">
+        <p class="eyebrow"><span class="num">Real example</span> The pushback</p>
+        <h1 id="s2-title">Congress <span class="hi">noticed.</span></h1>
+        <p class="lede">In July 2025, three U.S. Senators sent Delta a letter. Their fear: AI could charge each traveler right up to their &ldquo;pain point,&rdquo; the most they&rsquo;d pay before walking away. Delta pushed back, saying it does <strong>not</strong> use personal data to target individuals.</p>
+        <span class="story-box"><span aria-hidden="true">📌</span> &ldquo;Pain point&rdquo; = the most you&rsquo;d pay before saying no</span>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-2" aria-labelledby="s3-title">
+      <div class="slide slide--story">
+        <p class="eyebrow"><span class="num">Real example</span> Why it matters for the law</p>
+        <h1 id="s3-title">New tech <span class="hi">pulls the law toward it.</span></h1>
+        <p class="lede">No law bans this yet. But this is exactly how it starts: lawmakers test whether today&rsquo;s privacy and consumer rules are enough. That pressure is part of what&rsquo;s driving the pricing&#8209;disclosure bills you&rsquo;ll meet next.</p>
+        <p class="src">Sources: <a href="https://www.warner.senate.gov/newsroom/press-releases/warner-colleagues-demand-answers-from-delta-on-use-of-ai-to-set-individualized-ticket-prices/" target="_blank" rel="noopener">the senators&rsquo; letter</a> · <a href="https://news.delta.com/delta-responds-misinformation-around-ai-pricing" target="_blank" rel="noopener">Delta&rsquo;s response</a></p>
+      </div>
+    </section>
+  </main>
+
+  <button type="button" class="navbtn navbtn--prev" id="prev" aria-label="Previous slide">‹</button>
+  <button type="button" class="navbtn navbtn--next" id="next" aria-label="Next slide">›</button>
+  <nav class="dotnav" id="dotnav" aria-label="Jump to slide">
+    <button type="button" class="dot" data-i="0" aria-label="Slide 1: A price built just for you"></button>
+    <button type="button" class="dot" data-i="1" aria-label="Slide 2: Congress noticed"></button>
+    <button type="button" class="dot" data-i="2" aria-label="Slide 3: Why it matters for the law"></button>
+  </nav>
 
 <script>
-(function(){
-  var slides=[].slice.call(document.querySelectorAll('.slide'));
-  var dots=[].slice.call(document.querySelectorAll('.dot'));
-  var prev=document.getElementById('prev'), next=document.getElementById('next');
-  var cur=document.getElementById('cur'), live=document.getElementById('live');
-  var i=0;
-  function titleOf(s){var h=s.querySelector('h1');return h?h.textContent.trim():'';}
-  function show(n){
-    i=Math.max(0,Math.min(slides.length-1,n));
-    slides.forEach(function(s,idx){
-      var on=idx===i;
-      s.hidden=!on;
-      s.setAttribute('aria-hidden',on?'false':'true');
-    });
-    dots.forEach(function(d,idx){
-      if(idx===i){d.setAttribute('aria-current','true');}
-      else{d.removeAttribute('aria-current');}
-    });
-    prev.disabled=i===0; next.disabled=i===slides.length-1;
-    cur.textContent=i+1;
-    live.textContent='Slide '+(i+1)+' of '+slides.length+': '+titleOf(slides[i]);
+  var deck = document.getElementById('deck');
+  var screens = Array.prototype.slice.call(deck.querySelectorAll('.screen'));
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var current = 0;
+
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    document.documentElement.style.setProperty('--scale', s);
   }
-  prev.addEventListener('click',function(){show(i-1);});
-  next.addEventListener('click',function(){show(i+1);});
-  dots.forEach(function(d){d.addEventListener('click',function(){show(+d.dataset.go);});});
-  document.getElementById('deck').addEventListener('keydown',function(e){
-    if(e.key==='ArrowRight'){e.preventDefault();show(i+1);}
-    else if(e.key==='ArrowLeft'){e.preventDefault();show(i-1);}
+  window.addEventListener('resize', fit);
+  fit();
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(screens.length - 1, i));
+    deck.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' });
+  }
+  function setActive(i) {
+    current = i;
+    dots.forEach(function (d, di) { d.classList.toggle('is-active', di === i); });
+    prev.disabled = (i === 0);
+    next.disabled = (i === screens.length - 1);
+  }
+  setActive(0);
+
+  prev.addEventListener('click', function () { goTo(current - 1); });
+  next.addEventListener('click', function () { goTo(current + 1); });
+  dots.forEach(function (d) { d.addEventListener('click', function () { goTo(+d.dataset.i); }); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End')  { e.preventDefault(); goTo(screens.length - 1); }
   });
-  show(0);
-})();
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) setActive(screens.indexOf(e.target));
+      });
+    }, { root: deck, threshold: 0.6 });
+    screens.forEach(function (s) { io.observe(s); });
+  }
+
+  deck.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      deck.scrollLeft += e.deltaY;
+    }
+  }, { passive: true });
 </script>
 </body>
 </html>
