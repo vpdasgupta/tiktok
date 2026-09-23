@@ -164,7 +164,8 @@
 
   function goTo(i) {
     i = Math.max(0, Math.min(screens.length - 1, i));
-    deck.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' });
+    setActive(i);
+    deck.scrollTo({ left: screens[i].offsetLeft, behavior: 'smooth' });
   }
   function setActive(i) {
     current = i;
