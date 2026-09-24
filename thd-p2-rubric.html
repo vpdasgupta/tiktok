@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project 2 Rubric — How Your Breakeven Analysis Is Evaluated</title>
+<style>
+  :root {
+    --hd-orange: #F96302;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --line: #e3e3e3;
+    --exceeds-bg: #eef7ee;
+    --exceeds-bar: #2e7d32;
+    --exceeds-ink: #1b4d20;
+    --needs-bg: #fdeeee;
+    --needs-bar: #b3261e;
+    --needs-ink: #7a1a15;
+    --card: #ffffff;
+    --page: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--page);
+    line-height: 1.5;
+    font-size: 16px;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; }
+
+  h1 {
+    font-size: 1.35rem;
+    line-height: 1.25;
+    margin: 0 0 4px;
+  }
+  .subhead { color: var(--ink-soft); margin: 0 0 20px; font-size: 0.95rem; }
+
+  /* ---- Table (desktop) ---- */
+  table { border-collapse: collapse; width: 100%; }
+  caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  thead th {
+    text-align: left;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 0 14px 8px;
+    vertical-align: bottom;
+    font-weight: 700;
+    border-bottom: 2px solid var(--line);
+  }
+  thead .col-exceeds { color: var(--exceeds-ink); }
+  thead .col-needs { color: var(--needs-ink); }
+
+  tbody td, tbody th { vertical-align: top; padding: 16px 14px; border-bottom: 1px solid var(--line); }
+
+  /* Criterion cell */
+  .crit { width: 22%; }
+  .crit-name { font-weight: 700; font-size: 1rem; display: block; margin-bottom: 8px; color: var(--ink); }
+  .weight {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+    background: #C2410C;
+    border-radius: 999px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+  .weight-label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); margin-top: 6px; }
+
+  .level { width: 39%; font-size: 0.92rem; color: var(--ink); }
+  .level.exceeds { background: var(--exceeds-bg); border-left: 4px solid var(--exceeds-bar); }
+  .level.needs { background: var(--needs-bg); border-left: 4px solid var(--needs-bar); }
+  .level strong { color: inherit; }
+
+  /* Per-cell heading shown only on mobile */
+  .cell-tag { display: none; }
+
+  /* Stars in the header */
+  .stars { letter-spacing: 1px; }
+
+  .footnote {
+    margin-top: 18px;
+    background: #f6f6f4;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+  .footnote strong { color: var(--ink); }
+
+  /* ---- Mobile: stack into cards ---- */
+  @media (max-width: 680px) {
+    thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    table, tbody, tr, td, th { display: block; width: 100%; }
+    tbody tr {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    tbody td, tbody th { border-bottom: 1px solid var(--line); padding: 14px 16px; }
+    .crit { background: #fff; }
+    .crit-name { font-size: 1.05rem; }
+    .level { width: 100%; }
+    .cell-tag {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    .level.exceeds .cell-tag { color: var(--exceeds-ink); }
+    .level.needs .cell-tag { color: var(--needs-ink); }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #ececec; --ink-soft: #b3b3b3; --line: #3a3a3a; --page: #1e1e1e; --card: #262626;
+      --exceeds-bg: #16281a; --exceeds-ink: #9cd6a2;
+      --needs-bg: #2b1817; --needs-ink: #e79b96;
+    }
+    .footnote { background: #262626; }
+    .weight-label, thead th { color: var(--ink-soft); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>How Your Breakeven Analysis Is Evaluated</h1>
+  <p class="subhead">Three weighted criteria. You're graded on the clarity of your thinking and the specificity of your rationale — not a slick spreadsheet or one “right” answer.</p>
+
+  <table role="table">
+    <caption>Project 2 Breakeven Analysis scoring rubric, with three criteria scored from Exceeds (five stars) to Needs Work (one star).</caption>
+    <thead role="rowgroup">
+      <tr role="row">
+        <th scope="col" role="columnheader">Criterion &amp; weight</th>
+        <th scope="col" role="columnheader" class="col-exceeds">Exceeds <span class="stars" aria-hidden="true">★★★★★</span></th>
+        <th scope="col" role="columnheader" class="col-needs">Needs Work <span class="stars" aria-hidden="true">★</span></th>
+      </tr>
+    </thead>
+    <tbody role="rowgroup">
+      <tr role="row">
+        <th scope="row" role="rowheader" class="crit">
+          <span class="crit-name">Evidence Rigor</span>
+          <span class="weight">40%</span>
+          <span class="weight-label">of your score</span>
+        </th>
+        <td class="level exceeds" role="cell">
+          <span class="cell-tag">Exceeds <span aria-hidden="true">★★★★★</span></span>
+          Produces a <strong>real breakeven</strong> — an actual months-to-payback number — built on <strong>documented, sourced assumptions</strong>, and clearly <strong>carries forward the labor prize</strong> sized in Pre-Work as the savings side of the model. Every figure traces to a locked MET fact, an HD-provided number, a cited benchmark, or a clearly-labeled assumption.
+        </td>
+        <td class="level needs" role="cell">
+          <span class="cell-tag">Needs Work <span aria-hidden="true">★</span></span>
+          No real breakeven is reached; numbers appear with no source; vendor marketing is taken as fact; the labor opportunity is never quantified or is disconnected from the model.
+        </td>
+      </tr>
+      <tr role="row">
+        <th scope="row" role="rowheader" class="crit">
+          <span class="crit-name">THD Fit &amp; Specificity</span>
+          <span class="weight">30%</span>
+          <span class="weight-label">of your score</span>
+        </th>
+        <td class="level exceeds" role="cell">
+          <span class="cell-tag">Exceeds <span aria-hidden="true">★★★★★</span></span>
+          Models the <strong>elevated warehouse damage rates</strong> (5/10/15/25%) and their replacement costs rather than borrowing traditional-retail 2–5% rates, <strong>and addresses implementation feasibility</strong> — what it would actually take to pilot ESL on these specific products or bays at Home Depot.
+        </td>
+        <td class="level needs" role="cell">
+          <span class="cell-tag">Needs Work <span aria-hidden="true">★</span></span>
+          Reads like a generic traditional-retail ESL case; ignores forklift zones, locked cages, and the failed whole-store test; uses industry-average damage rates with no warehouse adjustment; no view on what implementation would require.
+        </td>
+      </tr>
+      <tr role="row">
+        <th scope="row" role="rowheader" class="crit">
+          <span class="crit-name">AI Integration + Human Judgment</span>
+          <span class="weight">30%</span>
+          <span class="weight-label">of your score</span>
+        </th>
+        <td class="level exceeds" role="cell">
+          <span class="cell-tag">Exceeds <span aria-hidden="true">★★★★★</span></span>
+          Uses AI (e.g., Claude) to <strong>accelerate</strong> the modeling — structuring assumptions, checking math, testing scenarios — with <strong>visible documentation of where you verified, corrected, or overrode</strong> it against a primary source. The judgment is clearly yours.
+        </td>
+        <td class="level needs" role="cell">
+          <span class="cell-tag">Needs Work <span aria-hidden="true">★</span></span>
+          AI outputs pasted in as-is; invented specs, rates, or costs presented as fact; no verification notes; no sign the extern checked or overrode anything.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="footnote"><strong>Showing your work IS the grade.</strong> Two externs submit the same breakeven number. One writes “12 months (source: my assumptions).” The other writes “roughly 12 months, assuming 15% damage — here are my three inputs and where each came from, and here's where I overrode the AI's guess.” The second extern scores far higher on every criterion, with the <em>same</em> math.</p>
+</div>
+</body>
+</html>
