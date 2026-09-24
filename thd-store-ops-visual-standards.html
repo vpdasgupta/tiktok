@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Seven Home Depot Visual Standards — Store Operations (slide deck)</title>
+  <style>
+    :root{
+      --orange:#F96302; --orange-btn:#C25000; --orange-btn-hover:#A63D00;
+      --ink:#1A1A1A; --ink-2:#404040; --bad:#C62828; --good:#2E7D32;
+      --bad-bg:#FDECEA; --good-bg:#E8F5E9; --line:#D7D7D7;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.5;-webkit-font-smoothing:antialiased;}
+    .visually-hidden{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;}
+    main{max-width:920px;margin:0 auto;padding:20px 16px 8px;}
+    #deck{border:1px solid var(--line);border-radius:14px;padding:22px;background:#fff;}
+    .deck-top{border-top:6px solid var(--orange);border-radius:14px 14px 0 0;height:0;margin:-22px -22px 18px;}
+    .slide{min-height:340px;}
+    .slide:focus-visible,#deck :focus-visible{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 6px #fff;border-radius:6px;}
+    /* Title slide */
+    .deck-eyebrow{font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:var(--orange-btn);font-weight:700;margin:0 0 10px;}
+    .deck-title{font-size:2rem;line-height:1.15;margin:0 0 14px;}
+    .deck-sub{font-size:1.05rem;color:var(--ink-2);margin:0 0 18px;max-width:60ch;}
+    .deck-hint{font-size:.95rem;color:var(--ink-2);margin:0;}
+    /* Standard slides */
+    .std-kicker{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--orange-btn);font-weight:700;margin:0 0 6px;}
+    .std-name{font-size:1.6rem;line-height:1.2;margin:0 0 18px;}
+    .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    @media (max-width:640px){.cards{grid-template-columns:1fr;} .deck-title{font-size:1.6rem;} .std-name{font-size:1.35rem;}}
+    .card{border:2px solid var(--line);border-radius:12px;padding:16px;min-height:190px;}
+    .card--bad{border-color:var(--bad);background:var(--bad-bg);}
+    .card--good{border-color:var(--good);background:var(--good-bg);}
+    .card-label{font-weight:800;margin:0 0 12px;font-size:1rem;}
+    .card--bad .card-label{color:var(--bad);}
+    .card--good .card-label{color:var(--good);}
+    .card-icon{font-size:1.05rem;margin-right:4px;}
+    /* Mocks */
+    .mock{margin:0;}
+    .mock-text{color:var(--ink);font-size:.98rem;}
+    .mock-bullets{margin:0;padding-left:1.15rem;}
+    .mock-bullets li{margin:.3rem 0;}
+    .mock-stat{display:flex;flex-direction:column;gap:6px;padding:10px 0;}
+    .stat-num{font-size:2.4rem;font-weight:800;color:var(--orange-btn);line-height:1;}
+    .stat-cap{font-size:.95rem;color:var(--ink-2);}
+    .mock-title{font-weight:700;padding:14px;border-radius:8px;background:#fff;border:1px dashed var(--line);}
+    .mock-title.title-bad{color:var(--ink-2);font-style:italic;}
+    .mock-title.title-good{color:var(--ink);font-size:1.15rem;border-color:var(--orange);}
+    .mock-chain{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;padding:12px;border-radius:8px;border:1px dashed var(--line);}
+    .chip{background:#F3F3F3;border-radius:6px;padding:6px 10px;font-size:.9rem;}
+    .chip-ok{background:var(--good-bg);color:var(--good);font-weight:700;}
+    .arrow{font-size:1.3rem;color:var(--ink-2);}
+    .mock-brand{background:#fff;border-radius:8px;padding:12px;border:1px dashed var(--line);}
+    .brand-bar{display:block;height:14px;border-radius:4px;margin-bottom:10px;}
+    .brand-off .brand-bar{background:#2f6fb0;}
+    .brand-on .brand-bar{background:var(--orange);}
+    .brand-note{font-size:.9rem;color:var(--ink-2);}
+    .mock-gbb{display:flex;flex-direction:column;gap:8px;}
+    .tier{background:#fff;border:1px solid var(--line);border-left:5px solid var(--orange);border-radius:6px;padding:8px 10px;font-size:.92rem;}
+    .tier-single{border-left-color:var(--bad);font-style:italic;color:var(--ink-2);}
+    .tier-tag{display:inline-block;font-weight:800;color:var(--orange-btn);margin-right:8px;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;}
+    /* Nav */
+    nav.deck-nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);}
+    .navbtn{background:var(--orange-btn);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:1rem;font-weight:700;cursor:pointer;}
+    .navbtn:hover{background:var(--orange-btn-hover);}
+    .navbtn[aria-disabled="true"]{background:#767676;cursor:default;}
+    #counter{margin:0;font-size:.95rem;color:var(--ink-2);font-weight:600;}
+    .dots{display:flex;gap:8px;margin-left:auto;}
+    .dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--orange-btn);background:#fff;cursor:pointer;padding:0;}
+    .dot[aria-current="true"]{background:var(--orange-btn);}
+    @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+  </style>
+</head>
+<body>
+  <div id="carousel-status" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+  <main>
+    <div id="deck" role="group" aria-roledescription="carousel" aria-label="The Seven Home Depot Visual Standards" aria-describedby="deck-help">
+      <div class="deck-top" aria-hidden="true"></div>
+      <p id="deck-help" class="visually-hidden">Use the Previous and Next buttons or the Left and Right arrow keys to change slides; use the dots to jump to a slide.</p>
+      <section class="slide slide--title" role="group" aria-roledescription="slide" aria-label="1 of 8, Title" tabindex="0" data-slide="0">
+        <p class="deck-eyebrow">The Home Depot · Store Operations</p>
+        <h1 class="deck-title">The Seven Home Depot Visual Standards</h1>
+        <p class="deck-sub">Building your final unified-store-experience deck. Each standard, shown as a before &amp; after — the version to skip next to the version that lands.</p>
+        <p class="deck-hint">Use <strong>Next</strong> / <strong>Previous</strong> or the <strong>← →</strong> arrow keys.</p>
+      </section>
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="2 of 8, Standard 1: One idea per slide" tabindex="0" hidden data-slide="1">
+        <p class="std-kicker">Standard 1 of 7</p>
+        <h2 class="std-name">One idea per slide</h2>
+        <div class="cards">
+          <div class="card card--bad">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✗</span> Skip this</p>
+            <p class="mock mock-text">One slide stacks the journey map, the service blueprint, the benchmark, <em>and</em> the pick — four ideas at once.</p>
+          </div>
+          <div class="card card--good">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✓</span> This lands</p>
+            <div class="mock mock-title title-good">A single journey snapshot — “The online-to-aisle handoff is where the trip breaks.”</div>
+          </div>
+        </div>
+      </section>
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="3 of 8, Standard 2: A wall of text isn’t done — cut words, add a visual" tabindex="0" hidden data-slide="2">
+        <p class="std-kicker">Standard 2 of 7</p>
+        <h2 class="std-name">A wall of text isn’t done — cut words, add a visual</h2>
+        <div class="cards">
+          <div class="card card--bad">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✗</span> Skip this</p>
+            <p class="mock mock-text">When a customer returns an item in the aisle today, the associate has to leave the floor, walk to a fixed register, wait in the checkout line, process the return, and walk back, which can take around 25 minutes and pulls a Pro away from their real work…</p>
+          </div>
+          <div class="card card--good">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✓</span> This lands</p>
+            <div class="mock mock-stat"><span class="stat-num">25 min</span><span class="stat-cap">aisle return = half a Pro’s day — over one photo of the returns line</span></div>
+          </div>
+        </div>
+      </section>
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="4 of 8, Standard 3: Give every slide an action title" tabindex="0" hidden data-slide="3">
+        <p class="std-kicker">Standard 3 of 7</p>
+        <h2 class="std-name">Give every slide an action title</h2>
+        <div class="cards">
+          <div class="card card--bad">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✗</span> Skip this</p>
+            <div class="mock mock-title title-bad">The Friction</div>
+          </div>
+          <div class="card card--good">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✓</span> This lands</p>
+            <div class="mock mock-title title-good">A 25-minute aisle return costs a Pro half a day’s work</div>
+          </div>
+        </div>
+      </section>
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="5 of 8, Standard 4: Tie every point back to the business" tabindex="0" hidden data-slide="4">
+        <p class="std-kicker">Standard 4 of 7</p>
+        <h2 class="std-name">Tie every point back to the business</h2>
+        <div class="cards">
+          <div class="card card--bad">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✗</span> Skip this</p>
+            <p class="mock mock-text">Mobile POS lets associates check out customers anywhere in the store.</p>
+          </div>
+          <div class="card card--good">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✓</span> This lands</p>
+            <p class="mock mock-text">Checkout anywhere <strong>= ≈20 min saved per Pro visit</strong> — more time selling.</p>
+          </div>
+        </div>
+      </section>
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="6 of 8, Standard 5: Bullets, not paragraphs" tabindex="0" hidden data-slide="5">
+        <p class="std-kicker">Standard 5 of 7</p>
+        <h2 class="std-name">Bullets, not paragraphs</h2>
+        <div class="cards">
+          <div class="card card--bad">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✗</span> Skip this</p>
+            <p class="mock mock-text">A unified experience would let any associate sell anywhere, cut the walk to a register, shorten returns, free Pros to sell, and modernize the trip, but it needs mobile POS, training, and system work…</p>
+          </div>
+          <div class="card card--good">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✓</span> This lands</p>
+            <ul class="mock mock-bullets"><li>Sell anywhere, no register walk</li><li>Returns drop 25 min → 5 min</li><li>Frees Pros to sell</li></ul>
+          </div>
+        </div>
+      </section>
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="7 of 8, Standard 6: Use Home Depot branding" tabindex="0" hidden data-slide="6">
+        <p class="std-kicker">Standard 6 of 7</p>
+        <h2 class="std-name">Use Home Depot branding</h2>
+        <div class="cards">
+          <div class="card card--bad">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✗</span> Skip this</p>
+            <div class="mock mock-brand brand-off"><span class="brand-bar"></span><span class="brand-note">Blue accents, stock font, no logo — reads like Lowe’s</span></div>
+          </div>
+          <div class="card card--good">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✓</span> This lands</p>
+            <div class="mock mock-brand brand-on"><span class="brand-bar"></span><span class="brand-note">Home Depot orange, logo, one clean font — same on every slide</span></div>
+          </div>
+        </div>
+      </section>
+      <section class="slide" role="group" aria-roledescription="slide" aria-label="8 of 8, Standard 7: Frame your recommendation as Good, Better, Best" tabindex="0" hidden data-slide="7">
+        <p class="std-kicker">Standard 7 of 7</p>
+        <h2 class="std-name">Frame your recommendation as Good, Better, Best</h2>
+        <div class="cards">
+          <div class="card card--bad">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✗</span> Skip this</p>
+            <div class="mock mock-gbb"><div class="tier tier-single">“Re-platform the whole store on mobile POS now.” — one all-or-nothing ask</div></div>
+          </div>
+          <div class="card card--good">
+            <p class="card-label"><span class="card-icon" aria-hidden="true">✓</span> This lands</p>
+            <div class="mock mock-gbb"><div class="tier"><span class="tier-tag">Good</span>Mobile checkout in one department</div><div class="tier"><span class="tier-tag">Better</span>Whole-store mobile checkout</div><div class="tier"><span class="tier-tag">Best</span>Unified sell-anywhere experience — pick your appetite</div></div>
+          </div>
+        </div>
+      </section>
+      <nav class="deck-nav" aria-label="Slide navigation">
+        <button type="button" class="navbtn" id="prevBtn" aria-label="Previous slide"><span aria-hidden="true">‹</span> Previous</button>
+        <button type="button" class="navbtn" id="nextBtn" aria-label="Next slide">Next <span aria-hidden="true">›</span></button>
+        <p id="counter">Slide 1 of 8</p>
+        <div class="dots" role="group" aria-label="Choose slide to display">
+          <button type="button" class="dot" data-goto="0" aria-label="Slide 1, Title" aria-current="true"></button>
+          <button type="button" class="dot" data-goto="1" aria-label="Slide 2, Standard 1: One idea per slide"></button>
+          <button type="button" class="dot" data-goto="2" aria-label="Slide 3, Standard 2: A wall of text isn’t done — cut words, add a visual"></button>
+          <button type="button" class="dot" data-goto="3" aria-label="Slide 4, Standard 3: Give every slide an action title"></button>
+          <button type="button" class="dot" data-goto="4" aria-label="Slide 5, Standard 4: Tie every point back to the business"></button>
+          <button type="button" class="dot" data-goto="5" aria-label="Slide 6, Standard 5: Bullets, not paragraphs"></button>
+          <button type="button" class="dot" data-goto="6" aria-label="Slide 7, Standard 6: Use Home Depot branding"></button>
+          <button type="button" class="dot" data-goto="7" aria-label="Slide 8, Standard 7: Frame your recommendation as Good, Better, Best"></button>
+        </div>
+      </nav>
+    </div>
+  </main>
+  <script>
+    (function(){
+      var deck = document.getElementById('deck');
+      var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+      var dots = Array.prototype.slice.call(deck.querySelectorAll('.dot'));
+      var prevBtn = document.getElementById('prevBtn');
+      var nextBtn = document.getElementById('nextBtn');
+      var counter = document.getElementById('counter');
+      var status = document.getElementById('carousel-status');
+      var total = slides.length;
+      var cur = 0;
+      var announceTimer = null;
+
+      function labelFor(i){
+        if(i===0) return 'Title';
+        var h = slides[i].querySelector('.std-name');
+        return 'Standard ' + i + ': ' + (h ? h.textContent : '');
+      }
+      function announce(i){
+        if(announceTimer) clearTimeout(announceTimer);
+        announceTimer = setTimeout(function(){
+          status.textContent = 'Slide ' + (i+1) + ' of ' + total + ', ' + labelFor(i);
+        }, 200);
+      }
+      function show(i, skipAnnounce){
+        if(i<0) i=0; if(i>total-1) i=total-1;
+        // Capture BEFORE hiding: was focus inside the outgoing slide panel?
+        var focusWasInSlide = slides[cur].contains(document.activeElement);
+        cur = i;
+        slides.forEach(function(s, idx){ s.hidden = (idx !== i); });
+        dots.forEach(function(d, idx){ if(idx===i){ d.setAttribute('aria-current','true'); } else { d.removeAttribute('aria-current'); } });
+        counter.textContent = 'Slide ' + (i+1) + ' of ' + total;
+        setDisabled(prevBtn, i===0);
+        setDisabled(nextBtn, i===total-1);
+        // Arrow/Home/End nav from within a slide: keep focus in the deck (button/dot clicks keep focus on the control).
+        if(focusWasInSlide){ slides[i].focus(); }
+        if(!skipAnnounce){ announce(i); }
+      }
+      function setDisabled(btn, off){ if(off){ btn.setAttribute('aria-disabled','true'); } else { btn.removeAttribute('aria-disabled'); } }
+
+      prevBtn.addEventListener('click', function(){ if(prevBtn.getAttribute('aria-disabled')==='true') return; show(cur-1); });
+      nextBtn.addEventListener('click', function(){ if(nextBtn.getAttribute('aria-disabled')==='true') return; show(cur+1); });
+      dots.forEach(function(d){ d.addEventListener('click', function(){ show(parseInt(d.getAttribute('data-goto'),10)); }); });
+
+      deck.addEventListener('keydown', function(e){
+        if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey) return;
+        var t = e.target;
+        if(t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
+        if(e.key==='ArrowRight'){ if(cur<total-1){ show(cur+1); e.preventDefault(); } }
+        else if(e.key==='ArrowLeft'){ if(cur>0){ show(cur-1); e.preventDefault(); } }
+        else if(e.key==='Home'){ if(cur!==0){ show(0); e.preventDefault(); } }
+        else if(e.key==='End'){ if(cur!==total-1){ show(total-1); e.preventDefault(); } }
+      });
+
+      show(0, true);
+    })();
+  </script>
+</body>
+</html>
