@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First Guess: How the Law Applies — THD Legal Externship</title>
+<style>
+  :root{
+    --orange:#F96302;          /* brand fill only, paired with dark text */
+    --orange-text:#B34700;     /* orange as text on white (5.5:1) */
+    --ink:#1A1A1A;
+    --bg:#f7f7f6;
+    --card:#ffffff;
+    --border:#d9d6d0;          /* decorative only */
+    --border-control:#767268;  /* control boundaries (4.8:1) */
+    --ok:#146A34;
+    --retry:#B91C1C;
+    --text:#1e2130;
+    --muted:#4b5060;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.55;
+    padding:20px 16px;max-width:760px;margin:0 auto;
+  }
+  h1{font-size:1.35rem;line-height:1.25;margin-bottom:6px}
+  h1 .accent{color:var(--orange-text)}
+  .intro{color:var(--muted);margin-bottom:16px}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .field{margin-bottom:18px}
+  label{display:block;font-weight:700;font-size:.98rem;margin-bottom:2px}
+  .num{color:var(--orange-text)}
+  .hint{color:var(--muted);font-size:.9rem;margin-bottom:6px}
+  input[type="text"],textarea{
+    font:inherit;color:var(--text);background:#fff;width:100%;
+    border:1px solid var(--border-control);border-radius:8px;padding:9px 11px;
+  }
+  textarea{resize:vertical;min-height:170px;line-height:1.5}
+  [aria-invalid="true"]{border:2px solid var(--retry)}
+  .counter{font-size:.88rem;color:var(--muted);margin-top:6px}
+  .counter.in-range{color:var(--ok);font-weight:600}
+  .field-error{color:var(--retry);font-weight:600;font-size:.9rem;margin-top:6px}
+  .field-error[hidden]{display:none}
+
+  .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border-control);
+    background:#fff;color:var(--ink);padding:10px 16px;min-height:44px;font-size:.95rem;font-weight:600;
+  }
+  button.primary{background:var(--orange);border-color:#c44e00;color:var(--ink)}
+  button:hover{background:#f3f1ec}
+  button.primary:hover{background:#e85c02}
+  button[hidden],.confirm[hidden]{display:none}
+  .confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .confirm p{font-weight:600;margin-right:4px}
+
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--ink);outline-offset:2px;
+    box-shadow:0 0 0 4px #fff, 0 0 0 6px var(--ink);
+  }
+  @media (forced-colors:active){
+    a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+      outline:3px solid Highlight;outline-offset:2px;box-shadow:none;
+    }
+  }
+
+  .status{margin-top:12px;font-weight:600;color:var(--ok);min-height:1.5em}
+  .status.warn{color:var(--retry)}
+  .save-note{margin-top:10px;font-size:.85rem;color:var(--muted)}
+
+  .fallback{margin-top:14px}
+  .fallback[hidden]{display:none}
+  .fallback textarea{min-height:140px;background:#fffdf9}
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Your First Guess: <span class="accent">Where Does the Law Touch Home Depot?</span></h1>
+  <p class="intro">Write it here, then copy it into your research doc when you're done. No research needed. Just your instinct.</p>
+
+  <div class="card">
+    <div class="field">
+      <label for="issue"><span class="num">1.</span> The issue you're researching</label>
+      <p class="hint" id="issue-hint">The one you picked in Project 1. For example: Illinois face-scan law (BIPA), or New York's personalized-pricing label law.</p>
+      <input type="text" id="issue" autocomplete="off" aria-describedby="issue-hint">
+    </div>
+
+    <div class="field">
+      <label for="guess"><span class="num">2.</span> Where might this law touch a store like Home Depot?</label>
+      <p class="hint" id="guess-hint">Write 3–5 quick sentences. Guesses are fine. If you're assuming something about how Home Depot operates, start that sentence with "Guess:".</p>
+      <textarea id="guess" autocomplete="off" aria-describedby="guess-hint guess-counter"></textarea>
+      <p class="counter" id="guess-counter">0 sentences. Aim for 3–5.</p>
+      <p class="field-error" id="guess-error" hidden>Add at least one sentence before copying.</p>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="primary" id="copy-btn">Copy to clipboard</button>
+      <button type="button" id="clear-btn">Clear</button>
+      <div class="confirm" id="confirm" hidden>
+        <p>Clear both fields? This can't be undone.</p>
+        <button type="button" id="confirm-yes">Yes, clear</button>
+        <button type="button" id="confirm-cancel">Cancel</button>
+      </div>
+    </div>
+
+    <p class="status" id="status" role="status"></p>
+    <p class="sr-only" id="counter-live" role="status"></p>
+
+    <div class="fallback" id="fallback" hidden>
+      <label for="fallback-text">Your formatted text</label>
+      <p class="hint" id="fallback-hint">Your browser blocked copying. The text is selected. Press Cmd+C (Mac) or Ctrl+C (Windows) to copy it.</p>
+      <textarea id="fallback-text" readonly aria-describedby="fallback-hint"></textarea>
+    </div>
+
+    <p class="save-note" id="save-note">Your writing is saved in this browser, so it's still here if you leave and come back.</p>
+  </div>
+</main>
+
+<script>
+(function(){
+  var KEY = 'thd-legal-p2-first-guess';
+  var issue = document.getElementById('issue');
+  var guess = document.getElementById('guess');
+  var counter = document.getElementById('guess-counter');
+  var counterLive = document.getElementById('counter-live');
+  var errorEl = document.getElementById('guess-error');
+  var status = document.getElementById('status');
+  var copyBtn = document.getElementById('copy-btn');
+  var clearBtn = document.getElementById('clear-btn');
+  var confirmBox = document.getElementById('confirm');
+  var yesBtn = document.getElementById('confirm-yes');
+  var cancelBtn = document.getElementById('confirm-cancel');
+  var fallback = document.getElementById('fallback');
+  var fallbackText = document.getElementById('fallback-text');
+  var saveNote = document.getElementById('save-note');
+  var canSave = true, lastInRange = null, liveTimer = null;
+
+  function setStatus(msg, warn){
+    status.classList.toggle('warn', !!warn);
+    status.textContent = msg;
+  }
+
+  // Storage (may be blocked inside iframes / private windows)
+  function load(){
+    try {
+      var d = JSON.parse(localStorage.getItem(KEY) || '{}');
+      if (d.issue) issue.value = d.issue;
+      if (d.guess) guess.value = d.guess;
+    } catch(e){ storageFailed(); }
+  }
+  function save(){
+    if (!canSave) return;
+    try { localStorage.setItem(KEY, JSON.stringify({issue: issue.value, guess: guess.value})); }
+    catch(e){ storageFailed(); }
+  }
+  function storageFailed(){
+    if (!canSave) return;
+    canSave = false;
+    saveNote.textContent = "Can't save in this browser. Copy your text before you leave this page.";
+    setStatus("Heads up: this browser can't save your writing. Copy it before you leave.", true);
+  }
+
+  // Sentence counting
+  function countSentences(text){
+    var t = text.trim();
+    if (!t) return 0;
+    var parts = t.split(/[.!?]+(?:\s+|$)|\n+/).filter(function(s){ return s.trim().length > 0; });
+    return parts.length;
+  }
+  function updateCounter(announce){
+    var n = countSentences(guess.value);
+    var inRange = n >= 3 && n <= 5;
+    var word = n === 1 ? 'sentence' : 'sentences';
+    var msg;
+    if (inRange) msg = n + ' ' + word + ' ✓ In range.';
+    else if (n > 5) msg = n + ' ' + word + '. Aim for 3–5. Keep it quick.';
+    else msg = n + ' ' + word + '. Aim for 3–5.';
+    counter.textContent = msg;
+    counter.classList.toggle('in-range', inRange);
+
+    if (announce && n > 0 && inRange !== lastInRange){
+      clearTimeout(liveTimer);
+      liveTimer = setTimeout(function(){
+        counterLive.textContent = inRange ? n + ' ' + word + '. Good, that is in range.' : n + ' ' + word + '. Aim for 3 to 5.';
+      }, 1500);
+    }
+    lastInRange = inRange;
+  }
+
+  function clearError(){
+    if (!errorEl.hidden){
+      errorEl.hidden = true;
+      guess.removeAttribute('aria-invalid');
+      guess.setAttribute('aria-describedby', 'guess-hint guess-counter');
+    }
+  }
+
+  function buildText(){
+    var i = issue.value.trim();
+    var heading = 'How the Law Applies' + (i ? ' — ' + i : '');
+    return heading + '\n\nFirst guess: where this law might touch Home Depot\n' + guess.value.trim() + '\n';
+  }
+
+  function legacyCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '-9999px'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    document.body.removeChild(ta);
+    copyBtn.focus();
+    return ok;
+  }
+
+  function copied(){
+    fallback.hidden = true;
+    setStatus('Copied. Paste it into your research doc under a new heading.');
+  }
+  function showFallback(text){
+    setStatus('');
+    fallbackText.value = text;
+    fallback.hidden = false;
+    fallbackText.focus();
+    fallbackText.select();
+  }
+
+  copyBtn.addEventListener('click', function(){
+    if (!guess.value.trim()){
+      errorEl.hidden = false;
+      guess.setAttribute('aria-invalid', 'true');
+      guess.setAttribute('aria-describedby', 'guess-hint guess-counter guess-error');
+      setStatus('');
+      guess.focus();
+      return;
+    }
+    var text = buildText();
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(copied, function(){
+        if (legacyCopy(text)) copied(); else showFallback(text);
+      });
+    } else {
+      if (legacyCopy(text)) copied(); else showFallback(text);
+    }
+  });
+
+  // Inline two-step clear
+  function closeConfirm(){
+    confirmBox.hidden = true;
+    clearBtn.hidden = false;
+  }
+  clearBtn.addEventListener('click', function(){
+    clearBtn.hidden = true;
+    confirmBox.hidden = false;
+    cancelBtn.focus();
+  });
+  cancelBtn.addEventListener('click', function(){ closeConfirm(); clearBtn.focus(); });
+  confirmBox.addEventListener('keydown', function(e){
+    if (e.key === 'Escape'){ closeConfirm(); clearBtn.focus(); }
+  });
+  yesBtn.addEventListener('click', function(){
+    issue.value = ''; guess.value = '';
+    fallback.hidden = true;
+    clearError();
+    lastInRange = null;
+    updateCounter(false);
+    save();
+    closeConfirm();
+    issue.focus();
+    setStatus('Fields cleared.');
+  });
+
+  issue.addEventListener('input', function(){ save(); });
+  guess.addEventListener('input', function(){ clearError(); updateCounter(true); save(); });
+
+  load();
+  updateCounter(false);
+})();
+</script>
+</body>
+</html>
