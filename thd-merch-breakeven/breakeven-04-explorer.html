@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breakeven — Move the Numbers, Watch the Date</title>
+<style>
+:root{
+  --hd-orange:#F96302; --hd-orange-text:#B34600; --hd-orange-soft:#FFF1E8;
+  --ink:#1c1c1c; --muted:#5a5a5a; --line:#dcdcdc; --paper:#ffffff; --wash:#f6f6f4;
+  --deploy:#1E7B34; --deploy-bg:#E7F4EB; --warn:#8a5a00;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 6px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--wash);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px 60px}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px #fff}
+
+.topband{background:var(--hd-orange)}
+.topband .wrap{padding-top:22px;padding-bottom:22px}
+.eyebrow{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink);margin:0 0 8px}
+.topband h1{margin:0;font-size:1.7rem;line-height:1.2;color:#fff;font-weight:800}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+  padding:26px 30px;margin:22px 0}
+h2{font-size:1.25rem;margin:0 0 .6em;padding-bottom:.3em;border-bottom:2px solid var(--hd-orange)}
+h3{font-size:1.05rem;margin:1.4em 0 .5em}
+.lead{color:var(--muted);margin:.2em 0 1em}
+.note{background:var(--wash);border-left:4px solid var(--hd-orange);padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:.94rem}
+.note.gray{border-left-color:var(--muted)}
+.note strong{color:var(--ink)}
+
+.chart-wrap{overflow-x:auto;margin:14px 0 4px}
+.chart-svg{width:100%;height:auto;min-width:520px;display:block}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin:8px 0 2px;font-size:.86rem}
+.legend-item{display:flex;align-items:center;gap:8px}
+.legend-key{width:30px;height:0;border-top-width:3px;border-top-style:solid;display:inline-block}
+.legend-key.cost{border-top-color:var(--hd-orange)}
+.legend-key.save{border-top-color:var(--deploy);border-top-style:dashed}
+
+.explorer{display:grid;grid-template-columns:1fr;gap:20px}
+.controls-box{border:1px solid var(--line);border-radius:10px;padding:18px 20px;background:var(--paper)}
+.slider-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:0 0 16px}
+.slider-row:last-child{margin-bottom:0}
+.slider-row label{font-weight:700;flex:1 1 220px}
+.slider-row .sub{display:block;font-weight:400;font-size:.82rem;color:var(--muted)}
+input[type=range]{flex:1 1 200px;height:26px}
+#up-slider{accent-color:var(--hd-orange)}
+#save-slider{accent-color:var(--deploy)}
+#cost-slider{accent-color:var(--warn)}
+.valchip{font-variant-numeric:tabular-nums;font-weight:800;background:var(--wash);border:1px solid var(--line);
+  border-radius:6px;padding:3px 10px;min-width:104px;text-align:center}
+.readout{border:1px solid var(--line);border-radius:10px;padding:18px 20px;background:var(--wash)}
+.be-line{font-size:1.15rem;margin:0}
+.be-line output{font-weight:800;color:var(--deploy);background:var(--deploy-bg);border-radius:6px;padding:2px 12px}
+.be-line output.never{color:#8a1c14;background:#FBEAE8}
+.be-detail{color:var(--muted);font-size:.9rem;margin:8px 0 0}
+.reset-btn{font:inherit;font-weight:700;background:var(--paper);color:var(--ink);border:2px solid var(--ink);
+  border-radius:8px;padding:7px 14px;cursor:pointer;margin-top:14px}
+.reset-btn:hover{background:var(--wash)}
+
+.reveal-btn{font:inherit;font-weight:700;background:var(--hd-orange-soft);color:var(--hd-orange-text);
+  border:2px solid var(--hd-orange-text);border-radius:8px;padding:8px 16px;cursor:pointer;margin:8px 8px 0 0}
+.reveal-btn:hover{background:#ffe6d3}
+.answer{margin-top:12px;background:var(--wash);border:1px solid var(--line);border-left:4px solid var(--deploy);
+  border-radius:0 8px 8px 0;padding:14px 18px;font-size:.94rem}
+.answer:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+@media (max-width:600px){ .card{padding:20px 18px} .topband h1{font-size:1.5rem} .slider-row label{flex-basis:100%} }
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<header class="topband">
+  <div class="wrap">
+    <p class="eyebrow">The Home Depot · Smart Labels Externship · Part 4</p>
+    <h1>Now You Try: Move the Numbers, Watch the Date</h1>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <section class="card" aria-labelledby="explore-h">
+    <h2 id="explore-h">Now You Try: Move the Numbers, Watch the Date</h2>
+    <p class="lead">Drag any of the three sliders. The chart and the breakeven date update as you go. What makes the date come sooner? What pushes it later?</p>
+
+    <div class="explorer">
+      <div class="controls-box">
+        <div class="slider-row">
+          <label for="up-slider">Upfront cost <span class="sub">paid once, at the start</span></label>
+          <input type="range" id="up-slider" min="800" max="4000" step="100" value="2400"
+                 aria-describedby="be-result" aria-valuetext="$2,400 upfront">
+          <span class="valchip" id="up-chip" aria-hidden="true">$2,400</span>
+        </div>
+        <div class="slider-row">
+          <label for="save-slider">Ongoing savings <span class="sub">saved each month</span></label>
+          <input type="range" id="save-slider" min="40" max="400" step="10" value="200"
+                 aria-describedby="be-result" aria-valuetext="$200 per month">
+          <span class="valchip" id="save-chip" aria-hidden="true">$200 / mo</span>
+        </div>
+        <div class="slider-row">
+          <label for="cost-slider">Ongoing cost <span class="sub">spent each month</span></label>
+          <input type="range" id="cost-slider" min="0" max="380" step="10" value="40"
+                 aria-describedby="be-result" aria-valuetext="$40 per month">
+          <span class="valchip" id="cost-chip" aria-hidden="true">$40 / mo</span>
+        </div>
+        <button type="button" class="reset-btn" id="resetBtn">Reset to the example</button>
+      </div>
+
+      <div class="readout">
+        <p class="be-line">Breakeven: <output id="be-result" for="up-slider save-slider cost-slider" aria-atomic="true">15 months</output></p>
+        <p class="be-detail" id="be-detail">Net savings are $160 per month, so the $2,400 upfront cost is paid back in month 15.</p>
+        <div class="chart-wrap">
+          <svg class="chart-svg" id="live-chart" viewBox="0 0 660 330" aria-hidden="true" focusable="false"></svg>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-key cost"></span> Cumulative cost (solid)</span>
+          <span class="legend-item"><span class="legend-key save"></span> Cumulative savings (dashed)</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Two things worth trying</h3>
+    <button type="button" class="reveal-btn" id="q1-reveal" aria-expanded="false" aria-controls="q1-answer">What if ongoing cost climbs?</button>
+    <button type="button" class="reveal-btn" id="q2-reveal" aria-expanded="false" aria-controls="q2-answer">What if the upfront cost drops?</button>
+    <div class="answer" id="q1-answer" tabindex="-1" hidden>
+      <p><strong>The date slips later — fast.</strong> Ongoing cost eats into your monthly savings, so net shrinks and payback stretches. Push ongoing cost to $100/month and net becomes $100, so $2,400 ÷ $100 = <strong>24 months</strong> — nine months later than the original 15. Drag ongoing cost up to $200 and it never breaks even at all, because you're spending everything you save. This is exactly why the warehouse damage rate can sink the business case.</p>
+    </div>
+    <div class="answer" id="q2-answer" tabindex="-1" hidden>
+      <p><strong>The date moves sooner, in a straight line.</strong> Net savings don't change, so breakeven is just upfront ÷ net. Cut upfront to $1,600 (keeping net at $160) and $1,600 ÷ $160 = <strong>10 months</strong> — five months sooner. Every dollar shaved off hardware and install pulls the breakeven date directly forward, which is why those prices are worth negotiating hard.</p>
+    </div>
+
+    <div class="note gray"><strong>The big idea:</strong> breakeven isn't one fixed answer — it's a date that moves the moment any assumption changes. Your real job in Project 2 is to show, honestly, what makes that date move earlier or later.</div>
+  </section>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var SVGNS="http://www.w3.org/2000/svg";
+  var DEFAULTS={up:2400,save:200,cost:40};
+  var upS=document.getElementById("up-slider"),
+      saveS=document.getElementById("save-slider"),
+      costS=document.getElementById("cost-slider"),
+      upChip=document.getElementById("up-chip"),
+      saveChip=document.getElementById("save-chip"),
+      costChip=document.getElementById("cost-chip"),
+      out=document.getElementById("be-result"),
+      detail=document.getElementById("be-detail"),
+      chart=document.getElementById("live-chart"),
+      resetBtn=document.getElementById("resetBtn");
+
+  function money(n){ return "$"+Number(n).toLocaleString("en-US"); }
+  function fmtAxis(v){ if(v>=1000){ var k=v/1000; return "$"+(k%1===0?k:k.toFixed(1))+"k"; } return "$"+v; }
+  function niceCeil(v){
+    if(v<=0) return 1;
+    var pow=Math.pow(10,Math.floor(Math.log(v)/Math.LN10));
+    var n=v/pow, step;
+    if(n<=1) step=1; else if(n<=2) step=2; else if(n<=2.5) step=2.5; else if(n<=5) step=5; else step=10;
+    return step*pow;
+  }
+  function el(name,attrs,text){
+    var e=document.createElementNS(SVGNS,name);
+    for(var k in attrs) e.setAttribute(k,attrs[k]);
+    if(text!=null) e.textContent=text;
+    return e;
+  }
+  var X0=70,X1=640,Y0=270,Y1=22;
+
+  function drawChart(up,save,cost){
+    while(chart.firstChild) chart.removeChild(chart.firstChild);
+    var net=save-cost;
+    var be = net>0 ? up/net : null;
+    var mm = be ? Math.max(12, Math.ceil(be*1.5)) : 36;
+    mm = Math.ceil(mm/4)*4; mm=Math.min(mm,120);
+    var maxVal=Math.max(up+cost*mm, save*mm, up);
+    var yMax=niceCeil(maxVal);
+    function xOf(m){ return X0+(m/mm)*(X1-X0); }
+    function yOf(v){ return Y0-(v/yMax)*(Y0-Y1); }
+    var gGrid=el("g",{stroke:"#dcdcdc","stroke-width":"1"});
+    var gYlab=el("g",{fill:"#5a5a5a","font-size":"12","text-anchor":"end","font-family":"inherit"});
+    for(var i=0;i<=4;i++){ var v=yMax*i/4, y=yOf(v);
+      gGrid.appendChild(el("line",{x1:X0,y1:y,x2:X1,y2:y}));
+      gYlab.appendChild(el("text",{x:X0-8,y:y+4},fmtAxis(v))); }
+    chart.appendChild(gGrid); chart.appendChild(gYlab);
+    var gAx=el("g",{stroke:"#5a5a5a","stroke-width":"1.5"});
+    gAx.appendChild(el("line",{x1:X0,y1:Y1,x2:X0,y2:Y0}));
+    gAx.appendChild(el("line",{x1:X0,y1:Y0,x2:X1,y2:Y0}));
+    chart.appendChild(gAx);
+    var gX=el("g",{fill:"#5a5a5a","font-size":"12","text-anchor":"middle","font-family":"inherit"});
+    for(var j=0;j<=4;j++){ var mo=mm*j/4; gX.appendChild(el("text",{x:xOf(mo),y:Y0+18},String(mo))); }
+    chart.appendChild(gX);
+    chart.appendChild(el("text",{x:(X0+X1)/2,y:Y0+40,fill:"#5a5a5a","font-size":"12.5","text-anchor":"middle","font-family":"inherit"},"Months since install"));
+    chart.appendChild(el("polyline",{points:xOf(0)+","+yOf(up)+" "+xOf(mm)+","+yOf(up+cost*mm),fill:"none",stroke:"#F96302","stroke-width":"3"}));
+    chart.appendChild(el("polyline",{points:xOf(0)+","+yOf(0)+" "+xOf(mm)+","+yOf(save*mm),fill:"none",stroke:"#1E7B34","stroke-width":"3","stroke-dasharray":"7 4"}));
+    if(be && be<=mm){
+      var bx=xOf(be), by=yOf(save*be);
+      chart.appendChild(el("line",{x1:bx,y1:by,x2:bx,y2:Y0,stroke:"#1c1c1c","stroke-width":"1.25","stroke-dasharray":"4 3"}));
+      chart.appendChild(el("circle",{cx:bx,cy:by,r:6,fill:"#1c1c1c"}));
+      var rightHalf = bx > (X0+X1)/2;
+      var anchor = rightHalf ? "end" : "start";
+      var lx = rightHalf ? bx-8 : bx+8;
+      var ly = Math.max(Y1+14, by-14);
+      chart.appendChild(el("text",{x:lx,y:ly,fill:"#1c1c1c","font-size":"13","font-weight":"700","text-anchor":anchor,"font-family":"inherit"},"Breakeven"));
+      chart.appendChild(el("text",{x:lx,y:ly+16,fill:"#1c1c1c","font-size":"13","text-anchor":anchor,"font-family":"inherit"},"month "+Math.ceil(be)));
+    } else if(!be){
+      chart.appendChild(el("text",{x:(X0+X1)/2,y:(Y0+Y1)/2,fill:"#8a1c14","font-size":"14","font-weight":"700","text-anchor":"middle","font-family":"inherit"},"No breakeven — cost keeps up with savings"));
+    }
+  }
+
+  var lastAnnounced="";
+  function announceDebounced(txt){
+    clearTimeout(announceDebounced._t);
+    announceDebounced._t=setTimeout(function(){ if(txt===lastAnnounced) return; lastAnnounced=txt; out.textContent=txt; },450);
+  }
+  function update(live){
+    var up=parseInt(upS.value,10), save=parseInt(saveS.value,10), cost=parseInt(costS.value,10);
+    upChip.textContent=money(up);
+    saveChip.textContent=money(save)+" / mo";
+    costChip.textContent=money(cost)+" / mo";
+    upS.setAttribute("aria-valuetext",money(up)+" upfront");
+    saveS.setAttribute("aria-valuetext",money(save)+" per month");
+    costS.setAttribute("aria-valuetext",money(cost)+" per month");
+    var net=save-cost, resultText, neverFlag=false, detailText;
+    if(net<=0){
+      neverFlag=true; resultText="Never breaks even";
+      detailText="Net savings are "+money(net)+" per month — the aisle spends as much as it saves, so the upfront cost is never paid back.";
+    } else {
+      var m=Math.ceil(up/net);
+      resultText=m+" month"+(m===1?"":"s");
+      detailText="Net savings are "+money(net)+" per month, so the "+money(up)+" upfront cost is paid back in month "+m+".";
+    }
+    out.classList.toggle("never",neverFlag);
+    detail.textContent=detailText;
+    drawChart(up,save,cost);
+    if(live){ out.textContent=resultText; announceDebounced(resultText); }
+    else { out.textContent=resultText; lastAnnounced=resultText; }
+  }
+  [upS,saveS,costS].forEach(function(s){
+    s.addEventListener("input",function(){ update(true); });
+    s.addEventListener("change",function(){ update(true); });
+  });
+  resetBtn.addEventListener("click",function(){
+    upS.value=DEFAULTS.up; saveS.value=DEFAULTS.save; costS.value=DEFAULTS.cost;
+    update(false); out.textContent="15 months";
+  });
+  update(false);
+
+  function wireReveal(btnId,panelId,showText,hideText){
+    var btn=document.getElementById(btnId), panel=document.getElementById(panelId);
+    btn.addEventListener("click",function(){
+      var open=btn.getAttribute("aria-expanded")==="true";
+      if(open){ btn.setAttribute("aria-expanded","false"); panel.setAttribute("hidden",""); btn.textContent=showText; }
+      else { btn.setAttribute("aria-expanded","true"); panel.removeAttribute("hidden"); btn.textContent=hideText; panel.focus(); }
+    });
+  }
+  wireReveal("q1-reveal","q1-answer","What if ongoing cost climbs?","Hide answer");
+  wireReveal("q2-reveal","q2-answer","What if the upfront cost drops?","Hide answer");
+})();
+</script>
+</body>
+</html>
