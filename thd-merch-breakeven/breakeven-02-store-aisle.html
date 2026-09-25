@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breakeven — One Typical Store Aisle</title>
+<style>
+:root{
+  --hd-orange:#F96302; --hd-orange-text:#B34600; --hd-orange-soft:#FFF1E8;
+  --ink:#1c1c1c; --muted:#5a5a5a; --line:#dcdcdc; --paper:#ffffff; --wash:#f6f6f4;
+  --deploy:#1E7B34; --warn:#8a5a00; --warn-bg:#FFF6E0;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 6px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--wash);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px 60px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px #fff}
+
+.topband{background:var(--hd-orange)}
+.topband .wrap{padding-top:22px;padding-bottom:22px}
+.eyebrow{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink);margin:0 0 8px}
+.topband h1{margin:0;font-size:1.7rem;line-height:1.2;color:#fff;font-weight:800}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+  padding:26px 30px;margin:22px 0}
+h2{font-size:1.25rem;margin:0 0 .6em;padding-bottom:.3em;border-bottom:2px solid var(--hd-orange)}
+.plain{font-size:1.05rem;max-width:68ch}
+.plain strong{color:var(--ink)}
+
+.warn{background:var(--warn-bg);border:1px solid #e7c96b;border-left:6px solid var(--warn);
+  color:#5f3e00;padding:12px 16px;border-radius:8px;margin:16px 0 0;font-size:.92rem}
+.warn::before{content:"\26A0  ";font-weight:700}
+
+.elements{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:18px 0 2px;list-style:none;padding:0}
+.el{border:1px solid var(--line);border-radius:10px;padding:18px 16px;text-align:center;background:var(--paper)}
+.el .icon{width:52px;height:52px;margin:0 auto 8px;display:block}
+.el .el-name{font-weight:800;margin:0 0 2px}
+.el .el-amt{font-size:1.35rem;font-weight:800;font-variant-numeric:tabular-nums;margin:2px 0}
+.el .el-freq{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
+.el .el-def{font-size:.88rem;color:var(--ink);margin:8px 0 0}
+.el.up{border-top:4px solid var(--hd-orange)} .el.up .el-amt{color:var(--hd-orange-text)}
+.el.save{border-top:4px solid var(--deploy)} .el.save .el-amt{color:var(--deploy)}
+.el.cost{border-top:4px solid var(--warn)} .el.cost .el-amt{color:#5f3e00}
+@media (max-width:640px){ .elements{grid-template-columns:1fr} }
+@media (max-width:600px){ .card{padding:20px 18px} .topband h1{font-size:1.5rem} }
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<header class="topband">
+  <div class="wrap">
+    <p class="eyebrow">The Home Depot · Smart Labels Externship · Part 2</p>
+    <h1>One Typical Store Aisle</h1>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <section class="card" aria-labelledby="aisle-h">
+    <h2 id="aisle-h">One Typical Store Aisle</h2>
+    <p class="plain">Let's talk about one typical store aisle. If we're working out the breakeven point for switching that aisle to digital labels, there are three main items to think about:</p>
+    <p class="warn"><strong>Example figures only</strong> — these amounts are placeholders chosen to teach the math. They are <em>not</em> real Home Depot data. Don't carry any number here into your own model.</p>
+
+    <ul class="elements" aria-label="The three items in a breakeven analysis">
+      <li class="el up">
+        <svg class="icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+          <path d="M19 7h10l-3 6h-4z" fill="none" stroke="#B34600" stroke-width="2.4" stroke-linejoin="round"/>
+          <path d="M25 13c7 2 13 9 13 17a9 9 0 0 1-9 9H19a9 9 0 0 1-9-9c0-8 6-15 13-17z" fill="none" stroke="#B34600" stroke-width="2.4"/>
+          <text x="24" y="35" text-anchor="middle" font-size="15" font-weight="800" fill="#B34600" font-family="inherit">$</text>
+        </svg>
+        <p class="el-name">Upfront cost</p>
+        <p class="el-amt">$2,400</p>
+        <p class="el-freq">One time</p>
+        <p class="el-def">The big amount you pay once — buying and installing the digital labels — before any benefit shows up.</p>
+      </li>
+      <li class="el save">
+        <svg class="icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+          <ellipse cx="25" cy="27" rx="15" ry="11" fill="none" stroke="#1E7B34" stroke-width="2.4"/>
+          <rect x="22" y="13" width="7" height="3.4" rx="1.4" fill="none" stroke="#1E7B34" stroke-width="2.4"/>
+          <circle cx="32" cy="24" r="1.5" fill="#1E7B34"/>
+          <path d="M10 25c-2.6 0-3.4 2.6-1.6 4.4" fill="none" stroke="#1E7B34" stroke-width="2.4"/>
+          <line x1="17" y1="37" x2="17" y2="41.5" stroke="#1E7B34" stroke-width="2.4"/>
+          <line x1="33" y1="37" x2="33" y2="41.5" stroke="#1E7B34" stroke-width="2.4"/>
+        </svg>
+        <p class="el-name">Ongoing savings</p>
+        <p class="el-amt">$200</p>
+        <p class="el-freq">Per month</p>
+        <p class="el-def">Money you stop spending every month — here, the labor no longer needed to change paper labels by hand.</p>
+      </li>
+      <li class="el cost">
+        <svg class="icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+          <path d="M13 24a11 11 0 0 1 18-8.2" fill="none" stroke="#8a5a00" stroke-width="2.4"/>
+          <polyline points="31,8 31,16 23,16" fill="none" stroke="#8a5a00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M35 24a11 11 0 0 1-18 8.2" fill="none" stroke="#8a5a00" stroke-width="2.4"/>
+          <polyline points="17,40 17,32 25,32" fill="none" stroke="#8a5a00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="24" y="28" text-anchor="middle" font-size="11" font-weight="800" fill="#8a5a00" font-family="inherit">$</text>
+        </svg>
+        <p class="el-name">Ongoing cost</p>
+        <p class="el-amt">$40</p>
+        <p class="el-freq">Per month</p>
+        <p class="el-def">Smaller amounts you keep paying every month — software fees, plus replacing labels that get damaged.</p>
+      </li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
