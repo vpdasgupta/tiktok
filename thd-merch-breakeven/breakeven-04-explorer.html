@@ -200,14 +200,20 @@ input[type=range]{flex:1 1 200px;height:26px}
     chart.appendChild(el("polyline",{points:xOf(0)+","+yOf(0)+" "+xOf(mm)+","+yOf(save*mm),fill:"none",stroke:"#1E7B34","stroke-width":"3","stroke-dasharray":"7 4"}));
     if(be && be<=mm){
       var bx=xOf(be), by=yOf(save*be);
+      var boxW=124, boxH=38;
+      var boxCx=Math.min(Math.max(bx, X0+boxW/2+2), X1-boxW/2-2);
+      var above=(by-boxH-18)>=(Y1+2);
+      var boxTop=above ? (by-boxH-18) : Math.min(by+18, Y0-boxH-4);
+      // dashed line from the crossing point down to the axis (marks the month)
       chart.appendChild(el("line",{x1:bx,y1:by,x2:bx,y2:Y0,stroke:"#1c1c1c","stroke-width":"1.25","stroke-dasharray":"4 3"}));
+      // dashed connector from the callout box to the crossing point
+      var connY=above ? (boxTop+boxH) : boxTop;
+      chart.appendChild(el("line",{x1:boxCx,y1:connY,x2:bx,y2:by,stroke:"#1c1c1c","stroke-width":"1.25","stroke-dasharray":"4 3"}));
       chart.appendChild(el("circle",{cx:bx,cy:by,r:6,fill:"#1c1c1c"}));
-      var rightHalf = bx > (X0+X1)/2;
-      var anchor = rightHalf ? "end" : "start";
-      var lx = rightHalf ? bx-8 : bx+8;
-      var ly = Math.max(Y1+14, by-14);
-      chart.appendChild(el("text",{x:lx,y:ly,fill:"#1c1c1c","font-size":"13","font-weight":"700","text-anchor":anchor,"font-family":"inherit"},"Breakeven"));
-      chart.appendChild(el("text",{x:lx,y:ly+16,fill:"#1c1c1c","font-size":"13","text-anchor":anchor,"font-family":"inherit"},"month "+Math.ceil(be)));
+      // breakeven callout box, lifted up off the lines
+      chart.appendChild(el("rect",{x:boxCx-boxW/2,y:boxTop,width:boxW,height:boxH,rx:8,fill:"#ffffff",stroke:"#1c1c1c","stroke-width":"1.5"}));
+      chart.appendChild(el("text",{x:boxCx,y:boxTop+17,"text-anchor":"middle",fill:"#B34600","font-size":"12.5","font-weight":"800","font-family":"inherit"},"Breakeven"));
+      chart.appendChild(el("text",{x:boxCx,y:boxTop+31,"text-anchor":"middle",fill:"#1c1c1c","font-size":"12.5","font-weight":"700","font-family":"inherit"},"month "+Math.ceil(be)));
     } else if(!be){
       chart.appendChild(el("text",{x:(X0+X1)/2,y:(Y0+Y1)/2,fill:"#8a1c14","font-size":"14","font-weight":"700","text-anchor":"middle","font-family":"inherit"},"No breakeven — cost keeps up with savings"));
     }
