@@ -33,17 +33,19 @@ h2{font-size:1.25rem;margin:0 0 .6em;padding-bottom:.3em;border-bottom:2px solid
   color:#5f3e00;padding:12px 16px;border-radius:8px;margin:16px 0 0;font-size:.92rem}
 .warn::before{content:"\26A0  ";font-weight:700}
 
-.elements{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:18px 0 2px;list-style:none;padding:0}
-.el{border:1px solid var(--line);border-radius:10px;padding:18px 16px;text-align:center;background:var(--paper)}
-.el .icon{width:52px;height:52px;margin:0 auto 8px;display:block}
-.el .el-name{font-weight:800;margin:0 0 2px}
-.el .el-amt{font-size:1.35rem;font-weight:800;font-variant-numeric:tabular-nums;margin:2px 0}
-.el .el-freq{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700}
-.el .el-def{font-size:.88rem;color:var(--ink);margin:8px 0 0}
-.el.up{border-top:4px solid var(--hd-orange)} .el.up .el-amt{color:var(--hd-orange-text)}
-.el.save{border-top:4px solid var(--deploy)} .el.save .el-amt{color:var(--deploy)}
-.el.cost{border-top:4px solid var(--warn)} .el.cost .el-amt{color:#5f3e00}
-@media (max-width:640px){ .elements{grid-template-columns:1fr} }
+.elements{display:flex;flex-direction:column;gap:12px;margin:18px 0 2px;list-style:none;padding:0}
+.el{display:flex;align-items:center;gap:18px;border:1px solid var(--line);border-radius:10px;
+  padding:14px 20px;background:var(--paper)}
+.el .icon{width:46px;height:46px;flex:0 0 auto;margin:0}
+.el-head{flex:0 0 200px}
+.el .el-name{font-weight:800;margin:0}
+.el .el-amt{font-size:1.4rem;font-weight:800;font-variant-numeric:tabular-nums;margin:0;line-height:1.2}
+.el .el-freq{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin:0}
+.el .el-def{flex:1 1 auto;font-size:.92rem;color:var(--ink);margin:0}
+.el.up{border-left:5px solid var(--hd-orange)} .el.up .el-amt{color:var(--hd-orange-text)}
+.el.save{border-left:5px solid var(--deploy)} .el.save .el-amt{color:var(--deploy)}
+.el.cost{border-left:5px solid var(--warn)} .el.cost .el-amt{color:#5f3e00}
+@media (max-width:560px){ .el{flex-wrap:wrap;gap:10px 14px} .el-head{flex-basis:auto} .el .el-def{flex-basis:100%} }
 @media (max-width:600px){ .card{padding:20px 18px} .topband h1{font-size:1.5rem} }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
@@ -72,9 +74,11 @@ h2{font-size:1.25rem;margin:0 0 .6em;padding-bottom:.3em;border-bottom:2px solid
           <path d="M25 13c7 2 13 9 13 17a9 9 0 0 1-9 9H19a9 9 0 0 1-9-9c0-8 6-15 13-17z" fill="none" stroke="#B34600" stroke-width="2.4"/>
           <text x="24" y="35" text-anchor="middle" font-size="15" font-weight="800" fill="#B34600" font-family="inherit">$</text>
         </svg>
-        <p class="el-name">Upfront cost</p>
-        <p class="el-amt">$2,400</p>
-        <p class="el-freq">One time</p>
+        <div class="el-head">
+          <p class="el-name">Upfront cost</p>
+          <p class="el-amt">$2,400</p>
+          <p class="el-freq">One time</p>
+        </div>
         <p class="el-def">The big amount you pay once — buying and installing the digital labels — before any benefit shows up.</p>
       </li>
       <li class="el save">
@@ -86,9 +90,11 @@ h2{font-size:1.25rem;margin:0 0 .6em;padding-bottom:.3em;border-bottom:2px solid
           <line x1="17" y1="37" x2="17" y2="41.5" stroke="#1E7B34" stroke-width="2.4"/>
           <line x1="33" y1="37" x2="33" y2="41.5" stroke="#1E7B34" stroke-width="2.4"/>
         </svg>
-        <p class="el-name">Ongoing savings</p>
-        <p class="el-amt">$200</p>
-        <p class="el-freq">Per month</p>
+        <div class="el-head">
+          <p class="el-name">Ongoing savings</p>
+          <p class="el-amt">$200</p>
+          <p class="el-freq">Per month</p>
+        </div>
         <p class="el-def">Money you stop spending every month — here, the labor no longer needed to change paper labels by hand.</p>
       </li>
       <li class="el cost">
@@ -99,9 +105,11 @@ h2{font-size:1.25rem;margin:0 0 .6em;padding-bottom:.3em;border-bottom:2px solid
           <polyline points="17,40 17,32 25,32" fill="none" stroke="#8a5a00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
           <text x="24" y="28" text-anchor="middle" font-size="11" font-weight="800" fill="#8a5a00" font-family="inherit">$</text>
         </svg>
-        <p class="el-name">Ongoing cost</p>
-        <p class="el-amt">$40</p>
-        <p class="el-freq">Per month</p>
+        <div class="el-head">
+          <p class="el-name">Ongoing cost</p>
+          <p class="el-amt">$40</p>
+          <p class="el-freq">Per month</p>
+        </div>
         <p class="el-def">Smaller amounts you keep paying every month — software fees, plus replacing labels that get damaged.</p>
       </li>
     </ul>
