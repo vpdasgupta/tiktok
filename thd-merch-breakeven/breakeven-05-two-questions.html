@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breakeven — Two Things Worth Trying</title>
+<style>
+:root{
+  --hd-orange:#F96302; --hd-orange-text:#B34600; --hd-orange-soft:#FFF1E8;
+  --ink:#1c1c1c; --muted:#5a5a5a; --line:#dcdcdc; --paper:#ffffff; --wash:#f6f6f4;
+  --deploy:#1E7B34;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 6px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--wash);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px 60px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px #fff}
+
+.topband{background:var(--hd-orange)}
+.topband .wrap{padding-top:22px;padding-bottom:22px}
+.eyebrow{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink);margin:0 0 8px}
+.topband h1{margin:0;font-size:1.7rem;line-height:1.2;color:#fff;font-weight:800}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+  padding:26px 30px;margin:22px 0}
+h2{font-size:1.25rem;margin:0 0 .6em;padding-bottom:.3em;border-bottom:2px solid var(--hd-orange)}
+.lead{color:var(--muted);margin:.2em 0 1em}
+.note{background:var(--wash);border-left:4px solid var(--hd-orange);padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0 0;font-size:.94rem}
+.note.gray{border-left-color:var(--muted)}
+.note strong{color:var(--ink)}
+
+.reveal-btn{font:inherit;font-weight:700;background:var(--hd-orange-soft);color:var(--hd-orange-text);
+  border:2px solid var(--hd-orange-text);border-radius:8px;padding:8px 16px;cursor:pointer;margin:8px 8px 0 0}
+.reveal-btn:hover{background:#ffe6d3}
+.answer{margin-top:12px;background:var(--wash);border:1px solid var(--line);border-left:4px solid var(--deploy);
+  border-radius:0 8px 8px 0;padding:14px 18px;font-size:.94rem}
+.answer:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+@media (max-width:600px){ .card{padding:20px 18px} .topband h1{font-size:1.5rem} }
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<header class="topband">
+  <div class="wrap">
+    <p class="eyebrow">The Home Depot · Smart Labels Externship · Part 5</p>
+    <h1>Two Things Worth Trying</h1>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <section class="card" aria-labelledby="q-h">
+    <h2 id="q-h">Two Things Worth Trying</h2>
+    <p class="lead">Use the explorer just above to test each one, then reveal the reasoning.</p>
+
+    <button type="button" class="reveal-btn" id="q1-reveal" aria-expanded="false" aria-controls="q1-answer">What if ongoing cost climbs?</button>
+    <button type="button" class="reveal-btn" id="q2-reveal" aria-expanded="false" aria-controls="q2-answer">What if the upfront cost drops?</button>
+    <div class="answer" id="q1-answer" tabindex="-1" hidden>
+      <p><strong>The date slips later — fast.</strong> Ongoing cost eats into your monthly savings, so net shrinks and payback stretches. Push ongoing cost to $100/month and net becomes $100, so $2,400 ÷ $100 = <strong>24 months</strong> — nine months later than the original 15. Drag ongoing cost up to $200 and it never breaks even at all, because you're spending everything you save. This is exactly why the warehouse damage rate can sink the business case.</p>
+    </div>
+    <div class="answer" id="q2-answer" tabindex="-1" hidden>
+      <p><strong>The date moves sooner, in a straight line.</strong> Net savings don't change, so breakeven is just upfront ÷ net. Cut upfront to $1,600 (keeping net at $160) and $1,600 ÷ $160 = <strong>10 months</strong> — five months sooner. Every dollar shaved off hardware and install pulls the breakeven date directly forward, which is why those prices are worth negotiating hard.</p>
+    </div>
+
+    <div class="note gray"><strong>The big idea:</strong> breakeven isn't one fixed answer — it's a date that moves the moment any assumption changes. Your real job in Project 2 is to show, honestly, what makes that date move earlier or later.</div>
+  </section>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  function wireReveal(btnId,panelId,showText,hideText){
+    var btn=document.getElementById(btnId), panel=document.getElementById(panelId);
+    btn.addEventListener("click",function(){
+      var open=btn.getAttribute("aria-expanded")==="true";
+      if(open){ btn.setAttribute("aria-expanded","false"); panel.setAttribute("hidden",""); btn.textContent=showText; }
+      else { btn.setAttribute("aria-expanded","true"); panel.removeAttribute("hidden"); btn.textContent=hideText; panel.focus(); }
+    });
+  }
+  wireReveal("q1-reveal","q1-answer","What if ongoing cost climbs?","Hide answer");
+  wireReveal("q2-reveal","q2-answer","What if the upfront cost drops?","Hide answer");
+})();
+</script>
+</body>
+</html>
