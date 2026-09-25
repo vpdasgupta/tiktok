@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How to State an Issue</title>
+<style>
+  :root {
+    --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
+    --bg: #f4f6f5; --accent: #d5581f; --accent-ink: #b8480f;
+    --soft: #f4f6f5; --dot: #7d8886;
+    /* the three parts of an issue: each has its own color AND border style AND number */
+    --req-ink: #a8430d; --req-bg: #fcefe6; --req-line: #d5581f;
+    --law-ink: #135a73; --law-bg: #e5f2f6; --law-line: #1a7394;
+    --prac-ink: #5b3596; --prac-bg: #f1ebfa; --prac-line: #7a52b8;
+    --stagew: 1280px; --stageh: 720px; --scale: 1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0c110f; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  /* horizontal scroll-snap deck */
+  .deck {
+    display: flex; flex-direction: row;
+    height: 100vh; width: 100vw;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    background: var(--bg);
+  }
+  .screen {
+    flex: 0 0 100vw; height: 100vh;
+    scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  /* fixed 1280x720 design canvas, scaled to fit the viewport (letterboxed) */
+  .slide {
+    width: var(--stagew); height: var(--stageh);
+    flex: 0 0 auto;
+    transform: scale(var(--scale)); transform-origin: center center;
+    background: var(--card); position: relative; overflow: auto;
+    padding: 40px 92px 84px; border-top: 8px solid var(--accent);
+    display: flex; flex-direction: column;
+  }
+
+  .topline { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 8px; }
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 17px;
+    font-weight: 700; color: var(--accent-ink); margin: 0;
+  }
+  .counter {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 15px;
+    font-weight: 700; color: var(--muted); margin: 0;
+  }
+  h2 { font-size: 36px; line-height: 1.1; margin: 0 0 8px; }
+  .lede { font-size: 19px; line-height: 1.4; color: var(--muted); margin: 0 0 20px; }
+  .lede strong { color: var(--ink); }
+
+  /* ---------- highlighted parts ---------- */
+  .part {
+    padding: 1px 6px 2px; border-radius: 6px;
+    border-bottom-width: 3px; font-weight: 700;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  .part--req  { color: var(--req-ink);  background: var(--req-bg);  border-bottom: 3px solid  var(--req-line); }
+  .part--law  { color: var(--law-ink);  background: var(--law-bg);  border-bottom: 3px dashed var(--law-line); }
+  .part--prac { color: var(--prac-ink); background: var(--prac-bg); border-bottom: 3px dotted var(--prac-line); }
+  .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.35em; height: 1.35em; border-radius: 50%;
+    font-size: .62em; font-weight: 800; vertical-align: .35em; margin-right: 3px;
+    color: #fff;
+  }
+  .part--req  .num, .card--req  .num { background: var(--req-ink); }
+  .part--law  .num, .card--law  .num { background: var(--law-ink); }
+  .part--prac .num, .card--prac .num { background: var(--prac-ink); }
+
+  /* ---------- slide 1: pattern + definition callouts ---------- */
+  .pattern {
+    margin: 4px 0 28px; padding: 26px 32px;
+    background: var(--soft); border: 1px solid var(--line); border-radius: 16px;
+    font-size: 33px; line-height: 1.7; font-weight: 600; text-align: center;
+  }
+  .defs {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; flex: 1; min-height: 0;
+  }
+  .card {
+    position: relative; border-radius: 14px; padding: 22px 22px 18px;
+    background: var(--card); border: 2px solid var(--line); border-top-width: 6px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .card--req  { border-color: var(--req-line);  border-top-style: solid; }
+  .card--law  { border-color: var(--law-line);  border-top-style: dashed; }
+  .card--prac { border-color: var(--prac-line); border-top-style: dotted; }
+  .card h3 { margin: 0; font-size: 23px; line-height: 1.2; display: flex; align-items: center; gap: 8px; }
+  .card--req h3  { color: var(--req-ink); }
+  .card--law h3  { color: var(--law-ink); }
+  .card--prac h3 { color: var(--prac-ink); }
+  .card h3 .num { font-size: 16px; width: 28px; height: 28px; vertical-align: 0; margin: 0; flex: 0 0 auto; }
+  .card p { margin: 0; font-size: 17px; line-height: 1.45; }
+  .card .find { margin-top: auto; font-size: 15.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+  .card .find strong { color: var(--ink); }
+
+  /* ---------- lane slides: one law, three issues ---------- */
+  .lawbox {
+    display: flex; gap: 14px; align-items: baseline;
+    margin: 0 0 14px; padding: 12px 18px; border-radius: 12px;
+    background: var(--law-bg); border-left: 6px solid var(--law-line);
+    font-size: 17px; line-height: 1.45;
+  }
+  .lawbox strong { color: var(--law-ink); white-space: nowrap; }
+  .notyet {
+    margin: 0 0 14px; font-size: 16px; line-height: 1.4; color: var(--muted);
+  }
+  .notyet strong { color: var(--ink); }
+  .notyet q { font-style: italic; }
+  .issues {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: auto;
+  }
+  .issue {
+    flex: 1 0 auto; min-height: auto;
+    display: flex; align-items: center; gap: 22px;
+    border: 1px solid var(--line); border-left: 6px solid var(--accent);
+    border-radius: 14px; padding: 12px 26px;
+    box-shadow: 0 1px 2px rgba(20,33,31,.04), 0 8px 20px rgba(20,33,31,.05);
+  }
+  .issue-label {
+    flex: 0 0 auto; font-size: 15px; font-weight: 800; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--accent-ink); width: 78px;
+  }
+  .issue p { margin: 0; font-size: 21px; line-height: 1.6; }
+  .legend {
+    display: flex; gap: 22px; margin: 12px 0 0; padding: 0; list-style: none;
+    font-size: 15px; color: var(--muted);
+  }
+  .legend li { display: flex; align-items: center; gap: 6px; }
+  .legend .part { font-size: 14px; padding: 0 6px; }
+
+  /* ---------- chrome: arrows + dots ---------- */
+  .navbtn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,.92); border: 1px solid var(--line);
+    color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+    box-shadow: 0 4px 14px rgba(0,0,0,.16);
+  }
+  .navbtn:hover { background: #fff; }
+  .navbtn:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+  .navbtn[aria-disabled="true"] { opacity: .35; cursor: default; }
+  .navbtn--prev { left: 20px; }
+  .navbtn--next { right: 20px; }
+
+  .dotnav {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+    display: flex; gap: 4px; z-index: 30;
+    background: rgba(255,255,255,.9); padding: 4px 10px; border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.14);
+  }
+  /* 24x24 hit area around a small visual dot */
+  .dot {
+    min-width: 24px; height: 24px; padding: 6px; border: none; background: transparent;
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 999px;
+  }
+  .dot::before {
+    content: ""; display: block; width: 12px; height: 12px; border-radius: 999px;
+    background: var(--dot); transition: width .2s, background .2s;
+  }
+  .dot:hover::before { background: var(--accent-ink); }
+  .dot:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 1px; }
+  .dot[aria-current="true"]::before { width: 28px; background: var(--accent-ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deck { scroll-behavior: auto; }
+    .dot::before { transition: none; }
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eef1f0; --muted: #a8b2af; --line: #2c3634; --card: #1a2321;
+      --bg: #101615; --accent: #f07a3d; --accent-ink: #f4a06f;
+      --soft: #131a19; --dot: #8a9592;
+      --req-ink: #f7b48a; --req-bg: #3a2418; --req-line: #f07a3d;
+      --law-ink: #8fd3ea; --law-bg: #14303a; --law-line: #4fb3d6;
+      --prac-ink: #cdb5f2; --prac-bg: #2c2240; --prac-line: #a988dd;
+    }
+    .part--req .num, .card--req .num,
+    .part--law .num, .card--law .num,
+    .part--prac .num, .card--prac .num { color: #14211f; }
+    .navbtn, .dotnav { background: rgba(26,35,33,.94); border-color: var(--line); color: var(--ink); }
+    .navbtn:hover { background: #1a2321; }
+  }
+</style>
+</head>
+<body>
+  <h1 class="sr-only">How to state an issue</h1>
+  <main class="deck" id="deck">
+
+    <!-- ===== Slide 1: the pattern ===== -->
+    <section class="screen" id="screen-0" aria-labelledby="h-pattern">
+      <div class="slide">
+        <div class="topline">
+          <p class="eyebrow">How to state an issue</p>
+          <p class="counter">1 of 3</p>
+        </div>
+        <h2 id="h-pattern">Every good issue fits one pattern</h2>
+        <p class="lede">An issue is <strong>one question</strong> that connects <strong>one thing the law requires</strong> to <strong>one thing Home Depot does</strong>.</p>
+
+        <p class="pattern">
+          Does
+          <span class="part part--req"><span class="num" aria-hidden="true">1</span>[one requirement]</span>
+          in
+          <span class="part part--law"><span class="num" aria-hidden="true">2</span>[your law]</span>
+          apply to Home Depot's
+          <span class="part part--prac"><span class="num" aria-hidden="true">3</span>[specific practice]</span>?
+        </p>
+
+        <ul class="defs" role="list">
+          <li class="card card--req">
+            <h3><span class="num" aria-hidden="true">1</span>One requirement</h3>
+            <p>Just <strong>one thing</strong> the law asks a business to do, not the whole law. For example: get consent, show a label, or delete data after a set time.</p>
+            <p class="find"><strong>Find it:</strong> the "What it requires" column of your map.</p>
+          </li>
+          <li class="card card--law">
+            <h3><span class="num" aria-hidden="true">2</span>Your law</h3>
+            <p>The law's <strong>exact name</strong>, so anyone reading your question can look it up. Not a lane or a topic, like "biometrics."</p>
+            <p class="find"><strong>Find it:</strong> the law you picked in Step 1, named just as it is on your map.</p>
+          </li>
+          <li class="card card--prac">
+            <h3><span class="num" aria-hidden="true">3</span>A specific practice</h3>
+            <p><strong>One thing</strong> a big retailer like Home Depot plausibly does: an app, a camera, a time clock, a loyalty program.</p>
+            <p class="find"><strong>Find it:</strong> your own thinking about how Home Depot runs. It's a guess until you confirm it.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Slide 2: Lane A ===== -->
+    <section class="screen" id="screen-1" aria-labelledby="h-lane-a">
+      <div class="slide">
+        <div class="topline">
+          <p class="eyebrow">Lane A: Pricing · One law, three issues</p>
+          <p class="counter">2 of 3</p>
+        </div>
+        <h2 id="h-lane-a">New York's Algorithmic Pricing Disclosure Act</h2>
+        <p class="lawbox"><strong>What it requires:</strong> <span>When a business uses a shopper's personal data to set a price with an algorithm, it must show a clear label next to that price saying so.</span></p>
+        <p class="notyet"><strong>Not an issue yet:</strong> <q>Surveillance pricing</q> is a whole area of law. <q>New York's pricing law and Home Depot</q> names a law, but not which part or what Home Depot does.</p>
+        <ol class="issues" role="list">
+          <li class="issue">
+            <span class="issue-label">Issue 1</span>
+            <p>Does <span class="part part--req"><span class="num" aria-hidden="true">1</span>the pricing-label requirement</span> in <span class="part part--law"><span class="num" aria-hidden="true">2</span>New York's Algorithmic Pricing Disclosure Act</span> apply to Home Depot's <span class="part part--prac"><span class="num" aria-hidden="true">3</span>app prices that change based on a New York shopper's browsing history</span>?</p>
+          </li>
+          <li class="issue">
+            <span class="issue-label">Issue 2</span>
+            <p>Does <span class="part part--req"><span class="num" aria-hidden="true">1</span>the pricing-label requirement</span> in <span class="part part--law"><span class="num" aria-hidden="true">2</span>New York's Algorithmic Pricing Disclosure Act</span> apply to Home Depot's <span class="part part--prac"><span class="num" aria-hidden="true">3</span>personalized Pro Xtra discount offers sent to New York members</span>?</p>
+          </li>
+          <li class="issue">
+            <span class="issue-label">Issue 3</span>
+            <p>Does <span class="part part--req"><span class="num" aria-hidden="true">1</span>the label-placement rule</span> in <span class="part part--law"><span class="num" aria-hidden="true">2</span>New York's Algorithmic Pricing Disclosure Act</span> apply to Home Depot's <span class="part part--prac"><span class="num" aria-hidden="true">3</span>personalized prices in website search results</span>?</p>
+          </li>
+        </ol>
+        <ul class="legend" aria-label="Key">
+          <li><span class="part part--req"><span class="num" aria-hidden="true">1</span>Requirement</span> solid underline</li>
+          <li><span class="part part--law"><span class="num" aria-hidden="true">2</span>Law</span> dashed underline</li>
+          <li><span class="part part--prac"><span class="num" aria-hidden="true">3</span>Practice</span> dotted underline</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Slide 3: Lane B ===== -->
+    <section class="screen" id="screen-2" aria-labelledby="h-lane-b">
+      <div class="slide">
+        <div class="topline">
+          <p class="eyebrow">Lane B: Biometrics · One law, three issues</p>
+          <p class="counter">3 of 3</p>
+        </div>
+        <h2 id="h-lane-b">Illinois' Biometric Information Privacy Act (BIPA)</h2>
+        <p class="lawbox"><strong>What it requires:</strong> <span>Before collecting fingerprints, face scans, and similar data, a business must give written notice and get written consent. It also needs a public policy for how long it keeps that data, and can't share it without consent.</span></p>
+        <p class="notyet"><strong>Not an issue yet:</strong> <q>Biometrics</q> is a whole area of law. <q>Illinois' biometric privacy law and Home Depot</q> names a law, but not which part or what Home Depot does.</p>
+        <ol class="issues" role="list">
+          <li class="issue">
+            <span class="issue-label">Issue 1</span>
+            <p>Does <span class="part part--req"><span class="num" aria-hidden="true">1</span>the written-consent requirement</span> in <span class="part part--law"><span class="num" aria-hidden="true">2</span>Illinois' BIPA</span> apply to Home Depot's <span class="part part--prac"><span class="num" aria-hidden="true">3</span>fingerprint time clocks for hourly workers in Illinois stores</span>?</p>
+          </li>
+          <li class="issue">
+            <span class="issue-label">Issue 2</span>
+            <p>Does <span class="part part--req"><span class="num" aria-hidden="true">1</span>the public data-retention policy requirement</span> in <span class="part part--law"><span class="num" aria-hidden="true">2</span>Illinois' BIPA</span> apply to Home Depot's <span class="part part--prac"><span class="num" aria-hidden="true">3</span>self-checkout cameras that capture shoppers' faces in Illinois stores</span>?</p>
+          </li>
+          <li class="issue">
+            <span class="issue-label">Issue 3</span>
+            <p>Does <span class="part part--req"><span class="num" aria-hidden="true">1</span>the ban on sharing biometric data without consent</span> in <span class="part part--law"><span class="num" aria-hidden="true">2</span>Illinois' BIPA</span> apply to Home Depot's <span class="part part--prac"><span class="num" aria-hidden="true">3</span>use of an outside vendor to run face matching on store camera footage</span>?</p>
+          </li>
+        </ol>
+        <ul class="legend" aria-label="Key">
+          <li><span class="part part--req"><span class="num" aria-hidden="true">1</span>Requirement</span> solid underline</li>
+          <li><span class="part part--law"><span class="num" aria-hidden="true">2</span>Law</span> dashed underline</li>
+          <li><span class="part part--prac"><span class="num" aria-hidden="true">3</span>Practice</span> dotted underline</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <button type="button" class="navbtn navbtn--prev" id="prev" aria-label="Previous slide">‹</button>
+  <button type="button" class="navbtn navbtn--next" id="next" aria-label="Next slide">›</button>
+  <nav class="dotnav" id="dotnav" aria-label="Jump to slide">
+    <button type="button" class="dot" data-i="0" aria-label="The issue pattern"></button>
+    <button type="button" class="dot" data-i="1" aria-label="Lane A: Pricing examples"></button>
+    <button type="button" class="dot" data-i="2" aria-label="Lane B: Biometrics examples"></button>
+  </nav>
+  <p class="sr-only" id="status" aria-live="polite"></p>
+
+<script>
+(function () {
+  var deck = document.getElementById('deck');
+  var screens = Array.prototype.slice.call(deck.querySelectorAll('.screen'));
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var statusEl = document.getElementById('status');
+  var names = ['The issue pattern', 'Lane A, Pricing examples', 'Lane B, Biometrics examples'];
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var current = -1;
+
+  // Scale the fixed 1280x720 canvas to fit the viewport (letterbox), keeping 16:9.
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    document.documentElement.style.setProperty('--scale', s);
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(screens.length - 1, i));
+    deck.scrollTo({ left: i * deck.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }
+  function setActive(i, announce) {
+    if (i === current) return;
+    current = i;
+    dots.forEach(function (d, di) {
+      if (di === i) d.setAttribute('aria-current', 'true');
+      else d.removeAttribute('aria-current');
+    });
+    prev.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
+    next.setAttribute('aria-disabled', i === screens.length - 1 ? 'true' : 'false');
+    if (announce) statusEl.textContent = 'Slide ' + (i + 1) + ' of ' + screens.length + ': ' + names[i];
+  }
+  setActive(0, false);
+
+  prev.addEventListener('click', function () { if (prev.getAttribute('aria-disabled') !== 'true') goTo(current - 1); });
+  next.addEventListener('click', function () { if (next.getAttribute('aria-disabled') !== 'true') goTo(current + 1); });
+  dots.forEach(function (d) { d.addEventListener('click', function () { goTo(+d.dataset.i); }); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.altKey || e.metaKey || e.ctrlKey) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End')  { e.preventDefault(); goTo(screens.length - 1); }
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) setActive(screens.indexOf(e.target), true);
+      });
+    }, { root: deck, threshold: 0.6 });
+    screens.forEach(function (s) { io.observe(s); });
+  }
+
+  // Let a vertical mouse wheel drive the horizontal deck.
+  deck.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      deck.scrollLeft += e.deltaY;
+    }
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
