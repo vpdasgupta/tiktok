@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>First Guess: How the Law Applies — THD Legal Externship</title>
+<title>Your First Guess: Answer Your Issue — THD Legal Externship</title>
 <style>
   :root{
     --orange:#F96302;          /* brand fill only, paired with dark text */
@@ -57,12 +57,12 @@
   .confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   .confirm p{font-weight:600;margin-right:4px}
 
-  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{
     outline:2px solid var(--ink);outline-offset:2px;
     box-shadow:0 0 0 4px #fff, 0 0 0 6px var(--ink);
   }
   @media (forced-colors:active){
-    a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+    a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{
       outline:3px solid Highlight;outline-offset:2px;box-shadow:none;
     }
   }
@@ -75,24 +75,39 @@
   .fallback[hidden]{display:none}
   .fallback textarea{min-height:140px;background:#fffdf9}
 
+  .examples{background:#f4f6fb;border:1px solid var(--border);border-radius:8px;margin:0 0 8px;padding:0 12px}
+  .examples summary{cursor:pointer;font-weight:700;color:var(--text);min-height:44px;padding:11px 0}
+  .examples summary:hover{text-decoration:underline}
+  .examples .ex-issue{font-size:.92rem;margin-top:4px}
+  .examples blockquote{margin:6px 0 12px;padding:8px 12px;border-left:3px solid var(--border-control);background:#fff;font-size:.92rem}
+  .examples .ex-note{font-size:.9rem;color:var(--muted);margin-bottom:12px}
+
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 </head>
 <body>
 <main>
-  <h1>Your First Guess: <span class="accent">Where Does the Law Touch Home Depot?</span></h1>
-  <p class="intro">Write it here, then copy it into your research doc when you're done. No research needed. Just your instinct.</p>
+  <h1>Your First Guess: <span class="accent">Answer Your Issue</span></h1>
+  <p class="intro">Take a first swing at answering the question you wrote in Project 1. No research needed. Just your instinct. Then copy it into your research doc.</p>
 
   <div class="card">
     <div class="field">
       <label for="issue"><span class="num">1.</span> The issue you're researching</label>
-      <p class="hint" id="issue-hint">The one you picked in Project 1. For example: Illinois face-scan law (BIPA), or New York's personalized-pricing label law.</p>
+      <p class="hint" id="issue-hint">Paste the issue question from your Project 1 Issue Pick.</p>
       <input type="text" id="issue" autocomplete="off" aria-describedby="issue-hint">
     </div>
 
     <div class="field">
-      <label for="guess"><span class="num">2.</span> Where might this law touch a store like Home Depot?</label>
-      <p class="hint" id="guess-hint">Write 3–5 quick sentences. Guesses are fine. If you're assuming something about how Home Depot operates, start that sentence with "Guess:".</p>
+      <label for="guess"><span class="num">2.</span> Do you think the answer is yes or no, and why?</label>
+      <p class="hint" id="guess-hint">Write 3–5 quick sentences. Guesses are fine. What would Home Depot have to be doing for the law to apply?</p>
+      <details class="examples">
+        <summary>See two example answers</summary>
+        <p class="ex-issue"><strong>Issue (Lane B):</strong> Does Illinois' biometric privacy law (BIPA) require Home Depot to get written consent before its Illinois stores use fingerprint time clocks for hourly workers?</p>
+        <blockquote>"Probably yes. BIPA seems to cover fingerprints, and a time clock that scans a finger would be collecting them. I think Home Depot uses these clocks in Illinois, but I don't actually know. I also don't know if workers sign a consent form when they're hired. If they don't, that could be a problem."</blockquote>
+        <p class="ex-issue"><strong>Issue (Lane A):</strong> Does New York's pricing-label law require Home Depot to tell shoppers when a price in its app was set using their personal data?</p>
+        <blockquote>"Maybe. The law is about prices set using a shopper's personal data. Home Depot's app probably shows some shoppers different deals, but those might be the same for everyone in an area, not based on one person's data. If the prices are personal, Home Depot would need a label, and I've never seen one."</blockquote>
+        <p class="ex-note">Both answers mix what the law says with guesses about Home Depot. That's fine for a first swing. The page below shows you how to pull them apart.</p>
+      </details>
       <textarea id="guess" autocomplete="off" aria-describedby="guess-hint guess-counter"></textarea>
       <p class="counter" id="guess-counter">0 sentences. Aim for 3–5.</p>
       <p class="field-error" id="guess-error" hidden>Add at least one sentence before copying.</p>
@@ -203,7 +218,7 @@
   function buildText(){
     var i = issue.value.trim();
     var heading = 'How the Law Applies' + (i ? ' — ' + i : '');
-    return heading + '\n\nFirst guess: where this law might touch Home Depot\n' + guess.value.trim() + '\n';
+    return heading + '\n\nFirst guess: my answer to this issue\n' + guess.value.trim() + '\n';
   }
 
   function legacyCopy(text){
