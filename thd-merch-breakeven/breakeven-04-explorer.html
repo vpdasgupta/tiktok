@@ -124,18 +124,6 @@ input[type=range]{flex:1 1 200px;height:26px}
         </div>
       </div>
     </div>
-
-    <h3>Two things worth trying</h3>
-    <button type="button" class="reveal-btn" id="q1-reveal" aria-expanded="false" aria-controls="q1-answer">What if ongoing cost climbs?</button>
-    <button type="button" class="reveal-btn" id="q2-reveal" aria-expanded="false" aria-controls="q2-answer">What if the upfront cost drops?</button>
-    <div class="answer" id="q1-answer" tabindex="-1" hidden>
-      <p><strong>The date slips later — fast.</strong> Ongoing cost eats into your monthly savings, so net shrinks and payback stretches. Push ongoing cost to $100/month and net becomes $100, so $2,400 ÷ $100 = <strong>24 months</strong> — nine months later than the original 15. Drag ongoing cost up to $200 and it never breaks even at all, because you're spending everything you save. This is exactly why the warehouse damage rate can sink the business case.</p>
-    </div>
-    <div class="answer" id="q2-answer" tabindex="-1" hidden>
-      <p><strong>The date moves sooner, in a straight line.</strong> Net savings don't change, so breakeven is just upfront ÷ net. Cut upfront to $1,600 (keeping net at $160) and $1,600 ÷ $160 = <strong>10 months</strong> — five months sooner. Every dollar shaved off hardware and install pulls the breakeven date directly forward, which is why those prices are worth negotiating hard.</p>
-    </div>
-
-    <div class="note gray"><strong>The big idea:</strong> breakeven isn't one fixed answer — it's a date that moves the moment any assumption changes. Your real job in Project 2 is to show, honestly, what makes that date move earlier or later.</div>
   </section>
 </main>
 
@@ -256,17 +244,6 @@ input[type=range]{flex:1 1 200px;height:26px}
     update(false); out.textContent="15 months";
   });
   update(false);
-
-  function wireReveal(btnId,panelId,showText,hideText){
-    var btn=document.getElementById(btnId), panel=document.getElementById(panelId);
-    btn.addEventListener("click",function(){
-      var open=btn.getAttribute("aria-expanded")==="true";
-      if(open){ btn.setAttribute("aria-expanded","false"); panel.setAttribute("hidden",""); btn.textContent=showText; }
-      else { btn.setAttribute("aria-expanded","true"); panel.removeAttribute("hidden"); btn.textContent=hideText; panel.focus(); }
-    });
-  }
-  wireReveal("q1-reveal","q1-answer","What if ongoing cost climbs?","Hide answer");
-  wireReveal("q2-reveal","q2-answer","What if the upfront cost drops?","Hide answer");
 })();
 </script>
 </body>
