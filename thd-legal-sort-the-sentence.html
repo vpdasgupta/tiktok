@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sort the Sentence — THD Legal Externship</title>
+<style>
+  :root{
+    --orange:#F96302;          /* brand fill only, paired with dark text */
+    --orange-text:#B34700;     /* orange as text on white (5.5:1) */
+    --ink:#1A1A1A;
+    --bg:#f7f7f6;
+    --card:#ffffff;
+    --border:#d9d6d0;          /* decorative only */
+    --border-control:#767268;  /* control boundaries (4.8:1) */
+    --ok:#146A34; --ok-bg:#e8f4ec;
+    --retry:#B91C1C; --retry-bg:#fdecec;
+    --text:#1e2130;
+    --muted:#4b5060;
+    /* the three parts: colour + border style + letter */
+    --rule-ink:#135a73; --rule-bg:#e5f2f6; --rule-line:#1a7394;
+    --app-ink:#5b3596;  --app-bg:#f1ebfa;  --app-line:#7a52b8;
+    --con-ink:#a8430d;  --con-bg:#fcefe6;  --con-line:#d5581f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.55;
+    padding:20px 16px;max-width:760px;margin:0 auto;
+  }
+  h1{font-size:1.35rem;line-height:1.25;margin-bottom:6px}
+  h1 .accent{color:var(--orange-text)}
+  .intro{color:var(--muted);margin-bottom:14px}
+  .key{display:flex;flex-wrap:wrap;gap:8px 14px;list-style:none;margin-bottom:16px;font-size:.9rem}
+  .key li{display:flex;gap:6px;align-items:baseline}
+  .tag{display:inline-block;font-weight:700;font-size:.82rem;padding:1px 8px;border-radius:6px;white-space:nowrap}
+  .tag--rule{color:var(--rule-ink);background:var(--rule-bg);border-bottom:3px dashed var(--rule-line)}
+  .tag--app{color:var(--app-ink);background:var(--app-bg);border-bottom:3px dotted var(--app-line)}
+  .tag--con{color:var(--con-ink);background:var(--con-bg);border-bottom:3px solid var(--con-line)}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .progress{font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--orange-text);margin-bottom:4px}
+  h2{font-size:1.1rem;line-height:1.3;margin-bottom:8px}
+  .fused{font-size:1.05rem;font-style:italic;background:#f4f6fb;border-left:4px solid var(--border-control);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:14px}
+  .task{font-weight:600;margin-bottom:10px}
+
+  .pieces{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
+  fieldset.piece{border:1px solid var(--border-control);border-radius:10px;padding:10px 14px 12px}
+  fieldset.piece legend{font-weight:600;padding:0 4px;max-width:100%}
+  .choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .choice{position:relative}
+  .choice input{position:absolute;opacity:0;width:1px;height:1px}
+  .choice label{
+    display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 14px;
+    border:1px solid var(--border-control);border-radius:999px;background:#fff;cursor:pointer;font-size:.93rem;font-weight:600;
+  }
+  .choice label::before{
+    content:"";width:14px;height:14px;border-radius:50%;border:2px solid var(--border-control);flex:0 0 auto;background:#fff;
+  }
+  .choice input:checked + label::before{background:var(--ink);box-shadow:inset 0 0 0 2px #fff}
+  .choice input:checked + label{border-width:2px;padding:7px 13px}
+  .choice--rule input:checked + label{color:var(--rule-ink);background:var(--rule-bg);border-color:var(--rule-line)}
+  .choice--app input:checked + label{color:var(--app-ink);background:var(--app-bg);border-color:var(--app-line)}
+  .choice--con input:checked + label{color:var(--con-ink);background:var(--con-bg);border-color:var(--con-line)}
+  .choice input:focus-visible + label{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px #fff,0 0 0 6px var(--ink)}
+  .choice input:disabled + label{cursor:default}
+
+  .fb{margin-top:10px;padding:8px 12px;border-radius:8px;font-size:.93rem}
+  .fb[hidden]{display:none}
+  .fb--ok{background:var(--ok-bg);color:var(--ok)}
+  .fb--retry{background:var(--retry-bg);color:var(--retry)}
+  .fb strong{display:block}
+  .fb span{color:var(--text)}
+
+  .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border-control);
+    background:#fff;color:var(--ink);padding:10px 16px;min-height:44px;font-size:.95rem;font-weight:600;
+  }
+  button.primary{background:var(--orange);border-color:#c44e00;color:var(--ink)}
+  button:hover{background:#f3f1ec}
+  button.primary:hover{background:#e85c02}
+  button[hidden]{display:none}
+  button:focus-visible,h2:focus-visible,h3:focus-visible{
+    outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px #fff,0 0 0 6px var(--ink);
+  }
+  @media (forced-colors:active){
+    button:focus-visible,h2:focus-visible,h3:focus-visible,.choice input:focus-visible + label{outline:3px solid Highlight;box-shadow:none}
+    .choice input:checked + label::before{background:Highlight}
+  }
+  .status{margin-top:12px;font-weight:600;min-height:1.5em}
+  .status--ok{color:var(--ok)}
+  .status--retry{color:var(--retry)}
+
+  .honest{margin-top:14px;border:2px solid var(--ok);border-radius:10px;padding:12px 16px;background:#fff}
+  .honest[hidden]{display:none}
+  .honest h3{font-size:1rem;margin-bottom:8px;color:var(--ok)}
+  .honest ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .honest li{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .honest p{margin-top:10px;color:var(--muted);font-size:.93rem}
+
+  .done{text-align:left}
+  .done[hidden]{display:none}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Sort the Sentence: <span class="accent">Pull It Apart</span></h1>
+  <p class="intro">Each sentence below hides a rule, a guess, and a conclusion inside one claim. Sort each piece into the part of IRAC it belongs to, then check your answers.</p>
+  <ul class="key" aria-label="The three parts">
+    <li><span class="tag tag--rule">Rule</span> what the law says</li>
+    <li><span class="tag tag--app">Application</span> a guess about Home Depot</li>
+    <li><span class="tag tag--con">Conclusion</span> the likely answer</li>
+  </ul>
+
+  <div class="card" id="round"></div>
+  <p class="sr-only" id="live" role="status"></p>
+</main>
+
+<script>
+(function(){
+  var ROUNDS = [
+    {
+      lane: 'Lane B: Face Scanning',
+      fused: '"Home Depot breaks the Illinois face-scan law because its self-checkout cameras scan shoppers\' faces without asking."',
+      pieces: [
+        { text: 'Home Depot\'s self-checkout cameras identify shoppers\' faces.', answer: 'app',
+          why: 'You don\'t know this. The cameras might only record video. Mark it "Guess:" and add it to your list to confirm.' },
+        { text: 'Illinois\' face-scan law requires consent before a company scans someone\'s face.', answer: 'rule',
+          why: 'This comes straight from the law, so you can state it plainly.' },
+        { text: 'Home Depot is breaking the law.', answer: 'con',
+          why: 'This is the answer. Because it rests on guesses, it has to be written as an "if."' },
+        { text: 'Home Depot doesn\'t ask shoppers for consent.', answer: 'app',
+          why: 'Another assumption about how Home Depot operates. There might be a sign or an app notice you haven\'t seen.' }
+      ],
+      honest: [
+        ['rule', 'Illinois\' face-scan law requires consent before a company scans someone\'s face.'],
+        ['app', 'Guess: Home Depot\'s self-checkout cameras identify faces, not just record video. To confirm.'],
+        ['app', 'Guess: shoppers aren\'t asked for consent. To confirm.'],
+        ['con', 'If both guesses are true, Home Depot would likely be breaking the law.']
+      ]
+    },
+    {
+      lane: 'Lane A: Personalized Pricing',
+      fused: '"Home Depot charges some shoppers more using their personal data, which breaks New York\'s pricing-label law."',
+      pieces: [
+        { text: 'Home Depot would likely be breaking New York\'s pricing-label law.', answer: 'con',
+          why: 'This is where the reasoning lands. Write it as "if my guess is true…"' },
+        { text: 'Home Depot sets some shoppers\' prices using their personal data.', answer: 'app',
+          why: 'You\'re assuming this. Its app might show everyone in an area the same price. Mark it "Guess:"' },
+        { text: 'New York\'s pricing-label law requires telling shoppers when a price was set using their personal data.', answer: 'rule',
+          why: 'This is what the law says. You found it in the original documents in Project 1.' }
+      ],
+      honest: [
+        ['rule', 'New York\'s pricing-label law requires telling shoppers when a price was set using their personal data.'],
+        ['app', 'Guess: Home Depot sets some shoppers\' prices using their personal data, with no label. To confirm.'],
+        ['con', 'If that guess is true, Home Depot would likely be breaking that law.']
+      ]
+    },
+    {
+      lane: 'Lane B: Biometrics at Work',
+      fused: '"Home Depot\'s fingerprint time clocks in Illinois violate BIPA, since hourly workers never sign a consent form."',
+      pieces: [
+        { text: 'Hourly workers in Illinois never sign a consent form.', answer: 'app',
+          why: 'You can\'t know this from outside the company. A consent form could be part of hiring paperwork. Mark it "Guess:"' },
+        { text: 'BIPA requires written consent before a company collects someone\'s fingerprints.', answer: 'rule',
+          why: 'This is the requirement from the law itself.' },
+        { text: 'Home Depot uses fingerprint time clocks in its Illinois stores.', answer: 'app',
+          why: 'Also a guess. Many retailers use badge or PIN clocks instead. Mark it and confirm.' },
+        { text: 'Home Depot is violating BIPA.', answer: 'con',
+          why: 'This is the conclusion. It only holds if both guesses turn out to be true.' }
+      ],
+      honest: [
+        ['rule', 'BIPA requires written consent before a company collects someone\'s fingerprints.'],
+        ['app', 'Guess: Home Depot uses fingerprint time clocks in Illinois stores. To confirm.'],
+        ['app', 'Guess: hourly workers don\'t sign a consent form. To confirm.'],
+        ['con', 'If both guesses are true, Home Depot would likely be violating BIPA.']
+      ]
+    }
+  ];
+  var LABELS = { rule: 'Rule', app: 'Application (a guess)', con: 'Conclusion' };
+  var SHORT = { rule: 'Rule', app: 'Application', con: 'Conclusion' };
+
+  var root = document.getElementById('round');
+  var live = document.getElementById('live');
+  var idx = 0;
+
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function render(focusHeading){
+    var r = ROUNDS[idx];
+    var h = '';
+    h += '<p class="progress">' + esc(r.lane) + '</p>';
+    h += '<h2 id="round-h" tabindex="-1">Sentence ' + (idx+1) + ' of ' + ROUNDS.length + ': Pull this sentence apart</h2>';
+    h += '<p class="fused">' + esc(r.fused) + '</p>';
+    h += '<p class="task">For each piece, choose which part it is.</p>';
+    h += '<ul class="pieces" role="list">';
+    r.pieces.forEach(function(p, i){
+      h += '<li><fieldset class="piece" id="piece-' + i + '"><legend>Piece ' + (i+1) + ': "' + esc(p.text) + '"</legend><div class="choices">';
+      ['rule','app','con'].forEach(function(k){
+        var id = 'p' + i + '-' + k;
+        h += '<span class="choice choice--' + k + '"><input type="radio" name="p' + i + '" id="' + id + '" value="' + k + '"><label for="' + id + '">' + LABELS[k] + '</label></span>';
+      });
+      h += '</div><p class="fb" id="fb-' + i + '" hidden></p></fieldset></li>';
+    });
+    h += '</ul>';
+    h += '<div class="actions"><button type="button" class="primary" id="check">Check my sorting</button>';
+    h += '<button type="button" id="next" hidden>' + (idx < ROUNDS.length-1 ? 'Next sentence' : 'Finish') + '</button></div>';
+    h += '<p class="status" id="status"></p>';
+    h += '<section class="honest" id="honest" hidden aria-labelledby="honest-h"><h3 id="honest-h" tabindex="-1"><span aria-hidden="true">✓ </span>The honest version</h3><ul role="list">';
+    r.honest.forEach(function(row){
+      h += '<li><span class="tag tag--' + row[0] + '">' + SHORT[row[0]] + '</span> <span>' + esc(row[1]) + '</span></li>';
+    });
+    h += '</ul><p>Notice it never says "Home Depot breaks the law" flat out. Every guess is labeled, and the conclusion starts with "if."</p></section>';
+    root.innerHTML = h;
+
+    document.getElementById('check').addEventListener('click', check);
+    document.getElementById('next').addEventListener('click', function(){
+      if (idx < ROUNDS.length-1){ idx++; render(true); }
+      else finish();
+    });
+    ROUNDS[idx].pieces.forEach(function(p, i){
+      root.querySelectorAll('input[name="p' + i + '"]').forEach(function(el){
+        el.addEventListener('change', function(){
+          var fb = document.getElementById('fb-' + i);
+          if (!fb.hidden){ fb.hidden = true; describe(i, false); }
+        });
+      });
+    });
+    if (focusHeading) document.getElementById('round-h').focus();
+  }
+
+  function describe(i, on){
+    root.querySelectorAll('input[name="p' + i + '"]').forEach(function(el){
+      if (on) el.setAttribute('aria-describedby', 'fb-' + i); else el.removeAttribute('aria-describedby');
+    });
+  }
+  function announce(msg){
+    live.textContent = '';
+    setTimeout(function(){ live.textContent = msg; }, 50);
+  }
+
+  function check(){
+    var r = ROUNDS[idx];
+    var missing = [], wrong = 0, firstProblem = null;
+    r.pieces.forEach(function(p, i){
+      var sel = root.querySelector('input[name="p' + i + '"]:checked');
+      var fb = document.getElementById('fb-' + i);
+      if (!sel){
+        missing.push(i+1);
+        fb.hidden = true;
+        describe(i, false);
+        if (firstProblem === null) firstProblem = i;
+        return;
+      }
+      fb.hidden = false;
+      describe(i, true);
+      if (sel.value === p.answer){
+        fb.className = 'fb fb--ok';
+        fb.innerHTML = '<strong><span aria-hidden="true">✓ </span>Correct: ' + LABELS[p.answer] + '.</strong><span>' + esc(p.why) + '</span>';
+      } else {
+        wrong++;
+        if (firstProblem === null) firstProblem = i;
+        fb.className = 'fb fb--retry';
+        fb.innerHTML = '<strong><span aria-hidden="true">✗ </span>Not quite. Try another part.</strong><span>Ask yourself: does this come from the law, is it something you\'re assuming about Home Depot, or is it the final answer?</span>';
+      }
+    });
+    var status = document.getElementById('status');
+    if (missing.length){
+      status.className = 'status status--retry';
+      status.textContent = 'Choose a part for piece ' + missing.join(', ') + ' first.';
+      announce(status.textContent);
+      root.querySelector('input[name="p' + firstProblem + '"]').focus();
+      return;
+    }
+    if (wrong){
+      status.className = 'status status--retry';
+      status.textContent = wrong + ' of ' + r.pieces.length + ' pieces need another look. Change your choice and check again.';
+      announce(status.textContent);
+      root.querySelector('input[name="p' + firstProblem + '"]:checked').focus();
+      return;
+    }
+    status.className = 'status status--ok';
+    status.textContent = 'All ' + r.pieces.length + ' pieces sorted correctly.';
+    announce(status.textContent);
+    root.querySelectorAll('input[type=radio]').forEach(function(el){ el.disabled = true; });
+    document.getElementById('check').hidden = true;
+    var next = document.getElementById('next');
+    next.hidden = false;
+    var honest = document.getElementById('honest');
+    honest.hidden = false;
+    document.getElementById('honest-h').focus();
+  }
+
+  function finish(){
+    root.innerHTML = '<div class="done"><h2 id="round-h" tabindex="-1"><span aria-hidden="true">✓ </span>Nice work. You sorted all ' + ROUNDS.length + ' sentences.</h2>' +
+      '<p>Now do the same with your own first guess: find the rule, label every guess with "Guess:", and write your conclusion as an "if."</p>' +
+      '<div class="actions" style="margin-top:12px"><button type="button" id="again">Practice again</button></div></div>';
+    document.getElementById('again').addEventListener('click', function(){ idx = 0; render(true); });
+    document.getElementById('round-h').focus();
+  }
+
+  render(false);
+})();
+</script>
+</body>
+</html>
