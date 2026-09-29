@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Your IRAC — THD Legal Externship</title>
+<style>
+  :root{
+    --orange:#F96302;          /* brand fill only, paired with dark text */
+    --orange-text:#B34700;     /* orange as text on white (5.5:1) */
+    --ink:#1A1A1A;
+    --bg:#f7f7f6;
+    --card:#ffffff;
+    --border:#d9d6d0;          /* decorative only */
+    --border-control:#767268;  /* control boundaries (4.8:1) */
+    --ok:#146A34;
+    --retry:#B91C1C;
+    --text:#1e2130;
+    --muted:#4b5060;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.55;
+    padding:20px 16px;max-width:760px;margin:0 auto;
+  }
+  h1{font-size:1.35rem;line-height:1.25;margin-bottom:6px}
+  h1 .accent{color:var(--orange-text)}
+  .intro{color:var(--muted);margin-bottom:6px}
+  .required-note{color:var(--muted);font-size:.9rem;margin-bottom:14px}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .field{margin-bottom:18px}
+  fieldset{border:0;margin:0 0 18px;padding:0;min-width:0}
+  legend{font-weight:700;font-size:.98rem;margin-bottom:2px;padding:0}
+  label,.label{display:block;font-weight:700;font-size:.98rem;margin-bottom:2px}
+  fieldset label{font-size:.95rem;margin-top:8px}
+  .num{color:var(--orange-text)}
+  .hint{color:var(--muted);font-size:.9rem;margin-bottom:6px}
+  textarea{
+    font:inherit;color:var(--text);background:#fff;width:100%;
+    border:1px solid var(--border-control);border-radius:8px;padding:9px 11px;
+    resize:vertical;line-height:1.5;
+  }
+  .ifthen{display:flex;flex-wrap:wrap;gap:4px 14px}
+  .ifthen > div{flex:1 1 240px;min-width:0}
+  [aria-invalid="true"]{border:2px solid var(--retry)}
+  .field-error{color:var(--retry);font-weight:600;font-size:.9rem;margin-top:6px}
+  .field-error[hidden]{display:none}
+
+  .examples{background:#f4f6fb;border:1px solid var(--border);border-radius:8px;margin:0 0 18px;padding:0 12px}
+  .examples summary{cursor:pointer;font-weight:700;color:var(--text);min-height:44px;padding:11px 0}
+  .examples summary:hover{text-decoration:underline}
+  .examples .ex{margin:0 0 12px;padding:8px 12px;border-left:3px solid var(--border-control);background:#fff;font-size:.92rem}
+  .examples .ex p{margin-bottom:6px}
+  .examples .ex p:last-child{margin-bottom:0}
+  .examples .ex-note{font-size:.9rem;color:var(--muted);margin-bottom:12px}
+
+  .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--border-control);
+    background:#fff;color:var(--ink);padding:10px 16px;min-height:44px;font-size:.95rem;font-weight:600;
+  }
+  button.primary{background:var(--orange);border-color:#c44e00;color:var(--ink)}
+  button:hover{background:#f3f1ec}
+  button.primary:hover{background:#e85c02}
+  button[hidden],.confirm[hidden]{display:none}
+  .confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .confirm p{font-weight:600;margin-right:4px}
+
+  a:focus-visible,button:focus-visible,textarea:focus-visible,summary:focus-visible{
+    outline:2px solid var(--ink);outline-offset:2px;
+    box-shadow:0 0 0 4px #fff, 0 0 0 6px var(--ink);
+  }
+  @media (forced-colors:active){
+    a:focus-visible,button:focus-visible,textarea:focus-visible,summary:focus-visible{
+      outline:3px solid Highlight;outline-offset:2px;box-shadow:none;
+    }
+  }
+
+  .status{margin-top:12px;font-weight:600;color:var(--ok);min-height:1.5em}
+  .status.warn{color:var(--retry)}
+  .save-note{margin-top:10px;font-size:.85rem;color:var(--muted)}
+
+  .fallback{margin-top:14px}
+  .fallback[hidden]{display:none}
+  .fallback textarea{min-height:160px;background:#fffdf9}
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Build Your IRAC: <span class="accent">Answer Your Issue</span></h1>
+  <p class="intro">Work through your issue one piece at a time, then copy it into your research doc.</p>
+  <p class="required-note">All fields are required.</p>
+
+  <div class="card">
+    <details class="examples">
+      <summary>See an example</summary>
+      <div class="ex">
+        <p><strong>Issue:</strong> Does Illinois' biometric privacy law (BIPA) require Home Depot to get written consent before its Illinois stores use fingerprint time clocks for hourly workers?</p>
+        <p><strong>Rule:</strong> BIPA requires a company to get a person's written consent before collecting their fingerprint or other biometric data.</p>
+        <p><strong>Application:</strong><br>Guess: Home Depot's Illinois stores use time clocks that scan workers' fingerprints.<br>Guess: New hires don't sign a written consent form for those scans.</p>
+        <p><strong>Conclusion:</strong> If the time clocks scan fingerprints and workers haven't signed a consent form, then Home Depot likely isn't meeting BIPA's consent requirement in Illinois.</p>
+      </div>
+      <p class="ex-note">Notice that both guesses stay labeled, and the conclusion says which guess it depends on.</p>
+    </details>
+
+    <div class="field">
+      <label for="issue"><span class="num">1.</span> Issue</label>
+      <p class="hint" id="issue-hint">Copy the issue question from the Issue Pick section of your research doc and paste it here.</p>
+      <textarea id="issue" rows="3" autocomplete="off" aria-required="true" aria-describedby="issue-hint"></textarea>
+      <p class="field-error" id="issue-error" hidden>Error: Add your issue before copying.</p>
+    </div>
+
+    <div class="field">
+      <label for="rule"><span class="num">2.</span> Rule</label>
+      <p class="hint" id="rule-hint">What does your law require? State it plainly, in one or two sentences.</p>
+      <textarea id="rule" rows="3" autocomplete="off" aria-required="true" aria-describedby="rule-hint"></textarea>
+      <p class="field-error" id="rule-error" hidden>Error: Add the rule before copying.</p>
+    </div>
+
+    <fieldset>
+      <legend><span class="num">3.</span> Application: what might Home Depot be doing?</legend>
+      <p class="hint" id="app-hint">Write two guesses about how Home Depot operates that decide whether the rule applies. You don't need to know yet. Reason to what a huge retailer probably does.</p>
+      <label for="guess1">Guess 1:</label>
+      <textarea id="guess1" rows="2" autocomplete="off" aria-required="true" aria-describedby="app-hint"></textarea>
+      <p class="field-error" id="guess1-error" hidden>Error: Add Guess 1 before copying.</p>
+      <label for="guess2">Guess 2:</label>
+      <textarea id="guess2" rows="2" autocomplete="off" aria-required="true" aria-describedby="app-hint"></textarea>
+      <p class="field-error" id="guess2-error" hidden>Error: Add Guess 2 before copying.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="num">4.</span> Conclusion: write it as an if</legend>
+      <p class="hint">Your answer rests on your guesses, so your conclusion has to say so.</p>
+      <div class="ifthen">
+        <div>
+          <label for="concl-if">If <span class="sr-only">(which guess must be true)</span></label>
+          <p class="hint" id="if-hint">Which guess (or guesses) has to be true?</p>
+          <textarea id="concl-if" rows="2" autocomplete="off" aria-required="true" aria-describedby="if-hint"></textarea>
+          <p class="field-error" id="concl-if-error" hidden>Error: Add the "If" part before copying.</p>
+        </div>
+        <div>
+          <label for="concl-then">then <span class="sr-only">(the likely answer to your issue)</span></label>
+          <p class="hint" id="then-hint">What's the likely answer to your issue?</p>
+          <textarea id="concl-then" rows="2" autocomplete="off" aria-required="true" aria-describedby="then-hint"></textarea>
+          <p class="field-error" id="concl-then-error" hidden>Error: Add the "then" part before copying.</p>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="button" class="primary" id="copy-btn">Copy to clipboard</button>
+      <button type="button" id="clear-btn">Clear</button>
+      <div class="confirm" id="confirm" hidden>
+        <p>Clear all 6 fields? This can't be undone.</p>
+        <button type="button" id="confirm-yes">Yes, clear</button>
+        <button type="button" id="confirm-cancel">Cancel</button>
+      </div>
+    </div>
+
+    <p class="status" id="status" role="status"></p>
+
+    <div class="fallback" id="fallback" hidden>
+      <label for="fallback-text">Your formatted text</label>
+      <p class="hint" id="fallback-hint">Your browser blocked copying. The text is selected. Press Cmd+C (Mac) or Ctrl+C (Windows) to copy it.</p>
+      <textarea id="fallback-text" readonly aria-describedby="fallback-hint"></textarea>
+    </div>
+
+    <p class="save-note" id="save-note">Your writing is saved in this browser, so it's still here if you leave and come back.</p>
+  </div>
+</main>
+
+<script>
+(function(){
+  var KEY = 'thd-legal-p2-irac';
+  var FIELDS = [
+    {id:'issue',      name:'Issue'},
+    {id:'rule',       name:'Rule'},
+    {id:'guess1',     name:'Guess 1'},
+    {id:'guess2',     name:'Guess 2'},
+    {id:'concl-if',   name:'If'},
+    {id:'concl-then', name:'then'}
+  ];
+  FIELDS.forEach(function(f){
+    f.el = document.getElementById(f.id);
+    f.err = document.getElementById(f.id + '-error');
+    f.describedby = f.el.getAttribute('aria-describedby');
+  });
+  function val(id){ return document.getElementById(id).value.trim(); }
+
+  var status = document.getElementById('status');
+  var copyBtn = document.getElementById('copy-btn');
+  var clearBtn = document.getElementById('clear-btn');
+  var confirmBox = document.getElementById('confirm');
+  var yesBtn = document.getElementById('confirm-yes');
+  var cancelBtn = document.getElementById('confirm-cancel');
+  var fallback = document.getElementById('fallback');
+  var fallbackText = document.getElementById('fallback-text');
+  var saveNote = document.getElementById('save-note');
+  var canSave = true, showingSummary = false;
+
+  function setStatus(msg, warn){
+    status.classList.toggle('warn', !!warn);
+    status.textContent = msg;
+  }
+
+  // Storage (may be blocked inside iframes / private windows)
+  function load(){
+    try {
+      var d = JSON.parse(localStorage.getItem(KEY) || '{}');
+      FIELDS.forEach(function(f){ if (d[f.id]) f.el.value = d[f.id]; });
+    } catch(e){ storageFailed(); }
+  }
+  function save(){
+    if (!canSave) return;
+    try {
+      var d = {};
+      FIELDS.forEach(function(f){ d[f.id] = f.el.value; });
+      localStorage.setItem(KEY, JSON.stringify(d));
+    } catch(e){ storageFailed(); }
+  }
+  function storageFailed(){
+    if (!canSave) return;
+    canSave = false;
+    saveNote.textContent = "Can't save in this browser. Copy your text before you leave this page.";
+    setStatus("Heads up: this browser can't save your writing. Copy it before you leave.", true);
+  }
+
+  // Validation
+  function setError(f, on){
+    f.err.hidden = !on;
+    if (on){
+      f.el.setAttribute('aria-invalid', 'true');
+      f.el.setAttribute('aria-describedby', f.describedby + ' ' + f.err.id);
+    } else {
+      f.el.removeAttribute('aria-invalid');
+      f.el.setAttribute('aria-describedby', f.describedby);
+    }
+  }
+  function emptyFields(){
+    return FIELDS.filter(function(f){ return !f.el.value.trim(); });
+  }
+  function summaryText(empty){
+    var n = empty.length;
+    return n + (n === 1 ? ' field is' : ' fields are') + ' still empty: ' +
+      empty.map(function(f){ return f.name; }).join(', ') + '.';
+  }
+
+  // Tidy the If/then pieces so the sentence reads cleanly
+  function stripLead(text, word){
+    return text.replace(new RegExp('^' + word + '\\b[\\s,:]*', 'i'), '');
+  }
+  function buildText(){
+    var ifPart = stripLead(val('concl-if'), 'if').replace(/[\s.,;:]+$/, '');
+    var thenPart = stripLead(val('concl-then'), 'then');
+    if (!/[.!?]$/.test(thenPart)) thenPart += '.';
+    return 'How the Law Applies\n\n' +
+      'Issue: ' + val('issue') + '\n' +
+      'Rule: ' + val('rule') + '\n' +
+      'Application:\n' +
+      'Guess: ' + stripLead(val('guess1'), 'guess') + '\n' +
+      'Guess: ' + stripLead(val('guess2'), 'guess') + '\n' +
+      'Conclusion: If ' + ifPart + ', then ' + thenPart + '\n';
+  }
+
+  function legacyCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '-9999px'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    document.body.removeChild(ta);
+    copyBtn.focus();
+    return ok;
+  }
+  function copied(){
+    fallback.hidden = true;
+    setStatus('Copied. Paste it into your research doc under your Issue Pick section.');
+  }
+  function showFallback(text){
+    setStatus('');
+    fallbackText.value = text;
+    fallback.hidden = false;
+    fallbackText.focus();
+    fallbackText.select();
+  }
+
+  copyBtn.addEventListener('click', function(){
+    var empty = emptyFields();
+    FIELDS.forEach(function(f){ setError(f, empty.indexOf(f) !== -1); });
+    if (empty.length){
+      fallback.hidden = true;
+      showingSummary = true;
+      setStatus(summaryText(empty), true);
+      empty[0].el.focus();
+      return;
+    }
+    showingSummary = false;
+    var text = buildText();
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(copied, function(){
+        if (legacyCopy(text)) copied(); else showFallback(text);
+      });
+    } else {
+      if (legacyCopy(text)) copied(); else showFallback(text);
+    }
+  });
+
+  // Inline two-step clear
+  function closeConfirm(){
+    confirmBox.hidden = true;
+    clearBtn.hidden = false;
+  }
+  clearBtn.addEventListener('click', function(){
+    clearBtn.hidden = true;
+    confirmBox.hidden = false;
+    cancelBtn.focus();
+  });
+  cancelBtn.addEventListener('click', function(){ closeConfirm(); clearBtn.focus(); });
+  confirmBox.addEventListener('keydown', function(e){
+    if (e.key === 'Escape'){ closeConfirm(); clearBtn.focus(); }
+  });
+  yesBtn.addEventListener('click', function(){
+    FIELDS.forEach(function(f){ f.el.value = ''; setError(f, false); });
+    fallback.hidden = true;
+    showingSummary = false;
+    save();
+    closeConfirm();
+    FIELDS[0].el.focus();
+    setStatus('Fields cleared.');
+  });
+
+  FIELDS.forEach(function(f){
+    f.el.addEventListener('input', function(){
+      if (!f.err.hidden && f.el.value.trim()) setError(f, false);
+      if (showingSummary){
+        var empty = emptyFields().filter(function(x){ return !x.err.hidden; });
+        if (empty.length) setStatus(summaryText(empty), true);
+        else { showingSummary = false; setStatus(''); }
+      }
+      save();
+    });
+  });
+
+  load();
+})();
+</script>
+</body>
+</html>
