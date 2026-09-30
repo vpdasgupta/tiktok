@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blueprint: How It Works Plan — Sample</title>
+<style>
+  :root{
+    --hd-orange:#F96302;
+    --ink:#1a1a1a;
+    --muted:#555;
+    --line:#e3e3e3;
+    --prove-bg:#eef6ee;
+    --prove-ink:#1e5b2a;
+    --guess-bg:#fdf3e6;
+    --guess-ink:#8a4b00;
+    --page:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#f4f4f4;
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    font-size:17px;
+  }
+  main{
+    max-width:820px;
+    margin:32px auto;
+    background:var(--page);
+    padding:44px 48px 56px;
+    border-radius:8px;
+    box-shadow:0 1px 4px rgba(0,0,0,.08);
+  }
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-size:.72rem;
+    font-weight:700;
+    color:var(--hd-orange);
+    margin:0 0 6px;
+  }
+  h1{
+    font-size:1.7rem;
+    line-height:1.2;
+    margin:0 0 6px;
+  }
+  .byline{color:var(--muted);font-size:.95rem;margin:0 0 4px;}
+  .framing{
+    border-left:4px solid var(--hd-orange);
+    padding:12px 0 12px 16px;
+    margin:22px 0 30px;
+    font-size:1.05rem;
+  }
+  h2{
+    font-size:1.15rem;
+    margin:38px 0 4px;
+    padding-bottom:8px;
+    border-bottom:2px solid var(--hd-orange);
+  }
+  .part-label{color:var(--hd-orange);font-weight:700;}
+  h3{font-size:1rem;margin:26px 0 6px;}
+  p{margin:8px 0;}
+  ol,ul{margin:8px 0 8px 4px;padding-left:22px;}
+  li{margin:5px 0;}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.95rem;}
+  caption{text-align:left;font-weight:600;color:var(--muted);padding-bottom:6px;}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top;}
+  thead th{background:#fafafa;}
+  .split{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0;}
+  .split section{flex:1 1 260px;border-radius:6px;padding:14px 16px;}
+  .prove{background:var(--prove-bg);}
+  .prove h4{color:var(--prove-ink);}
+  .guess{background:var(--guess-bg);}
+  .guess h4{color:var(--guess-ink);}
+  .split h4{margin:0 0 8px;font-size:.95rem;}
+  .tag{
+    display:inline-block;font-size:.7rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.04em;padding:2px 8px;border-radius:10px;border:1px solid var(--hd-orange);
+    color:var(--hd-orange);
+  }
+  .commit{
+    margin-top:26px;font-weight:600;font-size:1.02rem;
+    border-top:1px dashed var(--line);padding-top:16px;
+  }
+  footer{max-width:820px;margin:0 auto 40px;color:#595959;font-size:.8rem;text-align:center;}
+
+ .eyebrow{color:#B34700;}
+ .part-label{color:#B34700;}
+ .tag{color:#8A3600;border-color:#F96302;background:#FFF1E6;}
+ .bp{font-size:.88rem}
+ .bp th[scope=row]{background:#faf8f5;width:22%}
+ .bp td.guess{background:#FFF1E6;border:2px dashed #B34700}
+ .bp tr.lov th{color:#B34700;background:#fff;border-top:2px dashed #B34700;border-bottom:2px dashed #B34700;font-size:.85rem}
+ .lede{font-size:1.05rem}
+ a{color:#B34700}
+ .bp-wrap{overflow-x:auto}
+ .bp-wrap:focus-visible{outline:2px solid #B34700;outline-offset:2px}
+ .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+ @media (max-width:640px){main{padding:24px 18px 36px;margin:0}}
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Project 2 — Blueprint: How It Works Plan</p>
+  <h1>Cart on the hdPhone</h1>
+  <p class="byline">Prepared by: A. Sample · Lane: Buy-online, pick-up &amp; help in-aisle</p>
+
+  <h2>1. Main Point</h2>
+  <p class="framing">
+    <strong>If</strong> an associate's hdPhone can pull up a customer's online cart, Pro customers like Marcus can finish the
+    order they started at home without rebuilding it by hand in the aisle. The idea depends most on one hand-off: the hdPhone
+    finding the online order. My prototype will show the simplest version: see the cart in the aisle, pay at the register.
+  </p>
+
+  <h2>2. The Concept</h2>
+  <p><strong>The idea:</strong> An associate scans a code on Marcus's phone, and his saved cart appears on the associate's hdPhone, so they pick up right where he left off.</p>
+  <p><strong>Why this shape:</strong> Mostly technology (the hdPhone showing the cart), plus a people change: associates learn to ask Pros for their order code.</p>
+  <p><strong>One way it could break:</strong> The hdPhone may not be able to reach online orders at all.</p>
+  <p><strong>Set aside:</strong> "Scan at hello" (needs a greeter at the door, hard in a warehouse store) and "Pay in the aisle" (raises payment and security questions I can't answer yet).</p>
+
+  <h2>3. How It Works</h2>
+  <p>Marcus's trip in four steps. Rows above the line of visibility are what he can see; rows below it happen out of sight. Boxes marked <span class="tag">Guess</span><span class="sr-only">:</span> are things I can't prove yet.</p>
+  <div class="bp-wrap" role="region" aria-labelledby="bp-cap" tabindex="0">
+  <table class="bp">
+    <caption id="bp-cap">Service blueprint: Marcus finishes his online order in the aisle</caption>
+    <thead>
+      <tr><td></td><th scope="col">1. Arrives with his order</th><th scope="col">2. Shows his order</th><th scope="col">3. Checks the items</th><th scope="col">4. Pays and leaves</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">What the customer touches</th><td>Home Depot app with his saved cart</td><td>Order code on his phone; the associate's hdPhone</td><td>hdPhone screen showing his cart</td><td>Register and receipt</td></tr>
+      <tr><th scope="row">What the customer does</th><td>Walks into the aisle with 14 items saved on his phone</td><td>Shows the associate his order code</td><td>Confirms the list and adds one more item</td><td>Pays at the register without re-listing items</td></tr>
+      <tr><th scope="row">What they can see the store do</th><td>An associate walks over to help</td><td>Associate scans the code with the hdPhone</td><td>Associate checks what is in stock here</td><td>Cashier loads the same order</td></tr>
+    </tbody>
+    <tbody>
+      <tr class="lov"><th scope="rowgroup" colspan="5">Below the line of visibility (out of sight)</th></tr>
+      <tr><th scope="row">What happens out of sight</th><td>His cart waits in the online order system</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> The hdPhone looks up Marcus's online cart</td><td>Stock check for this store</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> The register pulls the order the hdPhone built</td></tr>
+      <tr><th scope="row">The systems behind it</th><td>Online order system (holds his cart)</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> hdPhone app connected to online orders</td><td>Store inventory system</td><td>Register and payment system</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><strong>The moments that matter most:</strong> step 2, when the scan either finds his cart or doesn't, and step 4, when the register either loads the same order or makes him start over.</p>
+
+  <h2>4. What It Depends On</h2>
+  <div class="bp-wrap" role="region" aria-labelledby="dep-cap" tabindex="0">
+  <table>
+    <caption id="dep-cap">Each system or person the idea needs, and whether I can prove it</caption>
+    <thead><tr><th scope="col">System or person</th><th scope="col">Hand-off with</th><th scope="col">Proof or Guess</th><th scope="col">Source or reason</th></tr></thead>
+    <tbody>
+      <tr><td>Home Depot app (saved carts)</td><td>Online order system</td><td>Proof</td><td>The app lets customers build a cart before they visit (Home Depot app help pages).</td></tr>
+      <tr><td>hdPhone</td><td>Store inventory</td><td>Proof</td><td>Home Depot rolled out 125,000+ hdPhones for scanning, prices, and stock checks (<a href="https://corporate.homedepot.com/newsroom/hdphone-mobile-network-upgrades">Home Depot newsroom, 2022</a>).</td></tr>
+      <tr><td>hdPhone</td><td>Online order system</td><td><span class="tag">Guess</span></td><td>No public source says the hdPhone can open a customer's online cart.</td></tr>
+      <tr><td>Register</td><td>The order built on the hdPhone</td><td><span class="tag">Guess</span></td><td>I don't know if the register can load an order started on another device.</td></tr>
+      <tr><td>Associates</td><td>Marcus</td><td><span class="tag">Guess</span></td><td>Associates would need to know to ask Pros for their order code.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><em>Optional note:</em> This idea hands work to the Technology lane, which would need to connect the hdPhone to online orders.</p>
+
+  <h2>5. Risks &amp; Versions</h2>
+  <ul>
+    <li><strong>Will it work?</strong> Only if the hdPhone can reach online orders. That's the biggest guess.</li>
+    <li><strong>Will people use it?</strong> Busy associates may skip the scan, and Pros may not know to offer their code.</li>
+    <li><strong>What does it cost?</strong> Software work to connect the systems, plus a few minutes of associate training.</li>
+  </ul>
+  <p><strong>Simplest version:</strong> The associate sees Marcus's cart on the hdPhone in the aisle; he pays at the register as he does today.</p>
+  <p><strong>Ideal version:</strong> Marcus pays right there in the aisle on the associate's device and leaves. <span class="tag">Guess</span><span class="sr-only">:</span> (needs payment on the hdPhone).</p>
+  <p><strong>My prototype will show:</strong> the simplest version, because it fixes the missed items without the payment questions.</p>
+  <p><strong>The tradeoff:</strong> My idea trades a quick checkout in the aisle for fewer missed items.</p>
+
+  <h2>6. What Home Depot Would Need to Confirm</h2>
+  <ol>
+    <li>Can the hdPhone show a customer's online cart today?</li>
+    <li>Can the register load an order started on an hdPhone?</li>
+    <li>How often do Pros ask an aisle associate to look up an online order?</li>
+  </ol>
+</main>
+<footer>Example plan — fictional customer and details, for format reference only.</footer>
+</body>
+</html>
