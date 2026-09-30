@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blueprint Builder – Service Blueprint Tool</title>
+<style>
+  :root{
+    --orange:#F96302;          /* brand fill only, paired with dark text */
+    --orange-text:#B34700;     /* orange as text/lines on white (5.5:1) */
+    --ink:#1A1A1A;
+    --text:#1e2130;
+    --muted:#4b5060;
+    --bg:#f7f7f6;
+    --card:#ffffff;
+    --border:#d9d6d0;          /* decorative only */
+    --control:#767676;         /* control boundaries (4.5:1) */
+    --guess-bg:#FFF1E6;
+    --guess-ink:#8A3600;       /* 7.3:1 on guess-bg */
+    --ok:#146A34;
+    --warn:#B91C1C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.5;
+    padding:20px 16px;max-width:1100px;margin:0 auto;
+  }
+  h1{font-size:1.35rem;line-height:1.25;margin-bottom:6px}
+  h1 .accent{color:var(--orange-text)}
+  .intro{color:var(--muted);margin-bottom:6px;max-width:70ch}
+  .full-link{font-size:.9rem;margin-bottom:14px}
+  a{color:var(--orange-text)}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;margin-bottom:14px}
+  fieldset{border:0;min-width:0}
+  legend{font-weight:700;font-size:.95rem;margin-bottom:4px;padding:0}
+  .radios{display:flex;flex-wrap:wrap;gap:6px 16px}
+  .radios label{display:flex;align-items:center;gap:6px;min-height:32px;cursor:pointer}
+  input[type=radio],input[type=checkbox]{width:18px;height:18px;accent-color:var(--orange-text)}
+
+  button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--control);
+    background:#fff;color:var(--ink);padding:9px 14px;min-height:44px;font-size:.93rem;font-weight:600;
+  }
+  button:hover{background:#f3f1ec}
+  button.primary{background:var(--orange);border-color:#c44e00;color:var(--ink)}
+  button.primary:hover{background:#e85c02}
+  button[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+  .grid-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:10px;margin-bottom:14px}
+  table{border-collapse:separate;border-spacing:0;min-width:100%}
+  caption{text-align:left;font-weight:700;padding:10px 12px;color:var(--text)}
+  th,td{border-top:1px solid var(--border);padding:8px;vertical-align:top;background:#fff}
+  thead td,thead th{border-top:0;background:#faf8f5}
+  th[scope=row]{
+    position:sticky;left:0;z-index:1;width:170px;min-width:150px;text-align:left;font-size:.92rem;
+    background:#faf8f5;border-right:1px solid var(--border)
+  }
+  thead td.corner{position:sticky;left:0;z-index:2;background:#faf8f5;border-right:1px solid var(--border)}
+  th[scope=col]{min-width:190px;text-align:left}
+  .step-head{display:flex;flex-direction:column;gap:6px}
+  .step-num{font-size:.8rem;font-weight:700;color:var(--orange-text);text-transform:uppercase;letter-spacing:.04em}
+  .step-name{font:inherit;font-weight:700;width:100%;padding:7px 9px;border:1px solid var(--control);border-radius:6px}
+  .remove-step{min-height:32px;padding:4px 10px;font-size:.82rem;font-weight:600;align-self:flex-start}
+  textarea{
+    font:inherit;font-size:.92rem;color:var(--text);background:#fff;width:100%;min-height:64px;
+    border:1px solid var(--control);border-radius:6px;padding:7px 9px;resize:vertical;line-height:1.45;overflow-y:auto;
+    scroll-margin-left:190px;scroll-margin-top:12px
+  }
+  .step-name{scroll-margin-left:190px}
+  td.is-guess textarea{border:2px dashed var(--orange-text);background:var(--guess-bg)}
+  .cell-foot{display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap}
+  .guess{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600;min-height:28px;cursor:pointer}
+  .guess-tag{font-size:.75rem;font-weight:700;color:var(--guess-ink);background:var(--guess-bg);
+    border:1px solid var(--orange);border-radius:10px;padding:1px 8px}
+  .guess-tag[hidden]{display:none}
+  tr.lov th{
+    position:sticky;left:0;text-align:left;background:#fff;padding:6px 10px;font-size:.85rem;font-weight:700;
+    color:var(--orange-text);border-top:2px dashed var(--orange-text);border-bottom:2px dashed var(--orange-text)
+  }
+  .lov-hint{font-weight:400;color:var(--muted)}
+  tr[hidden]{display:none}
+
+  .status{font-weight:600;color:var(--ok);min-height:1.5em;margin:0 0 8px}
+  .status:empty{min-height:0;margin:0}
+  #out-status{margin-top:12px}
+  .undo-wrap{margin:0 0 12px}
+  .status.warn{color:var(--warn)}
+  .undo-wrap{margin-top:6px}
+  .undo-wrap[hidden]{display:none}
+  .save-state{margin-top:8px;font-size:.85rem;color:var(--muted)}
+  .tip{margin-top:10px;font-size:.88rem;color:var(--muted);max-width:70ch}
+  .fallback{margin-top:12px}
+  .fallback[hidden]{display:none}
+  .fallback label{display:block;font-weight:700;font-size:.92rem}
+  .fallback textarea{min-height:140px;overflow:auto;background:#fffdf9}
+  .preview{margin-top:12px}
+  .preview[hidden]{display:none}
+  .preview img{max-width:100%;border:1px solid var(--border);border-radius:8px}
+  .alt-text{margin-top:10px;font-size:.88rem}
+  .alt-text[hidden]{display:none}
+
+  a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible{
+    outline:3px solid var(--ink);outline-offset:2px
+  }
+  @media (forced-colors:active){
+    a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid Highlight}
+    .guess-tag{border:1px solid CanvasText}
+    td.is-guess textarea{border:2px dashed CanvasText}
+  }
+  @media (max-width:520px){
+    th[scope=row]{width:112px;min-width:112px;font-size:.85rem}
+    th[scope=col]{min-width:170px}
+    textarea,.step-name{scroll-margin-left:124px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Blueprint Builder: <span class="accent">How Your Idea Works</span></h1>
+  <p class="intro">Fill in one box at a time. Each column is one step of the customer's trip. Rows above the <strong>line of visibility</strong> are what the customer can see; rows below it happen out of sight. Check <strong>Guess</strong> on any box you can't prove.</p>
+  <p class="full-link"><a href="https://vpdasgupta.github.io/tiktok/thd-storeops-blueprint-builder.html" target="_blank" rel="noopener">Open the Blueprint Builder full page<span class="sr-only"> (opens in a new tab)</span></a></p>
+
+  <div class="card">
+    <div class="toolbar">
+      <fieldset>
+        <legend>Blueprint size</legend>
+        <div class="radios">
+          <label><input type="radio" name="rows" value="3" checked> 3 rows (simpler)</label>
+          <label><input type="radio" name="rows" value="5"> 5 rows (full)</label>
+        </div>
+      </fieldset>
+      <div class="actions">
+        <button type="button" id="add-step">Add step</button>
+        <button type="button" id="example-btn">See Marcus's example</button>
+        <button type="button" id="clear-btn">Clear</button>
+      </div>
+    </div>
+
+    <p class="status" id="status" role="status" aria-live="polite" aria-atomic="true"></p>
+    <div class="undo-wrap" id="undo-wrap" hidden><button type="button" id="undo-btn">Undo</button></div>
+
+    <div class="grid-scroll" role="region" aria-labelledby="bp-caption" tabindex="-1">
+      <table id="bp">
+        <caption id="bp-caption"></caption>
+        <thead><tr id="head-row"></tr></thead>
+        <tbody id="bp-above"></tbody>
+        <tbody id="bp-below"></tbody>
+      </table>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="primary" id="copy-btn">Copy as table</button>
+      <button type="button" id="png-btn">Download image</button>
+      <button type="button" id="alt-btn">Copy image description</button>
+    </div>
+
+    <p class="status" id="out-status" role="status" aria-live="polite" aria-atomic="true"></p>
+
+    <div class="fallback" id="fallback" hidden>
+      <label for="fallback-text" id="fallback-label">Your blueprint as text</label>
+      <p class="tip" id="fallback-hint">Your browser blocked copying. The text is selected. Press Cmd+C (Mac) or Ctrl+C (Windows) to copy it.</p>
+      <textarea id="fallback-text" readonly aria-describedby="fallback-hint"></textarea>
+    </div>
+    <div class="preview" id="preview" hidden>
+      <p class="tip" id="preview-hint">If the image didn't download, right-click it (or press and hold on a phone) and choose Save image.</p>
+      <img id="preview-img" alt="">
+    </div>
+    <p class="alt-text" id="alt-text" hidden></p>
+
+    <p class="save-state" id="save-state">Saved only in this browser on this device.</p>
+    <p class="tip">Tip: for your AI prompt, <strong>Copy as table</strong> works better than the image. Use the image when you want to show your blueprint in a doc or slide.</p>
+  </div>
+</main>
+
+<script>
+(function(){
+  var KEY = 'thd-storeops-p2-blueprint';
+  var MIN = 3, MAX = 6;
+  var ROWS = [
+    {key:'touch',   label:'What the customer touches',       full:true},
+    {key:'does',    label:'What the customer does'},
+    {key:'see',     label:'What they can see the store do'},
+    {key:'hidden',  label:'What happens out of sight',        below:true},
+    {key:'systems', label:'The systems behind it',            full:true, below:true}
+  ];
+
+  function blankStep(){ return {name:'', cells:{}, guess:{}}; }
+  function blankState(){ return {rows:3, steps:[blankStep(),blankStep(),blankStep(),blankStep()]}; }
+
+  var EXAMPLE = {rows:5, steps:[
+    {name:'Arrives with his order', cells:{
+      touch:'Home Depot app with his saved cart',
+      does:'Walks into the aisle with 14 items saved on his phone',
+      see:'An associate walks over to help',
+      hidden:'His cart waits in the online order system',
+      systems:'Online order system (holds his cart)'}, guess:{}},
+    {name:'Shows his order', cells:{
+      touch:"Order code on his phone; the associate's hdPhone",
+      does:'Shows the associate his order code',
+      see:'Associate scans the code with the hdPhone',
+      hidden:"The hdPhone looks up Marcus's online cart",
+      systems:'hdPhone app connected to online orders'}, guess:{hidden:true, systems:true}},
+    {name:'Checks the items', cells:{
+      touch:'hdPhone screen showing his cart',
+      does:'Confirms the list and adds one more item',
+      see:'Associate checks what is in stock here',
+      hidden:'Stock check for this store',
+      systems:'Store inventory system'}, guess:{}},
+    {name:'Pays and leaves', cells:{
+      touch:'Register and receipt',
+      does:'Pays at the register without re-listing items',
+      see:'Cashier loads the same order',
+      hidden:'The register pulls the order the hdPhone built',
+      systems:'Register and payment system'}, guess:{hidden:true}}
+  ]};
+
+  var state = blankState();
+  var undoState = null, undoFocusId = null;
+  var canSave = true;
+  var framed; try { framed = window.self !== window.top; } catch(e){ framed = true; }
+
+  var $ = function(id){ return document.getElementById(id); };
+  var headRow = $('head-row'), above = $('bp-above'), below = $('bp-below'), caption = $('bp-caption');
+  var undoWrap = $('undo-wrap'), saveState = $('save-state'), addBtn = $('add-step');
+
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  function visibleRows(){ return ROWS.filter(function(r){ return state.rows === 5 || !r.full; }); }
+  function stepLabel(i){ var n = state.steps[i].name.trim(); return 'Step ' + (i+1) + (n ? ', ' + n : ' (unnamed)'); }
+  function hasContent(){
+    return state.steps.some(function(s){
+      return s.name.trim() || Object.keys(s.cells).some(function(k){ return (s.cells[k]||'').trim(); });
+    });
+  }
+
+  // ---- announcements: one queue per region so messages never overwrite each other ----
+  function makeAnnouncer(el){
+    var timer = null, pending = [], warn = false;
+    return function(msg, isWarn){
+      pending.push(msg); warn = warn || !!isWarn;
+      clearTimeout(timer);
+      el.textContent = '';
+      timer = setTimeout(function(){
+        el.classList.toggle('warn', warn);
+        el.textContent = pending.join(' ');
+        pending = []; warn = false;
+      }, 60);
+    };
+  }
+  var announce = makeAnnouncer($('status'));
+  var announceOut = makeAnnouncer($('out-status'));
+
+  function offerUndo(prev, focusId){ undoState = prev; undoFocusId = focusId; undoWrap.hidden = false; }
+  function dropUndo(){ undoState = null; undoFocusId = null; undoWrap.hidden = true; }
+  function hideStaleOutputs(){ $('alt-text').hidden = true; $('preview').hidden = true; $('fallback').hidden = true; }
+  function edited(){ if (undoState) dropUndo(); hideStaleOutputs(); save(); }
+
+  // ---- storage (may be blocked in iframes / private windows) ----
+  function save(){
+    if (!canSave) return;
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+      saveState.textContent = 'Saved only in this browser on this device (last saved ' +
+        new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) + ').';
+    } catch(e){ storageFailed(); }
+  }
+  function storageFailed(){
+    if (!canSave) return;
+    canSave = false;
+    saveState.textContent = "Autosave is off in this view. Open the full page to save your work, or copy it before you leave.";
+    announce("Autosave is off in this view. Open the full page to save your work.", true);
+  }
+  function valid(d){
+    if (!d || (d.rows !== 3 && d.rows !== 5) || !Array.isArray(d.steps)) return null;
+    if (d.steps.length < MIN || d.steps.length > MAX) return null;
+    var steps = d.steps.map(function(s){
+      s = s || {};
+      var out = {name: typeof s.name === 'string' ? s.name : '', cells:{}, guess:{}};
+      ROWS.forEach(function(r){
+        if (s.cells && typeof s.cells[r.key] === 'string') out.cells[r.key] = s.cells[r.key];
+        if (s.guess && s.guess[r.key] === true) out.guess[r.key] = true;
+      });
+      return out;
+    });
+    return {rows:d.rows, steps:steps};
+  }
+  function load(){
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch(e){ storageFailed(); return false; }
+    if (!raw) return false;
+    var d = null;
+    try { d = valid(JSON.parse(raw)); } catch(e){ d = null; }
+    if (d){ state = d; return true; }
+    return false;
+  }
+
+  // ---- render ----
+  function autoGrow(ta){ ta.style.height = 'auto'; ta.style.height = (ta.scrollHeight + 2) + 'px'; }
+  function growAll(){ Array.prototype.forEach.call(document.querySelectorAll('#bp textarea'), autoGrow); }
+
+  function guessName(el, i, r){
+    el.textContent = '';
+    el.appendChild(document.createTextNode('Guess'));
+    var sr = document.createElement('span'); sr.className = 'sr-only';
+    sr.textContent = ': ' + stepLabel(i) + ', ' + r.label;
+    el.appendChild(sr);
+  }
+
+  function render(){
+    var rows = visibleRows();
+    var nSteps = state.steps.length;
+    caption.textContent = 'Your service blueprint (' + state.rows + ' rows, ' + nSteps + ' steps)';
+    document.querySelector('input[name=rows][value="' + state.rows + '"]').checked = true;
+
+    headRow.textContent = '';
+    var corner = document.createElement('td'); corner.className = 'corner';
+    headRow.appendChild(corner);
+    state.steps.forEach(function(s, i){
+      var th = document.createElement('th'); th.scope = 'col'; th.id = 'col-' + i;
+      th.setAttribute('aria-label', stepLabel(i));
+      var wrap = document.createElement('div'); wrap.className = 'step-head';
+      var num = document.createElement('span'); num.className = 'step-num'; num.textContent = 'Step ' + (i+1);
+      num.setAttribute('aria-hidden', 'true');
+      var lab = document.createElement('label'); lab.className = 'sr-only'; lab.htmlFor = 'step-' + i + '-name';
+      lab.textContent = 'Step ' + (i+1) + ' name';
+      var inp = document.createElement('input'); inp.type = 'text'; inp.id = 'step-' + i + '-name';
+      inp.className = 'step-name'; inp.maxLength = 40; inp.value = s.name; inp.autocomplete = 'off';
+      inp.addEventListener('input', function(){ s.name = inp.value; relabel(i); edited(); });
+      var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'remove-step';
+      rm.textContent = 'Remove'; rm.id = 'remove-' + i;
+      rm.setAttribute('aria-label', 'Remove ' + stepLabel(i));
+      if (nSteps <= MIN) rm.setAttribute('aria-disabled', 'true');
+      rm.addEventListener('click', function(){ removeStep(i); });
+      wrap.appendChild(num); wrap.appendChild(lab); wrap.appendChild(inp); wrap.appendChild(rm);
+      th.appendChild(wrap); headRow.appendChild(th);
+    });
+
+    above.textContent = ''; below.textContent = '';
+    rows.forEach(function(r){
+      var target = r.below ? below : above;
+      if (r.key === 'hidden') below.appendChild(lovRow(nSteps));
+      var tr = document.createElement('tr');
+      var th = document.createElement('th'); th.scope = 'row';
+      th.textContent = r.label;
+      if (r.below){ var sr = document.createElement('span'); sr.className = 'sr-only'; sr.textContent = ' (below the line of visibility)'; th.appendChild(sr); }
+      tr.appendChild(th);
+      state.steps.forEach(function(s, i){ tr.appendChild(cell(r, s, i)); });
+      target.appendChild(tr);
+    });
+
+    addBtn.setAttribute('aria-disabled', nSteps >= MAX ? 'true' : 'false');
+    growAll();
+  }
+
+  function lovRow(nSteps){
+    var tr = document.createElement('tr'); tr.className = 'lov';
+    var th = document.createElement('th'); th.scope = 'rowgroup'; th.colSpan = nSteps + 1;
+    th.appendChild(document.createTextNode('Line of visibility '));
+    var hint = document.createElement('span'); hint.className = 'lov-hint';
+    hint.textContent = '— the customer can’t see anything below this line';
+    th.appendChild(hint); tr.appendChild(th);
+    return tr;
+  }
+
+  function cell(r, s, i){
+    var td = document.createElement('td');
+    var base = r.key + '-' + i;
+    var ta = document.createElement('textarea');
+    ta.id = 'c-' + base; ta.rows = 2;
+    ta.value = s.cells[r.key] || '';
+    ta.setAttribute('aria-label', stepLabel(i) + ': ' + r.label);
+    ta.addEventListener('input', function(){ s.cells[r.key] = ta.value; autoGrow(ta); edited(); });
+
+    var foot = document.createElement('div'); foot.className = 'cell-foot';
+    var gl = document.createElement('label'); gl.className = 'guess';
+    var cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'g-' + base;
+    cb.checked = !!s.guess[r.key];
+    var gtxt = document.createElement('span'); gtxt.id = 'gl-' + base;
+    guessName(gtxt, i, r);
+    gl.appendChild(cb); gl.appendChild(gtxt);
+    var tag = document.createElement('span'); tag.className = 'sr-only'; tag.id = 't-' + base;
+    tag.textContent = 'Marked as a guess';
+    foot.appendChild(gl); foot.appendChild(tag);
+
+    function sync(){
+      var on = cb.checked;
+      td.classList.toggle('is-guess', on);
+      if (on) ta.setAttribute('aria-describedby', tag.id); else ta.removeAttribute('aria-describedby');
+    }
+    cb.addEventListener('change', function(){ s.guess[r.key] = cb.checked; sync(); edited(); });
+    sync();
+
+    td.appendChild(ta); td.appendChild(foot);
+    return td;
+  }
+
+  function relabel(i){
+    var lbl = stepLabel(i);
+    var th = $('col-' + i); if (th) th.setAttribute('aria-label', lbl);
+    var rm = $('remove-' + i); if (rm) rm.setAttribute('aria-label', 'Remove ' + lbl);
+    ROWS.forEach(function(r){
+      var ta = $('c-' + r.key + '-' + i);
+      if (ta) ta.setAttribute('aria-label', lbl + ': ' + r.label);
+      var gl = $('gl-' + r.key + '-' + i);
+      if (gl) guessName(gl, i, r);
+    });
+  }
+
+  // ---- actions ----
+  addBtn.addEventListener('click', function(){
+    if (state.steps.length >= MAX){ announce('Maximum is ' + MAX + ' steps.', true); return; }
+    state.steps.push(blankStep());
+    render(); edited();
+    var n = state.steps.length;
+    $('step-' + (n-1) + '-name').focus();
+    announce('Step ' + n + ' added. ' + n + ' of ' + MAX + ' steps.');
+  });
+
+  function removeStep(i){
+    if (state.steps.length <= MIN){ announce('Minimum is ' + MIN + ' steps.', true); return; }
+    var prev = clone(state);
+    var lbl = stepLabel(i);
+    state.steps.splice(i, 1);
+    render(); hideStaleOutputs(); save();
+    var target = $('step-' + Math.max(0, i-1) + '-name');
+    if (target) target.focus();
+    offerUndo(prev, 'step-' + i + '-name');
+    announce(lbl + ' removed. ' + state.steps.length + ' steps. An Undo button is above the table.');
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('input[name=rows]'), function(rb){
+    rb.addEventListener('change', function(){
+      state.rows = +rb.value;
+      render(); edited();
+      announce(state.rows === 3
+        ? "3-row version. 'What the customer touches' and 'The systems behind it' are hidden. Your text is kept."
+        : "5-row version. All five rows are showing.");
+    });
+  });
+
+  $('example-btn').addEventListener('click', function(){
+    var prev = hasContent() ? clone(state) : null;
+    state = clone(EXAMPLE);
+    render(); hideStaleOutputs(); save();
+    if (prev) offerUndo(prev, 'example-btn'); else dropUndo();
+    announce("Marcus's example loaded: 5 rows, 4 steps. Guesses are marked." + (prev ? ' Select Undo to get your own blueprint back.' : ''));
+  });
+
+  $('clear-btn').addEventListener('click', function(){
+    if (!hasContent()){ announce('Your blueprint is already empty.'); return; }
+    var prev = clone(state);
+    state = blankState(); state.rows = prev.rows;
+    render(); hideStaleOutputs(); save();
+    offerUndo(prev, 'clear-btn');
+    announce('Blueprint cleared. Select Undo to bring it back.');
+  });
+
+  $('undo-btn').addEventListener('click', function(){
+    if (!undoState) return;
+    var focusId = undoFocusId;
+    state = undoState; dropUndo();
+    render(); save();
+    var f = focusId && $(focusId); (f || $('clear-btn')).focus();
+    announce('Undone. Your blueprint is back.');
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (undoState && (e.ctrlKey || e.metaKey) && !e.shiftKey && (e.key === 'z' || e.key === 'Z') &&
+        !(e.target && (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') && e.target.type !== 'checkbox' && e.target.type !== 'radio')){
+      e.preventDefault(); $('undo-btn').click();
+    }
+  });
+
+  // ---- outputs ----
+  function cellText(s, r){
+    var t = (s.cells[r.key] || '').replace(/\s*\n\s*/g, ' ').replace(/\|/g, '/').trim();
+    if (s.guess[r.key]) t = '[Guess] ' + t;
+    return t;
+  }
+  function tableText(){
+    var rows = visibleRows();
+    var head = '| | ' + state.steps.map(function(s, i){
+      return 'Step ' + (i+1) + (s.name.trim() ? ': ' + s.name.trim().replace(/\|/g,'/') : '');
+    }).join(' | ') + ' |';
+    var sep = '|---|' + state.steps.map(function(){ return '---'; }).join('|') + '|';
+    var lines = ['My Blueprint', '', head, sep];
+    rows.forEach(function(r){
+      if (r.key === 'hidden') lines.push('| --- Line of visibility --- |' + state.steps.map(function(){ return ' '; }).join('|') + '|');
+      lines.push('| ' + r.label + ' | ' + state.steps.map(function(s){ return cellText(s, r); }).join(' | ') + ' |');
+    });
+    return lines.join('\n') + '\n';
+  }
+  function guessCount(){
+    var n = 0;
+    visibleRows().forEach(function(r){ state.steps.forEach(function(s){ if (s.guess[r.key]) n++; }); });
+    return n;
+  }
+  function altText(){
+    var names = state.steps.map(function(s, i){ return s.name.trim() || ('Step ' + (i+1)); }).join(', ');
+    var g = guessCount();
+    return 'Service blueprint, ' + state.rows + ' rows by ' + state.steps.length + ' steps: ' + names +
+      '. A dashed line of visibility separates what the customer can see from what happens out of sight. ' +
+      g + (g === 1 ? ' box is' : ' boxes are') + ' marked as a guess.';
+  }
+
+  function legacyCopy(text, btn){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '-9999px'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    document.body.removeChild(ta); btn.focus();
+    return ok;
+  }
+  function copyText(text, btn, okMsg, fallbackLabel){
+    function done(){ $('fallback').hidden = true; announceOut(okMsg); }
+    function fail(){
+      $('fallback-label').textContent = fallbackLabel;
+      $('fallback-text').value = text; $('fallback').hidden = false;
+      $('fallback-text').focus(); $('fallback-text').select();
+      announceOut("Couldn't copy automatically. The text is selected below. Press Ctrl+C or Cmd+C.", true);
+    }
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(done, function(){ if (legacyCopy(text, btn)) done(); else fail(); });
+    } else { if (legacyCopy(text, btn)) done(); else fail(); }
+  }
+  $('copy-btn').addEventListener('click', function(){
+    if (!hasContent()){ announceOut('Your blueprint is empty. Fill in a few boxes first.', true); return; }
+    copyText(tableText(), $('copy-btn'), 'Copied. Paste it into your notes doc under My Blueprint.', 'Your blueprint as text');
+  });
+  $('alt-btn').addEventListener('click', function(){
+    var t = altText();
+    $('alt-text').textContent = 'Image description: ' + t;
+    $('alt-text').hidden = false;
+    copyText(t, $('alt-btn'), 'Image description copied. Paste it as the alt text when you insert the image.', 'Image description');
+  });
+
+  // ---- PNG export ----
+  function wrap(ctx, text, maxW){
+    var words = text.split(/\s+/).filter(Boolean), lines = [], line = '';
+    words.forEach(function(w){
+      var test = line ? line + ' ' + w : w;
+      if (ctx.measureText(test).width > maxW && line){ lines.push(line); line = w; } else line = test;
+    });
+    if (line) lines.push(line);
+    return lines;
+  }
+  function drawPNG(){
+    var S = 2, HW = 200, CW = 230, PAD = 12, FS = 16, LH = 21, HEAD = 64, LOV = 30, TITLE = 52;
+    var rows = visibleRows(), n = state.steps.length;
+    var W = HW + n * CW + 2;
+    var c = document.createElement('canvas'), ctx = c.getContext('2d');
+    ctx.font = FS + 'px Arial, Helvetica, sans-serif';
+    var heights = rows.map(function(r){
+      var maxLines = wrap(ctx, r.label, HW - 2*PAD).length;
+      state.steps.forEach(function(s){
+        var t = (s.cells[r.key] || '').trim();
+        var l = t ? wrap(ctx, t, CW - 2*PAD).length : 1;
+        if (s.guess[r.key]) l += 1;
+        maxLines = Math.max(maxLines, l);
+      });
+      return Math.max(70, maxLines * LH + 2*PAD);
+    });
+    var H = TITLE + HEAD + LOV + heights.reduce(function(a,b){ return a+b; }, 0) + 2;
+    c.width = W * S; c.height = H * S;
+    ctx = c.getContext('2d'); ctx.scale(S, S);
+    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, W, H);
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = '#1A1A1A'; ctx.font = 'bold 20px Arial, Helvetica, sans-serif';
+    ctx.fillText('My Service Blueprint', PAD, 16);
+
+    var y = TITLE;
+    ctx.fillStyle = '#faf8f5'; ctx.fillRect(0, y, W, HEAD);
+    state.steps.forEach(function(s, i){
+      var x = HW + i * CW;
+      ctx.fillStyle = '#B34700'; ctx.font = 'bold 13px Arial, Helvetica, sans-serif';
+      ctx.fillText('STEP ' + (i+1), x + PAD, y + 10);
+      ctx.fillStyle = '#1A1A1A'; ctx.font = 'bold ' + FS + 'px Arial, Helvetica, sans-serif';
+      wrap(ctx, s.name.trim() || '', CW - 2*PAD).slice(0,2).forEach(function(l, li){ ctx.fillText(l, x + PAD, y + 28 + li * 18); });
+    });
+    y += HEAD;
+
+    rows.forEach(function(r, ri){
+      if (r.key === 'hidden'){
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, y, W, LOV);
+        ctx.setLineDash([8, 5]); ctx.strokeStyle = '#B34700'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, y + LOV/2); ctx.lineTo(W, y + LOV/2); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = 'bold 14px Arial, Helvetica, sans-serif';
+        var lbl = 'Line of visibility (customer can’t see below this line)';
+        var lw = ctx.measureText(lbl).width;
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(PAD - 4, y + 5, lw + 8, 20);
+        ctx.fillStyle = '#B34700'; ctx.fillText(lbl, PAD, y + 8);
+        y += LOV;
+      }
+      var h = heights[ri];
+      ctx.strokeStyle = '#d9d6d0'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      ctx.fillStyle = '#faf8f5'; ctx.fillRect(0, y, HW, h);
+      ctx.fillStyle = '#1A1A1A'; ctx.font = 'bold ' + FS + 'px Arial, Helvetica, sans-serif';
+      wrap(ctx, r.label, HW - 2*PAD).forEach(function(l, li){ ctx.fillText(l, PAD, y + PAD + li * LH); });
+      state.steps.forEach(function(s, i){
+        var x = HW + i * CW, ty = y + PAD;
+        if (s.guess[r.key]){
+          ctx.fillStyle = '#FFF1E6'; ctx.fillRect(x + 4, y + 4, CW - 8, h - 8);
+          ctx.setLineDash([6, 4]); ctx.strokeStyle = '#B34700'; ctx.lineWidth = 2;
+          ctx.strokeRect(x + 4, y + 4, CW - 8, h - 8); ctx.setLineDash([]);
+          ctx.fillStyle = '#8A3600'; ctx.font = 'bold 14px Arial, Helvetica, sans-serif';
+          ctx.fillText('[Guess]', x + PAD, ty); ty += LH;
+        }
+        ctx.fillStyle = '#1e2130'; ctx.font = FS + 'px Arial, Helvetica, sans-serif';
+        wrap(ctx, (s.cells[r.key] || '').trim(), CW - 2*PAD).forEach(function(l, li){ ctx.fillText(l, x + PAD, ty + li * LH); });
+      });
+      y += h;
+    });
+    ctx.strokeStyle = '#d9d6d0'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(HW, TITLE); ctx.lineTo(HW, y); ctx.stroke();
+    ctx.strokeRect(0.5, TITLE + 0.5, W - 1, y - TITLE - 1);
+    return c;
+  }
+  function showPreview(url){
+    $('preview-img').src = url; $('preview-img').alt = altText(); $('preview').hidden = false;
+  }
+  $('png-btn').addEventListener('click', function(){
+    if (!hasContent()){ announceOut('Your blueprint is empty. Fill in a few boxes first.', true); return; }
+    var name = 'service-blueprint-' + new Date().toISOString().slice(0,10) + '.png';
+    var url = drawPNG().toDataURL('image/png');
+    var threw = false;
+    try {
+      var a = document.createElement('a'); a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    } catch(e){ threw = true; }
+    if (framed || threw){
+      // Embedded views (like Notion) can block downloads silently, so always show the image too.
+      showPreview(url);
+      announceOut('Your image is shown below. If it didn’t download, right-click it and choose Save image.');
+    } else {
+      $('preview').hidden = true;
+      announceOut('Image downloaded as ' + name + '. Use Copy image description for its alt text.');
+    }
+  });
+
+  // ---- keep boxes tall enough if text size or width changes ----
+  window.addEventListener('resize', growAll);
+  if (window.ResizeObserver){ new ResizeObserver(growAll).observe($('bp')); }
+  if (document.fonts && document.fonts.ready){ document.fonts.ready.then(growAll); }
+
+  // ---- start ----
+  var restored = load();
+  render();
+  if (restored && hasContent()) announce('Welcome back. Your saved blueprint is restored.');
+})();
+</script>
+</body>
+</html>
