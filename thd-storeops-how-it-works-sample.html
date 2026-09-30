@@ -105,33 +105,32 @@
 <main>
   <p class="eyebrow">Project 2 — Blueprint: How It Works Plan</p>
   <h1>Cart on the hdPhone</h1>
-  <p class="byline">Prepared by: A. Sample · Lane: Buy-online, pick-up &amp; help in-aisle</p>
+  <p class="byline">Prepared by: A. Sample · Lane: Customer Experience</p>
 
   <h2>1. Main Point</h2>
   <p class="framing">
-    <strong>If</strong> an associate's hdPhone can pull up a customer's online cart, Pro customers like Marcus can finish the
-    order they started at home without rebuilding it by hand in the aisle. The idea depends most on one hand-off: the hdPhone
-    finding the online order. My prototype will show the simplest version: see the cart in the aisle, pay at the register.
+    If an associate's hdPhone can pull up a customer's online cart, Pro customers like Marcus can finish the order they
+    started at home without rebuilding it by hand in the aisle. The idea depends most on one hand-off: the hdPhone finding
+    the online order. My prototype will show the simplest version: see the cart in the aisle, pay at the register.
   </p>
 
   <h2>2. The Concept</h2>
-  <p><strong>The idea:</strong> An associate scans a code on Marcus's phone, and his saved cart appears on the associate's hdPhone, so they pick up right where he left off.</p>
-  <p><strong>Why this shape:</strong> Mostly technology (the hdPhone showing the cart), plus a people change: associates learn to ask Pros for their order code.</p>
-  <p><strong>One way it could break:</strong> The hdPhone may not be able to reach online orders at all.</p>
-  <p><strong>Set aside:</strong> "Scan at hello" (needs a greeter at the door, hard in a warehouse store) and "Pay in the aisle" (raises payment and security questions I can't answer yet).</p>
+  <p><strong>Idea:</strong> An associate scans a code on Marcus's phone, and his saved cart appears on the associate's hdPhone.</p>
+  <p><strong>Why this shape:</strong> Mostly tech (the hdPhone shows the cart), plus a people change: associates learn to ask Pros for their order code.</p>
+  <p><strong>Set aside:</strong> Scan at hello, because it needs a greeter at the door. Pay in the aisle, because payment questions can come later.</p>
 
   <h2>3. How It Works</h2>
-  <p>Marcus's trip in four steps. Rows above the line of visibility are what he can see; rows below it happen out of sight. Boxes marked <span class="tag">Guess</span><span class="sr-only">:</span> are things I can't prove yet.</p>
+  <p>Rows above the line of visibility are what Marcus can see; rows below it happen out of sight. Boxes marked <span class="tag">Guess</span> are things I can't prove yet.</p>
   <div class="bp-wrap" role="region" aria-labelledby="bp-cap" tabindex="0">
   <table class="bp">
-    <caption id="bp-cap">Service blueprint: Marcus finishes his online order in the aisle</caption>
+    <caption id="bp-cap">My blueprint</caption>
     <thead>
-      <tr><td></td><th scope="col">1. Arrives with his order</th><th scope="col">2. Shows his order</th><th scope="col">3. Checks the items</th><th scope="col">4. Pays and leaves</th></tr>
+      <tr><td></td><th scope="col">Step 1: Arrives with his order</th><th scope="col">Step 2: Shows his order</th><th scope="col">Step 3: Checks the items</th><th scope="col">Step 4: Pays and leaves</th></tr>
     </thead>
     <tbody>
       <tr><th scope="row">What the customer touches</th><td>Home Depot app with his saved cart</td><td>Order code on his phone; the associate's hdPhone</td><td>hdPhone screen showing his cart</td><td>Register and receipt</td></tr>
       <tr><th scope="row">What the customer does</th><td>Walks into the aisle with 14 items saved on his phone</td><td>Shows the associate his order code</td><td>Confirms the list and adds one more item</td><td>Pays at the register without re-listing items</td></tr>
-      <tr><th scope="row">What they can see the store do</th><td>An associate walks over to help</td><td>Associate scans the code with the hdPhone</td><td>Associate checks what is in stock here</td><td>Cashier loads the same order</td></tr>
+      <tr><th scope="row">What they can see the store do</th><td>An associate walks over to help</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> Associate scans the code with the hdPhone</td><td>Associate checks what is in stock here</td><td>Cashier loads the same order</td></tr>
     </tbody>
     <tbody>
       <tr class="lov"><th scope="rowgroup" colspan="5">Below the line of visibility (out of sight)</th></tr>
@@ -140,23 +139,23 @@
     </tbody>
   </table>
   </div>
-  <p><strong>The moments that matter most:</strong> step 2, when the scan either finds his cart or doesn't, and step 4, when the register either loads the same order or makes him start over.</p>
+  <p><strong>The moments that matter most:</strong> Step 2, because the scan either finds his cart or doesn't. Step 4, because the register either loads the same order or makes him start over.</p>
 
   <h2>4. What It Depends On</h2>
   <div class="bp-wrap" role="region" aria-labelledby="dep-cap" tabindex="0">
   <table>
-    <caption id="dep-cap">Each system or person the idea needs, and whether I can prove it</caption>
+    <caption id="dep-cap">What my idea depends on</caption>
     <thead><tr><th scope="col">System or person</th><th scope="col">Hand-off with</th><th scope="col">Proof or Guess</th><th scope="col">Source or reason</th></tr></thead>
     <tbody>
-      <tr><td>Home Depot app (saved carts)</td><td>Online order system</td><td>Proof</td><td>The app lets customers build a cart before they visit (Home Depot app help pages).</td></tr>
+      <tr><td>Home Depot app (saved carts)</td><td>Online order system</td><td>Proof</td><td>I built a cart in the Home Depot app myself.</td></tr>
       <tr><td>hdPhone</td><td>Store inventory</td><td>Proof</td><td>Home Depot rolled out 125,000+ hdPhones for scanning, prices, and stock checks (<a href="https://corporate.homedepot.com/newsroom/hdphone-mobile-network-upgrades">Home Depot newsroom, 2022</a>).</td></tr>
       <tr><td>hdPhone</td><td>Online order system</td><td><span class="tag">Guess</span></td><td>No public source says the hdPhone can open a customer's online cart.</td></tr>
-      <tr><td>Register</td><td>The order built on the hdPhone</td><td><span class="tag">Guess</span></td><td>I don't know if the register can load an order started on another device.</td></tr>
-      <tr><td>Associates</td><td>Marcus</td><td><span class="tag">Guess</span></td><td>Associates would need to know to ask Pros for their order code.</td></tr>
+      <tr><td>Register</td><td>hdPhone</td><td><span class="tag">Guess</span></td><td>No public source says the register can load an order started on the hdPhone.</td></tr>
+      <tr><td>Associate</td><td>Marcus (gets his order code)</td><td><span class="tag">Guess</span></td><td>Associates would need to know to ask Pros for their order code.</td></tr>
     </tbody>
   </table>
   </div>
-  <p><em>Optional note:</em> This idea hands work to the Technology lane, which would need to connect the hdPhone to online orders.</p>
+  <p><strong>Other lanes:</strong> The Technology lane would need to connect the hdPhone to online orders.</p>
 
   <h2>5. Risks &amp; Versions</h2>
   <ul>
@@ -164,16 +163,15 @@
     <li><strong>Will people use it?</strong> Busy associates may skip the scan, and Pros may not know to offer their code.</li>
     <li><strong>What does it cost?</strong> Software work to connect the systems, plus a few minutes of associate training.</li>
   </ul>
-  <p><strong>Simplest version:</strong> The associate sees Marcus's cart on the hdPhone in the aisle; he pays at the register as he does today.</p>
-  <p><strong>Ideal version:</strong> Marcus pays right there in the aisle on the associate's device and leaves. <span class="tag">Guess</span><span class="sr-only">:</span> (needs payment on the hdPhone).</p>
+  <p><strong>Simplest version:</strong> The associate sees Marcus's cart on the hdPhone in the aisle, and he pays at the register as he does today.</p>
+  <p><strong>Ideal version:</strong> Marcus pays right there in the aisle on the associate's device. <span class="tag">Guess</span><span class="sr-only">:</span> this needs payment on the hdPhone.</p>
   <p><strong>My prototype will show:</strong> the simplest version, because it fixes the missed items without the payment questions.</p>
-  <p><strong>The tradeoff:</strong> My idea trades a quick checkout in the aisle for fewer missed items.</p>
+  <p><strong>The tradeoff:</strong> My simplest version gives up paying in the aisle to get fewer missed items without new payment technology.</p>
 
   <h2>6. What Home Depot Would Need to Confirm</h2>
   <ol>
     <li>Can the hdPhone show a customer's online cart today?</li>
     <li>Can the register load an order started on an hdPhone?</li>
-    <li>How often do Pros ask an aisle associate to look up an online order?</li>
   </ol>
 </main>
 <footer>Example plan — fictional customer and details, for format reference only.</footer>
