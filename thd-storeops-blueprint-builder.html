@@ -603,6 +603,7 @@
       var h = heights[ri];
       ctx.strokeStyle = '#d9d6d0'; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(HW, y); ctx.lineTo(HW, y + h); ctx.stroke();
       ctx.fillStyle = '#faf8f5'; ctx.fillRect(0, y, HW, h);
       ctx.fillStyle = '#1A1A1A'; ctx.font = 'bold ' + FS + 'px Arial, Helvetica, sans-serif';
       wrap(ctx, r.label, HW - 2*PAD).forEach(function(l, li){ ctx.fillText(l, PAD, y + PAD + li * LH); });
@@ -621,7 +622,7 @@
       y += h;
     });
     ctx.strokeStyle = '#d9d6d0'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(HW, TITLE); ctx.lineTo(HW, y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(HW, TITLE); ctx.lineTo(HW, TITLE + HEAD); ctx.stroke();
     ctx.strokeRect(0.5, TITLE + 0.5, W - 1, y - TITLE - 1);
     return c;
   }
