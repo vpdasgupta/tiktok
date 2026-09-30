@@ -124,7 +124,7 @@
 <body>
 <main>
   <h1>Blueprint Builder: <span class="accent">How Your Idea Works</span></h1>
-  <p class="intro">Fill in one box at a time. Each column is one step of the customer's trip. Rows above the <strong>line of visibility</strong> are what the customer can see; rows below it happen out of sight. Check <strong>Guess</strong> on any box you can't prove.</p>
+  <p class="intro">Fill in one box at a time. Each column is one step of the customer's trip. Rows above the <strong>line of visibility</strong> are what the customer can see; rows below it happen out of sight. Check <strong>Guess</strong> on any box you can't prove, about a system or a person.</p>
   <p class="full-link"><a href="https://vpdasgupta.github.io/tiktok/thd-storeops-blueprint-builder.html" target="_blank" rel="noopener">Open the Blueprint Builder full page<span class="sr-only"> (opens in a new tab)</span></a></p>
 
   <div class="card">
@@ -175,7 +175,7 @@
     <p class="alt-text" id="alt-text" hidden></p>
 
     <p class="save-state" id="save-state">Saved only in this browser on this device.</p>
-    <p class="tip">Tip: for your AI prompt, <strong>Copy as table</strong> works better than the image. Use the image when you want to show your blueprint in a doc or slide.</p>
+    <p class="tip">Tip: paste the table into your notes doc; that's what your AI prompt uses. The image is optional, for showing your blueprint in a doc or slide.</p>
   </div>
 </main>
 
@@ -206,7 +206,7 @@
       does:'Shows the associate his order code',
       see:'Associate scans the code with the hdPhone',
       hidden:"The hdPhone looks up Marcus's online cart",
-      systems:'hdPhone app connected to online orders'}, guess:{hidden:true, systems:true}},
+      systems:'hdPhone app connected to online orders'}, guess:{see:true, hidden:true, systems:true}},
     {name:'Checks the items', cells:{
       touch:'hdPhone screen showing his cart',
       does:'Confirms the list and adds one more item',
@@ -449,7 +449,7 @@
     state = clone(EXAMPLE);
     render(); hideStaleOutputs(); save();
     if (prev) offerUndo(prev, 'example-btn'); else dropUndo();
-    announce("Marcus's example loaded: 5 rows, 4 steps. Guesses are marked." + (prev ? ' Select Undo to get your own blueprint back.' : ''));
+    announce("Marcus's example loaded: 5 rows, 4 steps. Four guesses are marked." + (prev ? ' Select Undo to get your own blueprint back.' : ''));
   });
 
   $('clear-btn').addEventListener('click', function(){
@@ -489,7 +489,7 @@
       return 'Step ' + (i+1) + (s.name.trim() ? ': ' + s.name.trim().replace(/\|/g,'/') : '');
     }).join(' | ') + ' |';
     var sep = '|---|' + state.steps.map(function(){ return '---'; }).join('|') + '|';
-    var lines = ['My Blueprint', '', head, sep];
+    var lines = [head, sep];
     rows.forEach(function(r){
       if (r.key === 'hidden') lines.push('| --- Line of visibility --- |' + state.steps.map(function(){ return ' '; }).join('|') + '|');
       lines.push('| ' + r.label + ' | ' + state.steps.map(function(s){ return cellText(s, r); }).join(' | ') + ' |');
