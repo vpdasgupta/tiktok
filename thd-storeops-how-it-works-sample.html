@@ -111,7 +111,7 @@
   <p class="framing">
     If an associate's hdPhone can pull up a customer's online cart, Pro customers like Marcus can finish the order they
     started at home without rebuilding it by hand in the aisle. The idea depends most on one hand-off: the hdPhone finding
-    the online order. My prototype will show the simplest version: see the cart in the aisle, pay at the register.
+    the online order. My prototype will show the simplest version: see the cart in the aisle, pay at the Pro desk.
   </p>
 
   <h2>2. The Concept</h2>
@@ -128,18 +128,18 @@
       <tr><td></td><th scope="col">Step 1: Arrives with his order</th><th scope="col">Step 2: Shows his order</th><th scope="col">Step 3: Checks the items</th><th scope="col">Step 4: Pays and leaves</th></tr>
     </thead>
     <tbody>
-      <tr><th scope="row">What the customer touches</th><td>Home Depot app with his saved cart</td><td>Order code on his phone; the associate's hdPhone</td><td>hdPhone screen showing his cart</td><td>Register and receipt</td></tr>
-      <tr><th scope="row">What the customer does</th><td>Walks into the aisle with 14 items saved on his phone</td><td>Shows the associate his order code</td><td>Confirms the list and adds one more item</td><td>Pays at the register without re-listing items</td></tr>
-      <tr><th scope="row">What they can see the store do</th><td>An associate walks over to help</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> Associate scans the code with the hdPhone</td><td>Associate checks what is in stock here</td><td>Cashier loads the same order</td></tr>
+      <tr><th scope="row">What the customer touches</th><td>Home Depot app with his saved cart</td><td>Order code on his phone; the associate's hdPhone</td><td>hdPhone screen showing his cart</td><td>Pro desk checkout and receipt</td></tr>
+      <tr><th scope="row">What the customer does</th><td>Walks into the aisle with 14 items saved on his phone</td><td>Shows the associate his order code</td><td>Confirms the list and adds one more item</td><td>Pays at the Pro desk without re-listing items</td></tr>
+      <tr><th scope="row">What they can see the store do</th><td>An associate walks over to help</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> Associate scans the code with the hdPhone</td><td>Associate checks what is in stock here</td><td>Pro desk associate loads the same order</td></tr>
     </tbody>
     <tbody>
       <tr class="lov"><th scope="rowgroup" colspan="5">Below the line of visibility (out of sight)</th></tr>
-      <tr><th scope="row">What happens out of sight</th><td>His cart waits in the online order system</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> The hdPhone looks up Marcus's online cart</td><td>Stock check for this store</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> The register pulls the order the hdPhone built</td></tr>
-      <tr><th scope="row">The systems behind it</th><td>Online order system (holds his cart)</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> hdPhone app connected to online orders</td><td>Store inventory system</td><td>Register and payment system</td></tr>
+      <tr><th scope="row">What happens out of sight</th><td>His cart waits in the online order system</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> The hdPhone looks up Marcus's online cart</td><td>Stock check for this store</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> The Pro desk's system (OrderUp!) pulls the order the hdPhone built</td></tr>
+      <tr><th scope="row">The systems behind it</th><td>Online order system (holds his cart)</td><td class="guess"><span class="tag">Guess</span><span class="sr-only">:</span> hdPhone app connected to online orders</td><td>Store inventory system</td><td>OrderUp! at the Pro desk and the payment system</td></tr>
     </tbody>
   </table>
   </div>
-  <p><strong>The moments that matter most:</strong> Step 2, because the scan either finds his cart or doesn't. Step 4, because the register either loads the same order or makes him start over.</p>
+  <p><strong>The moments that matter most:</strong> Step 2, because the scan either finds his cart or doesn't. Step 4, because the Pro desk's system (OrderUp!) either loads the same order or makes him start over.</p>
 
   <h2>4. What It Depends On</h2>
   <div class="bp-wrap" role="region" aria-labelledby="dep-cap" tabindex="0">
@@ -150,7 +150,7 @@
       <tr><td>Home Depot app (saved carts)</td><td>Online order system</td><td>Proof</td><td>I built a cart in the Home Depot app myself.</td></tr>
       <tr><td>hdPhone</td><td>Store inventory</td><td>Proof</td><td>Home Depot rolled out 125,000+ hdPhones for scanning, prices, and stock checks (<a href="https://corporate.homedepot.com/newsroom/hdphone-mobile-network-upgrades">Home Depot newsroom, 2022</a>).</td></tr>
       <tr><td>hdPhone</td><td>Online order system</td><td><span class="tag">Guess</span></td><td>No public source says the hdPhone can open a customer's online cart.</td></tr>
-      <tr><td>Register</td><td>hdPhone</td><td><span class="tag">Guess</span></td><td>No public source says the register can load an order started on the hdPhone.</td></tr>
+      <tr><td>Pro desk checkout (OrderUp!)</td><td>hdPhone</td><td><span class="tag">Guess</span></td><td>No public source says OrderUp! can load an order started on the hdPhone.</td></tr>
       <tr><td>Associate</td><td>Marcus (gets his order code)</td><td><span class="tag">Guess</span></td><td>Associates would need to know to ask Pros for their order code.</td></tr>
     </tbody>
   </table>
@@ -163,7 +163,7 @@
     <li><strong>Will people use it?</strong> Busy associates may skip the scan, and Pros may not know to offer their code.</li>
     <li><strong>What does it cost?</strong> Software work to connect the systems, plus a few minutes of associate training.</li>
   </ul>
-  <p><strong>Simplest version:</strong> The associate sees Marcus's cart on the hdPhone in the aisle, and he pays at the register as he does today.</p>
+  <p><strong>Simplest version:</strong> The associate sees Marcus's cart on the hdPhone in the aisle, and he pays at the Pro desk as he does today.</p>
   <p><strong>Ideal version:</strong> Marcus pays right there in the aisle on the associate's device. <span class="tag">Guess</span><span class="sr-only">:</span> this needs payment on the hdPhone.</p>
   <p><strong>My prototype will show:</strong> the simplest version, because it fixes the missed items without the payment questions.</p>
   <p><strong>The tradeoff:</strong> My simplest version gives up paying in the aisle to get fewer missed items without new payment technology.</p>
@@ -171,7 +171,7 @@
   <h2>6. What Home Depot Would Need to Confirm</h2>
   <ol>
     <li>Can the hdPhone show a customer's online cart today?</li>
-    <li>Can the register load an order started on an hdPhone?</li>
+    <li>Can OrderUp! at the Pro desk load an order started on an hdPhone?</li>
   </ol>
 </main>
 <footer>Example plan — fictional customer and details, for format reference only.</footer>
