@@ -3,506 +3,462 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sample: Breakeven Analysis — THD ESL</title>
+<title>Sample: Breakeven Analysis — Ceiling Fans</title>
 <style>
 :root{
   --hd-orange:#F96302; --hd-orange-text:#B34600; --hd-orange-soft:#FFF1E8;
   --ink:#1c1c1c; --muted:#5a5a5a; --line:#dcdcdc; --paper:#ffffff; --wash:#f6f6f4;
   --deploy:#1E7B34; --deploy-bg:#E7F4EB; --stop:#B3261E; --stop-bg:#FBEAE8;
-  --warn:#8a5a00; --warn-bg:#FFF6E0; --med:#8a5a00;
+  --warn:#8a5a00; --warn-bg:#FFF6E0;
   --shadow:0 1px 3px rgba(0,0,0,.08),0 6px 20px rgba(0,0,0,.06);
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
+html,body{height:100%}
 body{margin:0;background:var(--wash);color:var(--ink);
-  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
-.wrap{max-width:960px;margin:0 auto;padding:0 20px 80px}
-/* HD top band */
-.topband{background:var(--hd-orange);color:#fff}
-.topband .wrap{padding-top:22px;padding-bottom:22px}
-.eyebrow{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;opacity:.95;margin:0 0 6px}
-.topband h1{margin:0;font-size:1.7rem;line-height:1.2;color:#fff}
-.topband .sub{margin:8px 0 0;font-size:1rem;opacity:.97;max-width:70ch}
-/* illustrative banner */
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  display:flex;flex-direction:column;min-height:0}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px #fff}
+a{color:var(--hd-orange-text)}
+
+/* compact HD top band */
+.topband{background:var(--hd-orange);padding:10px 24px;flex:0 0 auto}
+.eyebrow{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink);margin:0 0 2px}
+.topband h1{margin:0;font-size:1.35rem;line-height:1.2;color:#fff;font-weight:800}
+
+/* deck */
+main{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;padding:10px 24px 8px}
+.stage{position:relative;flex:1 1 auto;min-height:0;background:var(--paper);border:1px solid var(--line);
+  border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.slide{position:absolute;inset:0;overflow:auto;padding:20px 32px 18px}
+.slide[hidden]{display:none}
+.slide h2{font-size:1.22rem;margin:0 0 6px;padding-bottom:4px;border-bottom:2px solid var(--hd-orange);padding-right:230px}
+.slide h3{font-size:.98rem;margin:10px 0 4px}
+.illus-repeat{position:absolute;top:20px;right:32px;background:var(--wash);border:1px dashed #9a9a9a;color:var(--muted);
+  font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:999px}
+.section-eyebrow{color:var(--muted);font-style:italic;font-size:.9rem;margin:0 0 8px}
+.meta{color:var(--muted);font-size:.88rem}
+
+/* illustrative banners */
 .illus{background:var(--warn-bg);border:1px solid #e7c96b;border-left:6px solid var(--warn);
-  color:#5f3e00;padding:12px 16px;border-radius:8px;margin:22px 0;font-size:.92rem}
+  color:#5f3e00;padding:9px 14px;border-radius:8px;margin:0 0 10px;font-size:.88rem}
 .illus strong{color:#5f3e00}
-/* document card */
-.doc{background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
-  padding:34px 40px;margin:22px 0}
-.doc h2{font-size:1.25rem;margin:1.8em 0 .5em;padding-bottom:.3em;border-bottom:2px solid var(--hd-orange)}
-.doc h2:first-child{margin-top:0}
-.doc h3{font-size:1.02rem;margin:1.4em 0 .4em;color:var(--ink)}
-.meta{color:var(--muted);font-size:.9rem}
+.illus.polish{border-left-color:#2e7d32;background:#f1f8f2;border-color:#b9dcbf;color:var(--ink)}
+.illus.polish strong{color:var(--ink)}
+
 /* tables */
-table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.93rem}
-caption{text-align:left;font-weight:700;margin-bottom:8px;color:var(--muted);font-size:.85rem}
-th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+table{border-collapse:collapse;width:100%;margin:6px 0 8px;font-size:.88rem}
+caption{text-align:left;font-weight:700;margin-bottom:4px;color:var(--muted);font-size:.8rem}
+th,td{border:1px solid var(--line);padding:5px 10px;text-align:left;vertical-align:top}
 thead th{background:var(--hd-orange-soft);color:var(--ink);font-weight:700}
 tbody th[scope=row]{background:var(--wash)}
-/* score/decision chips — always include a text label, never color alone */
-.chip{display:inline-block;font-size:.78rem;font-weight:700;padding:2px 9px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
-.chip-hi{background:var(--stop-bg);color:var(--stop);border-color:#e6b4af}
-.chip-med{background:var(--warn-bg);color:var(--warn);border-color:#e6cf8f}
-.chip-lo{background:var(--wash);color:var(--muted);border-color:var(--line)}
-.chip-deploy{background:var(--deploy-bg);color:var(--deploy);border-color:#a9d6b6}
-.chip-stop{background:var(--stop-bg);color:var(--stop);border-color:#e6b4af}
-.chip-gap{background:#eef;color:#334;border-color:#ccd}
-/* callouts */
-.note{background:var(--wash);border-left:4px solid var(--hd-orange);padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:.92rem}
-.note.gray{border-left-color:var(--muted)}
-.foot{color:var(--muted);font-size:.82rem;margin-top:8px}
-/* generic bar for simple bar viz */
-.bar-track{background:var(--wash);border:1px solid var(--line);border-radius:6px;height:26px;position:relative;overflow:hidden}
-.bar-fill{height:100%;background:var(--hd-orange)}
-a{color:var(--hd-orange-text)}
-/* ===== FILE-SPECIFIC RULES GO BELOW ===== */
-.titleblock{display:flex;flex-wrap:wrap;gap:8px 32px;margin:0;padding:0;list-style:none}
-.titleblock dt{font-weight:700;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;margin:0}
-.titleblock dd{margin:2px 0 10px;font-size:.98rem}
-.report-title{font-size:1.5rem;margin:0 0 14px;color:var(--ink)}
-.illus-repeat{display:inline-block;background:var(--wash);border:1px dashed var(--line);color:var(--muted);
-  font-size:.74rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin:0 0 12px}
-.section-eyebrow{color:var(--muted);font-style:italic;font-size:.92rem;margin:0 0 14px}
-.divider{border:0;border-top:1px solid var(--line);margin:28px 0}
-.pagefoot{text-align:center;color:var(--muted);font-size:.85rem;margin-top:30px}
-
-/* spreadsheet-style calc table */
+.num td,.num th[scope=col]{font-variant-numeric:tabular-nums}
 .calc-table td:last-child,.calc-table th:last-child{text-align:right;font-variant-numeric:tabular-nums}
 .calc-table .calc-total th,.calc-table .calc-total td{background:var(--hd-orange-soft);font-weight:700}
-.formula-line{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 16px;
-  font-size:.95rem;color:var(--muted);margin:0 0 14px}
+.formula-line{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:7px 14px;
+  font-size:.9rem;color:var(--muted);margin:0 0 6px}
 .formula-line strong{color:var(--ink)}
 
-/* breakeven chart card */
-.chart-wrap{overflow-x:auto;margin:16px 0 6px}
-.chart-svg{width:100%;height:auto;min-width:560px;display:block}
-.chart-title{font-weight:700;font-size:.95rem;margin:0 0 4px}
-.chart-caption{color:var(--muted);font-size:.82rem;margin:0 0 10px}
-.legend{display:flex;gap:22px;flex-wrap:wrap;margin:10px 0 4px;font-size:.85rem;color:var(--ink)}
+/* source tags: always a text label, never color alone */
+.src-hd{display:inline-block;font-size:.72rem;font-weight:700;padding:0 7px;border-radius:999px;background:var(--deploy-bg);color:#17602a;border:1px solid #9fcfab;white-space:nowrap}
+.src-ill{display:inline-block;font-size:.72rem;font-weight:700;padding:0 7px;border-radius:999px;background:var(--warn-bg);color:#5f3e00;border:1px dashed #b88a2a;white-space:nowrap}
+.legend-swatch.save5{border-top-color:var(--deploy);border-top-style:dashed}
+/* chips: always a text label, never color alone */
+.chip{display:inline-block;font-size:.76rem;font-weight:700;padding:1px 9px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.chip-stop{background:var(--stop-bg);color:var(--stop);border-color:#e6b4af}
+
+/* callouts */
+.note{background:var(--wash);border-left:4px solid var(--hd-orange);padding:8px 14px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.88rem}
+.note.gray{border-left-color:var(--muted)}
+.foot{color:var(--muted);font-size:.8rem;margin-top:6px}
+
+/* cover */
+.titleblock{display:flex;flex-wrap:wrap;gap:4px 32px;margin:0 0 6px;padding:0}
+.titleblock dt{font-weight:700;color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;margin:0}
+.titleblock dd{margin:2px 0 6px;font-size:.95rem}
+.report-title{font-size:1.3rem;font-weight:800;margin:4px 0 8px;color:var(--ink)}
+
+/* chart slide */
+.two-col{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;align-items:start}
+.two-col>*,.sum-grid>*{min-width:0}
+.chart-svg{width:100%;height:auto;display:block}
+.chart-caption{color:var(--muted);font-size:.82rem;margin:0 0 4px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:4px 0;font-size:.82rem;color:var(--ink)}
 .legend-item{display:flex;align-items:center;gap:7px}
-.legend-swatch{width:24px;height:4px;display:inline-block;border-radius:2px;flex:0 0 auto}
-.legend-swatch.savings{background:var(--deploy)}
-.legend-swatch.cost10{background:var(--hd-orange)}
-.legend-swatch.cost25{background:#f7b27f}
+.legend-swatch{width:26px;height:0;display:inline-block;flex:0 0 auto;border-top-width:4px;border-top-style:solid}
+.legend-swatch.savings{border-top-color:var(--deploy)}
+.legend-swatch.cost10{border-top-color:var(--hd-orange-text)}
+.chip-go{background:var(--deploy-bg);color:#17602a;border-color:#9fcfab}
+.legend-swatch.cost25{border-top-color:var(--warn);border-top-style:dashed}
 
-/* submission fields */
-.kw-strip{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 18px}
+.tight th,.tight td{padding:3px 8px}
+/* summary */
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px}
+.sum-grid section p{margin:0 0 4px;font-size:.88rem}
+.sum-grid h3{margin:6px 0 2px}
+
+/* submission */
+.kw-strip{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 10px}
 .kw-chip{background:var(--hd-orange-soft);color:var(--hd-orange-text);border:1px solid #f4c9a5;
-  border-radius:999px;padding:5px 14px;font-size:.85rem;font-weight:700}
-.reflect{background:var(--wash);border:1px solid var(--line);border-radius:8px;padding:16px 20px;
-  font-style:italic;color:var(--ink);margin-top:8px}
-.reflect .foot{font-style:normal}
+  border-radius:999px;padding:4px 14px;font-size:.85rem;font-weight:700}
+.reflect{background:var(--wash);border:1px solid var(--line);border-radius:8px;padding:12px 18px;
+  font-style:italic;color:var(--ink);margin-top:6px}
+.pagefoot{color:var(--muted);font-size:.8rem;margin-top:14px;border-top:1px solid var(--line);padding-top:8px}
 
-@media (max-width:600px){
-  .doc{padding:24px 18px}
-  .titleblock{gap:4px 20px}
-  .legend{gap:14px}
+/* controls */
+.controls{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:8px}
+.c-btn{font:inherit;font-weight:700;background:var(--paper);color:var(--ink);border:2px solid var(--ink);
+  border-radius:8px;padding:7px 18px;cursor:pointer;min-width:120px}
+.c-btn:hover{background:var(--wash)}
+.c-btn[aria-disabled="true"]{color:#6b6b6b;border-color:#8a8a8a;cursor:default;background:var(--wash)}
+.c-mid{flex:1 1 auto;text-align:center}
+.c-step{font-weight:700;color:var(--ink);font-size:.92rem;margin:0}
+.c-hint{color:var(--muted);font-size:.76rem;margin:0}
+.dots{display:flex;gap:7px;justify-content:center;margin-top:3px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--paper);border:1px solid #767676}
+.dot.on{background:var(--hd-orange-text);border-color:var(--hd-orange-text)}
+
+/* small screens: stack and scroll */
+@media (max-width:760px), (max-height:520px){
+  html,body{height:auto}
+  body{display:block}
+  main{display:block;padding:10px 16px}
+  .stage{overflow:visible}
+  .slide{position:static;overflow:visible;padding:18px 16px}
+  .slide h2{padding-right:0}
+  .illus-repeat{position:static;display:inline-block;margin:0 0 8px}
+  .two-col,.sum-grid{grid-template-columns:1fr}
+  .table-scroll{overflow-x:auto}
+  .controls{position:sticky;bottom:0;background:var(--wash);padding:8px 0}
+  .c-btn{min-width:0;padding:7px 12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
 </style>
 </head>
 <body>
 
 <header class="topband">
-  <div class="wrap">
-    <p class="eyebrow">The Home Depot · MET · Sample Deliverable</p>
-    <h1>Breakeven Analysis — ESL Labor Savings Model</h1>
-    <p class="sub">Project 2 (Design) — a worked example of the financial model and 2-page summary externs build to test whether ESL pays for itself on a given product category.</p>
-  </div>
+  <p class="eyebrow">The Home Depot · MET · Sample Deliverable</p>
+  <h1>Breakeven Analysis — Ceiling Fans, One Store</h1>
 </header>
 
-<main class="wrap">
+<main id="main">
+  <div class="stage" id="deck" aria-roledescription="carousel" aria-label="Sample breakeven analysis, 9 slides">
 
-  <div class="illus" role="note">
-    <strong>⚠ ILLUSTRATIVE SAMPLE</strong> — every number, cost line, and month-to-breakeven figure below is invented for teaching and is <strong>NOT</strong> real Home Depot or vendor data. It shows the shape of a finished model and how the math flows. When you build your own model, replace every number with a value provided by Home Depot or sourced from a real, cited industry benchmark.
+    <!-- Slide 1: cover -->
+    <section class="slide" id="slide-1" role="group" aria-roledescription="slide" aria-label="Slide 1 of 9: Model cover">
+      <h2>Model Cover</h2>
+      <span class="illus-repeat">Partner data + illustrative</span>
+      <div class="illus" role="note">
+        <strong>Two kinds of numbers.</strong> Numbers tagged <span class="src-hd">Home Depot data</span> come from Home Depot data (MET, October 2026): 34 label spots (Store B planogram), about 300 price changes a year, 3 labels per change, $28/hour, 5 seconds per swap. Numbers tagged <span class="src-ill">Illustrative</span> are assumptions made for teaching: label cost, install, gateways, software, damage rate and the 30-second end-to-end time. In your own model, source every number or label it as an assumption.
+      </div>
+      <div class="illus polish" role="note">
+        <strong>You don't have to match this polish.</strong> Yours can be a plain Google Sheet with four tabs (Baseline, ESL Cost, Breakeven + Sensitivity, Lane) plus a clear 2-page doc. You're graded on the thinking: sourced or labeled numbers, honest ranges, and where you checked the AI.
+      </div>
+      <p class="report-title">Breakeven Analysis: Electronic Shelf Labels for Ceiling Fans in One Store</p>
+      <dl class="titleblock">
+        <div><dt>Prepared for</dt><dd>The Home Depot — Merchandising Execution Team (MET)</dd></div>
+        <div><dt>Prepared by</dt><dd>Jordan Rivera, sample extern</dd></div>
+        <div><dt>Lane</dt><dd>Labor Savings</dd></div>
+        <div><dt>Category modeled</dt><dd>Ceiling fans, Store B (34 label spots)</dd></div>
+      </dl>
+      <p class="meta">Five moves: Baseline → ESL Cost → Breakeven + damage-rate test → Lane tab (Labor Savings) → favorable vs. unfavorable, then the filled 2-page summary. Ceiling fans are the shared example only. Model your own category or zone.</p>
+      <div class="note gray"><strong>Best guesses to confirm at the company meeting:</strong> 30 seconds end to end per label; all 3 labels per change go digital; about 35,000–50,000 label spots per store.</div>
+    </section>
+
+    <!-- Slide 2: Baseline -->
+    <section class="slide" id="slide-2" role="group" aria-roledescription="slide" aria-label="Slide 2 of 9: Baseline tab" hidden>
+      <h2>Baseline Tab — What Paper Labels Cost Today</h2>
+      <span class="illus-repeat">Partner data + illustrative</span>
+      <p class="section-eyebrow">The savings side: the yearly labor cost of changing ceiling-fan prices by hand.</p>
+      <p class="formula-line"><strong>Formula:</strong> price changes per year × labels per change × seconds per label ÷ 3,600 × labor rate = annual labor cost</p>
+      <div class="table-scroll">
+        <table class="calc-table">
+          <caption>Baseline tab for ceiling fans, one store.</caption>
+          <thead><tr><th scope="col">Line</th><th scope="col">Source</th><th scope="col">Value</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Price changes per year</th><td><span class="src-hd">Home Depot data</span> about 6 a week</td><td>300</td></tr>
+            <tr><th scope="row">Labels per change</th><td><span class="src-hd">Home Depot data</span> at least 3 per facing</td><td>3 → 900 label swaps a year</td></tr>
+            <tr><th scope="row">Fully-loaded labor rate</th><td><span class="src-hd">Home Depot data</span></td><td>$28/hour</td></tr>
+            <tr><th scope="row">Seconds per label, swap only</th><td><span class="src-hd">Home Depot data</span></td><td>5 s → 1.25 hours a year</td></tr>
+            <tr><th scope="row">Seconds per label, end to end</th><td><span class="src-ill">Illustrative</span> print, sort, walk, find, swap, verify</td><td>30 s → 7.5 hours a year</td></tr>
+            <tr class="calc-total"><th scope="row">Annual labor cost (5 s)</th><td>900 × 5 ÷ 3,600 × $28</td><td>$35/year</td></tr>
+            <tr class="calc-total"><th scope="row">Annual labor cost (30 s)</th><td>900 × 30 ÷ 3,600 × $28</td><td>$210/year</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note gray"><strong>Read it this way:</strong> the 5-second swap is the only time Home Depot measured. It leaves out printing, walking and checking. Which number is closer to the truth decides the whole answer, as the next slides show.</div>
+    </section>
+
+    <!-- Slide 3: ESL Cost -->
+    <section class="slide" id="slide-3" role="group" aria-roledescription="slide" aria-label="Slide 3 of 9: ESL Cost tab" hidden>
+      <h2>ESL Cost Tab — The Five Cost Buckets</h2>
+      <span class="illus-repeat">Partner data + illustrative</span>
+      <p class="section-eyebrow">Every cost of owning smart labels for 34 ceiling-fan label spots, listed line by line.</p>
+      <div class="table-scroll">
+        <table class="num">
+          <caption>ESL cost stack for ceiling fans, one store.</caption>
+          <thead><tr><th scope="col">Cost bucket</th><th scope="col">Assumption and source</th><th scope="col">Amount</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1. Hardware</th><td>34 labels × $10 <span class="src-ill">Illustrative</span> (inside vendor ranges of $5–25)</td><td>$340 one-time</td></tr>
+            <tr><th scope="row">2. Installation</th><td>34 labels × 2 min <span class="src-ill">Illustrative</span> × $28/hr <span class="src-hd">Home Depot data</span></td><td>$32 one-time</td></tr>
+            <tr><th scope="row">3. Infrastructure</th><td>Fans' share of the store's gateways, by bay count <span class="src-ill">Illustrative</span></td><td>$20 one-time</td></tr>
+            <tr><th scope="row">4. Software</th><td>34 labels × $0.50 a year <span class="src-ill">Illustrative</span></td><td>$17/year</td></tr>
+            <tr><th scope="row">5. Replacement</th><td>34 × 5% damage <span class="src-ill">Illustrative</span> × $10.93 ($10 label + 2 min of labor)</td><td>$19/year</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><strong>Upfront = $392</strong> ($340 + $32 + $20). <strong>Yearly running cost at 5% damage = $36</strong> ($17 software + $19 replacement).</div>
+      <div class="note gray"><strong>Why 5%?</strong> Home Depot data says about 3% of price-label changes replace damaged labels. Spread over a store, that works out to about 5–8% a year store-wide (best guess: ~35,000–50,000 label spots per store) — confirm with Home Depot. Ceiling fans sit in an indoor, lower-traffic aisle, so 5% is the base case; the test still runs 5/10/15/25%, and 15–25% is the stress range for busy or outdoor zones. A hard plastic smart label won't break the same way, so treat it as a starting point.</div>
+    </section>
+
+    <!-- Slide 4: Breakeven + damage test -->
+    <section class="slide" id="slide-4" role="group" aria-roledescription="slide" aria-label="Slide 4 of 9: Breakeven and damage-rate test" hidden>
+      <h2>Breakeven + Sensitivity Tab — The Damage-Rate Test</h2>
+      <span class="illus-repeat">Partner data + illustrative</span>
+      <p class="formula-line"><strong>Formula:</strong> months to breakeven = $392 upfront ÷ (net savings per year ÷ 12), where net savings = labor saved − software − replacement. If net savings is $0 or less, it never pays back.</p>
+      <div class="table-scroll">
+        <table class="num">
+          <caption>Months to breakeven at four damage rates, for both time-per-label assumptions.</caption>
+          <thead><tr><th scope="col">Annual damage rate</th><th scope="col">Yearly running cost</th><th scope="col">5 s swap only ($35 saved)</th><th scope="col">30 s end to end ($210 saved)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">5% (base case)</th><td>$36</td><td><span class="chip chip-stop">Never</span> (−$1 a year)</td><td><strong>27 months</strong> ($174 a year)</td></tr>
+            <tr><th scope="row">10%</th><td>$54</td><td><span class="chip chip-stop">Never</span> (−$19 a year)</td><td>30 months</td></tr>
+            <tr><th scope="row">15%</th><td>$73</td><td><span class="chip chip-stop">Never</span> (−$38 a year)</td><td>34 months</td></tr>
+            <tr><th scope="row">25%</th><td>$110</td><td><span class="chip chip-stop">Never</span> (−$75 a year)</td><td>47 months</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><strong>Tipping points:</strong> at 5% damage, fans pay back only if a change takes more than about <strong>5 seconds per label</strong>. Home Depot's 5-second swap sits right on that line. At 30 seconds, damage would need to pass about <strong>50% a year</strong> before fans stop paying back.</div>
+      <div class="note gray"><strong>The lesson:</strong> moving damage from 5% to 25% shifts payback by less than two years. Moving from 5 to 30 seconds decides whether it pays back at all. For ceiling fans, how long a change really takes matters more than how often labels break.</div>
+    </section>
+
+    <!-- Slide 5: chart -->
+    <section class="slide" id="slide-5" role="group" aria-roledescription="slide" aria-label="Slide 5 of 9: Cumulative savings versus cumulative cost chart" hidden>
+      <h2>Breakeven Chart: Cumulative Savings vs. Cumulative Cost</h2>
+      <span class="illus-repeat">Partner data + illustrative</span>
+      <p class="chart-caption">At 5% damage, cost starts at the $392 upfront and rises about $3 a month. Savings at 30 s rise $17.50 a month and cross the cost line at about month 27. Savings at 5 s rise just under $3 a month, slightly slower than cost, and never catch up.</p>
+      <div class="two-col">
+        <div>
+          <svg class="chart-svg" viewBox="0 0 640 310" role="img" aria-labelledby="chartTitle chartDesc" focusable="false">
+            <title id="chartTitle">Ceiling fans: cumulative savings vs. cumulative cost at 5% damage</title>
+            <desc id="chartDesc">Line chart, months 0 to 48 on the x-axis, cumulative dollars from $0 to $1,000 on the y-axis. A solid orange cost line starts at $392 and rises to about $534 at month 48. A solid green savings line for 30 seconds end to end rises from $0 to $840 at month 48 and crosses the cost line at about month 27, marked as breakeven. A dashed green savings line for the 5-second swap only rises from $0 to $140 at month 48 and never crosses the cost line. Exact values are in the table beside the chart.</desc>
+            <g stroke="#dcdcdc" stroke-width="1">
+              <line x1="60" y1="200" x2="620" y2="200"></line>
+              <line x1="60" y1="140" x2="620" y2="140"></line>
+              <line x1="60" y1="80"  x2="620" y2="80"></line>
+              <line x1="60" y1="20"  x2="620" y2="20"></line>
+            </g>
+            <g stroke="#5a5a5a" stroke-width="1.5">
+              <line x1="60" y1="20" x2="60" y2="260"></line>
+              <line x1="60" y1="260" x2="620" y2="260"></line>
+            </g>
+            <g fill="#5a5a5a" font-size="13" text-anchor="end" font-family="inherit">
+              <text x="52" y="264">$0</text><text x="52" y="204">$250</text><text x="52" y="144">$500</text><text x="52" y="84">$750</text><text x="52" y="24">$1,000</text>
+            </g>
+            <g fill="#5a5a5a" font-size="13" text-anchor="middle" font-family="inherit">
+              <text x="60" y="278">0</text><text x="130" y="278">6</text><text x="200" y="278">12</text><text x="270" y="278">18</text><text x="340" y="278">24</text><text x="410" y="278">30</text><text x="480" y="278">36</text><text x="550" y="278">42</text><text x="620" y="278">48</text>
+            </g>
+            <text x="340" y="302" fill="#5a5a5a" font-size="13" text-anchor="middle" font-family="inherit">Months since ESL install</text>
+            <polyline points="60,165.9 620,131.8" fill="none" stroke="#B34600" stroke-width="3"></polyline>
+            <polyline points="60,260 620,58.4" fill="none" stroke="#1E7B34" stroke-width="3"></polyline>
+            <polyline points="60,260 620,226.4" fill="none" stroke="#1E7B34" stroke-width="3" stroke-dasharray="9 6"></polyline>
+            <circle cx="374.6" cy="146.7" r="5.5" fill="#1c1c1c"></circle>
+            <text x="362" y="108" fill="#1c1c1c" font-size="13" font-weight="700" text-anchor="end" font-family="inherit">Breakeven ≈ 27 mo</text>
+            <text x="362" y="123" fill="#1c1c1c" font-size="13" text-anchor="end" font-family="inherit">(30 s end to end)</text>
+            <text x="612" y="216" fill="#1c1c1c" font-size="13" text-anchor="end" font-family="inherit">5 s swap only: never crosses</text>
+          </svg>
+          <div class="legend" aria-hidden="true">
+            <span class="legend-item"><span class="legend-swatch savings"></span> Savings, 30 s end to end (solid green)</span>
+            <span class="legend-item"><span class="legend-swatch save5"></span> Savings, 5 s swap only (dashed green)</span>
+            <span class="legend-item"><span class="legend-swatch cost10"></span> ESL cost, 5% damage (solid orange)</span>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table class="num tight">
+            <caption>Underlying chart data: cumulative $ by month.</caption>
+            <thead><tr><th scope="col">Month</th><th scope="col">Savings, 30 s</th><th scope="col">Savings, 5 s</th><th scope="col">Cost, 5%</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">0</th><td>$0</td><td>$0</td><td>$392</td></tr>
+              <tr><th scope="row">6</th><td>$105</td><td>$18</td><td>$410</td></tr>
+              <tr><th scope="row">12</th><td>$210</td><td>$35</td><td>$428</td></tr>
+              <tr><th scope="row">18</th><td>$315</td><td>$52</td><td>$445</td></tr>
+              <tr><th scope="row">24</th><td>$420</td><td>$70</td><td>$463</td></tr>
+              <tr><th scope="row">30</th><td>$525</td><td>$88</td><td>$481</td></tr>
+              <tr><th scope="row">36</th><td>$630</td><td>$105</td><td>$499</td></tr>
+              <tr><th scope="row">42</th><td>$735</td><td>$122</td><td>$517</td></tr>
+              <tr><th scope="row">48</th><td>$840</td><td>$140</td><td>$534</td></tr>
+            </tbody>
+          </table>
+          <p class="foot">Cost uses the unrounded $35.58 a year.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 6: Lane tab -->
+    <section class="slide" id="slide-6" role="group" aria-roledescription="slide" aria-label="Slide 6 of 9: Lane tab, Labor Savings" hidden>
+      <h2>Lane Tab — Labor Savings: Where Does the Time Go?</h2>
+      <span class="illus-repeat">Partner data + illustrative</span>
+      <p class="section-eyebrow">Jordan's lane owns the savings side: how much work really goes into one paper price change, end to end?</p>
+      <div class="two-col">
+        <div class="table-scroll">
+          <table class="calc-table">
+            <caption>Time per label, end to end (one ceiling-fan price change).</caption>
+            <thead><tr><th scope="col">Step</th><th scope="col">Source</th><th scope="col">Seconds</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Print and sort the new labels</th><td><span class="src-ill">Illustrative</span></td><td>6</td></tr>
+              <tr><th scope="row">Walk to the bay</th><td><span class="src-ill">Illustrative</span></td><td>8</td></tr>
+              <tr><th scope="row">Find the right spot</th><td><span class="src-ill">Illustrative</span></td><td>4</td></tr>
+              <tr><th scope="row">Swap the label</th><td><span class="src-hd">Home Depot data</span></td><td>5</td></tr>
+              <tr><th scope="row">Check the price is right</th><td><span class="src-ill">Illustrative</span></td><td>7</td></tr>
+              <tr class="calc-total"><th scope="row">Total per label</th><td>—</td><td>30</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-scroll">
+          <table class="num">
+            <caption>Lane sensitivity: seconds per label (5% damage).</caption>
+            <thead><tr><th scope="col">Seconds per label</th><th scope="col">Labor saved a year</th><th scope="col">Months to breakeven</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">5 (swap only)</th><td>$35</td><td><span class="chip chip-stop">Never</span></td></tr>
+              <tr><th scope="row">15</th><td>$105</td><td>68 months</td></tr>
+              <tr><th scope="row">30</th><td>$210</td><td>27 months</td></tr>
+              <tr><th scope="row">60</th><td>$420</td><td>12 months</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="note"><strong>Owned finding:</strong> "The true labor prize for ceiling fans is about $210 a year per store at 30 seconds, and <strong>walking to the bay</strong> is the single biggest step (8 of 30 seconds)." Next step: time five real changes on a store walk to replace the illustrative steps.</div>
+      <div class="note gray"><strong>Where durability fits:</strong> if a damaged paper label means a second trip to the bay, that rework belongs in this lane's time count.</div>
+    </section>
+
+    <!-- Slide 7: Favorable vs unfavorable -->
+    <section class="slide" id="slide-7" role="group" aria-roledescription="slide" aria-label="Slide 7 of 9: Favorable versus unfavorable" hidden>
+      <h2>Favorable vs. Unfavorable</h2>
+      <span class="illus-repeat">Illustrative scenarios</span>
+      <p class="section-eyebrow">Same 34 labels, same costs, same 30 seconds and 5% damage. Only price-change frequency changes. Both categories are <span class="src-ill">Illustrative</span> examples.</p>
+      <div class="table-scroll">
+        <table class="num">
+          <caption>Favorable vs. unfavorable scenario contrast.</caption>
+          <thead><tr><th scope="col">Factor</th><th scope="col">Favorable: fast-changing category</th><th scope="col">Unfavorable: slow-changing category</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Price changes per year</th><td>600 (about 12 a week)</td><td>50 (about 1 a week)</td></tr>
+            <tr><th scope="row">Labor saved a year</th><td>$420</td><td>$35</td></tr>
+            <tr><th scope="row">Upfront cost</th><td>$392</td><td>$392</td></tr>
+            <tr><th scope="row">Yearly running cost (5%)</th><td>$36</td><td>$36</td></tr>
+            <tr><th scope="row">Months to breakeven</th><td><span class="chip chip-go">Pays back</span> about 12 months</td><td><span class="chip chip-stop">Never</span>: running costs beat the savings</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note"><strong>Why it matters:</strong> same technology, same store, opposite answer. The pattern to spot is frequency × time per change. That is why the deliverable is a <strong>selective</strong> recommendation, not a store-wide one.</div>
+    </section>
+
+    <!-- Slide 8: Summary -->
+    <section class="slide" id="slide-8" role="group" aria-roledescription="slide" aria-label="Slide 8 of 9: The 2-page summary, filled in" hidden>
+      <h2>The 2-Page Summary, Filled In</h2>
+      <span class="illus-repeat">Partner data + illustrative</span>
+      <p class="section-eyebrow">The five required parts, filled with this example. Key findings lead with the lane finding.</p>
+      <div class="sum-grid">
+        <section>
+          <h3>1 · Executive overview</h3>
+          <p>For ceiling fans in one store, smart labels pay back in about <strong>27 months</strong> if a price change takes 30 seconds per label end to end, and <strong>never</strong> if it takes only the 5-second swap Home Depot measured. The answer depends on time per change far more than on damage.</p>
+        </section>
+        <section>
+          <h3>2 · Key findings by category</h3>
+          <p><strong>Lane finding (Labor Savings):</strong> the true labor prize is about $210 a year per store at 30 seconds, and walking to the bay is the single biggest step (8 of 30 seconds). At 5% damage, ceiling fans pay back only above about 5 seconds per label, so the 5-second swap sits right on the line. Faster-changing categories (600 changes a year) pay back in about 12 months; slow ones (50 a year) never do.</p>
+        </section>
+        <section>
+          <h3>3 · Critical assumptions</h3>
+          <p>From Home Depot data (MET, October 2026): 34 label spots, 300 changes a year, 3 labels per change, $28/hour, 5 s per swap. Labeled assumptions: 30 s end to end, $10 per label, $32 install, $20 gateways, $17 a year software, 5% damage (best guess: about 5–8% a year store-wide). The 30 seconds is the least certain and matters most.</p>
+        </section>
+        <section>
+          <h3>4 · Damage-rate impact</h3>
+          <p>At 30 s, moving damage from 5% to 25% stretches payback from <strong>27 to 47 months</strong>, less than two years. At 5 s, no damage rate pays back. Damage would need to pass about 50% a year to sink the 30-second case.</p>
+        </section>
+        <section>
+          <h3>5 · Preliminary deployment criteria</h3>
+          <p>A category is a good ESL candidate when price changes are frequent, each change takes more than about 5 seconds per label end to end, and breakeven stays under about 36 months at 5% damage and still pays back at 25%.</p>
+        </section>
+        <section>
+          <div class="note gray" style="margin-top:8px"><strong>Reminder:</strong> ceiling fans are the shared example. Your summary models your own category or zone, cites Home Depot data where it exists, and labels every assumption.</div>
+        </section>
+      </div>
+    </section>
+
+    <!-- Slide 9: Submission fields -->
+    <section class="slide" id="slide-9" role="group" aria-roledescription="slide" aria-label="Slide 9 of 9: Submission data-fields, filled" hidden>
+      <h2>Submission Data-Fields, Filled</h2>
+      <span class="illus-repeat">Sample</span>
+      <p class="section-eyebrow">Project 2 submission also asks for a few short data-fields. Here's how they'd look for this example.</p>
+      <h3>3 keywords</h3>
+      <div class="kw-strip">
+        <span class="kw-chip">breakeven</span>
+        <span class="kw-chip">time-per-change</span>
+        <span class="kw-chip">selective-deployment</span>
+      </div>
+      <h3>~100-word "how I furthered my understanding" note</h3>
+      <div class="reflect">
+        "I expected damage to decide everything. Building the model with Home Depot's own numbers showed something else: at the 5-second swap, ceiling fans never pay back, and at 30 seconds end to end they pay back in about 27 months. Damage only moved that by less than two years. My lane made me break one price change into steps, and walking to the bay looks like the biggest one. The AI checked my formulas, but it can't tell me how long a real change takes. That's what I'd measure next on a store walk."
+      </div>
+      <p class="foot">Graded on clarity of thinking, not polish. The note spends its words on what changed in the extern's thinking.</p>
+      <p class="pagefoot">The Home Depot — Smart Labeling Strategy Assessment · Sample for illustration. Partner numbers: Home Depot data (MET, October 2026).</p>
+    </section>
   </div>
 
-  <div class="illus" role="note" style="border-left-color:#2e7d32;background:#f1f8f2">
-    <strong>You don't have to match this polish.</strong> This example is dressed up for the web to show the <em>shape</em> of a strong analysis — the cover block, the charts, the formatting. <strong>Yours can be a plain Google Sheet plus a clear 2-page doc.</strong> You're graded on the thinking inside — sourced assumptions, honest ranges, and where you checked the AI — not on the design.
+  <div class="controls">
+    <button type="button" class="c-btn" id="prevBtn" aria-disabled="true">‹ Previous</button>
+    <div class="c-mid">
+      <p class="c-step" id="stepText">1 of 9</p>
+      <div class="dots" aria-hidden="true">
+        <span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+      <p class="c-hint">Tip: use the left and right arrow keys to move between slides.</p>
+    </div>
+    <button type="button" class="c-btn" id="nextBtn">Next ›</button>
   </div>
-
-  <article class="doc">
-    <h2 style="margin-top:0">Model Cover</h2>
-    <p class="report-title">Breakeven Analysis: Electronic Shelf Labels for a High-Price-Change Seasonal Endcap</p>
-    <dl class="titleblock">
-      <div>
-        <dt>Prepared for</dt>
-        <dd>The Home Depot — Merchandising Execution Team</dd>
-      </div>
-      <div>
-        <dt>Prepared by</dt>
-        <dd>Jordan Rivera, sample extern</dd>
-      </div>
-      <div>
-        <dt>Phase</dt>
-        <dd>Design</dd>
-      </div>
-      <div>
-        <dt>Product category modeled</dt>
-        <dd>High-price-change seasonal endcap (500 labels) — illustrative</dd>
-      </div>
-    </dl>
-    <p class="meta">Four moves: current-state labor cost → ESL cost stack → breakeven &amp; sensitivity → favorable-vs-unfavorable contrast, followed by the filled 2-page summary.</p>
-  </article>
-
-  <article class="doc">
-    <h2 id="step1">Step 1 — Current-State Labor Cost</h2>
-    <span class="illus-repeat">ILLUSTRATIVE — not THD data</span>
-    <p class="section-eyebrow">The business case starts with the money ESL could save: the yearly cost of manually re-labeling this category by hand.</p>
-
-    <p class="formula-line"><strong>Formula:</strong> Price changes per year × seconds per change × fully-loaded labor rate = annual labor cost</p>
-
-    <div style="overflow-x:auto">
-      <table class="calc-table">
-        <caption>Step 1 calculation chain for the seasonal endcap example. ILLUSTRATIVE — not THD data.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Line</th>
-            <th scope="col">Formula</th>
-            <th scope="col">Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Labels in category</th>
-            <td>—</td>
-            <td>500</td>
-          </tr>
-          <tr>
-            <th scope="row">Price changes / label / year</th>
-            <td>—</td>
-            <td>48 (roughly monthly, plus seasonal &amp; promo resets)</td>
-          </tr>
-          <tr>
-            <th scope="row">Seconds / manual change</th>
-            <td>—</td>
-            <td>5 sec (MET's rate)</td>
-          </tr>
-          <tr>
-            <th scope="row">Fully-loaded labor rate</th>
-            <td>—</td>
-            <td>$25/hour (≈ $0.0069/sec)</td>
-          </tr>
-          <tr>
-            <th scope="row">Total manual changes / year</th>
-            <td>500 × 48</td>
-            <td>24,000 changes</td>
-          </tr>
-          <tr>
-            <th scope="row">Total labor time</th>
-            <td>24,000 × 5 sec</td>
-            <td>120,000 sec ≈ 33.3 hrs/year</td>
-          </tr>
-          <tr class="calc-total">
-            <th scope="row">Annual labor cost</th>
-            <td>33.3 hrs × $25/hr</td>
-            <td>≈ $833/year</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="note gray">
-      <strong>Read it this way:</strong> $833 is the annual prize for this one small category — the recurring cost ESL would remove. It looks modest on purpose: ESL only pays off when savings, stacked up over time, finally clear the upfront and replacement costs below.
-    </div>
-  </article>
-
-  <article class="doc">
-    <h2 id="step2">Step 2 — The ESL Cost Stack</h2>
-    <span class="illus-repeat">ILLUSTRATIVE — not THD data</span>
-    <p class="section-eyebrow">ESL isn't one price — it's a stack of costs. In a warehouse, the <strong>replacement</strong> line is the one traditional retail cases underestimate.</p>
-
-    <div style="overflow-x:auto">
-      <table>
-        <caption>ESL cost stack for the 500-label seasonal endcap category. ILLUSTRATIVE — not THD data.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Cost line</th>
-            <th scope="col">Assumption</th>
-            <th scope="col">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Hardware (ESL units)</th>
-            <td>500 labels × $8 each</td>
-            <td>$4,000 (one-time)</td>
-          </tr>
-          <tr>
-            <th scope="row">Installation</th>
-            <td>500 labels × $2 labor to mount</td>
-            <td>$1,000 (one-time)</td>
-          </tr>
-          <tr>
-            <th scope="row">Infrastructure (gateways / access points)</th>
-            <td>Shared network hardware, allocated</td>
-            <td>$800 (one-time)</td>
-          </tr>
-          <tr>
-            <th scope="row">Software (platform / license)</th>
-            <td>Annual license, allocated to this category</td>
-            <td>$300/year</td>
-          </tr>
-          <tr>
-            <th scope="row">Replacement (damage)</th>
-            <td>500 × damage rate × $8 (see sensitivity, Step 3)</td>
-            <td>Varies with damage rate</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="note">
-      <strong>One-time upfront ≈ $5,800</strong> (hardware $4,000 + installation $1,000 + infrastructure $800), plus <strong>$300/year</strong> software, plus a <strong>replacement cost that depends entirely on the damage rate</strong>.
-    </div>
-
-    <div class="note gray">
-      <strong>Watch out:</strong> Traditional retail ESL cases assume only 2–5% of labels get damaged per year. In a Home Depot aisle with forklifts, ladders, and pallet strikes, that number could be far higher — modeling only the optimistic rate is exactly the mistake this program exists to catch.
-    </div>
-  </article>
-
-  <article class="doc">
-    <h2 id="step3">Step 3 — Breakeven &amp; Sensitivity</h2>
-    <span class="illus-repeat">ILLUSTRATIVE — not THD data</span>
-    <p class="section-eyebrow">Breakeven is the month cumulative labor savings ($833/year, ≈ $69/month) finally equal cumulative ESL cost ($5,800 upfront + $300/year software + replacement). Because replacement scales with damage rate, breakeven moves with it — tested here at all four required rates.</p>
-
-    <div style="overflow-x:auto">
-      <table>
-        <caption>Breakeven sensitivity across four damage-rate assumptions. ILLUSTRATIVE — not THD data.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Annual damage rate</th>
-            <th scope="col">Annual replacement cost<br>(500 × rate × $8)</th>
-            <th scope="col">Total annual cost<br>(replacement + $300 software)</th>
-            <th scope="col">Approx. months to breakeven</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">5% (traditional-retail assumption)</th>
-            <td>$200</td>
-            <td>$500</td>
-            <td>≈ 10 months</td>
-          </tr>
-          <tr>
-            <th scope="row">10% (moderate warehouse)</th>
-            <td>$400</td>
-            <td>$700</td>
-            <td>≈ 14 months</td>
-          </tr>
-          <tr>
-            <th scope="row">15% (high-traffic bay)</th>
-            <td>$600</td>
-            <td>$900</td>
-            <td>≈ 20 months</td>
-          </tr>
-          <tr>
-            <th scope="row">25% (forklift-heavy zone)</th>
-            <td>$1,000</td>
-            <td>$1,300</td>
-            <td>≈ 30+ months</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="note">
-      <strong>Read top to bottom:</strong> at a traditional-retail 5% damage rate, this category pays back in under a year. Push damage to 25% and payback stretches past two and a half years — every extra month is more replacement cost eating the labor savings. The technology didn't change between rows; only the damage rate did.
-    </div>
-
-    <h3>Cumulative savings vs. cumulative cost (schematic)</h3>
-    <p class="chart-caption">The chart below sketches the same story as the table above: labor savings climbing steadily from $0, against ESL cost lines that start high (the $5,800 upfront) and rise with replacement cost. Shape only — illustrating the breakeven months from the sensitivity table, not a separate calculation.</p>
-
-    <div class="chart-wrap">
-      <svg class="chart-svg" viewBox="0 0 640 320" role="img" aria-labelledby="chartTitle chartDesc" focusable="false">
-        <title id="chartTitle">Seasonal endcap — cumulative savings vs. cumulative cost (illustrative)</title>
-        <desc id="chartDesc">Line chart, months 0 to 36 on the x-axis, cumulative dollars on the y-axis. A green "cumulative labor savings" line rises steadily from $0. An orange "cumulative ESL cost, 10% damage" line starts near $5,800 and crosses the savings line at approximately month 14, marked as breakeven. A lighter orange "cumulative ESL cost, 25% damage" line also starts near $5,800, rises faster, and crosses the savings line near month 30. All figures are illustrative, not Home Depot data; exact values are in the accessible data table below the chart.</desc>
-
-        <!-- gridlines -->
-        <g stroke="#dcdcdc" stroke-width="1">
-          <line x1="60" y1="260" x2="620" y2="260"></line>
-          <line x1="60" y1="200" x2="620" y2="200"></line>
-          <line x1="60" y1="140" x2="620" y2="140"></line>
-          <line x1="60" y1="80"  x2="620" y2="80"></line>
-          <line x1="60" y1="20"  x2="620" y2="20"></line>
-        </g>
-        <!-- axes -->
-        <g stroke="#5a5a5a" stroke-width="1.5">
-          <line x1="60" y1="20" x2="60" y2="260"></line>
-          <line x1="60" y1="260" x2="620" y2="260"></line>
-        </g>
-
-        <!-- y-axis labels -->
-        <g fill="#5a5a5a" font-size="12" text-anchor="end" font-family="inherit">
-          <text x="52" y="264">$0</text>
-          <text x="52" y="204">$6k</text>
-          <text x="52" y="144">$12k</text>
-          <text x="52" y="84">$18k</text>
-          <text x="52" y="24">$24k</text>
-        </g>
-
-        <!-- x-axis labels -->
-        <g fill="#5a5a5a" font-size="12" text-anchor="middle" font-family="inherit">
-          <text x="60"  y="278">0</text>
-          <text x="153" y="278">6</text>
-          <text x="247" y="278">12</text>
-          <text x="340" y="278">18</text>
-          <text x="433" y="278">24</text>
-          <text x="527" y="278">30</text>
-          <text x="620" y="278">36</text>
-        </g>
-        <text x="340" y="300" fill="#5a5a5a" font-size="12.5" text-anchor="middle" font-family="inherit">Months since ESL install</text>
-
-        <!-- watermark -->
-        <text x="340" y="150" fill="#b8b8b8" font-size="26" font-weight="700" opacity="0.4"
-              text-anchor="middle" transform="rotate(-14 340 150)" font-family="inherit">ILLUSTRATIVE — not THD data</text>
-
-        <!-- cost line, 25% damage (lighter) -->
-        <polyline points="60,202 620,56" fill="none" stroke="#f7b27f" stroke-width="3"></polyline>
-        <!-- cost line, 10% damage -->
-        <polyline points="60,202 620,135" fill="none" stroke="#F96302" stroke-width="3"></polyline>
-        <!-- savings line -->
-        <polyline points="60,260 620,44" fill="none" stroke="#1E7B34" stroke-width="3"></polyline>
-
-        <!-- breakeven markers -->
-        <circle cx="278" cy="176" r="5.5" fill="#1c1c1c"></circle>
-        <text x="284" y="168" fill="#1c1c1c" font-size="12.5" font-weight="700" font-family="inherit">Breakeven ≈ 14 mo</text>
-        <text x="284" y="183" fill="#1c1c1c" font-size="12.5" font-family="inherit">(10% damage)</text>
-
-        <circle cx="527" cy="80" r="5.5" fill="#1c1c1c"></circle>
-        <text x="470" y="66" fill="#1c1c1c" font-size="12.5" font-weight="700" font-family="inherit">≈ 30 mo</text>
-        <text x="470" y="81" fill="#1c1c1c" font-size="12.5" font-family="inherit">(25% damage)</text>
-      </svg>
-    </div>
-
-    <div class="legend" aria-hidden="true">
-      <span class="legend-item"><span class="legend-swatch savings"></span> Cumulative labor savings</span>
-      <span class="legend-item"><span class="legend-swatch cost10"></span> Cumulative ESL cost — 10% damage</span>
-      <span class="legend-item"><span class="legend-swatch cost25"></span> Cumulative ESL cost — 25% damage</span>
-    </div>
-
-    <div style="overflow-x:auto">
-      <table>
-        <caption>Underlying chart data — cumulative $ by month (ILLUSTRATIVE, schematic; illustrates the breakeven months from the sensitivity table above).</caption>
-        <thead>
-          <tr>
-            <th scope="col">Month</th>
-            <th scope="col">Cumulative labor savings</th>
-            <th scope="col">Cumulative ESL cost — 10% damage</th>
-            <th scope="col">Cumulative ESL cost — 25% damage</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><th scope="row">0</th><td>$0</td><td>$5,800</td><td>$5,800</td></tr>
-          <tr><th scope="row">6</th><td>$3,600</td><td>$6,910</td><td>$8,240</td></tr>
-          <tr><th scope="row">12</th><td>$7,200</td><td>$8,030</td><td>$10,680</td></tr>
-          <tr><th scope="row">14</th><td>$8,400</td><td>$8,400 — breakeven (10%)</td><td>$11,490</td></tr>
-          <tr><th scope="row">18</th><td>$10,800</td><td>$9,140</td><td>$13,120</td></tr>
-          <tr><th scope="row">24</th><td>$14,400</td><td>$10,260</td><td>$15,560</td></tr>
-          <tr><th scope="row">30</th><td>$18,000</td><td>$11,370</td><td>$18,000 — breakeven (25%)</td></tr>
-          <tr><th scope="row">36</th><td>$21,600</td><td>$12,490</td><td>$20,440</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="note gray">
-      <strong>Let that sink in:</strong> the technology didn't change between the top and bottom rows of the sensitivity table — only the damage rate did. That single assumption can turn a clear "yes" into a shaky "maybe," which is why sizing damage honestly, and sourcing it, is the most important judgment call in the whole model.
-    </div>
-  </article>
-
-  <article class="doc">
-    <h2 id="step4">Step 4 — Favorable vs. Unfavorable</h2>
-    <span class="illus-repeat">ILLUSTRATIVE — not THD data</span>
-    <p class="section-eyebrow">Not every product pays off. Contrast the favorable seasonal endcap above with an unfavorable, slow-moving stable product.</p>
-
-    <div style="overflow-x:auto">
-      <table>
-        <caption>Favorable vs. unfavorable ESL scenario contrast. ILLUSTRATIVE — not THD data.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Factor</th>
-            <th scope="col">Favorable: seasonal endcap</th>
-            <th scope="col">Unfavorable: stable staple product</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Price changes per year</th>
-            <td>48 (frequent)</td>
-            <td>4 (rare)</td>
-          </tr>
-          <tr>
-            <th scope="row">Annual labor cost / savings</th>
-            <td>~$833</td>
-            <td>~$69</td>
-          </tr>
-          <tr>
-            <th scope="row">Upfront ESL cost (same hardware)</th>
-            <td>~$5,800</td>
-            <td>~$5,800</td>
-          </tr>
-          <tr>
-            <th scope="row">Breakeven at 10% damage</th>
-            <td>≈ 14 months</td>
-            <td><span class="chip chip-stop">Never</span> — annual damage + software cost exceeds the tiny labor savings</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="note">
-      <strong>Why it matters:</strong> for the stable product, ESL costs more to own and maintain than it ever saves in labor — the savings can't keep up with the yearly replacement and software bill, so the lines never cross. Same technology, same store, opposite conclusion. The difference is price-change frequency, and spotting that pattern is the real deliverable: a <strong>selective</strong> recommendation, not a store-wide one.
-    </div>
-  </article>
-
-  <article class="doc">
-    <h2 id="summary">The 2-Page Summary, Filled In</h2>
-    <p class="section-eyebrow">Your model produces a number; your 2-page summary explains what it means. The required five-part skeleton, filled with the illustrative example.</p>
-    <span class="illus-repeat">ILLUSTRATIVE — not THD data</span>
-
-    <h3>1 · Executive overview</h3>
-    <p>Under realistic warehouse assumptions (10% damage), a high-price-change seasonal endcap category breaks even on ESL in roughly <strong>14 months</strong>. The case is sensitive to damage: at 25% damage, payback stretches beyond 30 months. ESL is promising for high-frequency categories, but not universally.</p>
-
-    <h3>2 · Key findings by category</h3>
-    <p>High-price-change categories (seasonal endcaps, promotional zones) reach payback within ~1–2 years. Low-price-change staples <strong>never</strong> reach payback — their labor savings are too small to clear replacement and software costs. Payback speed tracks price-change frequency more than anything else.</p>
-
-    <h3>3 · Critical assumptions</h3>
-    <p>Fully-loaded labor rate ($25/hr), seconds per change (5), hardware cost ($8/label), and — most uncertain — the <strong>annual damage rate</strong>. Damage rate is where uncertainty is highest and where HD-provided data matters most.</p>
-
-    <h3>4 · Damage-rate impact</h3>
-    <p>Moving damage from 5% to 25% roughly <strong>triples</strong> the time to breakeven for the favorable category (≈10 → ≈30+ months). Damage is the single assumption most capable of turning a "deploy" into a "don't."</p>
-
-    <h3>5 · Preliminary deployment criteria</h3>
-    <p>A product looks like a good ESL candidate when it has <strong>high price-change frequency</strong>, sits in a <strong>lower-damage location</strong>, and shows a <strong>breakeven under ~24 months</strong> even at a stress-tested damage rate.</p>
-
-    <div class="note gray">
-      <strong>Reminder:</strong> every figure in that summary is illustrative. A submitted summary must rest on Home Depot-provided data or clearly-cited benchmarks — and the critical-assumptions section is where sources and honesty about uncertainty are shown.
-    </div>
-  </article>
-
-  <article class="doc">
-    <h2 id="submission">Submission Data-Fields, Filled</h2>
-    <p class="section-eyebrow">Project 2 submission also asks for a few short data-fields. Here's how they'd look, filled for this example.</p>
-
-    <h3>3 keywords</h3>
-    <div class="kw-strip">
-      <span class="kw-chip">breakeven</span>
-      <span class="kw-chip">damage-sensitivity</span>
-      <span class="kw-chip">selective-deployment</span>
-    </div>
-
-    <h3>~100-word "how I furthered my understanding" note</h3>
-    <div class="reflect">
-      "I started assuming ESL either works or it doesn't. Building the model changed that. The breakeven swings enormously with the damage rate — a number I had to stress-test, not guess — and I learned that price-change frequency is what really separates a good ESL candidate from a bad one. My biggest correction was catching myself using a 5% retail damage rate; once I modeled 15–25% for high-traffic bays, several 'obvious' categories stopped paying off. I now understand why Home Depot needs a <em>selective</em> answer, and I can defend which product traits drive it."
-    </div>
-    <p class="foot">Graded on clarity of thinking, not polish — the note spends its words on what changed in the extern's thinking, not on tool mechanics.</p>
-  </article>
-
-  <hr class="divider" aria-hidden="true">
-
-  <p class="pagefoot">The Home Depot — Smart Labeling Strategy Assessment · Sample mockup for illustration only.</p>
-
+  <div id="deck-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 </main>
 
+<script>
+(function(){
+  "use strict";
+  var slides=Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var TOTAL=slides.length, current=1;
+  var prevBtn=document.getElementById("prevBtn"), nextBtn=document.getElementById("nextBtn"),
+      stepText=document.getElementById("stepText"), status=document.getElementById("deck-status"),
+      dots=Array.prototype.slice.call(document.querySelectorAll(".dot"));
+  function render(announce){
+    slides.forEach(function(s,i){ if(i+1===current){ s.removeAttribute("hidden"); s.scrollTop=0; } else s.setAttribute("hidden",""); });
+    stepText.textContent=current+" of "+TOTAL;
+    dots.forEach(function(d,i){ d.classList.toggle("on",i+1===current); });
+    prevBtn.setAttribute("aria-disabled",current===1?"true":"false");
+    nextBtn.setAttribute("aria-disabled",current===TOTAL?"true":"false");
+    if(announce){
+      var h=slides[current-1].querySelector("h2");
+      status.textContent="Slide "+current+" of "+TOTAL+": "+(h?h.textContent:"");
+    }
+  }
+  function go(n){ if(n<1||n>TOTAL||n===current) return; current=n; render(true); }
+  prevBtn.addEventListener("click",function(){ go(current-1); });
+  nextBtn.addEventListener("click",function(){ go(current+1); });
+  document.addEventListener("keydown",function(e){
+    if(e.altKey||e.ctrlKey||e.metaKey) return;
+    var t=e.target&&e.target.tagName;
+    if(t==="INPUT"||t==="TEXTAREA"||t==="SELECT") return;
+    if(e.key==="ArrowRight"){ go(current+1); e.preventDefault(); }
+    else if(e.key==="ArrowLeft"){ go(current-1); e.preventDefault(); }
+    else if(e.key==="Home"){ go(1); e.preventDefault(); }
+    else if(e.key==="End"){ go(TOTAL); e.preventDefault(); }
+  });
+  var m=/slide-(\d+)/.exec(location.hash||"");
+  if(m){ var n=parseInt(m[1],10); if(n>=1&&n<=TOTAL) current=n; }
+  render(false);
+})();
+</script>
 </body>
 </html>

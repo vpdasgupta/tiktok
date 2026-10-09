@@ -15,7 +15,7 @@
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--wash);color:var(--ink);
   font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
-.wrap{max-width:900px;margin:0 auto;padding:0 20px 60px}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px 24px}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px #fff}
 
 .topband{background:var(--hd-orange)}
@@ -35,6 +35,7 @@ h3{font-size:1.05rem;margin:1.4em 0 .5em}
 
 .chart-wrap{overflow-x:auto;margin:14px 0 4px}
 .chart-svg{width:100%;height:auto;min-width:520px;display:block}
+@media (min-width:721px){ .chart-svg{max-height:300px} }
 .legend{display:flex;gap:22px;flex-wrap:wrap;margin:8px 0 2px;font-size:.86rem}
 .legend-item{display:flex;align-items:center;gap:8px}
 .legend-key{width:30px;height:0;border-top-width:3px;border-top-style:solid;display:inline-block}
@@ -67,12 +68,12 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 <main id="main" class="wrap">
   <section class="card" aria-labelledby="setup-h">
     <h2 id="setup-h">Here's What That Looks Like</h2>
-    <p class="lead">A worked example for one store aisle switching to digital labels. (The exact numbers come in Part 2 — for now, just watch the two lines cross.)</p>
+    <p class="lead">A worked example for one store aisle switching to digital labels. (Part 2 breaks down the exact numbers behind this chart. For now, just watch the two lines cross.)</p>
 
     <div class="chart-wrap">
       <svg class="chart-svg" viewBox="0 0 660 330" role="img" aria-labelledby="ex-title ex-desc" focusable="false">
         <title id="ex-title">Cumulative cost versus cumulative savings over 24 months</title>
-        <desc id="ex-desc">Two lines over months 0 to 24. The cumulative cost line starts at $2,400 and rises slowly. The cumulative savings line starts at $0 and rises faster, crossing the cost line at month 15 — the breakeven point. Full figures are in the data table below the chart.</desc>
+        <desc id="ex-desc">Two lines over months 0 to 24. The cumulative cost line starts at $2,400 and rises slowly. The cumulative savings line starts at $0 and rises faster, crossing the cost line at month 15 — the breakeven point. Full figures are in the table below the chart (select Show the numbers as a table).</desc>
         <g stroke="#dcdcdc" stroke-width="1">
           <line x1="70" y1="270" x2="640" y2="270"/>
           <line x1="70" y1="208" x2="640" y2="208"/>
@@ -115,8 +116,8 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
       <span class="legend-item"><span class="legend-key save"></span> Cumulative savings (dashed)</span>
     </div>
 
-    <details open>
-      <summary style="cursor:pointer;font-weight:700;margin:10px 0">Chart data (table)</summary>
+    <details>
+      <summary style="cursor:pointer;font-weight:700;margin:10px 0">Show the numbers as a table</summary>
       <table>
         <caption>Running totals by month. They are equal at month 15 — the breakeven point. <strong>Example figures only, not real Home Depot data.</strong></caption>
         <thead>

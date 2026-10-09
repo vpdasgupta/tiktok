@@ -3,199 +3,320 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Project 2 Rubric — How Your Breakeven Analysis Is Evaluated</title>
+<title>Project 2 Rubric — How Your Breakeven Analysis Is Graded</title>
 <style>
   :root {
     --hd-orange: #F96302;
+    --hd-orange-text: #B34600;
+    --hd-orange-soft: #FFF1E8;
     --ink: #1a1a1a;
     --ink-soft: #4a4a4a;
-    --line: #e3e3e3;
+    --line: #dcdcdc;
+    --wash: #f6f6f4;
     --exceeds-bg: #eef7ee;
     --exceeds-bar: #2e7d32;
     --exceeds-ink: #1b4d20;
     --needs-bg: #fdeeee;
     --needs-bar: #b3261e;
     --needs-ink: #7a1a15;
+    --pill-bg: #C2410C;
     --card: #ffffff;
     --page: #ffffff;
+    --btn-off-ink: #767676;
+    --btn-off-line: #b0b0b0;
   }
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; height: 100%; }
   body {
     margin: 0;
-    padding: 20px;
+    height: 100%;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--ink);
     background: var(--page);
-    line-height: 1.5;
+    line-height: 1.42;
     font-size: 16px;
   }
-  .wrap { max-width: 960px; margin: 0 auto; }
+  .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  :focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 5px var(--page); }
 
-  h1 {
-    font-size: 1.35rem;
-    line-height: 1.25;
-    margin: 0 0 4px;
+  /* Whole page is the 16:9 frame: header, slide stage, controls */
+  .deck {
+    height: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 14px 20px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
-  .subhead { color: var(--ink-soft); margin: 0 0 20px; font-size: 0.95rem; }
+  .deck-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size: 1.25rem; line-height: 1.2; margin: 0; }
+  .deck-hint { margin: 0; font-size: 0.85rem; color: var(--ink-soft); }
 
-  /* ---- Table (desktop) ---- */
-  table { border-collapse: collapse; width: 100%; }
-  caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-
-  thead th {
-    text-align: left;
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    padding: 0 14px 8px;
-    vertical-align: bottom;
-    font-weight: 700;
-    border-bottom: 2px solid var(--line);
+  .stage {
+    flex: 1 1 auto;
+    min-height: 0;
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 6px solid var(--hd-orange);
+    border-radius: 10px;
+    overflow: auto;
   }
-  thead .col-exceeds { color: var(--exceeds-ink); }
-  thead .col-needs { color: var(--needs-ink); }
+  .slide { height: 100%; padding: 22px 30px; display: flex; flex-direction: column; gap: 12px; }
+  .slide[hidden] { display: none; }
+  .eyebrow { margin: 0; font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: var(--hd-orange-text); }
+  h2 { margin: 0; font-size: 1.6rem; line-height: 1.2; }
+  .slide-lead { margin: 0; font-size: 1.05rem; color: var(--ink-soft); max-width: 62em; }
 
-  tbody td, tbody th { vertical-align: top; padding: 16px 14px; border-bottom: 1px solid var(--line); }
-
-  /* Criterion cell */
-  .crit { width: 22%; }
-  .crit-name { font-weight: 700; font-size: 1rem; display: block; margin-bottom: 8px; color: var(--ink); }
   .weight {
     display: inline-block;
-    font-size: 0.78rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: #fff;
-    background: #C2410C;
+    background: var(--pill-bg);
     border-radius: 999px;
-    padding: 3px 10px;
+    padding: 3px 12px;
     white-space: nowrap;
+    vertical-align: middle;
   }
-  .weight-label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); margin-top: 6px; }
 
-  .level { width: 39%; font-size: 0.92rem; color: var(--ink); }
-  .level.exceeds { background: var(--exceeds-bg); border-left: 4px solid var(--exceeds-bar); }
-  .level.needs { background: var(--needs-bg); border-left: 4px solid var(--needs-bar); }
-  .level strong { color: inherit; }
+  /* Overview slide */
+  .crit-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .crit-card { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; background: var(--wash); }
+  .crit-card h3 { margin: 0 0 8px; font-size: 1.1rem; line-height: 1.25; }
+  .crit-card p { margin: 8px 0 0; font-size: 0.98rem; }
+  .big-weight { font-size: 2rem; font-weight: 800; color: var(--hd-orange-text); line-height: 1; margin: 0; }
+  .big-weight span { font-size: 0.9rem; font-weight: 700; color: var(--ink-soft); }
+  .key-idea { margin: 0; background: var(--hd-orange-soft); border-left: 4px solid var(--hd-orange-text); border-radius: 8px; padding: 12px 16px; font-size: 0.98rem; }
+  .key-idea strong { color: var(--ink); }
 
-  /* Per-cell heading shown only on mobile */
-  .cell-tag { display: none; }
+  /* Criterion slides */
+  .head-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .levels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .level { border-radius: 10px; padding: 14px 18px; font-size: 1.02rem; }
+  .level h3 { margin: 0 0 8px; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+  .level ul { margin: 0; padding-left: 1.2em; }
+  .level li { margin: 0 0 8px; }
+  .level.exceeds { background: var(--exceeds-bg); border-left: 6px solid var(--exceeds-bar); }
+  .level.exceeds h3 { color: var(--exceeds-ink); }
+  .level.needs { background: var(--needs-bg); border-left: 6px solid var(--needs-bar); }
+  .level.needs h3 { color: var(--needs-ink); }
+  .mark { font-weight: 800; font-size: 1.1rem; }
+  .lane-line { margin: 0; border: 1px solid var(--line); border-left: 4px solid var(--hd-orange-text); border-radius: 8px; padding: 10px 16px; font-size: 1rem; background: var(--card); }
+  .lane-line strong { color: var(--hd-orange-text); }
+  .stars { letter-spacing: 1px; font-size: 0.95rem; }
 
-  /* Stars in the header */
-  .stars { letter-spacing: 1px; }
+  /* Controls */
+  .controls { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+  .btn { font: inherit; font-weight: 700; background: var(--card); color: var(--ink); border: 2px solid var(--ink);
+    border-radius: 8px; padding: 8px 18px; cursor: pointer; min-width: 120px; }
+  .btn:hover { background: var(--wash); }
+  .btn[aria-disabled="true"] { color: var(--btn-off-ink); border-color: var(--btn-off-line); cursor: default; background: var(--card); }
+  .counter { font-weight: 700; color: var(--ink-soft); font-size: 0.95rem; text-align: center; flex: 1 1 auto; margin: 0; }
+  .dots { display: flex; gap: 7px; justify-content: center; margin-top: 4px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line); border: 1px solid #a8a8a8; }
+  .dot.on { background: var(--hd-orange); border-color: var(--hd-orange-text); }
 
-  .footnote {
-    margin-top: 18px;
-    background: #f6f6f4;
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 0.9rem;
-    color: var(--ink-soft);
-  }
-  .footnote strong { color: var(--ink); }
-
-  /* ---- Mobile: stack into cards ---- */
-  @media (max-width: 680px) {
-    thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-    table, tbody, tr, td, th { display: block; width: 100%; }
-    tbody tr {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-    tbody td, tbody th { border-bottom: 1px solid var(--line); padding: 14px 16px; }
-    .crit { background: #fff; }
-    .crit-name { font-size: 1.05rem; }
-    .level { width: 100%; }
-    .cell-tag {
-      display: block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 6px;
-    }
-    .level.exceeds .cell-tag { color: var(--exceeds-ink); }
-    .level.needs .cell-tag { color: var(--needs-ink); }
+  /* Below 720px: let everything stack and scroll */
+  @media (max-width: 720px) {
+    html, body { height: auto; }
+    .deck { height: auto; padding: 12px 16px; }
+    .stage { overflow: visible; }
+    .slide { height: auto; padding: 18px 16px; }
+    h2 { font-size: 1.3rem; }
+    .crit-grid, .levels { grid-template-columns: 1fr; }
+    .btn { min-width: 0; padding: 8px 12px; }
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --ink: #ececec; --ink-soft: #b3b3b3; --line: #3a3a3a; --page: #1e1e1e; --card: #262626;
-      --exceeds-bg: #16281a; --exceeds-ink: #9cd6a2;
-      --needs-bg: #2b1817; --needs-ink: #e79b96;
+      --ink: #ececec; --ink-soft: #b8b8b8; --line: #3a3a3a; --page: #1e1e1e; --card: #262626; --wash: #2e2e2e;
+      --hd-orange-text: #FF9A5C; --hd-orange-soft: #3a2618;
+      --exceeds-bg: #16281a; --exceeds-ink: #9cd6a2; --exceeds-bar: #5cb860;
+      --needs-bg: #2b1817; --needs-ink: #e79b96; --needs-bar: #ef6b63;
+      --btn-off-ink: #8c8c8c; --btn-off-line: #5a5a5a;
     }
-    .footnote { background: #262626; }
-    .weight-label, thead th { color: var(--ink-soft); }
+    .dot { border-color: #777; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>How Your Breakeven Analysis Is Graded</h1>
-  <p class="subhead">Three things matter, each worth part of your grade. You're scored on how clearly you think and how well you explain your numbers — not on a fancy spreadsheet or one “right” answer.</p>
+<main class="deck" aria-roledescription="carousel" aria-label="Project 2 grading rubric, 4 slides">
+  <div class="deck-head">
+    <h1>How Your Breakeven Analysis Is Graded</h1>
+    <p class="deck-hint">Use Previous and Next, or the left and right arrow keys.</p>
+  </div>
 
-  <table role="table">
-    <caption>Project 2 Breakeven Analysis scoring rubric, with three criteria scored from Exceeds (five stars) to Needs Work (one star).</caption>
-    <thead role="rowgroup">
-      <tr role="row">
-        <th scope="col" role="columnheader">Criterion &amp; weight</th>
-        <th scope="col" role="columnheader" class="col-exceeds">Exceeds <span class="stars" aria-hidden="true">★★★★★</span></th>
-        <th scope="col" role="columnheader" class="col-needs">Needs Work <span class="stars" aria-hidden="true">★</span></th>
-      </tr>
-    </thead>
-    <tbody role="rowgroup">
-      <tr role="row">
-        <th scope="row" role="rowheader" class="crit">
-          <span class="crit-name">Evidence Rigor</span>
-          <span class="weight">40%</span>
-          <span class="weight-label">of your score</span>
-        </th>
-        <td class="level exceeds" role="cell">
-          <span class="cell-tag">Exceeds <span aria-hidden="true">★★★★★</span></span>
-          You reach a <strong>real payback number</strong> — how many months until ESL pays for itself — and <strong>every figure has a source</strong>. You carry the <strong>labor savings you found in Pre-Work</strong> into the model as the savings side. Each number ties back to a locked MET fact, a Home Depot number, a benchmark you cite, or an assumption you label clearly.
-        </td>
-        <td class="level needs" role="cell">
-          <span class="cell-tag">Needs Work <span aria-hidden="true">★</span></span>
-          You never reach a payback number. Figures show up with no source. Vendor marketing is treated as fact. The labor savings is never measured, or it isn't connected to the model.
-        </td>
-      </tr>
-      <tr role="row">
-        <th scope="row" role="rowheader" class="crit">
-          <span class="crit-name">THD Fit &amp; Specificity</span>
-          <span class="weight">30%</span>
-          <span class="weight-label">of your score</span>
-        </th>
-        <td class="level exceeds" role="cell">
-          <span class="cell-tag">Exceeds <span aria-hidden="true">★★★★★</span></span>
-          You use Home Depot's <strong>higher warehouse damage rates</strong> (5/10/15/25%) and the cost of replacing damaged units — not the 2–5% rates from regular stores. You also <strong>say what it would take to actually test ESL</strong> on specific products or aisles at Home Depot.
-        </td>
-        <td class="level needs" role="cell">
-          <span class="cell-tag">Needs Work <span aria-hidden="true">★</span></span>
-          It reads like a generic store, not Home Depot. You ignore forklift zones, locked cages, and the whole-store test that failed. You use average damage rates with no warehouse adjustment. You don't say what it would take to put ESL in place.
-        </td>
-      </tr>
-      <tr role="row">
-        <th scope="row" role="rowheader" class="crit">
-          <span class="crit-name">AI Integration + Human Judgment</span>
-          <span class="weight">30%</span>
-          <span class="weight-label">of your score</span>
-        </th>
-        <td class="level exceeds" role="cell">
-          <span class="cell-tag">Exceeds <span aria-hidden="true">★★★★★</span></span>
-          You use AI (like Claude) to <strong>work faster</strong> — setting up assumptions, checking math, testing scenarios — and you <strong>show where you checked, fixed, or overruled it</strong> against a real source. The thinking is clearly yours.
-        </td>
-        <td class="level needs" role="cell">
-          <span class="cell-tag">Needs Work <span aria-hidden="true">★</span></span>
-          You paste AI output in as-is. Made-up specs, rates, or costs are shown as fact. There are no notes on what you checked. Nothing shows you reviewed or corrected the AI.
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="stage">
+    <!-- Slide 1: overview -->
+    <section class="slide" id="slide-1" role="group" aria-roledescription="slide" aria-labelledby="s1-h">
+      <p class="eyebrow">The big picture</p>
+      <h2 id="s1-h">Three things are graded, each worth part of your score</h2>
+      <p class="slide-lead">You're scored on how clearly you think and how well you explain your numbers. A fancy spreadsheet or one "right" answer won't earn points on its own.</p>
+      <ul class="crit-grid">
+        <li class="crit-card">
+          <p class="big-weight">40% <span>of your score</span></p>
+          <h3>Evidence Rigor</h3>
+          <p>Do you reach a real payback date, and can you show where every number came from?</p>
+        </li>
+        <li class="crit-card">
+          <p class="big-weight">30% <span>of your score</span></p>
+          <h3>THD Fit &amp; Specificity</h3>
+          <p>Is your model built for The Home Depot (THD) and its warehouse-style stores, not a generic store?</p>
+        </li>
+        <li class="crit-card">
+          <p class="big-weight">30% <span>of your score</span></p>
+          <h3>AI Integration + Human Judgment</h3>
+          <p>Do you use AI to go faster, and show where you checked, fixed, or overruled it?</p>
+        </li>
+      </ul>
+      <p class="key-idea"><strong>Showing your work is the grade.</strong> Two externs both get "about 12 months." One writes "source: my assumptions." The other lists three inputs, where each came from, and where they overruled the AI. The second scores much higher, with the same math.</p>
+    </section>
 
-  <p class="footnote"><strong>Showing your work IS the grade.</strong> Say two externs turn in the same payback number. One writes “12 months (source: my assumptions).” The other writes “about 12 months, assuming 15% damage — here are my three inputs, where each came from, and where I overruled the AI's guess.” The second extern scores much higher on every part, with the <em>same</em> math.</p>
-</div>
+    <!-- Slide 2: Evidence Rigor -->
+    <section class="slide" id="slide-2" role="group" aria-roledescription="slide" aria-labelledby="s2-h" hidden>
+      <p class="eyebrow">Criterion 1 of 3</p>
+      <div class="head-row"><h2 id="s2-h">Evidence Rigor</h2><span class="weight">40% of your score</span></div>
+      <p class="slide-lead">Can you reach a real payback date, and trace every number to a source?</p>
+      <div class="levels">
+        <div class="level exceeds">
+          <h3><span class="mark" aria-hidden="true">✓</span> Exceeds <span class="stars" aria-hidden="true">★★★★★</span></h3>
+          <ul>
+            <li>You reach a <strong>real payback number</strong>: how many months until electronic shelf labels (ESL) pay for themselves.</li>
+            <li>You carry the <strong>labor savings you found in Pre-Work</strong> into the model as the savings side.</li>
+            <li><strong>Every number has a source:</strong> a fact Home Depot's store team (MET, the merchandising execution team) gave you, a Home Depot number, a benchmark you cite, or an assumption you clearly label as one.</li>
+          </ul>
+        </div>
+        <div class="level needs">
+          <h3><span class="mark" aria-hidden="true">✗</span> Needs Work <span class="stars" aria-hidden="true">★</span></h3>
+          <ul>
+            <li>You never reach a payback number.</li>
+            <li>Numbers show up with no source.</li>
+            <li>Vendor marketing is treated as fact.</li>
+            <li>The labor savings is never measured, or it isn't connected to the model.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="lane-line"><strong>Lane depth:</strong> your lane's numbers are sourced or clearly labeled as assumptions.</p>
+    </section>
+
+    <!-- Slide 3: THD Fit -->
+    <section class="slide" id="slide-3" role="group" aria-roledescription="slide" aria-labelledby="s3-h" hidden>
+      <p class="eyebrow">Criterion 2 of 3</p>
+      <div class="head-row"><h2 id="s3-h">THD Fit &amp; Specificity</h2><span class="weight">30% of your score</span></div>
+      <p class="slide-lead">Does your model fit The Home Depot (THD) specifically, with its forklifts, high shelves, and heavy damage?</p>
+      <div class="levels">
+        <div class="level exceeds">
+          <h3><span class="mark" aria-hidden="true">✓</span> Exceeds <span class="stars" aria-hidden="true">★★★★★</span></h3>
+          <ul>
+            <li>You base your damage rate on <strong>Home Depot's own data</strong> (about 5–8% a year store-wide), then test it at 5%, 10%, 15%, and 25% for rough areas like lumber and outdoor garden.</li>
+            <li>You include the <strong>cost of replacing damaged labels</strong>.</li>
+            <li>You <strong>say what it would take to actually test ESL</strong> on specific products or aisles at Home Depot.</li>
+          </ul>
+        </div>
+        <div class="level needs">
+          <h3><span class="mark" aria-hidden="true">✗</span> Needs Work <span class="stars" aria-hidden="true">★</span></h3>
+          <ul>
+            <li>It reads like a generic store, not Home Depot.</li>
+            <li>You ignore forklift zones, locked cages, and the past failure: Home Depot told us its whole-store ESL test about 4–5 years ago failed because labels kept getting damaged.</li>
+            <li>You use average damage rates with no warehouse adjustment.</li>
+            <li>You don't say what it would take to put ESL in place.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="lane-line"><strong>Lane depth:</strong> your lane ties to MET's real stores and data (the Partner Data Card, Store A and Store B).</p>
+    </section>
+
+    <!-- Slide 4: AI -->
+    <section class="slide" id="slide-4" role="group" aria-roledescription="slide" aria-labelledby="s4-h" hidden>
+      <p class="eyebrow">Criterion 3 of 3</p>
+      <div class="head-row"><h2 id="s4-h">AI Integration + Human Judgment</h2><span class="weight">30% of your score</span></div>
+      <p class="slide-lead">Do you use AI to speed up the work while keeping the thinking your own?</p>
+      <div class="levels">
+        <div class="level exceeds">
+          <h3><span class="mark" aria-hidden="true">✓</span> Exceeds <span class="stars" aria-hidden="true">★★★★★</span></h3>
+          <ul>
+            <li>You use AI (like Claude) to <strong>work faster</strong>: setting up assumptions, checking math, testing scenarios.</li>
+            <li>You <strong>show where you checked, fixed, or overruled it</strong> against a real source.</li>
+            <li>The thinking is clearly yours.</li>
+          </ul>
+        </div>
+        <div class="level needs">
+          <h3><span class="mark" aria-hidden="true">✗</span> Needs Work <span class="stars" aria-hidden="true">★</span></h3>
+          <ul>
+            <li>You paste AI output in as-is.</li>
+            <li>Made-up specs, rates, or costs are shown as fact.</li>
+            <li>There are no notes on what you checked.</li>
+            <li>Nothing shows you reviewed or corrected the AI.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="lane-line"><strong>Lane depth:</strong> you checked the AI on your lane's inputs, not just the shared model.</p>
+    </section>
+  </div>
+
+  <div>
+    <div class="controls">
+      <button type="button" class="btn" id="prevBtn" aria-disabled="true">‹ Previous</button>
+      <p class="counter" id="counter">1 of 4</p>
+      <button type="button" class="btn" id="nextBtn">Next ›</button>
+    </div>
+    <div class="dots" aria-hidden="true">
+      <span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>
+  </div>
+  <div id="status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var TOTAL = 4, current = 1, KEY = "thd-p2-rubric-slide";
+  var titles = {
+    1: "Overview: three graded criteria",
+    2: "Evidence Rigor, 40 percent",
+    3: "THD Fit and Specificity, 30 percent",
+    4: "AI Integration plus Human Judgment, 30 percent"
+  };
+  var slides = [];
+  for (var i = 1; i <= TOTAL; i++) slides.push(document.getElementById("slide-" + i));
+  var prevBtn = document.getElementById("prevBtn"),
+      nextBtn = document.getElementById("nextBtn"),
+      counter = document.getElementById("counter"),
+      status = document.getElementById("status"),
+      dots = Array.prototype.slice.call(document.querySelectorAll(".dot"));
+
+  try { var saved = parseInt(localStorage.getItem(KEY), 10); if (saved >= 1 && saved <= TOTAL) current = saved; } catch (e) {}
+  var h = /^#s([1-4])$/.exec(location.hash); if (h) current = parseInt(h[1], 10);
+
+  function render(announce) {
+    slides.forEach(function (s, idx) {
+      if (idx + 1 === current) s.removeAttribute("hidden"); else s.setAttribute("hidden", "");
+      s.setAttribute("aria-label", "Slide " + (idx + 1) + " of " + TOTAL);
+    });
+    counter.textContent = current + " of " + TOTAL;
+    dots.forEach(function (d, idx) { d.classList.toggle("on", idx + 1 === current); });
+    prevBtn.setAttribute("aria-disabled", current === 1 ? "true" : "false");
+    nextBtn.setAttribute("aria-disabled", current === TOTAL ? "true" : "false");
+    if (announce) status.textContent = "Slide " + current + " of " + TOTAL + ": " + titles[current];
+    try { localStorage.setItem(KEY, String(current)); } catch (e) {}
+  }
+  function go(d) { var t = current + d; if (t < 1 || t > TOTAL) return; current = t; render(true); }
+
+  prevBtn.addEventListener("click", function () { if (prevBtn.getAttribute("aria-disabled") !== "true") go(-1); });
+  nextBtn.addEventListener("click", function () { if (nextBtn.getAttribute("aria-disabled") !== "true") go(1); });
+  document.addEventListener("keydown", function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key === "ArrowRight") { go(1); e.preventDefault(); }
+    else if (e.key === "ArrowLeft") { go(-1); e.preventDefault(); }
+  });
+  render(false);
+})();
+</script>
 </body>
 </html>

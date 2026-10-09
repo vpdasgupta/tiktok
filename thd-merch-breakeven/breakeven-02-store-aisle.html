@@ -15,7 +15,7 @@
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--wash);color:var(--ink);
   font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
-.wrap{max-width:900px;margin:0 auto;padding:0 20px 60px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px 24px}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 4px #fff}
 
 .topband{background:var(--hd-orange)}
@@ -33,11 +33,11 @@ h2{font-size:1.25rem;margin:0 0 .6em;padding-bottom:.3em;border-bottom:2px solid
   color:#5f3e00;padding:12px 16px;border-radius:8px;margin:16px 0 0;font-size:.92rem}
 .warn::before{content:"\26A0  ";font-weight:700}
 
-.elements{display:flex;flex-direction:column;gap:12px;margin:18px 0 2px;list-style:none;padding:0}
-.el{display:flex;align-items:center;gap:18px;border:1px solid var(--line);border-radius:10px;
-  padding:14px 20px;background:var(--paper)}
+.elements{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:18px 0 2px;list-style:none;padding:0}
+.el{display:flex;flex-direction:column;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;background:var(--paper)}
 .el .icon{width:46px;height:46px;flex:0 0 auto;margin:0}
-.el-head{flex:0 0 200px}
+.el-head{flex:0 0 auto}
 .el .el-name{font-weight:800;margin:0}
 .el .el-amt{font-size:1.4rem;font-weight:800;font-variant-numeric:tabular-nums;margin:0;line-height:1.2}
 .el .el-freq{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin:0}
@@ -45,7 +45,7 @@ h2{font-size:1.25rem;margin:0 0 .6em;padding-bottom:.3em;border-bottom:2px solid
 .el.up{border-left:5px solid var(--hd-orange)} .el.up .el-amt{color:var(--hd-orange-text)}
 .el.save{border-left:5px solid var(--deploy)} .el.save .el-amt{color:var(--deploy)}
 .el.cost{border-left:5px solid var(--warn)} .el.cost .el-amt{color:#5f3e00}
-@media (max-width:560px){ .el{flex-wrap:wrap;gap:10px 14px} .el-head{flex-basis:auto} .el .el-def{flex-basis:100%} }
+@media (max-width:720px){ .elements{grid-template-columns:1fr;gap:12px} .el{flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px 14px} .el .el-def{flex-basis:100%} }
 @media (max-width:600px){ .card{padding:20px 18px} .topband h1{font-size:1.5rem} }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
