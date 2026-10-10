@@ -403,7 +403,8 @@ const CALC_DEF = [
   {k:"upfront", label:"Calculation 2 · Upfront cost ($)", words:"label spots × $11.50",
    math:e=>`${fmtN(e.spots)} × $${COSTS.upfront.toFixed(2)}`, hint:"Each label spot costs $11.50 up front: $10 label + $1 install + $0.50 gateway share."},
   {k:"running", label:"Calculation 3 · Running cost a year ($)", words:"label spots × ($0.50 + damage rate × $11)",
-   math:e=>`${fmtN(e.spots)} × ($${COSTS.software.toFixed(2)} + ${fmtN(e.damage)}% × $${COSTS.replace})`, hint:"Turn the damage rate into a decimal first (5% = 0.05), multiply by $11, add $0.50, then multiply by label spots."},
+   math:e=>`${fmtN(e.spots)} × ($${COSTS.software.toFixed(2)} + ${fmtN(e.damage)}% × $${COSTS.replace})  →  ${fmtN(e.spots)} × ($${COSTS.software.toFixed(2)} + ${fmtN(e.damage/100,4)} × $${COSTS.replace})`,
+   hint:e=>`Turn your damage rate into a decimal first (${fmtN(e.damage)}% = ${fmtN(e.damage/100,4)}), multiply by $11, add $0.50, then multiply by your ${fmtN(e.spots)} label spots.`},
   {k:"months", label:"Calculation 4 · Months to breakeven", words:"upfront ÷ (labor saved − running cost) × 12, or never",
    math:()=>`calculation 2 ÷ (calculation 1 − calculation 3) × 12`, hint:"Subtract calculation 3 from calculation 1. If the result is zero or less, type never. Otherwise divide calculation 2 by it and multiply by 12."},
 ];
@@ -434,7 +435,7 @@ function check(k){
   const inp = $("#c-"+k); const val = inp.value;
   S.tries[k] = (S.tries[k]||0) + 1;
   if(isRight(k, val)){ S.calc[k] = {ok:true, val, msg:"Correct.", tries:S.tries[k]}; }
-  else { const c = CALC_DEF.find(x=>x.k===k); S.calc[k] = {ok:false, val, msg:"Not quite. " + c.hint + (S.tries[k]>=3 ? " You can also show the answer." : "")}; }
+  else { const c = CALC_DEF.find(x=>x.k===k); const h = typeof c.hint === "function" ? c.hint(est()) : c.hint; S.calc[k] = {ok:false, val, msg:"Not quite. " + h + (S.tries[k]>=3 ? " You can also show the answer." : "")}; }
   save(); renderCalc(); renderNav();
   const n = CALC_DEF.findIndex(x=>x.k===k) + 1; const nextOpen = document.querySelector('#calcList input:not([readonly])');
   $("#calcLive").textContent = "Calculation " + n + ": " + S.calc[k].msg + (S.calc[k].ok ? (nextOpen ? " Moving to the next calculation." : " All four calculations are done. Go to step 4.") : "");
