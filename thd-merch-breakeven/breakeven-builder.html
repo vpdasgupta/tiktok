@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breakeven Builder — Store A</title>
+<!-- GENERATED from src/breakeven-builder.src.html by scripts/build-breakeven-builder.py. Edit the source, not this file. -->
+<style>
+:root{
+  --hd-orange:#F96302; --hd-orange-text:#B34600; --hd-orange-soft:#FFF1E8;
+  --ink:#1c1c1c; --muted:#555555; --line:#d6d6d6; --paper:#ffffff; --wash:#f6f6f4;
+  --ok:#17652A; --ok-bg:#E7F4EB; --bad:#8a1c14; --bad-bg:#FBEAE8; --est:#DEEAF6; --calc:#E2EFDA;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 6px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--wash);color:var(--ink);
+  font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 5px #fff}
+a{color:#0B57D0}
+.app{max-width:1200px;margin:0 auto;padding:12px}
+.frame{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;
+  display:flex;flex-direction:column}
+@media (min-width:900px){ .frame{min-height:min(675px,56.25vw)} }
+.top{background:#333;color:#fff;display:flex;align-items:center;gap:16px;padding:10px 18px;border-bottom:4px solid var(--hd-orange);flex-wrap:wrap}
+.top .eyebrow{margin:0;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#fff}
+.top h1{margin:0;font-size:1.15rem;font-weight:800}
+.steps{list-style:none;margin:0 0 0 auto;padding:0;display:flex;gap:4px;flex-wrap:wrap}
+.steps button{font:inherit;font-size:.8rem;font-weight:700;border:1px solid #777;background:#444;color:#fff;border-radius:999px;
+  padding:4px 10px;cursor:pointer;min-height:30px}
+.steps button[aria-current="step"]{background:var(--hd-orange);color:var(--ink);border:2px solid #fff;text-decoration:underline;text-underline-offset:3px}
+.top :focus-visible{outline-color:#fff;box-shadow:0 0 0 5px #333}
+.steps button .done{margin-left:4px}
+.stage{flex:1;padding:16px 22px}
+.slide h2{font-size:1.3rem;margin:0 0 4px;outline:none}
+.slide .lead{margin:0 0 12px;color:var(--muted)}
+.cols{display:grid;gap:18px}
+@media (min-width:760px){ .cols{grid-template-columns:minmax(0,5fr) minmax(0,7fr)} .cols.even{grid-template-columns:1fr 1fr} }
+.panel{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--paper)}
+.panel.wash{background:var(--wash)}
+label,.lbl{font-weight:700;display:block;margin:0 0 4px}
+.err{display:block;font-weight:700;color:var(--bad);font-size:.86rem;margin-top:4px}
+.hint{display:block;font-weight:400;font-size:.84rem;color:var(--muted)}
+input[type=text],input[type=number],select,textarea{font:inherit;color:var(--ink);background:#fff;border:2px solid #767676;border-radius:8px;
+  padding:7px 10px;width:100%}
+textarea{min-height:56px;resize:vertical}
+.field{margin:0 0 12px}
+.row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;border-radius:8px;padding:8px 16px;cursor:pointer;min-height:40px;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+.btn.primary{background:var(--hd-orange);border-color:var(--hd-orange-text);color:var(--ink)}
+.btn.small{padding:4px 10px;min-height:32px;font-size:.85rem}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 22px;border-top:1px solid var(--line);background:var(--wash)}
+.est-grid{display:grid;gap:12px}
+@media (min-width:760px){ .est-grid{grid-template-columns:1fr 1fr} }
+.est{background:var(--est);border:1px solid #9fb9d6;border-radius:10px;padding:12px 14px}
+.est .num{display:flex;align-items:center;gap:8px}
+.est .num input{max-width:150px}
+.calc{background:var(--calc);border:1px solid #9cc49a;border-radius:10px;padding:10px 14px;margin:0 0 10px}
+.calc .math{font-family:ui-monospace,Menlo,Consolas,"Courier New",monospace;font-size:.92rem;background:#fff;border-radius:6px;padding:4px 8px;display:inline-block;margin:2px 0 6px}
+.calc .row input{max-width:170px}
+.fb{font-weight:700;margin:6px 0 0;min-height:1.4em}
+.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+.tag.ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+caption{text-align:left;font-weight:700;margin:0 0 6px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left}
+th{background:var(--hd-orange-soft)}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:14px;background:var(--hd-orange);border-radius:3px;display:inline-block;vertical-align:middle}
+.mapwrap svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;margin:6px 0 0;padding:0;list-style:none}
+.legend li{display:flex;align-items:center;gap:6px}
+.legend svg{width:26px;height:16px;border:1px solid #333}
+.notice{border-left:4px solid var(--hd-orange);background:var(--hd-orange-soft);padding:8px 12px;border-radius:0 8px 8px 0;margin:8px 0;font-size:.9rem}
+.notice.ok{border-left-color:var(--ok);background:var(--ok-bg)}
+.kv{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:.92rem}
+.kv dt{font-weight:700}.kv dd{margin:0}
+#report{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  @page{size:letter;margin:14mm}
+  body{background:#fff;font-size:11pt}
+  .app>*:not(#report){display:none!important}
+  #report{display:block}
+  #report h1{font-size:18pt;margin:0}
+  #report h2{font-size:13pt;border-bottom:2px solid var(--hd-orange);margin:16px 0 6px;break-after:avoid}
+  #report .band{background:#333!important;color:#fff!important;padding:10px 14px;border-bottom:4px solid var(--hd-orange);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #report table, #report .mapwrap{break-inside:avoid}
+  th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .mapwrap svg *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="frame" role="region" aria-label="Breakeven Builder">
+  <header class="top">
+    <div>
+      <p class="eyebrow">The Home Depot · Project 2 · Store A</p>
+      <h1>Breakeven Builder</h1>
+    </div>
+    <nav aria-label="Builder steps"><ol class="steps" id="steps"></ol></nav>
+  </header>
+
+  <main class="stage" id="stage">
+
+  <!-- 1 AREA -->
+  <section class="slide" data-step="1" aria-labelledby="h1s">
+    <h2 id="h1s" tabindex="-1">1. Pick your store area</h2>
+    <p class="lead">Your program manager emailed you your area. Pick it, and Store A's map shows where it is.</p>
+    <div class="cols">
+      <div class="panel">
+        <div class="field"><label for="name">Your name <span class="hint" style="display:inline">(needed to share and for your PDF)</span></label><input type="text" id="name" autocomplete="name" aria-required="true"></div>
+        <div class="field"><label for="area">Your store area</label><select id="area"></select></div>
+        <p id="areaLive" class="sr-only" role="status"></p>
+        <dl class="kv" id="areaFacts"></dl>
+      </div>
+      <div class="panel mapwrap">
+        <p class="lbl" id="map1-cap">Store A map</p>
+        <div id="map1"></div>
+        <p class="sr-only" id="map1-desc"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 ESTIMATES -->
+  <section class="slide" data-step="2" aria-labelledby="h2s" hidden>
+    <h2 id="h2s" tabindex="-1">2. Check your four estimates</h2>
+    <p class="lead">Each one starts at your area card's best guess. Keep it or change it, and say why in one line. Your reasons become your Assumptions Log.</p>
+    <p class="notice">Changing a number clears your checked calculations on step 3, so you can redo them with the new number.</p>
+    <p id="estLive" class="sr-only" role="status"></p>
+    <div class="est-grid" id="estGrid"></div>
+  </section>
+
+  <!-- 3 CALCULATIONS -->
+  <section class="slide" data-step="3" aria-labelledby="h3s" hidden>
+    <h2 id="h3s" tabindex="-1">3. Do the four calculations</h2>
+    <p class="lead">Work each one out with a calculator, type your answer, and press Check. Round dollars to the nearest dollar and months to the nearest month. For calculation 4, type <strong>never</strong> if the running cost is bigger than the labor saved.</p>
+    <p id="calcLive" class="sr-only" role="status"></p>
+    <div id="calcList"></div>
+  </section>
+
+  <!-- 4 DAMAGE TEST -->
+  <section class="slide" data-step="4" aria-labelledby="h4s" hidden>
+    <h2 id="h4s" tabindex="-1">4. Read your damage test</h2>
+    <p class="lead">The Builder reruns calculation 4 at four damage rates. Only the running cost changes.</p>
+    <div id="dmgLocked" class="notice">Finish all four calculations on step 3 to see your damage test.</div>
+    <div class="cols even" id="dmgBody" hidden>
+      <div class="panel"><div id="dmgTable"></div></div>
+      <div class="panel">
+        <div class="field"><label for="whatif">Try a different estimate 2 (price changes per product a year)</label>
+          <span class="hint" id="whatif-hint">Type a much higher or lower number to see how the damage test moves. This doesn't change your saved estimate.</span>
+          <div class="row"><input type="number" id="whatif" min="0" step="any" aria-describedby="whatif-hint" style="max-width:150px"><button type="button" class="btn small" id="whatifReset">Back to my estimate</button></div>
+          <p id="whatifNote" class="hint" role="status"></p></div>
+        <div class="field"><label for="s1">Does your area pay back within about 3 years at your damage rate?</label><span class="hint" id="s1-hint">One sentence.</span><textarea id="s1" aria-describedby="s1-hint"></textarea></div>
+        <div class="field"><label for="s2">Which moves your answer more: price changes or damage?</label><span class="hint" id="s2-hint">Use the box above, then write one sentence.</span><textarea id="s2" aria-describedby="s2-hint"></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 COHORT MAP -->
+  <section class="slide" data-step="5" aria-labelledby="h5s" hidden>
+    <h2 id="h5s" tabindex="-1">5. Fill in the store map</h2>
+    <p class="lead">Add your result to the shared map of Store A. Once you do, you'll see every other extern's result too. Then compare an area that pays back with one that doesn't.</p>
+    <div class="cols">
+      <div class="panel">
+        <div class="field"><label for="finding">Your one-sentence finding <span class="hint" style="display:inline">(needed to share)</span></label>
+          <span class="hint" id="finding-hint">Example: "Fan prices change about 10 times a year, so payback takes about 8 years: too slow."</span>
+          <textarea id="finding" aria-required="true" aria-describedby="finding-hint"></textarea></div>
+        <button type="button" class="btn primary" id="submitBtn">Add my result to the map</button>
+        <div id="submitMsg" role="status" class="fb"></div>
+        <button type="button" class="btn small" id="toStep1" hidden>Go to step 1 to add your name</button>
+        <hr>
+        <div class="field"><label for="fav">Favorable area (pays back fastest)</label><select id="fav"></select></div>
+        <div class="field"><label for="unfav">Unfavorable area (never pays back, or slowest)</label><select id="unfav"></select></div>
+        <div class="field"><label for="gap">Which estimate explains most of the gap?</label><textarea id="gap"></textarea></div>
+      </div>
+      <div class="panel mapwrap">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <p class="lbl" id="map2-cap" style="margin:0">Everyone's map of Store A</p>
+          <button type="button" class="btn small" id="refreshBtn">Refresh map</button>
+        </div>
+        <div id="map2"></div>
+        <p class="sr-only" id="map2-desc">Each area is labeled with its middle result and how many externs modeled it. The table below the map gives the same information.</p>
+        <ul class="legend" id="legend"></ul>
+        <div id="cohortStatus" role="status" class="hint"></div>
+        <div id="cohortTable"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 EXPORT -->
+  <section class="slide" data-step="6" aria-labelledby="h6s" hidden>
+    <h2 id="h6s" tabindex="-1">6. Download your model as a PDF</h2>
+    <p class="lead">Your PDF is the model part of your Breakeven Analysis. It holds your estimates and reasons, your four calculations, your damage test, your comparison and your map.</p>
+    <div class="cols even">
+      <div class="panel">
+        <p class="lbl">Before you download</p>
+        <ul id="checklist" style="margin:0 0 12px;padding-left:1.2em"></ul>
+        <div class="row">
+          <button type="button" class="btn primary" id="pdfBtn">Download PDF</button>
+          <button type="button" class="btn" id="copyBtn">Copy results</button>
+        </div>
+        <div id="exportMsg" role="status" class="fb"></div>
+        <p class="hint">In the print window, choose <strong>Save as PDF</strong>. Nothing happens? <a href="#" id="newWin" target="_blank" rel="noopener">Open the Builder in a new window</a>; your work comes with you.</p>
+      </div>
+      <div class="panel wash"><p class="lbl">Your answer</p><dl class="kv" id="summaryKv"></dl></div>
+    </div>
+  </section>
+  </main>
+
+  <div class="nav">
+    <button type="button" class="btn" id="prevBtn"><span aria-hidden="true">←</span> Previous</button>
+    <span id="saveNote" class="hint"></span>
+    <button type="button" class="btn primary" id="nextBtn">Next <span aria-hidden="true">→</span></button>
+  </div>
+</div>
+
+<!-- print-only report -->
+<div id="report"></div>
+</div>
+
+<script>
+"use strict";
+const AREAS = [{"key": "fans", "name": "Ceiling fans", "where": "Aisles 45\u201346 (Electrical / Lighting / Fans)", "baysText": "5 bays (the worked example)", "spots": 58, "changes": 10.3, "seconds": 30, "damage": 0.05, "link": "https://www.homedepot.com/b/Lighting-Ceiling-Fans/N-5yc1vZbvn5"}, {"key": "power", "name": "Power Tools", "where": "Aisles 5\u20138 (part of Hardware & Tools)", "baysText": "About 55 bays (our estimate from the plan)", "spots": 1650, "changes": 15, "seconds": 45, "damage": 0.05, "link": "https://www.homedepot.com/b/Tools-Power-Tools/N-5yc1vZc298"}, {"key": "lumber", "name": "Lumber", "where": "Aisles 16\u201318 and 23\u201325, plus lumber racks", "baysText": "23 bays + about 570 ft of lumber racks", "spots": 370, "changes": 26, "seconds": 40, "damage": 0.25, "link": "https://www.homedepot.com/b/Lumber-Composites-Dimensional-Lumber/N-5yc1vZc3tc"}, {"key": "paint", "name": "Paint", "where": "Aisles 10\u201312, plus the paint desk", "baysText": "53.75 bays", "spots": 2150, "changes": 3, "seconds": 30, "damage": 0.05, "link": "https://www.homedepot.com/b/Paint/N-5yc1vZar2d"}, {"key": "garden", "name": "Outdoor Garden", "where": "The garden center", "baysText": "120 outside bays", "spots": 1800, "changes": 10, "seconds": 30, "damage": 0.25, "link": "https://www.homedepot.com/b/Outdoors-Garden-Center/N-5yc1vZbx6k"}, {"key": "flooring", "name": "Flooring", "where": "Aisles 40\u201344 (Floor Coverings)", "baysText": "60.75 bays", "spots": 1220, "changes": 2, "seconds": 30, "damage": 0.15, "link": "https://www.homedepot.com/b/Flooring/N-5yc1vZaq7r"}];
+const COSTS = {"rate": 28.0, "upfront": 11.5, "software": 0.5, "replace": 11.0};
+const MAP_SVG = "<svg id=\"__ID__\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"60 110 1480 700\" role=\"img\" aria-label=\"Store A map. Front of store at the bottom, back wall at the top, garden center on the right. Each area is labeled with its result; the table below the map gives the same information.\"><defs>\n<pattern id=\"__ID__-p-fast\" width=\"10\" height=\"10\" patternUnits=\"userSpaceOnUse\"><rect width=\"10\" height=\"10\" fill=\"#1E7B34\"/></pattern>\n<pattern id=\"__ID__-p-mid\" width=\"14\" height=\"14\" patternUnits=\"userSpaceOnUse\" patternTransform=\"rotate(45)\"><rect width=\"14\" height=\"14\" fill=\"#FFE2B8\"/><rect width=\"5\" height=\"14\" fill=\"#B26B00\"/></pattern>\n<pattern id=\"__ID__-p-never\" width=\"12\" height=\"12\" patternUnits=\"userSpaceOnUse\"><rect width=\"12\" height=\"12\" fill=\"#E4E4E4\"/><circle cx=\"6\" cy=\"6\" r=\"2.4\" fill=\"#4a4a4a\"/></pattern>\n<pattern id=\"__ID__-p-none\" width=\"10\" height=\"10\" patternUnits=\"userSpaceOnUse\"><rect width=\"10\" height=\"10\" fill=\"#FAFAFA\"/></pattern>\n</defs>\n<style>\n#__ID__ .shape{stroke:#1c1c1c;stroke-width:3}\n#__ID__ .mine .shape{stroke:#F96302;stroke-width:9}\n#__ID__ .you{display:none} #__ID__ .mine .you{display:inline}\n#__ID__ text{font-family:Arial,Helvetica,sans-serif}\n</style><rect x=\"89.0\" y=\"143.0\" width=\"1045.2\" height=\"624.0\" fill=\"#ffffff\" stroke=\"#1c1c1c\" stroke-width=\"3\"/><rect x=\"1134.2\" y=\"270.4\" width=\"377.0\" height=\"507.0\" fill=\"#f4f4f4\" stroke=\"#1c1c1c\" stroke-width=\"3\" stroke-dasharray=\"10 6\"/><rect x=\"89.0\" y=\"702.0\" width=\"1045.2\" height=\"65.0\" fill=\"#ececec\" stroke=\"#8a8a8a\" stroke-width=\"1.5\"/><rect x=\"112.4\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"112.4\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"154.0\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"154.0\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"195.6\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"195.6\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"237.2\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"237.2\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"278.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"278.8\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"320.4\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"320.4\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"362.0\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"362.0\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"403.6\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"403.6\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"445.2\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"445.2\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"486.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"486.8\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"528.4\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"528.4\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"570.0\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"570.0\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"611.6\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"611.6\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"653.2\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"653.2\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"694.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"694.8\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"736.4\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"736.4\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"778.0\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"778.0\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"819.6\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"819.6\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"861.2\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"861.2\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"397.8\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"430.3\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"462.8\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"495.3\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"527.8\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"560.3\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"592.8\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"625.3\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"941.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"974.3\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"1006.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"1039.3\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"1071.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"1186.2\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1186.2\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1235.6\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1235.6\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1285.0\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1285.0\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1334.4\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1334.4\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1383.8\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1383.8\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1433.2\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1433.2\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1482.6\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1482.6\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><text x=\"612\" y=\"738\" font-size=\"26\" fill=\"#4a4a4a\" text-anchor=\"middle\">Front of store: entrance, checkouts, offices</text><text x=\"612\" y=\"159\" font-size=\"26\" fill=\"#4a4a4a\" text-anchor=\"middle\">Back wall</text><text x=\"1323\" y=\"265\" font-size=\"26\" fill=\"#4a4a4a\" text-anchor=\"middle\">Garden center (outside)</text><g data-area=\"lumber\"><rect x=\"226.8\" y=\"169.0\" width=\"98.8\" height=\"462.8\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"181.2\" y=\"300.4\" width=\"190.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"276.2\" y=\"332.4\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Lumber</text><text class=\"line2\" x=\"276.2\" y=\"366.4\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"196.2\" y=\"258.4\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"276.2\" y=\"284.4\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g><g data-area=\"paint\"><rect x=\"502.4\" y=\"390.0\" width=\"104.0\" height=\"247.0\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"459.4\" y=\"393.5\" width=\"190.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"554.4\" y=\"425.5\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Paint</text><text class=\"line2\" x=\"554.4\" y=\"459.5\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"474.4\" y=\"351.5\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"554.4\" y=\"377.5\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g><g data-area=\"power\"><rect x=\"648.0\" y=\"390.0\" width=\"122.2\" height=\"247.0\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"601.6\" y=\"553.5\" width=\"215.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"709.1\" y=\"585.5\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Power Tools</text><text class=\"line2\" x=\"709.1\" y=\"619.5\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"629.1\" y=\"511.5\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"709.1\" y=\"537.5\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g><g data-area=\"flooring\"><rect x=\"941.8\" y=\"169.0\" width=\"130.0\" height=\"197.6\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"911.8\" y=\"227.8\" width=\"190.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"1006.8\" y=\"259.8\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Flooring</text><text class=\"line2\" x=\"1006.8\" y=\"293.8\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"926.8\" y=\"185.8\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"1006.8\" y=\"211.8\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g><g data-area=\"fans\"><rect x=\"910.6\" y=\"430.3\" width=\"192.4\" height=\"24.7\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"890.8\" y=\"402.7\" width=\"232.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"1006.8\" y=\"434.7\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Ceiling fans</text><text class=\"line2\" x=\"1006.8\" y=\"468.7\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"926.8\" y=\"360.7\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"1006.8\" y=\"386.7\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g><g data-area=\"garden\"><rect x=\"1139.4\" y=\"275.6\" width=\"366.6\" height=\"496.6\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"1189.7\" y=\"483.9\" width=\"266.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"1322.7\" y=\"515.9\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Outdoor Garden</text><text class=\"line2\" x=\"1322.7\" y=\"549.9\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"1242.7\" y=\"441.9\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"1322.7\" y=\"467.9\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g></svg>";
+const CONFIG_URL = "builder-config.json";
+const KEY = "thd-p2-breakeven-builder-v1";
+const STEPS = ["Area","Estimates","Calculations","Damage test","Store map","PDF"];
+
+const $ = s => document.querySelector(s);
+const fmt$ = n => "$" + Math.round(n).toLocaleString("en-US");
+const fmtN = (n, d=0) => Number(n).toLocaleString("en-US", {maximumFractionDigits:d});
+function fmtTime(m){ if(m===null) return "never"; if(m>=60) return "about " + Math.round(m/12) + " years (" + Math.round(m) + " months)"; return "about " + Math.round(m) + " months"; }
+const assignable = AREAS.filter(a => a.key !== "fans");
+
+// ---------- state
+let S = { step:1, name:"", area:"power", est:{}, why:{}, calc:{}, tries:{}, shown:{}, s1:"", s2:"", finding:"", fav:"", unfav:"", gap:"", submitted:false };
+function load(){ try{ const raw = localStorage.getItem(KEY); if(raw) S = Object.assign(S, JSON.parse(raw)); }catch(e){} }
+let saveT; function save(){ clearTimeout(saveT); saveT = setTimeout(()=>{ try{ localStorage.setItem(KEY, JSON.stringify(S)); $("#saveNote").textContent = "Saved in this browser"; }catch(e){ $("#saveNote").textContent = ""; } }, 300); }
+const area = () => AREAS.find(a => a.key === S.area);
+function defaults(a){ return {spots:a.spots, changes:a.changes, seconds:a.seconds, damage:Math.round(a.damage*100)}; }
+function est(){ const d = defaults(area()); const e = S.est[S.area] || {}; return Object.assign({}, d, e); }
+
+// ---------- model
+function model(e, dmgPct){
+  const d = (dmgPct===undefined ? e.damage : dmgPct)/100;
+  const labor = e.spots*e.changes*e.seconds/3600*COSTS.rate;
+  const upfront = e.spots*COSTS.upfront;
+  const running = e.spots*(COSTS.software + d*COSTS.replace);
+  const net = labor - running;
+  return {labor, upfront, running, net, months: net>0 ? upfront/net*12 : null};
+}
+
+// ---------- map
+function mountMap(el, id){
+  el.innerHTML = MAP_SVG.replace(/__ID__/g, id);
+  const svg = el.querySelector("svg"); const lab = {m1:["map1-cap","map1-desc"], m2:["map2-cap","map2-desc"]}[id];
+  if(lab){ svg.removeAttribute("aria-label"); svg.setAttribute("aria-labelledby", lab[0]); svg.setAttribute("aria-describedby", lab[1]); }
+}
+function paintMap(id, results){ // results: {key: {cls, line}}
+  const svg = document.getElementById(id); if(!svg) return;
+  AREAS.forEach(a => {
+    const g = svg.querySelector('[data-area="'+a.key+'"]'); if(!g) return;
+    const r = results[a.key] || {cls:"none", line:a.key==="fans" ? "worked example" : ""};
+    g.querySelectorAll(".shape").forEach(s => s.setAttribute("fill", "url(#"+id+"-p-"+r.cls+")"));
+    g.querySelector(".line2").textContent = r.line || "";
+    g.classList.toggle("mine", a.key === S.area);
+  });
+}
+function cls(m){ if(m===null) return "never"; if(m<=36) return "fast"; if(m<=84) return "mid"; return "never"; }
+const CLS_WORDS = {fast:"Pays back within 3 years", mid:"Pays back in 3–7 years", never:"Over 7 years, or never", none:"No results yet"};
+
+// ---------- step 1
+function renderArea(){
+  const sel = $("#area");
+  if(!sel.options.length){ assignable.forEach(a => sel.add(new Option(a.name, a.key))); sel.add(new Option("Ceiling fans (worked example)", "fans")); }
+  sel.value = S.area; $("#name").value = S.name;
+  const a = area();
+  $("#areaFacts").innerHTML = `<dt>Where</dt><dd>${a.where}</dd><dt>Bays</dt><dd>${a.baysText}</dd><dt>Website</dt><dd><a href="${a.link}" target="_blank" rel="noopener">${a.name} on homedepot.com<span class="sr-only"> (opens in a new tab)</span></a></dd>`;
+  const res = {}; res[a.key] = {cls:"none", line:"your area"};
+  paintMap("m1", res);
+  $("#map1-desc").textContent = `Store A map with ${a.name} outlined: ${a.where}.`;
+}
+
+// ---------- step 2
+const EST_DEF = [
+  {k:"spots", label:"1. Label spots", unit:"label spots", step:"10", hint:"Bays × products per bay × labels per product. A rough count is fine: it changes the dollars, not the months."},
+  {k:"changes", label:"2. Price changes per product a year", unit:"a year", step:"0.1", hint:"2–3 = staples or the store average · 10 = ceiling fans · 26 = every 2 weeks · 52 = weekly. This one matters most."},
+  {k:"seconds", label:"3. Seconds per change, per label", unit:"seconds", step:"1", hint:"30 = a normal aisle · 40–45 = tall racks or locked cases."},
+  {k:"damage", label:"4. Damage rate a year", unit:"%", step:"1", hint:"5 = calm indoor aisle · 15 = some carts or pallets · 25 = forklifts or weather."},
+];
+function renderEst(){
+  const e = est(), d = defaults(area()), why = S.why[S.area] || {};
+  $("#estGrid").innerHTML = EST_DEF.map(f => `
+    <div class="est">
+      <label for="e-${f.k}">${f.label}</label>
+      <div class="num"><input type="number" id="e-${f.k}" min="0" step="any" value="${e[f.k]}" aria-describedby="eu-${f.k} eh-${f.k} ee-${f.k}"><span id="eu-${f.k}">${f.unit}</span>
+        <button type="button" class="btn small" data-reset="${f.k}">Use best guess<span class="sr-only"> for ${f.label.slice(3)}</span> (${fmtN(d[f.k],1)})</button></div>
+      <span class="err" id="ee-${f.k}"></span>
+      <span class="hint" id="eh-${f.k}">${f.hint} Best guess for ${area().name}: ${fmtN(d[f.k],1)}${f.k==="damage"?"%":""}.</span>
+      <label for="w-${f.k}" style="margin-top:8px">Why this number?</label><span class="hint" id="wh-${f.k}">One line for your Assumptions Log.</span>
+      <input type="text" id="w-${f.k}" aria-describedby="wh-${f.k}" value="${(why[f.k]||"").replace(/"/g,"&quot;")}">
+    </div>`).join("");
+}
+function onEstInput(ev){
+  const id = ev.target.id;
+  if(id.startsWith("e-")){ const k = id.slice(2); const raw = ev.target.value; const v = parseFloat(raw); const ok = raw !== "" && isFinite(v) && v >= 0;
+    const err = $("#ee-"+k);
+    if(!ok){ ev.target.setAttribute("aria-invalid","true"); err.textContent = "Enter a number of 0 or more. Using the best guess (" + fmtN(defaults(area())[k],1) + ") until you do."; }
+    else { ev.target.removeAttribute("aria-invalid"); err.textContent = ""; }
+    const nv = ok ? v : defaults(area())[k];
+    if(nv !== est()[k]){ S.est[S.area] = Object.assign(est(), {[k]: nv}); clearCalcs("an estimate changed"); } }
+  if(id.startsWith("w-")){ const k = id.slice(2); S.why[S.area] = Object.assign({}, S.why[S.area], {[k]: ev.target.value}); }
+  save();
+}
+
+function clearCalcs(why){
+  const had = Object.keys(S.calc).length > 0;
+  S.calc = {}; S.tries = {}; S.shown = {}; S.whatif = null;
+  if(had){ const msg = "Your step 3 calculations were cleared because " + why + ". Redo them on step 3.";
+    const live = $("#estLive"); if(live && !document.querySelector('.slide[data-step="2"]').hidden) live.textContent = msg; else { const l1 = $("#areaLive"); if(l1) l1.textContent = msg; } }
+}
+// ---------- step 3
+const CALC_DEF = [
+  {k:"labor", label:"Calculation 1 · Labor saved a year ($)", words:"label spots × price changes per product × seconds ÷ 3,600 × $28",
+   math:e=>`${fmtN(e.spots)} × ${fmtN(e.changes,1)} × ${fmtN(e.seconds)} ÷ 3,600 × $${COSTS.rate}`, hint:"Multiply the first three estimates, divide by 3,600 to turn seconds into hours, then multiply by $28 an hour."},
+  {k:"upfront", label:"Calculation 2 · Upfront cost ($)", words:"label spots × $11.50",
+   math:e=>`${fmtN(e.spots)} × $${COSTS.upfront.toFixed(2)}`, hint:"Each label spot costs $11.50 up front: $10 label + $1 install + $0.50 gateway share."},
+  {k:"running", label:"Calculation 3 · Running cost a year ($)", words:"label spots × ($0.50 + damage rate × $11)",
+   math:e=>`${fmtN(e.spots)} × ($${COSTS.software.toFixed(2)} + ${fmtN(e.damage)}% × $${COSTS.replace})`, hint:"Turn the damage rate into a decimal first (5% = 0.05), multiply by $11, add $0.50, then multiply by label spots."},
+  {k:"months", label:"Calculation 4 · Months to breakeven", words:"upfront ÷ (labor saved − running cost) × 12, or never",
+   math:()=>`calculation 2 ÷ (calculation 1 − calculation 3) × 12`, hint:"Subtract calculation 3 from calculation 1. If the result is zero or less, type never. Otherwise divide calculation 2 by it and multiply by 12."},
+];
+function expected(k){ const m = model(est()); return k==="months" ? m.months : m[k]; }
+function isRight(k, raw){
+  const t = String(raw).trim().toLowerCase().replace(/[$,\s]/g,"");
+  const exp = expected(k);
+  if(k==="months"){ if(exp===null) return t==="never"; const v = parseFloat(t); return isFinite(v) && Math.abs(v-exp) <= 1; }
+  const v = parseFloat(t); return isFinite(v) && Math.abs(v-exp) <= Math.max(2, exp*0.01);
+}
+function calcDone(){ return CALC_DEF.every(c => S.calc[c.k] && S.calc[c.k].ok); }
+function renderCalc(){
+  const e = est();
+  $("#calcList").innerHTML = CALC_DEF.map((c,i) => {
+    const st = S.calc[c.k] || {}; const tries = S.tries[c.k] || 0;
+    return `<div class="calc" role="group" aria-labelledby="cl-${c.k}">
+      <h3 class="lbl" id="cl-${c.k}" style="font-size:1rem;margin:0 0 4px">${c.label} ${st.ok ? '<span class="tag ok">Checked ✓</span>' : ""}</h3>
+      <span class="hint">${c.words}</span><br><span class="math">${c.math(e)}</span>
+      <div class="row"><div><label for="c-${c.k}" class="sr-only">${c.label}, your answer</label>
+        <input type="text" id="c-${c.k}" inputmode="decimal" value="${st.val||""}" aria-describedby="fb-${c.k}" ${st.ok?"readonly":""} ${(!st.ok && tries)?'aria-invalid="true"':""}></div>
+        <button type="button" class="btn" data-check="${c.k}" ${st.ok?"disabled":""}>Check<span class="sr-only"> calculation ${i+1}</span></button>
+        ${!st.ok && tries>=3 ? `<button type="button" class="btn small" data-show="${c.k}">Show me the answer<span class="sr-only"> for calculation ${i+1}</span></button>` : ""}</div>
+      <p class="fb ${st.ok?"ok":(tries?"bad":"")}" id="fb-${c.k}">${st.msg||""}</p>
+    </div>`;}).join("");
+}
+function check(k){
+  const inp = $("#c-"+k); const val = inp.value;
+  S.tries[k] = (S.tries[k]||0) + 1;
+  if(isRight(k, val)){ S.calc[k] = {ok:true, val, msg:"Correct.", tries:S.tries[k]}; }
+  else { const c = CALC_DEF.find(x=>x.k===k); S.calc[k] = {ok:false, val, msg:"Not quite. " + c.hint + (S.tries[k]>=3 ? " You can also show the answer." : "")}; }
+  save(); renderCalc(); renderNav();
+  const n = CALC_DEF.findIndex(x=>x.k===k) + 1; const nextOpen = document.querySelector('#calcList input:not([readonly])');
+  $("#calcLive").textContent = "Calculation " + n + ": " + S.calc[k].msg + (S.calc[k].ok ? (nextOpen ? " Moving to the next calculation." : " All four calculations are done. Go to step 4.") : "");
+  (S.calc[k].ok ? (nextOpen || $("#c-"+k)) : $("#c-"+k)).focus();
+}
+function showAnswer(k){
+  const exp = expected(k);
+  const val = k==="months" ? (exp===null ? "never" : String(Math.round(exp))) : String(Math.round(exp));
+  S.calc[k] = {ok:true, val, msg:"Answer shown: " + (k==="months" ? (exp===null?"never":Math.round(exp)+" months") : fmt$(exp)) + ". Check how it was worked out before you move on.", shown:true};
+  save(); renderCalc(); renderNav(); $("#calcLive").textContent = S.calc[k].msg; $("#c-"+k).focus();
+}
+
+// ---------- step 4
+function dmgRows(useWhatif){ const e = est(); if(useWhatif && S.whatif != null) e.changes = S.whatif; return [5,10,15,25].map(d => ({d, ...model(e, d)})); }
+function renderDmg(){
+  const ok = calcDone(); $("#dmgLocked").hidden = ok; $("#dmgBody").hidden = !ok;
+  if(!ok) return;
+  const wi = S.whatif != null; const rows = dmgRows(true); const maxM = Math.max(...rows.map(r => r.months===null ? 0 : Math.min(r.months, 240)), 12);
+  $("#dmgTable").innerHTML = `<table><caption>Damage test: ${area().name}${wi ? ", trying " + fmtN(S.whatif,1) + " price changes per product a year" : ""}</caption>
+    <thead><tr><th scope="col">Damage rate</th><th scope="col">Running cost a year</th><th scope="col">Time to breakeven</th></tr></thead><tbody>
+    ${rows.map(r => `<tr><th scope="row">${r.d}%${r.d===Math.round(est().damage)?" (yours)":""}</th><td class="num">${fmt$(r.running)}</td><td>${fmtTime(r.months)}
+      ${r.months===null ? "" : `<span class="bar" aria-hidden="true" style="margin-left:8px;width:${Math.max(4, Math.min(r.months,240)/maxM*90)}px"></span>`}</td></tr>`).join("")}
+    </tbody></table>`;
+  const w = $("#whatif"); if(document.activeElement !== w) w.value = wi ? S.whatif : est().changes;
+  if(document.activeElement !== $("#s1")) $("#s1").value = S.s1; if(document.activeElement !== $("#s2")) $("#s2").value = S.s2;
+}
+
+// ---------- step 5 (cohort)
+let CFG = null, COHORT = [];
+async function loadConfig(){ if(CFG!==null) return CFG; try{ const r = await fetch(CONFIG_URL, {cache:"no-store"}); CFG = r.ok ? await r.json() : {}; }catch(e){ CFG = {}; } return CFG; }
+function cohortCfg(){ return CFG && CFG.formAction && CFG.csv ? CFG : null; }
+function parseCSV(text){
+  const rows = []; let row = [], f = "", q = false;
+  for(let i=0;i<text.length;i++){ const ch = text[i];
+    if(q){ if(ch === '"'){ if(text[i+1] === '"'){ f += '"'; i++; } else q = false; } else f += ch; }
+    else if(ch === '"') q = true; else if(ch === ","){ row.push(f); f = ""; }
+    else if(ch === "\n"){ row.push(f); rows.push(row); row = []; f = ""; } else if(ch !== "\r") f += ch; }
+  if(f || row.length){ row.push(f); rows.push(row); }
+  return rows;
+}
+async function loadCohort(){
+  await loadConfig(); const c = cohortCfg();
+  if(!S.submitted){ $("#cohortStatus").textContent = "Add your result to see everyone else's. For now the map shows only yours."; COHORT = []; return; }
+  if(!c){ $("#cohortStatus").textContent = "The shared map isn't switched on yet. Your result is on your own map."; COHORT = []; return; }
+  try{
+    const r = await fetch(c.csv + (c.csv.includes("?")?"&":"?") + "t=" + Date.now()); const rows = parseCSV(await r.text());
+    const h = rows.shift().map(x => x.trim().toLowerCase());
+    const col = n => h.findIndex(x => x.startsWith(n));
+    const iN = col("name"), iA = col("store area"), iM = col("months"), iT = col("timestamp");
+    const latest = {};
+    rows.filter(r => r[iA]).forEach(r => { latest[(r[iN]||"").trim().toLowerCase()] = r; });
+    COHORT = Object.values(latest).map(r => ({area: r[iA].trim(), months: /never/i.test(r[iM]) ? null : parseFloat(r[iM])}));
+    $("#cohortStatus").textContent = `${COHORT.length} result${COHORT.length===1?"":"s"} on the shared map. Updated just now.`;
+  }catch(e){ COHORT = []; $("#cohortStatus").textContent = "Couldn't load the shared map right now. Try Refresh map in a minute."; }
+}
+function median(list){ const v = list.map(m => m===null ? Infinity : m).sort((a,b)=>a-b); const n = v.length; if(!n) return undefined;
+  const mid = n%2 ? v[(n-1)/2] : (v[n/2-1]+v[n/2])/2; return isFinite(mid) ? mid : null; }
+function cohortSummary(){
+  const by = {};
+  assignable.forEach(a => { const ms = COHORT.filter(r => r.area === a.name).map(r => r.months); if(ms.length) by[a.key] = {n:ms.length, med:median(ms), ms}; });
+  if(calcDone() && !by[S.area] && S.area !== "fans"){ by[S.area] = {n:1, med:model(est()).months, ms:[model(est()).months], mineOnly:true}; }
+  return by;
+}
+function renderCohort(){
+  const by = cohortSummary(); const res = {};
+  Object.entries(by).forEach(([k,v]) => { res[k] = {cls:cls(v.med), line: (v.med===null ? "never" : Math.round(v.med) + " mo") + " · " + v.n + (v.mineOnly?" (you)":"")}; });
+  const fans = AREAS.find(a => a.key === "fans"); const fm = model(defaults(fans));
+  res.fans = {cls:cls(fm.months), line:"example · " + Math.round(fm.months) + " mo"};
+  paintMap("m2", res);
+  $("#legend").innerHTML = ["fast","mid","never","none"].map(c => `<li><svg viewBox="0 0 26 16" aria-hidden="true"><rect width="26" height="16" fill="url(#m2-p-${c})"/></svg>${CLS_WORDS[c]}</li>`).join("");
+  const rows = AREAS.map(a => { const v = by[a.key]; const isF = a.key==="fans";
+    const med = isF ? Math.round(fm.months)+" months (example)" : v ? (v.med===null ? "never" : Math.round(v.med)+" months") : "no results yet";
+    return `<tr><th scope="row">${a.name}${a.key===S.area?" (yours)":""}</th><td class="num">${isF?"—":(v?v.n:0)}</td><td>${med}</td></tr>`; }).join("");
+  $("#cohortTable").innerHTML = `<table style="margin-top:8px"><caption>The map as a table: middle result for each area</caption><thead><tr><th scope="col">Area</th><th scope="col">Externs</th><th scope="col">Middle (median) time to breakeven</th></tr></thead><tbody>${rows}</tbody></table>`;
+  ["fav","unfav"].forEach(id => { const sel = $("#"+id);
+    if(!sel.options.length) sel.innerHTML = '<option value="">Choose an area</option>' + AREAS.map(a => `<option value="${a.key}">${a.name}</option>`).join("");
+    if(document.activeElement !== sel && sel.value !== (S[id]||"")) sel.value = S[id] || ""; });
+  if(!renderCohort.filled){ $("#finding").value = S.finding; $("#gap").value = S.gap; renderCohort.filled = true; }
+  $("#submitBtn").disabled = !calcDone();
+  if(!calcDone()) $("#submitMsg").textContent = "Finish your four calculations on step 3 first.";
+}
+async function submit(){
+  const msg = $("#submitMsg");
+  $("#toStep1").hidden = true; $("#finding").removeAttribute("aria-invalid");
+  if(!S.name.trim()){ msg.className = "fb bad"; msg.textContent = "Add your name on step 1 first."; $("#toStep1").hidden = false; $("#toStep1").focus(); return; }
+  if(!S.finding.trim()){ msg.className = "fb bad"; msg.textContent = "Write your one-sentence finding first."; const f = $("#finding"); f.setAttribute("aria-invalid","true"); f.setAttribute("aria-describedby","finding-hint submitMsg"); f.focus(); return; }
+  await loadConfig(); const c = cohortCfg();
+  if(!c){ msg.className = "fb bad"; msg.textContent = "The shared map isn't switched on yet. Your own result is already on your map."; return; }
+  const e = est(), m = model(e);
+  const vals = {name:S.name.trim(), area:area().name, spots:e.spots, changes:e.changes, seconds:e.seconds, damage:e.damage,
+    labor:Math.round(m.labor), upfront:Math.round(m.upfront), running:Math.round(m.running), months:m.months===null?"never":Math.round(m.months), finding:S.finding.trim()};
+  const body = new URLSearchParams(); Object.entries(c.entries).forEach(([k, entry]) => body.append(entry, vals[k]));
+  try{ await fetch(c.formAction, {method:"POST", mode:"no-cors", body}); S.submitted = true; save();
+    msg.className = "fb ok"; msg.textContent = "Sent. Everyone's results are loading now. Yours can take a minute to appear; press Refresh map if you don't see it.";
+    await loadCohort(); renderCohort(); }
+  catch(err){ msg.className = "fb bad"; msg.textContent = "Couldn't send. Check your connection and try again."; }
+}
+
+// ---------- step 6
+function checklist(){
+  const e = est(); const why = S.why[S.area] || {};
+  return [
+    [!!S.name.trim(), "Your name (step 1)"],
+    [EST_DEF.every(f => (why[f.k]||"").trim()), "A reason for each of your four estimates (step 2)"],
+    [calcDone(), "All four calculations checked (step 3)"],
+    [!!(S.s1.trim() && S.s2.trim()), "Your two damage-test sentences (step 4)"],
+    [!!(S.fav && S.unfav && S.gap.trim()), "Your favorable vs. unfavorable comparison (step 5)"],
+  ];
+}
+function renderExport(){
+  $("#checklist").innerHTML = checklist().map(([ok,t]) => `<li>${ok ? "✓ Done:" : "To do:"} ${t}</li>`).join("");
+  const m = model(est());
+  $("#summaryKv").innerHTML = `<dt>Area</dt><dd>${area().name}</dd><dt>Labor saved a year</dt><dd>${fmt$(m.labor)}</dd><dt>Upfront cost</dt><dd>${fmt$(m.upfront)}</dd>
+    <dt>Running cost a year</dt><dd>${fmt$(m.running)}</dd><dt>Time to breakeven</dt><dd>${fmtTime(m.months)}</dd>`;
+  $("#newWin").href = location.href.split("#")[0];
+}
+function resultText(){
+  const e = est(), m = model(e);
+  return [`Breakeven Builder — ${S.name || "(name)"} — ${area().name}, Store A`,
+    `Estimates: ${fmtN(e.spots)} label spots; ${fmtN(e.changes,1)} price changes per product a year; ${e.seconds} s per change; ${e.damage}% damage`,
+    `1 Labor saved a year: ${fmt$(m.labor)} | 2 Upfront: ${fmt$(m.upfront)} | 3 Running a year: ${fmt$(m.running)} | 4 Breakeven: ${fmtTime(m.months)}`,
+    `Damage test: ` + dmgRows().map(r => `${r.d}%: ${fmtTime(r.months)}`).join("; "),
+    `Finding: ${S.finding}`].join("\n");
+}
+function buildReport(){
+  const e = est(), m = model(e), why = S.why[S.area] || {}, a = area();
+  const howChecked = k => { const c = S.calc[k] || {}; return c.shown ? "Answer shown" : c.ok ? (c.tries===1 ? "Correct first try" : "Correct after " + (c.tries||1) + " tries") : "Not done"; };
+  const name = k => (AREAS.find(x=>x.key===S[k])||{}).name || "—";
+  const esc = s => String(s||"").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+  $("#report").innerHTML = `
+    <div class="band"><div style="font-size:9pt;letter-spacing:.12em;font-weight:700">THE HOME DEPOT · PROJECT 2 · BREAKEVEN ANALYSIS: MODEL</div>
+      <h1>${esc(S.name)}: ${a.name}, Store A</h1><div style="font-size:9pt">${new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}</div></div>
+    <h2>Answer</h2><p><strong>Time to breakeven at ${e.damage}% damage: ${fmtTime(m.months)}.</strong> ${esc(S.finding)}</p>
+    <h2>Estimates and reasons (Assumptions Log)</h2>
+    <table><thead><tr><th scope="col">Estimate</th><th scope="col">Value</th><th scope="col">Best guess</th><th scope="col">Why this number</th></tr></thead><tbody>
+    ${EST_DEF.map(f => `<tr><th scope="row">${f.label.slice(3)}</th><td class="num">${fmtN(e[f.k],1)}${f.k==="damage"?"%":""}</td><td class="num">${fmtN(defaults(a)[f.k],1)}${f.k==="damage"?"%":""}</td><td>${esc(why[f.k])}</td></tr>`).join("")}</tbody></table>
+    <p style="font-size:9pt">Given: $${COSTS.rate}/hour labor (Home Depot data, MET, October 2026). Per label spot: $${COSTS.upfront.toFixed(2)} upfront ($10 label + $1 install + $0.50 gateway share), $${COSTS.software.toFixed(2)} software a year, $${COSTS.replace} per broken label (illustrative assumptions). Bays: Home Depot fixture plan for Store A.</p>
+    <h2>The four calculations</h2>
+    <table><thead><tr><th scope="col">Calculation</th><th scope="col">Math</th><th scope="col">My answer</th><th scope="col">Checked</th></tr></thead><tbody>
+    ${CALC_DEF.map(c => `<tr><th scope="row">${c.label.replace("Calculation ","")}</th><td>${c.math(e)}</td><td class="num">${esc((S.calc[c.k]||{}).val)}</td><td>${howChecked(c.k)}</td></tr>`).join("")}</tbody></table>
+    <h2>Damage test (5 / 10 / 15 / 25%)</h2>
+    <table><thead><tr><th scope="col">Damage rate</th><th scope="col">Running cost a year</th><th scope="col">Time to breakeven</th></tr></thead><tbody>
+    ${dmgRows().map(r => `<tr><th scope="row">${r.d}%</th><td class="num">${fmt$(r.running)}</td><td>${fmtTime(r.months)}</td></tr>`).join("")}</tbody></table>
+    <p><strong>Within about 3 years?</strong> ${esc(S.s1)}</p><p><strong>Price changes or damage?</strong> ${esc(S.s2)}</p>
+    <h2>Favorable vs. unfavorable</h2>
+    <p><strong>Favorable:</strong> ${name("fav")} · <strong>Unfavorable:</strong> ${name("unfav")}</p><p>${esc(S.gap)}</p>
+    <h2>Store A map</h2><div class="mapwrap" id="repMap"></div><p style="font-size:9pt">Key: solid = pays back within 3 years · stripes = 3–7 years · dots = over 7 years or never · blank = no results yet. Each label shows the middle result in months and how many externs modeled that area.</p>`;
+  mountMap($("#repMap"), "m3"); const res = {}; const by = cohortSummary();
+  Object.entries(by).forEach(([k,v]) => { res[k] = {cls:cls(v.med), line:(v.med===null?"never":Math.round(v.med)+" mo") + " · " + v.n}; });
+  paintMap("m3", res);
+}
+
+// ---------- navigation
+function stepOk(n){ if(n<=3) return true; if(n===4) return true; return true; }
+function renderNav(){
+  $("#steps").innerHTML = STEPS.map((t,i) => { const n = i+1; const done = (n===3 && calcDone()) || (n===2 && EST_DEF.every(f => ((S.why[S.area]||{})[f.k]||"").trim()));
+    return `<li><button type="button" data-go="${n}" ${n===S.step?'aria-current="step"':""}>${n} ${t}${done?'<span class="done" aria-hidden="true">✓</span><span class="sr-only"> (done)</span>':""}</button></li>`; }).join("");
+  $("#prevBtn").disabled = S.step===1; $("#nextBtn").hidden = S.step===STEPS.length;
+}
+function go(n, focus=true){
+  S.step = Math.min(Math.max(1,n), STEPS.length); save();
+  document.querySelectorAll(".slide").forEach(s => s.hidden = Number(s.dataset.step) !== S.step);
+  ({1:renderArea,2:renderEst,3:renderCalc,4:renderDmg,5:()=>{renderCohort(); loadCohort().then(renderCohort);},6:renderExport})[S.step]();
+  renderNav(); if(focus) document.querySelector(".frame").scrollIntoView({block:"start"});
+  if(focus){ const h = document.querySelector(`.slide[data-step="${S.step}"] h2`); h && h.focus(); }
+}
+
+// ---------- wire up
+function init(){
+  load();
+  const p = new URLSearchParams(location.search);
+  if(p.get("start")) S.step = Number(p.get("start")) || S.step;
+  mountMap($("#map1"), "m1"); mountMap($("#map2"), "m2");
+  $("#name").addEventListener("input", e => { S.name = e.target.value; save(); });
+  $("#area").addEventListener("change", e => { S.area = e.target.value; clearCalcs("you changed your area"); save(); renderArea(); });
+  $("#estGrid").addEventListener("input", onEstInput);
+  $("#estGrid").addEventListener("click", ev => { const k = ev.target.dataset.reset; if(!k) return;
+    const cur = est(); if(cur[k] !== defaults(area())[k]){ cur[k] = defaults(area())[k]; S.est[S.area] = cur; clearCalcs("an estimate changed"); } save(); renderEst(); $("#e-"+k).focus(); });
+  $("#calcList").addEventListener("click", ev => { if(ev.target.dataset.check) check(ev.target.dataset.check); if(ev.target.dataset.show) showAnswer(ev.target.dataset.show); });
+  $("#calcList").addEventListener("keydown", ev => { if(ev.key === "Enter" && ev.target.id && ev.target.id.startsWith("c-")){ ev.preventDefault(); check(ev.target.id.slice(2)); } });
+  [["s1","s1"],["s2","s2"],["finding","finding"],["gap","gap"]].forEach(([id,k]) => $("#"+id).addEventListener("input", e => { S[k] = e.target.value; save(); }));
+  ["fav","unfav"].forEach(id => $("#"+id).addEventListener("change", e => { S[id] = e.target.value; save(); }));
+  $("#submitBtn").addEventListener("click", submit);
+  $("#toStep1").addEventListener("click", () => { go(1, false); $("#name").focus(); });
+  $("#whatif").addEventListener("input", e => { const v = parseFloat(e.target.value); S.whatif = (e.target.value !== "" && isFinite(v) && v >= 0) ? v : null; save(); renderDmg();
+    $("#whatifNote").textContent = S.whatif == null ? "" : "Damage test updated for " + fmtN(S.whatif,1) + " price changes a year. At your damage rate: " + fmtTime(model(Object.assign(est(), {changes:S.whatif})).months) + "."; });
+  $("#whatifReset").addEventListener("click", () => { S.whatif = null; save(); $("#whatif").value = est().changes; renderDmg(); $("#whatifNote").textContent = "Back to your estimate."; });
+  $("#refreshBtn").addEventListener("click", () => loadCohort().then(renderCohort));
+  $("#pdfBtn").addEventListener("click", () => { buildReport(); $("#exportMsg").className = "fb"; $("#exportMsg").textContent = "Opening the print window. Choose Save as PDF.";
+    try{ window.print(); }catch(e){ $("#exportMsg").textContent = "Printing is blocked here. Use the link below to open the Builder in a new window."; } });
+  $("#copyBtn").addEventListener("click", async () => { try{ await navigator.clipboard.writeText(resultText()); $("#exportMsg").className = "fb ok"; $("#exportMsg").textContent = "Copied. Paste it into your summary or workshare slide."; }
+    catch(e){ $("#exportMsg").className = "fb bad"; $("#exportMsg").textContent = "Copy is blocked here. Open the Builder in a new window and try again."; } });
+  $("#steps").addEventListener("click", ev => { const b = ev.target.closest("[data-go]"); if(b) go(Number(b.dataset.go)); });
+  $("#prevBtn").addEventListener("click", () => go(S.step-1));
+  $("#nextBtn").addEventListener("click", () => go(S.step+1));
+  window.addEventListener("beforeprint", buildReport);
+  go(S.step, false);
+}
+init();
+</script>
+</body>
+</html>
