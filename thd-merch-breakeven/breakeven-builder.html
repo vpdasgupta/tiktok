@@ -309,7 +309,7 @@ const WHERE = {
   spots: a => [
     ["Formula", "label spots = bays × products per bay × labels per product"],
     ["Bays", `${a.baysText} · also on your area card, page 2`],
-    ["Products per bay", `open <a href="${a.link}" target="_blank" rel="noopener">${a.name} on homedepot.com<span class="sr-only"> (opens in a new tab)</span></a>, pick a nearby store, turn on <em>In Stock at Store Today</em>, and divide the number of results by your bays`],
+    ["Products per bay", `figure out roughly how many products are on display. Go to <a href="${a.link}" target="_blank" rel="noopener">${a.name} on homedepot.com<span class="sr-only"> (opens in a new tab)</span></a>, filter the page to items available in store, and roughly count how many are listed. Then divide by your bays`],
     ["Labels per product", "2 if products hang on display next to boxed stock, otherwise 1"],
     ["Good to know", "a rough count is fine: it changes the dollars, not the months"]],
   changes: () => [
