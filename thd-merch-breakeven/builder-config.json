@@ -1,0 +1,18 @@
+{
+  "_note": "Replace with the JSON printed by builder-cohort-setup.gs, then deploy next to breakeven-builder.html.",
+  "formAction": "",
+  "entries": {
+    "name": "",
+    "area": "",
+    "spots": "",
+    "changes": "",
+    "seconds": "",
+    "damage": "",
+    "labor": "",
+    "upfront": "",
+    "running": "",
+    "months": "",
+    "finding": ""
+  },
+  "csv": ""
+}
