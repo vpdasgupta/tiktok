@@ -58,7 +58,15 @@ textarea{min-height:56px;resize:vertical}
 .est .num{display:flex;align-items:center;gap:8px}
 .est .num input{max-width:150px}
 .where{font-size:.86rem;margin:4px 0 8px;background:#fff;border-radius:8px;padding:8px 10px;border:1px solid #c5d6ea}
-.where p{margin:0 0 6px}.where p:last-child{margin:0}
+.where .wh{margin:0 0 4px;font-weight:700}
+.where ul{margin:0;padding-left:1.1em}.where li{margin:0 0 3px}
+details.hintbox{margin:8px 0 0;border-top:1px solid #c5d6ea;padding-top:6px}
+details.hintbox summary{cursor:pointer;font-weight:700;color:var(--hd-orange-text);list-style:none;padding:2px 0;min-height:24px}
+details.hintbox summary::-webkit-details-marker{display:none}
+details.hintbox summary::before{content:"▸";display:inline-block;width:1.1em}
+details.hintbox[open] summary::before{content:"▾"}
+details.hintbox summary:hover{text-decoration:underline}
+details.hintbox p{margin:6px 0 0}
 .calc{background:var(--calc);border:1px solid #9cc49a;border-radius:10px;padding:10px 14px;margin:0 0 10px}
 .calc .math{font-family:ui-monospace,Menlo,Consolas,"Courier New",monospace;font-size:.92rem;background:#fff;border-radius:6px;padding:4px 8px;display:inline-block;margin:2px 0 6px}
 .calc .row input{max-width:170px}
@@ -130,7 +138,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 
   <!-- 2 ESTIMATES -->
   <section class="slide" data-step="2" aria-labelledby="h2s" hidden>
-    <h2 id="h2s" tabindex="-1">2. Check your four estimates</h2>
+    <h2 id="h2s" tabindex="-1">2. Work out your four estimates</h2>
     <p class="lead">Work out each estimate for your area. Each one says where to find what you need and gives a hint for your area to get you started. Then say why in one line: your reasons become your Assumptions Log.</p>
     <p class="notice">Changing a number clears your checked calculations on step 3, so you can redo them with the new number.</p>
     <p id="estLive" class="sr-only" role="status"></p>
@@ -298,10 +306,26 @@ const EST_DEF = [
   {k:"damage", label:"4. Damage rate a year", unit:"% a year"},
 ];
 const WHERE = {
-  spots: a => `Label spots = bays × products per bay × labels per product. <strong>Bays:</strong> ${a.baysText} (your area card, page 2). <strong>Products per bay:</strong> open <a href="${a.link}" target="_blank" rel="noopener">${a.name} on homedepot.com<span class="sr-only"> (opens in a new tab)</span></a>, pick a nearby store, turn on <em>In Stock at Store Today</em>, and divide the number of results by your bays. <strong>Labels per product:</strong> 2 if products hang on display next to boxed stock, otherwise 1. A rough count is fine: it changes the dollars, not the months.`,
-  changes: () => `This estimate matters most. <strong>Anchors from Home Depot data:</strong> the store average is about 91,000 price changes a year ÷ 35,000 products ≈ 2.6 per product; ceiling fans are about 300 ÷ 29 ≈ 10. On your homedepot.com section, see how many products are on sale right now, and think about sales events, market prices and seasons. Then turn "how often" into times a year: monthly = 12, every 2 weeks = 26, weekly = 52.`,
-  seconds: () => `Home Depot says the swap alone takes about 5 seconds. Add the rest of the job: printing and sorting labels, walking to the spot, finding it, and checking the price. Time yourself on a mock run at home (print and sort 10 labels, then find a spot on a shelf), or watch a change on an optional store visit.`,
-  damage: () => `Home Depot data: about 3% of label changes replace a damaged label, which works out to about 5–8% of labels a year across the whole store. Add your Project 1 durability research. <strong>Scale:</strong> 5% = calm indoor aisle · 15% = some carts or pallets · 25% = forklifts or weather.`,
+  spots: a => [
+    ["Formula", "label spots = bays × products per bay × labels per product"],
+    ["Bays", `${a.baysText} · also on your area card, page 2`],
+    ["Products per bay", `open <a href="${a.link}" target="_blank" rel="noopener">${a.name} on homedepot.com<span class="sr-only"> (opens in a new tab)</span></a>, pick a nearby store, turn on <em>In Stock at Store Today</em>, and divide the number of results by your bays`],
+    ["Labels per product", "2 if products hang on display next to boxed stock, otherwise 1"],
+    ["Good to know", "a rough count is fine: it changes the dollars, not the months"]],
+  changes: () => [
+    ["Why it matters", "this estimate moves your answer the most"],
+    ["Store average", "about 91,000 price changes a year ÷ 35,000 products ≈ 2.6 per product (Home Depot data)"],
+    ["Ceiling fans", "about 300 price changes a year ÷ 29 products ≈ 10 per product (Home Depot data)"],
+    ["Your section", "on homedepot.com, how many products are on sale right now? Think about sales events, market prices and seasons"],
+    ["Times a year", "monthly = 12 · every 2 weeks = 26 · weekly = 52"]],
+  seconds: () => [
+    ["The swap", "about 5 seconds (Home Depot data)"],
+    ["The rest of the job", "printing and sorting labels, walking to the spot, finding it, and checking the price"],
+    ["How to measure", "time a mock run at home (print and sort 10 labels, then find a spot on a shelf), or watch a change on an optional store visit"]],
+  damage: () => [
+    ["Home Depot data", "about 3% of label changes replace a damaged label, about 5–8% of labels a year store-wide"],
+    ["Your research", "your Project 1 durability findings"],
+    ["Scale", "5% = calm indoor aisle · 15% = some carts or pallets · 25% = forklifts or weather"]],
 };
 const HINTS = {
   fans: {spots:"Worked example: the planogram shows 29 products, each shown twice (a hanging display plus the boxed fan), so 29 × 2 = 58.",
@@ -335,8 +359,9 @@ function renderEst(){
     <div class="est">
       <label for="e-${f.k}">${f.label}</label>
       <div class="where">
-        <p><strong>Where to find it:</strong> ${WHERE[f.k](a)}</p>
-        <p><strong>Hint for ${a.name}:</strong> ${HINTS[a.key][f.k]}</p>
+        <p class="wh">Where to find it</p>
+        <ul>${WHERE[f.k](a).map(([t,x]) => `<li><strong>${t}:</strong> ${x}</li>`).join("")}</ul>
+        <details class="hintbox"><summary>Need a hint?<span class="sr-only"> ${f.label.slice(3)}, ${a.name}</span></summary><p>${HINTS[a.key][f.k]}</p></details>
       </div>
       <div class="num"><input type="number" id="e-${f.k}" min="0" ${f.k==="damage"?'max="100"':""} step="any" value="${typeof e[f.k]==="number" ? e[f.k] : ""}" aria-describedby="eu-${f.k} ee-${f.k}"><span id="eu-${f.k}">${f.unit}</span></div>
       <span class="err" id="ee-${f.k}"></span>
