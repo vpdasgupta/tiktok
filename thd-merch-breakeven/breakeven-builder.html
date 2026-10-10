@@ -57,6 +57,8 @@ textarea{min-height:56px;resize:vertical}
 .est{background:var(--est);border:1px solid #9fb9d6;border-radius:10px;padding:12px 14px}
 .est .num{display:flex;align-items:center;gap:8px}
 .est .num input{max-width:150px}
+.where{font-size:.86rem;margin:4px 0 8px;background:#fff;border-radius:8px;padding:8px 10px;border:1px solid #c5d6ea}
+.where p{margin:0 0 6px}.where p:last-child{margin:0}
 .calc{background:var(--calc);border:1px solid #9cc49a;border-radius:10px;padding:10px 14px;margin:0 0 10px}
 .calc .math{font-family:ui-monospace,Menlo,Consolas,"Courier New",monospace;font-size:.92rem;background:#fff;border-radius:6px;padding:4px 8px;display:inline-block;margin:2px 0 6px}
 .calc .row input{max-width:170px}
@@ -110,7 +112,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
   <!-- 1 AREA -->
   <section class="slide" data-step="1" aria-labelledby="h1s">
     <h2 id="h1s" tabindex="-1">1. Pick your store area</h2>
-    <p class="lead">Your program manager emailed you your area. Pick it, and Store A's map shows where it is.</p>
+    <p class="lead">Your program manager emailed you your area. Pick it, and Store A's map shows where it is. You'll work out its numbers on step 2.</p>
     <div class="cols">
       <div class="panel">
         <div class="field"><label for="name">Your name <span class="hint" style="display:inline">(needed to share and for your PDF)</span></label><input type="text" id="name" autocomplete="name" aria-required="true"></div>
@@ -129,7 +131,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
   <!-- 2 ESTIMATES -->
   <section class="slide" data-step="2" aria-labelledby="h2s" hidden>
     <h2 id="h2s" tabindex="-1">2. Check your four estimates</h2>
-    <p class="lead">Each one starts at your area card's best guess. Keep it or change it, and say why in one line. Your reasons become your Assumptions Log.</p>
+    <p class="lead">Work out each estimate for your area. Each one says where to find what you need and gives a hint for your area to get you started. Then say why in one line: your reasons become your Assumptions Log.</p>
     <p class="notice">Changing a number clears your checked calculations on step 3, so you can redo them with the new number.</p>
     <p id="estLive" class="sr-only" role="status"></p>
     <div class="est-grid" id="estGrid"></div>
@@ -244,7 +246,8 @@ function load(){ try{ const raw = localStorage.getItem(KEY); if(raw) S = Object.
 let saveT; function save(){ clearTimeout(saveT); saveT = setTimeout(()=>{ try{ localStorage.setItem(KEY, JSON.stringify(S)); $("#saveNote").textContent = "Saved in this browser"; }catch(e){ $("#saveNote").textContent = ""; } }, 300); }
 const area = () => AREAS.find(a => a.key === S.area);
 function defaults(a){ return {spots:a.spots, changes:a.changes, seconds:a.seconds, damage:Math.round(a.damage*100)}; }
-function est(){ const d = defaults(area()); const e = S.est[S.area] || {}; return Object.assign({}, d, e); }
+function est(){ return Object.assign({}, S.est[S.area] || {}); }
+function estReady(e){ e = e || est(); return ["spots","changes","seconds","damage"].every(k => typeof e[k] === "number" && isFinite(e[k]) && e[k] >= 0) && e.damage <= 100; }
 
 // ---------- model
 function model(e, dmgPct){
@@ -289,32 +292,66 @@ function renderArea(){
 
 // ---------- step 2
 const EST_DEF = [
-  {k:"spots", label:"1. Label spots", unit:"label spots", step:"10", hint:"Bays × products per bay × labels per product. A rough count is fine: it changes the dollars, not the months."},
-  {k:"changes", label:"2. Price changes per product a year", unit:"a year", step:"0.1", hint:"2–3 = staples or the store average · 10 = ceiling fans · 26 = every 2 weeks · 52 = weekly. This one matters most."},
-  {k:"seconds", label:"3. Seconds per change, per label", unit:"seconds", step:"1", hint:"30 = a normal aisle · 40–45 = tall racks or locked cases."},
-  {k:"damage", label:"4. Damage rate a year", unit:"%", step:"1", hint:"5 = calm indoor aisle · 15 = some carts or pallets · 25 = forklifts or weather."},
+  {k:"spots", label:"1. Label spots", unit:"label spots"},
+  {k:"changes", label:"2. Price changes per product a year", unit:"a year"},
+  {k:"seconds", label:"3. Seconds per change, per label", unit:"seconds"},
+  {k:"damage", label:"4. Damage rate a year", unit:"% a year"},
 ];
+const WHERE = {
+  spots: a => `Label spots = bays × products per bay × labels per product. <strong>Bays:</strong> ${a.baysText} (your area card, page 2). <strong>Products per bay:</strong> open <a href="${a.link}" target="_blank" rel="noopener">${a.name} on homedepot.com<span class="sr-only"> (opens in a new tab)</span></a>, pick a nearby store, turn on <em>In Stock at Store Today</em>, and divide the number of results by your bays. <strong>Labels per product:</strong> 2 if products hang on display next to boxed stock, otherwise 1. A rough count is fine: it changes the dollars, not the months.`,
+  changes: () => `This estimate matters most. <strong>Anchors from Home Depot data:</strong> the store average is about 91,000 price changes a year ÷ 35,000 products ≈ 2.6 per product; ceiling fans are about 300 ÷ 29 ≈ 10. On your homedepot.com section, see how many products are on sale right now, and think about sales events, market prices and seasons. Then turn "how often" into times a year: monthly = 12, every 2 weeks = 26, weekly = 52.`,
+  seconds: () => `Home Depot says the swap alone takes about 5 seconds. Add the rest of the job: printing and sorting labels, walking to the spot, finding it, and checking the price. Time yourself on a mock run at home (print and sort 10 labels, then find a spot on a shelf), or watch a change on an optional store visit.`,
+  damage: () => `Home Depot data: about 3% of label changes replace a damaged label, which works out to about 5–8% of labels a year across the whole store. Add your Project 1 durability research. <strong>Scale:</strong> 5% = calm indoor aisle · 15% = some carts or pallets · 25% = forklifts or weather.`,
+};
+const HINTS = {
+  fans: {spots:"Worked example: the planogram shows 29 products, each shown twice (a hanging display plus the boxed fan), so 29 × 2 = 58.",
+         changes:"Worked example: about 300 price changes a year ÷ 29 products ≈ 10.3.",
+         seconds:"Worked example: 30 seconds (the 5-second swap plus about 25 seconds for the rest of the job).",
+         damage:"Worked example: 5%, because fans sit in a calm indoor aisle."},
+  power: {spots:"You have about 55 bays. Many tools hang as a display model next to their boxed stock, like ceiling fans. A power-tool bay usually holds somewhere between 10 and 20 products.",
+          changes:"Tools go on sale about once a month, plus big holiday events like Spring Black Friday, Father's Day and Black Friday. Count the sales in a year, then add the holiday events.",
+          seconds:"Many power tools sit in locked cases. Start from a normal aisle (about half a minute) and add time to unlock and relock the case.",
+          damage:"An indoor aisle with few forklifts. Which level on the scale fits?"},
+  lumber: {spots:"You have 23 bays plus about 570 feet of lumber racks. Bays hold fewer, bigger products (think 5–15 a bay). On the racks, each board size takes a few feet (think one label every 3–5 feet).",
+           changes:`Lumber is priced off a market that's re-priced every week (<a href="https://www.fastmarkets.com/forest-products/wood-products/lumber-prices/" target="_blank" rel="noopener">Fastmarkets lumber prices<span class="sr-only"> (opens in a new tab)</span></a>). Store prices follow more slowly. If the store updates every week or two, how many changes is that in a year?`,
+           seconds:"Tall racks and long aisles. Start at about half a minute and add time to walk farther and reach high labels.",
+           damage:"Forklifts move lumber through these aisles every day. Which level on the scale fits?"},
+  paint: {spots:"You have 53.75 bays, packed with cans in many sizes plus brushes, rollers and tape. Think 30–50 products a bay, one label each.",
+          changes:"Paint is an everyday staple. Start from the store average (about 2.6 a year) and ask: does paint change more or less often than an average product?",
+          seconds:"A normal aisle: no locked cases or tall racks.",
+          damage:"A calm indoor aisle. Which level on the scale fits?"},
+  garden: {spots:"You have 120 outside bays: tables of plants, bagged soil and garden tools. Think 10–20 products a bay, one label each.",
+           changes:"Plants get marked down as they age and as the season ends. If a product's price changes about once a month for most of the year, what's the yearly count?",
+           seconds:"A normal aisle, though spread out outdoors.",
+           damage:"Labels sit outside in sun and rain, near hoses and carts. Which level on the scale fits?"},
+  flooring: {spots:"You have 60.75 bays. Big boxes of tile and planks take room, so fewer products fit: think 15–25 a bay, one label each.",
+             changes:"Everyday staples sold by the box, with few sales. Start from the store average (about 2.6 a year): more or less often?",
+             seconds:"A normal aisle.",
+             damage:"Pallet jacks and flat carts move heavy boxes here. Which level on the scale fits?"},
+};
 function renderEst(){
-  const e = est(), d = defaults(area()), why = S.why[S.area] || {};
+  const e = est(), a = area(), why = S.why[S.area] || {};
   $("#estGrid").innerHTML = EST_DEF.map(f => `
     <div class="est">
       <label for="e-${f.k}">${f.label}</label>
-      <div class="num"><input type="number" id="e-${f.k}" min="0" step="any" value="${e[f.k]}" aria-describedby="eu-${f.k} eh-${f.k} ee-${f.k}"><span id="eu-${f.k}">${f.unit}</span>
-        <button type="button" class="btn small" data-reset="${f.k}">Use best guess<span class="sr-only"> for ${f.label.slice(3)}</span> (${fmtN(d[f.k],1)})</button></div>
+      <div class="where">
+        <p><strong>Where to find it:</strong> ${WHERE[f.k](a)}</p>
+        <p><strong>Hint for ${a.name}:</strong> ${HINTS[a.key][f.k]}</p>
+      </div>
+      <div class="num"><input type="number" id="e-${f.k}" min="0" ${f.k==="damage"?'max="100"':""} step="any" value="${typeof e[f.k]==="number" ? e[f.k] : ""}" aria-describedby="eu-${f.k} ee-${f.k}"><span id="eu-${f.k}">${f.unit}</span></div>
       <span class="err" id="ee-${f.k}"></span>
-      <span class="hint" id="eh-${f.k}">${f.hint} Best guess for ${area().name}: ${fmtN(d[f.k],1)}${f.k==="damage"?"%":""}.</span>
-      <label for="w-${f.k}" style="margin-top:8px">Why this number?</label><span class="hint" id="wh-${f.k}">One line for your Assumptions Log.</span>
+      <label for="w-${f.k}" style="margin-top:8px">Why this number?</label><span class="hint" id="wh-${f.k}">One line for your Assumptions Log: where it came from and how sure you are.</span>
       <input type="text" id="w-${f.k}" aria-describedby="wh-${f.k}" value="${(why[f.k]||"").replace(/"/g,"&quot;")}">
     </div>`).join("");
 }
 function onEstInput(ev){
   const id = ev.target.id;
-  if(id.startsWith("e-")){ const k = id.slice(2); const raw = ev.target.value; const v = parseFloat(raw); const ok = raw !== "" && isFinite(v) && v >= 0;
-    const err = $("#ee-"+k);
-    if(!ok){ ev.target.setAttribute("aria-invalid","true"); err.textContent = "Enter a number of 0 or more. Using the best guess (" + fmtN(defaults(area())[k],1) + ") until you do."; }
-    else { ev.target.removeAttribute("aria-invalid"); err.textContent = ""; }
-    const nv = ok ? v : defaults(area())[k];
-    if(nv !== est()[k]){ S.est[S.area] = Object.assign(est(), {[k]: nv}); clearCalcs("an estimate changed"); } }
+  if(id.startsWith("e-")){ const k = id.slice(2); const raw = ev.target.value; const v = parseFloat(raw);
+    const err = $("#ee-"+k); const cur = est(); let nv;
+    if(raw === ""){ ev.target.removeAttribute("aria-invalid"); err.textContent = ""; nv = undefined; }
+    else if(!isFinite(v) || v < 0 || (k==="damage" && v > 100)){ ev.target.setAttribute("aria-invalid","true"); err.textContent = k==="damage" ? "Enter a percent from 0 to 100." : "Enter a number of 0 or more."; nv = undefined; }
+    else { ev.target.removeAttribute("aria-invalid"); err.textContent = ""; nv = v; }
+    if(nv !== cur[k]){ if(nv === undefined) delete cur[k]; else cur[k] = nv; S.est[S.area] = cur; clearCalcs("an estimate changed"); } }
   if(id.startsWith("w-")){ const k = id.slice(2); S.why[S.area] = Object.assign({}, S.why[S.area], {[k]: ev.target.value}); }
   save();
 }
@@ -343,9 +380,10 @@ function isRight(k, raw){
   if(k==="months"){ if(exp===null) return t==="never"; const v = parseFloat(t); return isFinite(v) && Math.abs(v-exp) <= 1; }
   const v = parseFloat(t); return isFinite(v) && Math.abs(v-exp) <= Math.max(2, exp*0.01);
 }
-function calcDone(){ return CALC_DEF.every(c => S.calc[c.k] && S.calc[c.k].ok); }
+function calcDone(){ return estReady() && CALC_DEF.every(c => S.calc[c.k] && S.calc[c.k].ok); }
 function renderCalc(){
   const e = est();
+  if(!estReady(e)){ $("#calcList").innerHTML = '<p class="notice">Fill in all four estimates on step 2 first. Then come back to do the calculations with your numbers.</p>'; return; }
   $("#calcList").innerHTML = CALC_DEF.map((c,i) => {
     const st = S.calc[c.k] || {}; const tries = S.tries[c.k] || 0;
     return `<div class="calc" role="group" aria-labelledby="cl-${c.k}">
@@ -447,6 +485,7 @@ function renderCohort(){
 async function submit(){
   const msg = $("#submitMsg");
   $("#toStep1").hidden = true; $("#finding").removeAttribute("aria-invalid");
+  if(!calcDone()){ msg.className = "fb bad"; msg.textContent = "Finish your estimates and calculations first (steps 2 and 3)."; return; }
   if(!S.name.trim()){ msg.className = "fb bad"; msg.textContent = "Add your name on step 1 first."; $("#toStep1").hidden = false; $("#toStep1").focus(); return; }
   if(!S.finding.trim()){ msg.className = "fb bad"; msg.textContent = "Write your one-sentence finding first."; const f = $("#finding"); f.setAttribute("aria-invalid","true"); f.setAttribute("aria-describedby","finding-hint submitMsg"); f.focus(); return; }
   await loadConfig(); const c = cohortCfg();
@@ -466,7 +505,7 @@ function checklist(){
   const e = est(); const why = S.why[S.area] || {};
   return [
     [!!S.name.trim(), "Your name (step 1)"],
-    [EST_DEF.every(f => (why[f.k]||"").trim()), "A reason for each of your four estimates (step 2)"],
+    [estReady(e) && EST_DEF.every(f => (why[f.k]||"").trim()), "All four estimates, each with a reason (step 2)"],
     [calcDone(), "All four calculations checked (step 3)"],
     [!!(S.s1.trim() && S.s2.trim()), "Your two damage-test sentences (step 4)"],
     [!!(S.fav && S.unfav && S.gap.trim()), "Your favorable vs. unfavorable comparison (step 5)"],
@@ -474,12 +513,14 @@ function checklist(){
 }
 function renderExport(){
   $("#checklist").innerHTML = checklist().map(([ok,t]) => `<li>${ok ? "✓ Done:" : "To do:"} ${t}</li>`).join("");
+  if(!estReady()){ $("#summaryKv").innerHTML = "<dt>Area</dt><dd>" + area().name + "</dd><dt>Estimates</dt><dd>Not finished yet (step 2)</dd>"; $("#newWin").href = location.href.split("#")[0]; return; }
   const m = model(est());
   $("#summaryKv").innerHTML = `<dt>Area</dt><dd>${area().name}</dd><dt>Labor saved a year</dt><dd>${fmt$(m.labor)}</dd><dt>Upfront cost</dt><dd>${fmt$(m.upfront)}</dd>
     <dt>Running cost a year</dt><dd>${fmt$(m.running)}</dd><dt>Time to breakeven</dt><dd>${fmtTime(m.months)}</dd>`;
   $("#newWin").href = location.href.split("#")[0];
 }
 function resultText(){
+  if(!estReady()) return "Breakeven Builder: estimates not finished yet.";
   const e = est(), m = model(e);
   return [`Breakeven Builder — ${S.name || "(name)"} — ${area().name}, Store A`,
     `Estimates: ${fmtN(e.spots)} label spots; ${fmtN(e.changes,1)} price changes per product a year; ${e.seconds} s per change; ${e.damage}% damage`,
@@ -488,6 +529,7 @@ function resultText(){
     `Finding: ${S.finding}`].join("\n");
 }
 function buildReport(){
+  if(!estReady()){ $("#report").innerHTML = "<p>Finish your four estimates on step 2 before downloading your PDF.</p>"; return; }
   const e = est(), m = model(e), why = S.why[S.area] || {}, a = area();
   const howChecked = k => { const c = S.calc[k] || {}; return c.shown ? "Answer shown" : c.ok ? (c.tries===1 ? "Correct first try" : "Correct after " + (c.tries||1) + " tries") : "Not done"; };
   const name = k => (AREAS.find(x=>x.key===S[k])||{}).name || "—";
@@ -497,8 +539,8 @@ function buildReport(){
       <h1>${esc(S.name)}: ${a.name}, Store A</h1><div style="font-size:9pt">${new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}</div></div>
     <h2>Answer</h2><p><strong>Time to breakeven at ${e.damage}% damage: ${fmtTime(m.months)}.</strong> ${esc(S.finding)}</p>
     <h2>Estimates and reasons (Assumptions Log)</h2>
-    <table><thead><tr><th scope="col">Estimate</th><th scope="col">Value</th><th scope="col">Best guess</th><th scope="col">Why this number</th></tr></thead><tbody>
-    ${EST_DEF.map(f => `<tr><th scope="row">${f.label.slice(3)}</th><td class="num">${fmtN(e[f.k],1)}${f.k==="damage"?"%":""}</td><td class="num">${fmtN(defaults(a)[f.k],1)}${f.k==="damage"?"%":""}</td><td>${esc(why[f.k])}</td></tr>`).join("")}</tbody></table>
+    <table><thead><tr><th scope="col">Estimate</th><th scope="col">Value</th><th scope="col">Why this number</th></tr></thead><tbody>
+    ${EST_DEF.map(f => `<tr><th scope="row">${f.label.slice(3)}</th><td class="num">${fmtN(e[f.k],1)}${f.k==="damage"?"%":""}</td><td>${esc(why[f.k])}</td></tr>`).join("")}</tbody></table>
     <p style="font-size:9pt">Given: $${COSTS.rate}/hour labor (Home Depot data, MET, October 2026). Per label spot: $${COSTS.upfront.toFixed(2)} upfront ($10 label + $1 install + $0.50 gateway share), $${COSTS.software.toFixed(2)} software a year, $${COSTS.replace} per broken label (illustrative assumptions). Bays: Home Depot fixture plan for Store A.</p>
     <h2>The four calculations</h2>
     <table><thead><tr><th scope="col">Calculation</th><th scope="col">Math</th><th scope="col">My answer</th><th scope="col">Checked</th></tr></thead><tbody>
@@ -518,7 +560,7 @@ function buildReport(){
 // ---------- navigation
 function stepOk(n){ if(n<=3) return true; if(n===4) return true; return true; }
 function renderNav(){
-  $("#steps").innerHTML = STEPS.map((t,i) => { const n = i+1; const done = (n===3 && calcDone()) || (n===2 && EST_DEF.every(f => ((S.why[S.area]||{})[f.k]||"").trim()));
+  $("#steps").innerHTML = STEPS.map((t,i) => { const n = i+1; const done = (n===3 && calcDone()) || (n===2 && estReady() && EST_DEF.every(f => ((S.why[S.area]||{})[f.k]||"").trim()));
     return `<li><button type="button" data-go="${n}" ${n===S.step?'aria-current="step"':""}>${n} ${t}${done?'<span class="done" aria-hidden="true">✓</span><span class="sr-only"> (done)</span>':""}</button></li>`; }).join("");
   $("#prevBtn").disabled = S.step===1; $("#nextBtn").hidden = S.step===STEPS.length;
 }
@@ -539,8 +581,6 @@ function init(){
   $("#name").addEventListener("input", e => { S.name = e.target.value; save(); });
   $("#area").addEventListener("change", e => { S.area = e.target.value; clearCalcs("you changed your area"); save(); renderArea(); });
   $("#estGrid").addEventListener("input", onEstInput);
-  $("#estGrid").addEventListener("click", ev => { const k = ev.target.dataset.reset; if(!k) return;
-    const cur = est(); if(cur[k] !== defaults(area())[k]){ cur[k] = defaults(area())[k]; S.est[S.area] = cur; clearCalcs("an estimate changed"); } save(); renderEst(); $("#e-"+k).focus(); });
   $("#calcList").addEventListener("click", ev => { if(ev.target.dataset.check) check(ev.target.dataset.check); if(ev.target.dataset.show) showAnswer(ev.target.dataset.show); });
   $("#calcList").addEventListener("keydown", ev => { if(ev.key === "Enter" && ev.target.id && ev.target.id.startsWith("c-")){ ev.preventDefault(); check(ev.target.id.slice(2)); } });
   [["s1","s1"],["s2","s2"],["finding","finding"],["gap","gap"]].forEach(([id,k]) => $("#"+id).addEventListener("input", e => { S[k] = e.target.value; save(); }));
