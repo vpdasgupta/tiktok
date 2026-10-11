@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Store Area Cards — 16:9 Deck</title>
+<style>
+  :root {
+    --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
+    --bg: #f4f6f5; --accent: #d5581f; --accent-ink: #b8480f; --link: #1a5f7a;
+    --ok: #2f7a49; --ok-bg: #eaf4ee; --soft: #fbf3ee;
+    --stagew: 1280px; --stageh: 720px; --scale: 1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0c110f; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .deck {
+    display: flex; flex-direction: row;
+    height: 100vh; width: 100vw;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    background: var(--bg);
+  }
+  .screen {
+    flex: 0 0 100vw; height: 100vh;
+    scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .slide {
+    width: var(--stagew); height: var(--stageh);
+    flex: 0 0 auto;
+    transform: scale(var(--scale)); transform-origin: center center;
+    background: var(--card); position: relative; overflow: hidden;
+  }
+  a { color: var(--link); }
+  a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  .r-counter {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 15px;
+    font-weight: 700; color: var(--accent-ink); margin: 0 0 6px;
+  }
+  .r-tag { font-weight: 700; text-transform: uppercase; letter-spacing: .05em; font-size: 13px; display: block; margin-bottom: 4px; color: var(--accent-ink); }
+
+  /* ---------- area slide ---------- */
+  .slide--area { padding: 34px 88px 84px; border-top: 8px solid var(--accent); display: flex; flex-direction: column; gap: 18px; }
+  .a-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+  h2 { font-size: 38px; margin: 0 0 4px; line-height: 1.1; }
+  .a-sub { font-size: 18px; color: var(--muted); margin: 0; }
+  .a-sub strong { color: var(--ink); }
+  .a-link {
+    flex: 0 0 auto; font-size: 16px; font-weight: 700; text-decoration: none;
+    border: 2px solid var(--link); border-radius: 999px; padding: 9px 18px; margin-bottom: 2px;
+  }
+  .a-link:hover { background: var(--link); color: #fff; }
+
+  .a-cols { display: flex; gap: 32px; flex: 1; min-height: 0; }
+  .a-left { flex: 0 0 470px; display: flex; flex-direction: column; gap: 14px; }
+  .a-map svg {
+    width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line);
+    box-shadow: 0 2px 4px rgba(20,33,31,.05), 0 10px 24px rgba(20,33,31,.08);
+  }
+  .a-diff {
+    margin: 0; font-size: 18px; line-height: 1.4; border-radius: 12px; padding: 14px 18px;
+    background: var(--soft); border-left: 5px solid var(--accent);
+  }
+
+  .a-est { flex: 1; min-width: 0; border-collapse: collapse; align-self: flex-start; font-size: 15px; line-height: 1.38; }
+  .a-est thead th {
+    text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--muted); padding: 0 12px 8px; border-bottom: 2px solid var(--ink);
+  }
+  .a-est tbody th, .a-est td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+  .a-est tbody th { font-weight: 700; width: 196px; font-size: 15px; }
+  .e-num {
+    display: inline-flex; align-items: center; justify-content: center; vertical-align: top;
+    width: 24px; height: 24px; border-radius: 50%; background: var(--accent-ink);
+    color: #fff; font-size: 13px; font-weight: 800; flex: 0 0 auto;
+  }
+  .e-label { display: flex; align-items: flex-start; gap: 8px; }
+  .e-guess { font-size: 19px; font-weight: 800; width: 150px; }
+  .e-why { color: var(--muted); }
+
+  .a-q {
+    margin: 0; font-size: 19px; line-height: 1.4; border-radius: 12px; padding: 14px 20px;
+    background: var(--ok-bg); border-left: 5px solid var(--ok);
+  }
+  .a-q .r-tag { color: var(--ok); }
+
+  /* ---------- chrome: arrows + area nav ---------- */
+  .navbtn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,.92); border: 1px solid var(--line);
+    color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+    box-shadow: 0 4px 14px rgba(0,0,0,.16);
+  }
+  .navbtn:hover { background: #fff; }
+  .navbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .navbtn[disabled] { opacity: .3; cursor: default; }
+  .navbtn--prev { left: 20px; }
+  .navbtn--next { right: 20px; }
+
+  .areanav {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    display: flex; gap: 6px; z-index: 30; margin: 0; list-style: none;
+    background: rgba(255,255,255,.94); padding: 6px; border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.14);
+  }
+  .pill {
+    font: inherit; font-size: 14px; font-weight: 600; color: var(--ink);
+    background: transparent; border: 2px solid transparent; border-radius: 999px;
+    padding: 6px 14px; cursor: pointer; white-space: nowrap;
+  }
+  .pill:hover { border-color: var(--accent); }
+  .pill:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .pill[aria-current="true"] { background: var(--accent-ink); color: #fff; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+
+  @media (max-width: 640px) { .pill { font-size: 12px; padding: 5px 8px; } .navbtn { width: 40px; height: 40px; font-size: 22px; } .navbtn--prev { left: 6px; } .navbtn--next { right: 6px; } }
+  @media (prefers-reduced-motion: reduce) { .deck { scroll-behavior: auto; } }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eef1f0; --muted: #a8b2af; --line: #2c3634; --card: #1a2321;
+      --bg: #101615; --accent: #f07a3d; --accent-ink: #f4a06f; --link: #6fc3dd;
+      --ok: #67c88a; --ok-bg: #14231b; --soft: #241a13;
+    }
+    .e-num, .pill[aria-current="true"] { color: #1a2321; }
+    .a-link:hover { color: #1a2321; }
+    .navbtn, .areanav { background: rgba(26,35,33,.94); border-color: var(--line); color: var(--ink); }
+  }
+</style>
+</head>
+<body>
+  <h1 class="sr-only">Store A area cards: your four best-guess estimates</h1>
+  <main class="deck" id="deck" aria-roledescription="carousel" aria-label="Store area cards">
+    <section class="screen" id="screen-0" aria-roledescription="slide" aria-labelledby="h-power">
+      <div class="slide slide--area">
+        <div class="a-head">
+          <div>
+            <p class="r-counter">Store area 1 of 5 · Store A</p>
+            <h2 id="h-power">Power Tools card</h2>
+            <p class="a-sub">Aisles 5–8 (part of Hardware &amp; Tools) · <strong>About 55 bays</strong></p>
+          </div>
+          <a class="a-link" href="https://www.homedepot.com/b/Tools-Power-Tools/N-5yc1vZc298" target="_blank" rel="noopener">Power Tools on homedepot.com<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+        <div class="a-cols">
+          <div class="a-left">
+            <div class="a-map">
+<svg viewBox="72 122 1400 668" role="img" aria-labelledby="mt0 md0" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="mt0">Store A map: Power Tools</title>
+<desc id="md0">Simplified floor plan of Home Depot Store A. The Power Tools area is filled orange with a thick outline: Aisles 5–8 (part of Hardware &amp; Tools). The front of the store (entrance and checkouts) is at the bottom, the back wall at the top, and the outdoor garden center on the right.</desc>
+<defs><pattern id="hatch-power" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#F96302"/><rect width="5" height="14" fill="#ffb27a"/></pattern></defs>
+<rect x="72" y="122" width="1400" height="668" fill="#ffffff"/>
+<rect x="89.0" y="143.0" width="1045.2" height="624.0" fill="#ffffff" stroke="#1c1c1c" stroke-width="3"/>
+<rect x="1134.2" y="270.4" width="377.0" height="507.0" fill="#f4f4f4" stroke="#1c1c1c" stroke-width="3" stroke-dasharray="10 6"/>
+<rect x="89.0" y="702.0" width="1045.2" height="65.0" fill="#ececec" stroke="#8a8a8a" stroke-width="1.5"/>
+<rect x="112.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="112.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="154.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="154.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="195.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="195.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="237.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="237.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="278.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="278.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="320.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="320.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="362.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="362.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="403.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="403.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="445.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="445.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="486.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="486.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="528.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="528.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="570.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="570.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="611.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="611.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="653.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="653.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="694.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="694.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="736.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="736.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="778.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="778.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="819.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="819.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="861.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="861.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="910.6" y="397.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="430.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="462.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="495.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="527.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="560.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="592.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="625.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="941.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="974.3" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1006.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1039.3" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1071.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1186.2" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1186.2" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1235.6" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1235.6" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1285.0" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1285.0" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1334.4" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1334.4" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1383.8" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1383.8" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1433.2" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1433.2" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1482.6" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1482.6" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<text x="612" y="738" font-size="27" fill="#4a4a4a" text-anchor="middle">Front of store: entrance, checkouts, offices</text>
+<text x="612" y="159" font-size="24" fill="#4a4a4a" text-anchor="middle">Back wall</text>
+<text x="1323" y="265" font-size="26" fill="#4a4a4a" text-anchor="middle">Garden center (outside)</text>
+<rect x="648.0" y="390.0" width="122.2" height="247.0" fill="url(#hatch-power)" stroke="#1c1c1c" stroke-width="4"/>
+<rect x="561.1" y="482.5" width="296.0" height="62" rx="8" fill="#ffffff" stroke="#1c1c1c" stroke-width="3"/>
+<text x="709.1" y="527.9" font-size="40" font-weight="700" fill="#1c1c1c" text-anchor="middle">Power Tools</text>
+</svg>
+            </div>
+            <p class="a-diff"><span class="r-tag">What makes it different</span>Lots of sales events, and many tools sit in locked cases.</p>
+          </div>
+          <table class="a-est">
+            <caption class="sr-only">Power Tools: our best guess for each of your four estimates</caption>
+            <thead><tr><th scope="col">Estimate</th><th scope="col">Best guess</th><th scope="col">Why</th></tr></thead>
+            <tbody>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">1</span><span>Label spots</span></span></th><td class="e-guess">About 1,650</td><td class="e-why">55 bays × about 15 products a bay × 2 labels each. Many tools hang as a display model next to their boxed stock, like ceiling fans.</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">2</span><span>Price changes per product a year</span></span></th><td class="e-guess">About 15</td><td class="e-why">A sale event most months, plus big holiday sales</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">3</span><span>Seconds per change, per label</span></span></th><td class="e-guess">About 45</td><td class="e-why">Many tools sit in locked cases: unlock, find, swap, lock</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">4</span><span>Damage rate a year</span></span></th><td class="e-guess">5% (Low)</td><td class="e-why">A calm indoor aisle</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="a-q"><span class="r-tag">One possible question for The Home Depot</span>How many power tools sit in locked cases, and how long does a price change take there?</p>
+      </div>
+    </section>
+    <section class="screen" id="screen-1" aria-roledescription="slide" aria-labelledby="h-lumber">
+      <div class="slide slide--area">
+        <div class="a-head">
+          <div>
+            <p class="r-counter">Store area 2 of 5 · Store A</p>
+            <h2 id="h-lumber">Lumber card</h2>
+            <p class="a-sub">Aisles 16–18 and 23–25, plus lumber racks · <strong>23 bays, plus about 570 ft of racks</strong></p>
+          </div>
+          <a class="a-link" href="https://www.homedepot.com/b/Lumber-Composites-Dimensional-Lumber/N-5yc1vZc3tc" target="_blank" rel="noopener">Dimensional Lumber on homedepot.com<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+        <div class="a-cols">
+          <div class="a-left">
+            <div class="a-map">
+<svg viewBox="72 122 1400 668" role="img" aria-labelledby="mt1 md1" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="mt1">Store A map: Lumber</title>
+<desc id="md1">Simplified floor plan of Home Depot Store A. The Lumber area is filled orange with a thick outline: Aisles 16–18 and 23–25, plus lumber racks. The front of the store (entrance and checkouts) is at the bottom, the back wall at the top, and the outdoor garden center on the right.</desc>
+<defs><pattern id="hatch-lumber" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#F96302"/><rect width="5" height="14" fill="#ffb27a"/></pattern></defs>
+<rect x="72" y="122" width="1400" height="668" fill="#ffffff"/>
+<rect x="89.0" y="143.0" width="1045.2" height="624.0" fill="#ffffff" stroke="#1c1c1c" stroke-width="3"/>
+<rect x="1134.2" y="270.4" width="377.0" height="507.0" fill="#f4f4f4" stroke="#1c1c1c" stroke-width="3" stroke-dasharray="10 6"/>
+<rect x="89.0" y="702.0" width="1045.2" height="65.0" fill="#ececec" stroke="#8a8a8a" stroke-width="1.5"/>
+<rect x="112.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="112.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="154.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="154.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="195.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="195.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="237.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="237.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="278.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="278.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="320.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="320.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="362.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="362.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="403.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="403.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="445.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="445.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="486.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="486.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="528.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="528.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="570.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="570.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="611.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="611.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="653.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="653.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="694.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="694.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="736.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="736.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="778.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="778.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="819.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="819.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="861.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="861.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="910.6" y="397.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="430.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="462.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="495.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="527.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="560.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="592.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="625.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="941.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="974.3" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1006.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1039.3" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1071.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1186.2" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1186.2" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1235.6" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1235.6" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1285.0" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1285.0" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1334.4" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1334.4" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1383.8" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1383.8" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1433.2" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1433.2" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1482.6" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1482.6" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<text x="612" y="738" font-size="27" fill="#4a4a4a" text-anchor="middle">Front of store: entrance, checkouts, offices</text>
+<text x="612" y="159" font-size="24" fill="#4a4a4a" text-anchor="middle">Back wall</text>
+<text x="1323" y="265" font-size="26" fill="#4a4a4a" text-anchor="middle">Garden center (outside)</text>
+<rect x="226.8" y="169.0" width="98.8" height="462.8" fill="url(#hatch-lumber)" stroke="#1c1c1c" stroke-width="4"/>
+<rect x="188.2" y="369.4" width="176.0" height="62" rx="8" fill="#ffffff" stroke="#1c1c1c" stroke-width="3"/>
+<text x="276.2" y="414.8" font-size="40" font-weight="700" fill="#1c1c1c" text-anchor="middle">Lumber</text>
+</svg>
+            </div>
+            <p class="a-diff"><span class="r-tag">What makes it different</span>Prices follow the lumber market, and forklifts work these aisles.</p>
+          </div>
+          <table class="a-est">
+            <caption class="sr-only">Lumber: our best guess for each of your four estimates</caption>
+            <thead><tr><th scope="col">Estimate</th><th scope="col">Best guess</th><th scope="col">Why</th></tr></thead>
+            <tbody>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">1</span><span>Label spots</span></span></th><td class="e-guess">About 370</td><td class="e-why">23 bays × about 10 products a bay, plus about 1 label every 4 feet of lumber rack (570 ÷ 4 ≈ 140)</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">2</span><span>Price changes per product a year</span></span></th><td class="e-guess">About 26 (every 2 weeks)</td><td class="e-why">Lumber is priced off a market that's re-priced every week (<a href="https://www.fastmarkets.com/forest-products/wood-products/lumber-prices/" target="_blank" rel="noopener">Fastmarkets lumber prices<span class="sr-only"> (opens in a new tab)</span></a>). Store prices move more slowly than the market, so we guessed every 2 weeks.</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">3</span><span>Seconds per change, per label</span></span></th><td class="e-guess">About 40</td><td class="e-why">Tall racks and long aisles add walking and reaching</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">4</span><span>Damage rate a year</span></span></th><td class="e-guess">25% (High)</td><td class="e-why">Forklifts move lumber in these aisles</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="a-q"><span class="r-tag">One possible question for The Home Depot</span>How often do lumber prices really change in the store, and how often do forklifts damage rack labels?</p>
+      </div>
+    </section>
+    <section class="screen" id="screen-2" aria-roledescription="slide" aria-labelledby="h-paint">
+      <div class="slide slide--area">
+        <div class="a-head">
+          <div>
+            <p class="r-counter">Store area 3 of 5 · Store A</p>
+            <h2 id="h-paint">Paint card</h2>
+            <p class="a-sub">Aisles 10–12, plus the paint desk · <strong>53.75 bays</strong></p>
+          </div>
+          <a class="a-link" href="https://www.homedepot.com/b/Paint/N-5yc1vZar2d" target="_blank" rel="noopener">Paint on homedepot.com<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+        <div class="a-cols">
+          <div class="a-left">
+            <div class="a-map">
+<svg viewBox="72 122 1400 668" role="img" aria-labelledby="mt2 md2" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="mt2">Store A map: Paint</title>
+<desc id="md2">Simplified floor plan of Home Depot Store A. The Paint area is filled orange with a thick outline: Aisles 10–12, plus the paint desk. The front of the store (entrance and checkouts) is at the bottom, the back wall at the top, and the outdoor garden center on the right.</desc>
+<defs><pattern id="hatch-paint" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#F96302"/><rect width="5" height="14" fill="#ffb27a"/></pattern></defs>
+<rect x="72" y="122" width="1400" height="668" fill="#ffffff"/>
+<rect x="89.0" y="143.0" width="1045.2" height="624.0" fill="#ffffff" stroke="#1c1c1c" stroke-width="3"/>
+<rect x="1134.2" y="270.4" width="377.0" height="507.0" fill="#f4f4f4" stroke="#1c1c1c" stroke-width="3" stroke-dasharray="10 6"/>
+<rect x="89.0" y="702.0" width="1045.2" height="65.0" fill="#ececec" stroke="#8a8a8a" stroke-width="1.5"/>
+<rect x="112.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="112.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="154.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="154.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="195.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="195.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="237.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="237.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="278.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="278.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="320.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="320.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="362.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="362.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="403.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="403.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="445.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="445.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="486.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="486.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="528.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="528.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="570.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="570.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="611.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="611.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="653.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="653.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="694.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="694.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="736.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="736.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="778.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="778.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="819.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="819.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="861.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="861.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="910.6" y="397.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="430.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="462.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="495.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="527.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="560.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="592.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="625.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="941.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="974.3" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1006.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1039.3" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1071.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1186.2" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1186.2" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1235.6" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1235.6" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1285.0" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1285.0" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1334.4" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1334.4" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1383.8" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1383.8" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1433.2" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1433.2" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1482.6" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1482.6" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<text x="612" y="738" font-size="27" fill="#4a4a4a" text-anchor="middle">Front of store: entrance, checkouts, offices</text>
+<text x="612" y="159" font-size="24" fill="#4a4a4a" text-anchor="middle">Back wall</text>
+<text x="1323" y="265" font-size="26" fill="#4a4a4a" text-anchor="middle">Garden center (outside)</text>
+<rect x="502.4" y="390.0" width="104.0" height="247.0" fill="url(#hatch-paint)" stroke="#1c1c1c" stroke-width="4"/>
+<rect x="478.4" y="482.5" width="152.0" height="62" rx="8" fill="#ffffff" stroke="#1c1c1c" stroke-width="3"/>
+<text x="554.4" y="527.9" font-size="40" font-weight="700" fill="#1c1c1c" text-anchor="middle">Paint</text>
+</svg>
+            </div>
+            <p class="a-diff"><span class="r-tag">What makes it different</span>A calm aisle packed with products whose prices rarely change.</p>
+          </div>
+          <table class="a-est">
+            <caption class="sr-only">Paint: our best guess for each of your four estimates</caption>
+            <thead><tr><th scope="col">Estimate</th><th scope="col">Best guess</th><th scope="col">Why</th></tr></thead>
+            <tbody>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">1</span><span>Label spots</span></span></th><td class="e-guess">About 2,150</td><td class="e-why">53.75 bays × about 40 products a bay × 1 label each (cans, brushes and tape packed tight)</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">2</span><span>Price changes per product a year</span></span></th><td class="e-guess">About 3</td><td class="e-why">About the store average (see page 5)</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">3</span><span>Seconds per change, per label</span></span></th><td class="e-guess">About 30</td><td class="e-why">A normal aisle</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">4</span><span>Damage rate a year</span></span></th><td class="e-guess">5% (Low)</td><td class="e-why">A calm indoor aisle</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="a-q"><span class="r-tag">One possible question for The Home Depot</span>Are there paint products whose prices change often, like spray paint or seasonal sales?</p>
+      </div>
+    </section>
+    <section class="screen" id="screen-3" aria-roledescription="slide" aria-labelledby="h-garden">
+      <div class="slide slide--area">
+        <div class="a-head">
+          <div>
+            <p class="r-counter">Store area 4 of 5 · Store A</p>
+            <h2 id="h-garden">Outdoor Garden card</h2>
+            <p class="a-sub">The garden center (outside bays) · <strong>120 bays</strong></p>
+          </div>
+          <a class="a-link" href="https://www.homedepot.com/b/Outdoors-Garden-Center/N-5yc1vZbx6k" target="_blank" rel="noopener">Garden Center on homedepot.com<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+        <div class="a-cols">
+          <div class="a-left">
+            <div class="a-map">
+<svg viewBox="72 122 1400 668" role="img" aria-labelledby="mt3 md3" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="mt3">Store A map: Outdoor Garden</title>
+<desc id="md3">Simplified floor plan of Home Depot Store A. The Outdoor Garden area is filled orange with a thick outline: The garden center (outside bays). The front of the store (entrance and checkouts) is at the bottom, the back wall at the top, and the outdoor garden center on the right.</desc>
+<defs><pattern id="hatch-garden" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#F96302"/><rect width="5" height="14" fill="#ffb27a"/></pattern></defs>
+<rect x="72" y="122" width="1400" height="668" fill="#ffffff"/>
+<rect x="89.0" y="143.0" width="1045.2" height="624.0" fill="#ffffff" stroke="#1c1c1c" stroke-width="3"/>
+<rect x="1134.2" y="270.4" width="377.0" height="507.0" fill="#f4f4f4" stroke="#1c1c1c" stroke-width="3" stroke-dasharray="10 6"/>
+<rect x="89.0" y="702.0" width="1045.2" height="65.0" fill="#ececec" stroke="#8a8a8a" stroke-width="1.5"/>
+<rect x="112.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="112.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="154.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="154.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="195.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="195.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="237.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="237.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="278.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="278.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="320.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="320.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="362.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="362.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="403.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="403.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="445.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="445.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="486.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="486.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="528.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="528.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="570.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="570.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="611.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="611.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="653.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="653.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="694.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="694.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="736.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="736.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="778.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="778.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="819.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="819.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="861.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="861.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="910.6" y="397.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="430.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="462.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="495.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="527.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="560.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="592.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="625.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="941.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="974.3" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1006.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1039.3" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1071.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1186.2" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1186.2" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1235.6" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1235.6" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1285.0" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1285.0" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1334.4" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1334.4" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1383.8" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1383.8" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1433.2" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1433.2" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1482.6" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1482.6" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<text x="612" y="738" font-size="27" fill="#4a4a4a" text-anchor="middle">Front of store: entrance, checkouts, offices</text>
+<text x="612" y="159" font-size="24" fill="#4a4a4a" text-anchor="middle">Back wall</text>
+<text x="1323" y="265" font-size="26" fill="#4a4a4a" text-anchor="middle">Garden center (outside)</text>
+<rect x="1139.4" y="275.6" width="366.6" height="496.6" fill="url(#hatch-garden)" stroke="#1c1c1c" stroke-width="4"/>
+<rect x="1096.0" y="492.9" width="368.0" height="62" rx="8" fill="#ffffff" stroke="#1c1c1c" stroke-width="3"/>
+<text x="1280.0" y="538.3" font-size="40" font-weight="700" fill="#1c1c1c" text-anchor="middle">Outdoor Garden</text>
+</svg>
+            </div>
+            <p class="a-diff"><span class="r-tag">What makes it different</span>Prices drop as the season ends, and labels sit in sun and rain.</p>
+          </div>
+          <table class="a-est">
+            <caption class="sr-only">Outdoor Garden: our best guess for each of your four estimates</caption>
+            <thead><tr><th scope="col">Estimate</th><th scope="col">Best guess</th><th scope="col">Why</th></tr></thead>
+            <tbody>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">1</span><span>Label spots</span></span></th><td class="e-guess">About 1,800</td><td class="e-why">120 bays × about 15 products a bay × 1 label each</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">2</span><span>Price changes per product a year</span></span></th><td class="e-guess">About 10</td><td class="e-why">Plants and seasonal goods get marked down as they age and as the season ends</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">3</span><span>Seconds per change, per label</span></span></th><td class="e-guess">About 30</td><td class="e-why">A normal aisle</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">4</span><span>Damage rate a year</span></span></th><td class="e-guess">25% (High)</td><td class="e-why">Sun, rain, water hoses and carts</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="a-q"><span class="r-tag">One possible question for The Home Depot</span>How many price changes do seasonal markdowns add, and do outdoor labels break more often?</p>
+      </div>
+    </section>
+    <section class="screen" id="screen-4" aria-roledescription="slide" aria-labelledby="h-flooring">
+      <div class="slide slide--area">
+        <div class="a-head">
+          <div>
+            <p class="r-counter">Store area 5 of 5 · Store A</p>
+            <h2 id="h-flooring">Flooring card</h2>
+            <p class="a-sub">Aisles 40–44 · <strong>60.75 bays</strong></p>
+          </div>
+          <a class="a-link" href="https://www.homedepot.com/b/Flooring/N-5yc1vZaq7r" target="_blank" rel="noopener">Flooring on homedepot.com<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+        <div class="a-cols">
+          <div class="a-left">
+            <div class="a-map">
+<svg viewBox="72 122 1400 668" role="img" aria-labelledby="mt4 md4" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+<title id="mt4">Store A map: Flooring</title>
+<desc id="md4">Simplified floor plan of Home Depot Store A. The Flooring area is filled orange with a thick outline: Aisles 40–44. The front of the store (entrance and checkouts) is at the bottom, the back wall at the top, and the outdoor garden center on the right.</desc>
+<defs><pattern id="hatch-flooring" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#F96302"/><rect width="5" height="14" fill="#ffb27a"/></pattern></defs>
+<rect x="72" y="122" width="1400" height="668" fill="#ffffff"/>
+<rect x="89.0" y="143.0" width="1045.2" height="624.0" fill="#ffffff" stroke="#1c1c1c" stroke-width="3"/>
+<rect x="1134.2" y="270.4" width="377.0" height="507.0" fill="#f4f4f4" stroke="#1c1c1c" stroke-width="3" stroke-dasharray="10 6"/>
+<rect x="89.0" y="702.0" width="1045.2" height="65.0" fill="#ececec" stroke="#8a8a8a" stroke-width="1.5"/>
+<rect x="112.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="112.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="154.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="154.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="195.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="195.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="237.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="237.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="278.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="278.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="320.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="320.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="362.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="362.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="403.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="403.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="445.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="445.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="486.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="486.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="528.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="528.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="570.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="570.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="611.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="611.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="653.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="653.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="694.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="694.8" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="736.4" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="736.4" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="778.0" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="778.0" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="819.6" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="819.6" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="861.2" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="861.2" y="390.0" width="12.0" height="262.6" fill="#d9d9d9"/>
+<rect x="910.6" y="397.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="430.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="462.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="495.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="527.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="560.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="592.8" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="910.6" y="625.3" width="210.6" height="10.4" fill="#d9d9d9"/>
+<rect x="941.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="974.3" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1006.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1039.3" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1071.8" y="169.0" width="12.0" height="197.6" fill="#d9d9d9"/>
+<rect x="1186.2" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1186.2" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1235.6" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1235.6" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1285.0" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1285.0" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1334.4" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1334.4" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1383.8" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1383.8" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1433.2" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1433.2" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<rect x="1482.6" y="299.0" width="23.4" height="91.0" fill="#d9d9d9"/>
+<rect x="1482.6" y="442.0" width="23.4" height="221.0" fill="#d9d9d9"/>
+<text x="612" y="738" font-size="27" fill="#4a4a4a" text-anchor="middle">Front of store: entrance, checkouts, offices</text>
+<text x="612" y="159" font-size="24" fill="#4a4a4a" text-anchor="middle">Back wall</text>
+<text x="1323" y="265" font-size="26" fill="#4a4a4a" text-anchor="middle">Garden center (outside)</text>
+<rect x="941.8" y="169.0" width="130.0" height="197.6" fill="url(#hatch-flooring)" stroke="#1c1c1c" stroke-width="4"/>
+<rect x="894.8" y="236.8" width="224.0" height="62" rx="8" fill="#ffffff" stroke="#1c1c1c" stroke-width="3"/>
+<text x="1006.8" y="282.2" font-size="40" font-weight="700" fill="#1c1c1c" text-anchor="middle">Flooring</text>
+</svg>
+            </div>
+            <p class="a-diff"><span class="r-tag">What makes it different</span>Heavy boxes on pallets, and prices that rarely change.</p>
+          </div>
+          <table class="a-est">
+            <caption class="sr-only">Flooring: our best guess for each of your four estimates</caption>
+            <thead><tr><th scope="col">Estimate</th><th scope="col">Best guess</th><th scope="col">Why</th></tr></thead>
+            <tbody>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">1</span><span>Label spots</span></span></th><td class="e-guess">About 1,220</td><td class="e-why">60.75 bays × about 20 products a bay × 1 label each (big boxes take more room)</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">2</span><span>Price changes per product a year</span></span></th><td class="e-guess">About 2</td><td class="e-why">Everyday staples sold by the box, with few sales</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">3</span><span>Seconds per change, per label</span></span></th><td class="e-guess">About 30</td><td class="e-why">A normal aisle</td></tr>
+<tr><th scope="row"><span class="e-label"><span class="e-num" aria-hidden="true">4</span><span>Damage rate a year</span></span></th><td class="e-guess">15% (Medium)</td><td class="e-why">Pallet jacks and flat carts move heavy boxes</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="a-q"><span class="r-tag">One possible question for The Home Depot</span>How often do flooring prices change, and how often do carts and pallets hit labels?</p>
+      </div>
+    </section>
+  </main>
+
+  <button type="button" class="navbtn navbtn--prev" id="prev" aria-label="Previous area">‹</button>
+  <button type="button" class="navbtn navbtn--next" id="next" aria-label="Next area">›</button>
+  <nav aria-label="Jump to a store area">
+    <ul class="areanav">
+      <li><button type="button" class="pill" data-i="0">Power Tools</button></li>
+      <li><button type="button" class="pill" data-i="1">Lumber</button></li>
+      <li><button type="button" class="pill" data-i="2">Paint</button></li>
+      <li><button type="button" class="pill" data-i="3">Outdoor Garden</button></li>
+      <li><button type="button" class="pill" data-i="4">Flooring</button></li>
+    </ul>
+  </nav>
+  <p class="sr-only" id="status" role="status" aria-live="polite"></p>
+
+<script>
+  var deck = document.getElementById('deck');
+  var screens = Array.prototype.slice.call(deck.querySelectorAll('.screen'));
+  var pills = Array.prototype.slice.call(document.querySelectorAll('.pill'));
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var status = document.getElementById('status');
+  var current = -1;
+
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, (window.innerHeight) / 720);
+    document.documentElement.style.setProperty('--scale', s);
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(screens.length - 1, i));
+    deck.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' });
+  }
+  function setActive(i) {
+    if (i === current) return;
+    var first = current === -1;
+    current = i;
+    pills.forEach(function (p, pi) {
+      if (pi === i) p.setAttribute('aria-current', 'true'); else p.removeAttribute('aria-current');
+    });
+    prev.disabled = (i === 0);
+    next.disabled = (i === screens.length - 1);
+    if (!first) status.textContent = screens[i].querySelector('.r-counter').textContent + ': ' + screens[i].querySelector('h2').textContent;
+  }
+  setActive(0);
+
+  prev.addEventListener('click', function () { goTo(current - 1); });
+  next.addEventListener('click', function () { goTo(current + 1); });
+  pills.forEach(function (p) { p.addEventListener('click', function () { goTo(+p.dataset.i); }); });
+
+  // Tabbing to a link on another slide brings that slide into view.
+  deck.addEventListener('focusin', function (e) {
+    var s = e.target.closest('.screen');
+    if (s) { var i = screens.indexOf(s); if (i !== current) goTo(i); }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End')  { e.preventDefault(); goTo(screens.length - 1); }
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) setActive(screens.indexOf(e.target));
+      });
+    }, { root: deck, threshold: 0.6 });
+    screens.forEach(function (s) { io.observe(s); });
+  }
+
+  deck.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      deck.scrollLeft += e.deltaY;
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
