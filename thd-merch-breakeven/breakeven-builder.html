@@ -35,6 +35,7 @@ a{color:#0B57D0}
 .stage{flex:1;padding:16px 22px}
 .slide h2{font-size:1.3rem;margin:0 0 4px;outline:none}
 .slide .lead{margin:0 0 12px;color:var(--muted)}
+[hidden]{display:none!important}
 .cols{display:grid;gap:18px}
 @media (min-width:760px){ .cols{grid-template-columns:minmax(0,5fr) minmax(0,7fr)} .cols.even{grid-template-columns:1fr 1fr} }
 .panel{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--paper)}
@@ -109,7 +110,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 <div class="frame" role="region" aria-label="Breakeven Builder">
   <header class="top">
     <div>
-      <p class="eyebrow">The Home Depot · Project 2 · Store A</p>
+      <p class="eyebrow" id="eyebrow">The Home Depot · Project 2 · Store A</p>
       <h1>Breakeven Builder</h1>
     </div>
     <nav aria-label="Builder steps"><ol class="steps" id="steps"></ol></nav>
@@ -168,6 +169,30 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
           <p id="whatifNote" class="hint" role="status"></p></div>
         <div class="field"><label for="s1">Does your area pay back within about 3 years at your damage rate?</label><span class="hint" id="s1-hint">One sentence.</span><textarea id="s1" aria-describedby="s1-hint"></textarea></div>
         <div class="field"><label for="s2">Which moves your answer more: price changes or damage?</label><span class="hint" id="s2-hint">Use the box above, then write one sentence.</span><textarea id="s2" aria-describedby="s2-hint"></textarea></div>
+      </div>
+    </div>
+
+    <!-- PROJECT 3: IMPROVE YOUR BREAKEVEN (shown only with ?improve=1) -->
+    <div id="impSection" hidden>
+      <h3 id="impH" style="margin:22px 0 4px">Project 3: Improve your breakeven</h3>
+      <p class="hint" style="margin:0 0 10px">Pick one smart-label feature or best practice from your research. Change only the number it moves, then compare your Project 2 result with the improved one.</p>
+      <div id="impLocked" class="notice">Enter your four Project 2 estimates on step 2 first. Copy them from your Project 2 PDF if this is a new browser.</div>
+      <div class="cols even" id="impBody" hidden>
+        <div class="panel">
+          <div class="field"><label for="imp-what">Your improvement</label><span class="hint" id="imp-what-hint">The feature or best practice. Example: "One multi-price label covers the display fan and the boxed fan."</span><input type="text" id="imp-what" aria-describedby="imp-what-hint"></div>
+          <div class="field"><label for="imp-src">Where you found it</label><span class="hint" id="imp-src-hint">A link or source name, and whether it's a vendor, a retailer or an independent source.</span><input type="text" id="imp-src" aria-describedby="imp-src-hint"></div>
+          <fieldset class="field" style="border:1px solid var(--line);border-radius:8px;padding:10px 12px">
+            <legend style="font-weight:700;padding:0 4px">Change the number your improvement moves</legend>
+            <p class="hint" style="margin:0 0 8px">Each box starts at your Project 2 number. Most improvements move just one.</p>
+            <div id="impGrid"></div>
+          </fieldset>
+          <button type="button" class="btn small" id="impReset">Back to my Project 2 numbers</button>
+        </div>
+        <div class="panel">
+          <div id="impTable"></div>
+          <p id="impLive" class="fb" role="status"></p>
+          <div class="field"><label for="imp-why">Why is this realistic for your area?</label><span class="hint" id="imp-why-hint">One or two sentences. Name the assumption behind the number you changed.</span><textarea id="imp-why" aria-describedby="imp-why-hint"></textarea></div>
+        </div>
       </div>
     </div>
   </section>
@@ -237,7 +262,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 <script>
 "use strict";
 const AREAS = [{"key": "fans", "name": "Ceiling fans", "where": "Aisles 45\u201346 (Electrical / Lighting / Fans)", "baysText": "5 bays (the worked example)", "spots": 58, "changes": 10.3, "seconds": 30, "damage": 0.05, "link": "https://www.homedepot.com/b/Lighting-Ceiling-Fans/N-5yc1vZbvn5"}, {"key": "power", "name": "Power Tools", "where": "Aisles 5\u20138 (part of Hardware & Tools)", "baysText": "About 55 bays (our estimate from the plan)", "spots": 1650, "changes": 15, "seconds": 45, "damage": 0.05, "link": "https://www.homedepot.com/b/Tools-Power-Tools/N-5yc1vZc298"}, {"key": "lumber", "name": "Lumber", "where": "Aisles 16\u201318 and 23\u201325, plus lumber racks", "baysText": "23 bays + about 570 ft of lumber racks", "spots": 370, "changes": 26, "seconds": 40, "damage": 0.25, "link": "https://www.homedepot.com/b/Lumber-Composites-Dimensional-Lumber/N-5yc1vZc3tc"}, {"key": "paint", "name": "Paint", "where": "Aisles 10\u201312, plus the paint desk", "baysText": "54 bays", "spots": 2160, "changes": 3, "seconds": 30, "damage": 0.05, "link": "https://www.homedepot.com/b/Paint/N-5yc1vZar2d"}, {"key": "garden", "name": "Outdoor Garden", "where": "The garden center", "baysText": "120 outside bays", "spots": 1800, "changes": 10, "seconds": 30, "damage": 0.25, "link": "https://www.homedepot.com/b/Outdoors-Garden-Center/N-5yc1vZbx6k"}, {"key": "flooring", "name": "Flooring", "where": "Aisles 40\u201344 (Floor Coverings)", "baysText": "61 bays", "spots": 1220, "changes": 2, "seconds": 30, "damage": 0.15, "link": "https://www.homedepot.com/b/Flooring/N-5yc1vZaq7r"}];
-const COSTS = {"rate": 28.0, "upfront": 11.5, "software": 0.5, "replace": 11.0};
+const COSTS = {"rate": 28.0, "upfront": 11.5, "software": 0.5, "replace": 11.0, "hardware": 10.0};
 const MAP_SVG = "<svg id=\"__ID__\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"60 110 1480 700\" role=\"img\" aria-label=\"Store A map. Front of store at the bottom, back wall at the top, garden center on the right. Each area is labeled with its result; the table below the map gives the same information.\"><defs>\n<pattern id=\"__ID__-p-fast\" width=\"10\" height=\"10\" patternUnits=\"userSpaceOnUse\"><rect width=\"10\" height=\"10\" fill=\"#1E7B34\"/></pattern>\n<pattern id=\"__ID__-p-mid\" width=\"14\" height=\"14\" patternUnits=\"userSpaceOnUse\" patternTransform=\"rotate(45)\"><rect width=\"14\" height=\"14\" fill=\"#FFE2B8\"/><rect width=\"5\" height=\"14\" fill=\"#B26B00\"/></pattern>\n<pattern id=\"__ID__-p-never\" width=\"12\" height=\"12\" patternUnits=\"userSpaceOnUse\"><rect width=\"12\" height=\"12\" fill=\"#E4E4E4\"/><circle cx=\"6\" cy=\"6\" r=\"2.4\" fill=\"#4a4a4a\"/></pattern>\n<pattern id=\"__ID__-p-none\" width=\"10\" height=\"10\" patternUnits=\"userSpaceOnUse\"><rect width=\"10\" height=\"10\" fill=\"#FAFAFA\"/></pattern>\n</defs>\n<style>\n#__ID__ .shape{stroke:#1c1c1c;stroke-width:3}\n#__ID__ .mine .shape{stroke:#F96302;stroke-width:9}\n#__ID__ .you{display:none} #__ID__ .mine .you{display:inline}\n#__ID__ text{font-family:Arial,Helvetica,sans-serif}\n</style><rect x=\"89.0\" y=\"143.0\" width=\"1045.2\" height=\"624.0\" fill=\"#ffffff\" stroke=\"#1c1c1c\" stroke-width=\"3\"/><rect x=\"1134.2\" y=\"270.4\" width=\"377.0\" height=\"507.0\" fill=\"#f4f4f4\" stroke=\"#1c1c1c\" stroke-width=\"3\" stroke-dasharray=\"10 6\"/><rect x=\"89.0\" y=\"702.0\" width=\"1045.2\" height=\"65.0\" fill=\"#ececec\" stroke=\"#8a8a8a\" stroke-width=\"1.5\"/><rect x=\"112.4\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"112.4\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"154.0\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"154.0\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"195.6\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"195.6\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"237.2\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"237.2\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"278.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"278.8\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"320.4\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"320.4\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"362.0\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"362.0\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"403.6\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"403.6\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"445.2\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"445.2\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"486.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"486.8\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"528.4\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"528.4\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"570.0\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"570.0\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"611.6\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"611.6\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"653.2\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"653.2\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"694.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"694.8\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"736.4\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"736.4\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"778.0\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"778.0\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"819.6\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"819.6\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"861.2\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"861.2\" y=\"390.0\" width=\"12.0\" height=\"262.6\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"397.8\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"430.3\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"462.8\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"495.3\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"527.8\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"560.3\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"592.8\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"910.6\" y=\"625.3\" width=\"210.6\" height=\"10.4\" fill=\"#d9d9d9\"/><rect x=\"941.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"974.3\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"1006.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"1039.3\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"1071.8\" y=\"169.0\" width=\"12.0\" height=\"197.6\" fill=\"#d9d9d9\"/><rect x=\"1186.2\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1186.2\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1235.6\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1235.6\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1285.0\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1285.0\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1334.4\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1334.4\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1383.8\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1383.8\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1433.2\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1433.2\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><rect x=\"1482.6\" y=\"299.0\" width=\"23.4\" height=\"91.0\" fill=\"#d9d9d9\"/><rect x=\"1482.6\" y=\"442.0\" width=\"23.4\" height=\"221.0\" fill=\"#d9d9d9\"/><text x=\"612\" y=\"738\" font-size=\"26\" fill=\"#4a4a4a\" text-anchor=\"middle\">Front of store: entrance, checkouts, offices</text><text x=\"612\" y=\"159\" font-size=\"26\" fill=\"#4a4a4a\" text-anchor=\"middle\">Back wall</text><text x=\"1323\" y=\"265\" font-size=\"26\" fill=\"#4a4a4a\" text-anchor=\"middle\">Garden center (outside)</text><g data-area=\"lumber\"><rect x=\"226.8\" y=\"169.0\" width=\"98.8\" height=\"462.8\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"181.2\" y=\"300.4\" width=\"190.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"276.2\" y=\"332.4\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Lumber</text><text class=\"line2\" x=\"276.2\" y=\"366.4\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"196.2\" y=\"258.4\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"276.2\" y=\"284.4\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g><g data-area=\"paint\"><rect x=\"502.4\" y=\"390.0\" width=\"104.0\" height=\"247.0\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"409.4\" y=\"302.0\" width=\"190.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"504.4\" y=\"334.0\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Paint</text><text class=\"line2\" x=\"504.4\" y=\"368.0\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"424.4\" y=\"260.0\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"504.4\" y=\"286.0\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g><g data-area=\"power\"><rect x=\"648.0\" y=\"390.0\" width=\"122.2\" height=\"247.0\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"621.6\" y=\"302.0\" width=\"215.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"729.1\" y=\"334.0\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Power Tools</text><text class=\"line2\" x=\"729.1\" y=\"368.0\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"649.1\" y=\"260.0\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"729.1\" y=\"286.0\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g><g data-area=\"flooring\"><rect x=\"941.8\" y=\"169.0\" width=\"130.0\" height=\"197.6\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"911.8\" y=\"227.8\" width=\"190.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"1006.8\" y=\"259.8\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Flooring</text><text class=\"line2\" x=\"1006.8\" y=\"293.8\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"926.8\" y=\"185.8\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"1006.8\" y=\"211.8\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g><g data-area=\"fans\"><rect x=\"910.6\" y=\"430.3\" width=\"192.4\" height=\"24.7\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"890.8\" y=\"464.7\" width=\"232.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"1006.8\" y=\"496.7\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Ceiling fans</text><text class=\"line2\" x=\"1006.8\" y=\"530.7\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"926.8\" y=\"422.7\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"1006.8\" y=\"448.7\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g><g data-area=\"garden\"><rect x=\"1139.4\" y=\"275.6\" width=\"366.6\" height=\"496.6\" class=\"shape\" fill=\"url(#__ID__-p-none)\"/><rect x=\"1189.7\" y=\"483.9\" width=\"266.0\" height=\"80\" rx=\"9\" fill=\"#fff\" stroke=\"#1c1c1c\" stroke-width=\"2.5\"/><text x=\"1322.7\" y=\"515.9\" font-size=\"29\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">Outdoor Garden</text><text class=\"line2\" x=\"1322.7\" y=\"549.9\" font-size=\"25\" fill=\"#1c1c1c\" text-anchor=\"middle\"></text><g class=\"you\"><rect x=\"1242.7\" y=\"441.9\" width=\"160\" height=\"36\" rx=\"18\" fill=\"#F96302\" stroke=\"#1c1c1c\" stroke-width=\"1.5\"/><text x=\"1322.7\" y=\"467.9\" font-size=\"21\" font-weight=\"700\" fill=\"#1c1c1c\" text-anchor=\"middle\">YOUR AREA</text></g></g></svg>";
 const CONFIG_URL = "builder-config.json";
 const KEY = "thd-p2-breakeven-builder-v2"; // v2: estimates start empty (v1 saved pre-filled best guesses)
@@ -250,7 +275,7 @@ function fmtTime(m){ if(m===null) return "never"; if(m>=60) return "about " + Ma
 const assignable = AREAS.filter(a => a.key !== "fans");
 
 // ---------- state
-let S = { step:1, name:"", area:"power", est:{}, why:{}, calc:{}, tries:{}, shown:{}, s1:"", s2:"", finding:"", fav:"", unfav:"", gap:"", submitted:false };
+let S = { step:1, name:"", area:"power", est:{}, why:{}, calc:{}, tries:{}, shown:{}, s1:"", s2:"", finding:"", fav:"", unfav:"", gap:"", submitted:false, imp:{} };
 function load(){ try{ const raw = localStorage.getItem(KEY); if(raw) S = Object.assign(S, JSON.parse(raw)); }catch(e){} }
 let saveT; function save(){ clearTimeout(saveT); saveT = setTimeout(()=>{ try{ localStorage.setItem(KEY, JSON.stringify(S)); $("#saveNote").textContent = "Saved in this browser"; }catch(e){ $("#saveNote").textContent = ""; } }, 300); }
 const area = () => AREAS.find(a => a.key === S.area);
@@ -467,6 +492,86 @@ function renderDmg(){
   if(document.activeElement !== $("#s1")) $("#s1").value = S.s1; if(document.activeElement !== $("#s2")) $("#s2").value = S.s2;
 }
 
+// ---------- step 4b: Project 3 improve mode
+/* BEGIN improve */
+// One smart label can replace more than one paper tag (paperPer), and an improvement can add labor saved
+// outside price changes (extra, $ a year). A cheaper label lowers both upfront and replacement cost.
+// With baseline inputs this equals model(e).
+function modelImp(e, o, C){
+  const n = e.spots / o.paperPer;
+  const labor = e.spots*o.changes*o.seconds/3600*C.rate + o.extra;
+  const upfront = n*(o.label + C.upfront - C.hardware);
+  const running = n*(o.software + o.damage/100*(o.label + C.replace - C.hardware));
+  const net = labor - running;
+  return {labor, upfront, running, net, months: net>0 ? upfront/net*12 : null};
+}
+function impBase(e, C){ return {changes:e.changes, seconds:e.seconds, damage:e.damage, label:C.hardware, software:C.software, paperPer:1, extra:0}; }
+/* END improve */
+const IMPROVE = new URLSearchParams(location.search).get("improve") === "1";
+const IMP_DEF = [
+  {k:"paperPer", label:"Paper tags replaced per smart label", unit:"tags", sfx:" tag per smart label", min:1, eg:"A multi-price or large-format label that covers 2 tags = 2"},
+  {k:"label",    label:"Smart label price", unit:"$ each", sfx:" each", min:0, eg:"A cheaper model or a bulk price"},
+  {k:"seconds",  label:"Seconds per change, per label", unit:"seconds", sfx:" seconds", min:0, eg:"Labels that are hard to reach (locked cases) take longer to change by hand"},
+  {k:"damage",   label:"Damage rate a year", unit:"%", sfx:"", min:0, max:100, eg:"Thin or flush mounts, guards, or keeping labels out of forklift lanes"},
+  {k:"software", label:"Running cost per label a year (software, battery, support)", unit:"$ a year", sfx:" a year", min:0, eg:"Longer battery life or better vendor terms"},
+  {k:"changes",  label:"Price changes per product a year", unit:"a year", sfx:" a year", min:0, eg:"More frequent updates, such as price-matching in commodity or online-competitive items"},
+  {k:"extra",    label:"Extra labor saved outside price changes", unit:"$ a year", sfx:" a year", min:0, eg:"For example, time saved finding or counting stock, if MET does that work"},
+];
+function impState(){ S.imp = S.imp || {}; return S.imp[S.area] = S.imp[S.area] || {vals:{}, what:"", src:"", why:""}; }
+function impOpts(){ const b = impBase(est(), COSTS), v = impState().vals; const o = {}; Object.keys(b).forEach(k => o[k] = (typeof v[k]==="number") ? v[k] : b[k]); return o; }
+function impChanged(){ const b = impBase(est(), COSTS), o = impOpts(); return IMP_DEF.filter(f => Math.abs(o[f.k]-b[f.k]) > 1e-9); }
+const fmtImp = (k, n) => k==="label"||k==="software"||k==="extra" ? "$" + fmtN(n,2) : k==="damage" ? fmtN(n,1) + "%" : fmtN(n,1);
+function impSummary(){
+  const e = est(), before = model(e), after = modelImp(e, impOpts(), COSTS);
+  let line;
+  if(!impChanged().length) line = "Change a number under \"Change the number your improvement moves\" to see your improved breakeven.";
+  else if(before.months===null && after.months===null) line = "Still never pays back with this change. That's a valid finding: say what else would have to change.";
+  else if(before.months===null) line = "With your improvement it now pays back: " + fmtTime(after.months) + " (Project 2: never).";
+  else if(after.months===null) line = "With this change it never pays back (Project 2: " + fmtTime(before.months) + ").";
+  else { const d = Math.round(before.months) - Math.round(after.months);
+    line = "With your improvement: " + fmtTime(after.months) + " (Project 2: " + fmtTime(before.months) + "). " + (d>0 ? d + " months sooner." : d<0 ? -d + " months later." : "No change in months."); }
+  return {before, after, line};
+}
+function renderImproveGrid(){
+  const b = impBase(est(), COSTS), v = impState().vals;
+  $("#impGrid").innerHTML = IMP_DEF.map(f => `
+    <div class="field" style="margin:0 0 10px"><label for="imp-${f.k}">${f.label} (${f.unit})</label>
+      <span class="hint" id="imp-${f.k}-hint">Project 2: ${fmtImp(f.k, b[f.k])}${f.sfx}. ${f.eg}.</span>
+      <div class="num"><input type="number" id="imp-${f.k}" min="${f.min}" ${f.max!==undefined?`max="${f.max}"`:""} step="any" value="${typeof v[f.k]==="number" ? v[f.k] : b[f.k]}" aria-describedby="imp-${f.k}-hint imp-${f.k}-err" style="max-width:150px"> <span aria-hidden="true">${f.unit}</span></div>
+      <span class="err" id="imp-${f.k}-err"></span></div>`).join("");
+}
+function renderImproveResult(){
+  const {before, after, line} = impSummary();
+  const row = (t, a, b) => `<tr><th scope="row">${t}</th><td class="num">${a}</td><td class="num">${b}</td></tr>`;
+  $("#impTable").innerHTML = `<table><caption>Before and after: ${area().name}</caption>
+    <thead><tr><th scope="col">Result</th><th scope="col">Project 2</th><th scope="col">With improvement</th></tr></thead><tbody>
+    ${row("Labor saved a year", fmt$(before.labor), fmt$(after.labor))}
+    ${row("Upfront cost", fmt$(before.upfront), fmt$(after.upfront))}
+    ${row("Running cost a year", fmt$(before.running), fmt$(after.running))}
+    ${row("Time to breakeven", fmtTime(before.months), fmtTime(after.months))}
+    </tbody></table>`;
+  return line;
+}
+function renderImprove(){
+  clearTimeout(impT); $("#impSection").hidden = !IMPROVE; if(!IMPROVE) return;
+  const ok = estReady(); $("#impLocked").hidden = ok; $("#impBody").hidden = !ok; if(!ok) return;
+  const st = impState();
+  renderImproveGrid();
+  [["imp-what","what"],["imp-src","src"],["imp-why","why"]].forEach(([id,k]) => { if(document.activeElement !== $("#"+id)) $("#"+id).value = st[k]; });
+  $("#impLive").textContent = renderImproveResult();
+}
+function onImpInput(ev){
+  const f = IMP_DEF.find(x => "imp-"+x.k === ev.target.id); if(!f) return;
+  const raw = ev.target.value, v = parseFloat(raw), err = $("#imp-"+f.k+"-err"), st = impState();
+  const bad = raw !== "" && (!isFinite(v) || v < f.min || (f.max!==undefined && v > f.max));
+  if(bad){ ev.target.setAttribute("aria-invalid","true"); err.textContent = f.k==="paperPer" ? "Enter 1 or more." : f.k==="damage" ? "Enter a percent from 0 to 100." : "Enter a number of 0 or more.";
+    clearTimeout(impT); impT = setTimeout(() => { $("#impLive").textContent = "Results not updated: fix " + f.label.toLowerCase() + ". " + err.textContent; }, 700); return; }
+  ev.target.removeAttribute("aria-invalid"); err.textContent = "";
+  if(raw === "") delete st.vals[f.k]; else st.vals[f.k] = v;
+  save(); const line = renderImproveResult(); clearTimeout(impT); impT = setTimeout(() => { $("#impLive").textContent = line; }, 700);
+}
+let impT;
+
 // ---------- step 5 (cohort)
 let CFG = null, COHORT = [];
 async function loadConfig(){ if(CFG!==null) return CFG; try{ const r = await fetch(CONFIG_URL, {cache:"no-store"}); CFG = r.ok ? await r.json() : {}; }catch(e){ CFG = {}; } return CFG; }
@@ -551,7 +656,7 @@ function checklist(){
     [calcDone(), "All four calculations checked (step 3)"],
     [!!(S.s1.trim() && S.s2.trim()), "Your two damage-test sentences (step 4)"],
     [!!(S.fav && S.unfav && S.gap.trim()), "Your favorable vs. unfavorable comparison (step 5)"],
-  ];
+  ].concat(IMPROVE ? [[!!(impState().what.trim() && impChanged().length && impState().why.trim()), "Your Project 3 improvement: what it is, the number it changes, and why it's realistic (step 4)"]] : []);
 }
 function renderExport(){
   $("#checklist").innerHTML = checklist().map(([ok,t]) => `<li>${ok ? "✓ Done:" : "To do:"} ${t}</li>`).join("");
@@ -568,7 +673,8 @@ function resultText(){
     `Estimates: ${fmtN(e.spots)} label spots; ${fmtN(e.changes,1)} price changes per product a year; ${e.seconds} s per change; ${e.damage}% damage`,
     `1 Labor saved a year: ${fmt$(m.labor)} | 2 Upfront: ${fmt$(m.upfront)} | 3 Running a year: ${fmt$(m.running)} | 4 Breakeven: ${fmtTime(m.months)}`,
     `Damage test: ` + dmgRows().map(r => `${r.d}%: ${fmtTime(r.months)}`).join("; "),
-    `Finding: ${S.finding}`].join("\n");
+    `Finding: ${S.finding}`].concat(IMPROVE && impChanged().length ? [
+    `Project 3 improvement: ${impState().what} (${impState().src}). Changed: ` + impChanged().map(f => `${f.label} ${fmtImp(f.k, impBase(e, COSTS)[f.k])} → ${fmtImp(f.k, impOpts()[f.k])}`).join("; ") + `. ${impSummary().line}`] : []).join("\n");
 }
 function buildReport(){
   if(!estReady()){ $("#report").innerHTML = "<p>Finish your four estimates on step 2 before downloading your PDF.</p>"; return; }
@@ -591,12 +697,23 @@ function buildReport(){
     <table><thead><tr><th scope="col">Damage rate</th><th scope="col">Running cost a year</th><th scope="col">Time to breakeven</th></tr></thead><tbody>
     ${dmgRows().map(r => `<tr><th scope="row">${r.d}%</th><td class="num">${fmt$(r.running)}</td><td>${fmtTime(r.months)}</td></tr>`).join("")}</tbody></table>
     <p><strong>Within about 3 years?</strong> ${esc(S.s1)}</p><p><strong>Price changes or damage?</strong> ${esc(S.s2)}</p>
+    ${IMPROVE ? impReport(esc) : ""}
     <h2>Favorable vs. unfavorable</h2>
     <p><strong>Favorable:</strong> ${name("fav")} · <strong>Unfavorable:</strong> ${name("unfav")}</p><p>${esc(S.gap)}</p>
     <h2>Store A map</h2><div class="mapwrap" id="repMap"></div><p style="font-size:9pt">Key: solid = pays back within 3 years · stripes = 3–7 years · dots = over 7 years or never · blank = no results yet. Each label shows the middle result in months and how many externs modeled that area.</p>`;
   mountMap($("#repMap"), "m3"); const res = {}; const by = cohortSummary();
   Object.entries(by).forEach(([k,v]) => { res[k] = {cls:cls(v.med), line:(v.med===null?"never":Math.round(v.med)+" mo") + " · " + v.n}; });
   paintMap("m3", res);
+}
+
+function impReport(esc){
+  const st = impState(), ch = impChanged(), b = impBase(est(), COSTS), o = impOpts(), {before, after, line} = impSummary();
+  return `<h2>Project 3: Improve your breakeven</h2>
+    <p><strong>Improvement:</strong> ${esc(st.what) || "—"}<br><strong>Source:</strong> ${esc(st.src) || "—"}</p>
+    <table><caption>Numbers changed and breakeven</caption><thead><tr><th scope="col">Number changed</th><th scope="col">Project 2</th><th scope="col">With improvement</th></tr></thead><tbody>
+    ${ch.length ? ch.map(f => `<tr><th scope="row">${f.label}</th><td class="num">${fmtImp(f.k, b[f.k])}</td><td class="num">${fmtImp(f.k, o[f.k])}</td></tr>`).join("") : `<tr><td colspan="3">No numbers changed yet.</td></tr>`}
+    <tr><th scope="row">Time to breakeven</th><td class="num">${fmtTime(before.months)}</td><td class="num">${fmtTime(after.months)}</td></tr></tbody></table>
+    <p>${esc(line)}</p><p><strong>Why it's realistic:</strong> ${esc(st.why)}</p>`;
 }
 
 // ---------- navigation
@@ -608,7 +725,7 @@ function renderNav(){
 function go(n, focus=true){
   S.step = Math.min(Math.max(1,n), STEPS.length); save();
   document.querySelectorAll(".slide").forEach(s => s.hidden = Number(s.dataset.step) !== S.step);
-  ({1:renderArea,2:renderEst,3:renderCalc,4:renderDmg,5:()=>{renderCohort(); loadCohort().then(renderCohort);},6:renderExport})[S.step]();
+  ({1:renderArea,2:renderEst,3:renderCalc,4:()=>{renderDmg(); renderImprove();},5:()=>{renderCohort(); loadCohort().then(renderCohort);},6:renderExport})[S.step]();
   renderNav(); if(focus) document.querySelector(".frame").scrollIntoView({block:"start"});
   if(focus){ const h = document.querySelector(`.slide[data-step="${S.step}"] h2`); h && h.focus(); }
 }
@@ -631,6 +748,10 @@ function init(){
   $("#whatif").addEventListener("input", e => { const v = parseFloat(e.target.value); S.whatif = (e.target.value !== "" && isFinite(v) && v >= 0) ? v : null; save(); renderDmg();
     $("#whatifNote").textContent = S.whatif == null ? "" : "Damage test updated for " + fmtN(S.whatif,1) + " price changes a year. At your damage rate: " + fmtTime(model(Object.assign(est(), {changes:S.whatif})).months) + "."; });
   $("#whatifReset").addEventListener("click", () => { S.whatif = null; save(); $("#whatif").value = est().changes; renderDmg(); $("#whatifNote").textContent = "Back to your estimate."; });
+  $("#impGrid").addEventListener("input", onImpInput);
+  [["imp-what","what"],["imp-src","src"],["imp-why","why"]].forEach(([id,k]) => $("#"+id).addEventListener("input", e => { impState()[k] = e.target.value; save(); }));
+  $("#impReset").addEventListener("click", () => { clearTimeout(impT); impState().vals = {}; save(); renderImproveGrid(); $("#impLive").textContent = "Back to your Project 2 numbers. " + renderImproveResult(); });
+  if(IMPROVE){ STEPS[3] = "Improve"; $("#eyebrow").textContent = "The Home Depot · Project 3 · Store A"; $("#h4s").textContent = "4. Damage test and improve your breakeven"; }
   $("#refreshBtn").addEventListener("click", () => loadCohort().then(renderCohort));
   $("#pdfBtn").addEventListener("click", () => { buildReport(); $("#exportMsg").className = "fb"; $("#exportMsg").textContent = "Opening the print window. Choose Save as PDF.";
     try{ window.print(); }catch(e){ $("#exportMsg").textContent = "Printing is blocked here. Use the link below to open the Builder in a new window."; } });
