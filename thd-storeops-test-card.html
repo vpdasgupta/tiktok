@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Card – Test It With One Person</title>
+<style>
+  :root{
+    --orange:#F96302;          /* brand fill only, always paired with dark text (5.65:1) */
+    --orange-edge:#C44E00;     /* border around orange fills (4.73:1 on white) */
+    --orange-text:#B34700;     /* orange as text on white (5.5:1) */
+    --ink:#1A1A1A;
+    --text:#1E2130;
+    --muted:#4B5060;
+    --bg:#F7F7F6;
+    --card:#FFFFFF;
+    --border:#D9D6D0;          /* decorative only */
+    --control:#767676;         /* form control boundaries (4.54:1 on white) */
+    --wrong-edge:#B91C1C;
+    --wrong-ink:#7A1F1F;
+    --wrong-bg:#FFF0F0;
+    --ok:#146A34;
+    --warn:#B91C1C;
+    --number-bg:#FFF1E6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.5;
+    padding:20px 16px;max-width:760px;margin:0 auto;
+  }
+  h1{font-size:1.35rem;line-height:1.25;margin-bottom:6px}
+  h1 .accent{color:var(--orange-text)}
+  h2{font-size:1.05rem;line-height:1.3;margin-bottom:4px}
+  .intro{color:var(--muted);margin-bottom:6px;max-width:68ch}
+  .full-link{font-size:.9rem;margin-bottom:14px}
+  a{color:var(--orange-text)}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  section{margin-bottom:20px}
+  .hint{color:var(--muted);font-size:.9rem;margin-bottom:8px;max-width:68ch}
+
+  button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--control);
+    background:#fff;color:var(--ink);padding:9px 14px;min-height:44px;font-size:.93rem;font-weight:600;
+  }
+  button:hover{background:#F3F1EC}
+  button.primary{background:var(--orange);border-color:var(--orange-edge);color:var(--ink)}
+  button.primary:hover{background:#E85C02}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .top-actions{margin-bottom:10px}
+
+  .field{margin-top:10px}
+  .field label,.lbl{display:block;font-weight:600;font-size:.92rem;margin-bottom:2px}
+  .sub{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+  input[type=text],input[type=number],textarea{
+    font:inherit;font-size:.95rem;color:var(--text);background:#fff;width:100%;
+    border:1px solid var(--control);border-radius:6px;padding:8px 10px;min-height:44px
+  }
+  textarea{min-height:64px;resize:vertical;line-height:1.45}
+  input[type=number]{max-width:9em}
+  input[type=checkbox]{width:20px;height:20px;accent-color:var(--orange-text);flex:none}
+
+  .clock{font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);margin:4px 0 8px}
+  .clock-state{font-size:.9rem;color:var(--muted);margin-bottom:8px}
+  .counter{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .counter button{min-width:48px;font-size:1.2rem;padding:6px 12px}
+
+  fieldset{border:1px solid var(--border);border-radius:10px;padding:10px 12px 12px;min-width:0}
+  legend{font-weight:700;font-size:.95rem;padding:0 4px}
+  .stuck-row{border-top:1px solid var(--border);padding:10px 0}
+  .stuck-row:first-of-type{border-top:0}
+  .stuck-row.is-wrong{background:var(--wrong-bg);border:2px dashed var(--wrong-edge);border-radius:8px;padding:10px;margin-top:6px}
+  .check{display:flex;align-items:center;gap:8px;min-height:44px;font-weight:600;cursor:pointer}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;border-radius:10px;padding:1px 8px;
+    color:var(--wrong-ink);background:#fff;border:1px solid var(--wrong-edge)}
+  .stuck-mark{font-size:.8rem;font-weight:700;color:var(--wrong-ink)}
+
+  .number{background:var(--number-bg);border-left:4px solid var(--orange-text);border-radius:6px;padding:12px 14px}
+  .number p{font-size:1.02rem}
+
+  .status{font-weight:600;color:var(--ok);min-height:1.5em;margin:8px 0}
+  .status.warn{color:var(--warn)}
+  .save-state{margin-top:8px;font-size:.85rem;color:var(--muted)}
+  .tip{margin-top:10px;font-size:.88rem;color:var(--muted);max-width:68ch}
+  .fallback{margin-top:12px}
+  .fallback[hidden]{display:none}
+  .fallback label{display:block;font-weight:700;font-size:.92rem}
+  .fallback textarea{min-height:160px;background:#FFFDF9}
+
+  dialog{border:2px solid var(--ink);border-radius:12px;padding:18px;max-width:min(420px,calc(100vw - 32px));color:var(--text)}
+  dialog::backdrop{background:rgba(0,0,0,.45)}
+  dialog h2{margin-bottom:8px}
+  dialog p{margin-bottom:14px}
+
+  a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+  @media (forced-colors:active){
+    a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid Highlight}
+    .tag,.stuck-row.is-wrong{border-color:CanvasText}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  @media print{
+    body{background:#fff;padding:0;max-width:none}
+    .no-print,.full-link,.status,.fallback,.save-state,.tip,dialog{display:none!important}
+    .card{border:0;padding:0}
+    section{break-inside:avoid}
+    input,textarea{border:1px solid #767676}
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Test Card: <span class="accent">Test It With One Person</span></h1>
+  <p class="intro">Hand your prototype to one person. Tell them the task in one sentence, then stop talking and watch. Fill this in as you go. It takes about 10 minutes.</p>
+  <p class="full-link no-print"><a href="https://vpdasgupta.github.io/tiktok/thd-storeops-test-card.html" target="_blank" rel="noopener">Open the Test Card full page<span class="sr-only"> (opens in a new tab)</span></a></p>
+
+  <div class="card">
+    <div class="actions top-actions no-print">
+      <button type="button" id="example-btn">See Marcus's example</button>
+      <button type="button" id="clear-btn">Clear</button>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite" aria-atomic="true"></p>
+
+    <form id="card" autocomplete="off" novalidate>
+      <section aria-labelledby="h-setup">
+        <h2 id="h-setup">1. Your tester and the task</h2>
+        <div class="field">
+          <label for="tester">Tester<span class="sub">First name, or just "a friend."</span></label>
+          <input type="text" id="tester" maxlength="60">
+        </div>
+        <div class="field">
+          <label for="task">The task you gave them<span class="sub">One sentence. Say what to do, not how to do it.</span></label>
+          <textarea id="task" rows="2" maxlength="200"></textarea>
+        </div>
+        <div class="field">
+          <label for="goal">They're done when they…<span class="sub">A few words, for your number. Example: "send the cart to the Pro desk"</span></label>
+          <input type="text" id="goal" maxlength="80">
+        </div>
+      </section>
+
+      <section aria-labelledby="h-time">
+        <h2 id="h-time">2. How long it took <span class="sub" style="display:inline">(optional timer)</span></h2>
+        <p class="hint">The timer only runs when you press Start. You can also skip it and type the seconds yourself.</p>
+        <div class="clock" id="clock" role="timer" aria-labelledby="h-time">0:00</div>
+        <p class="clock-state" id="clock-state">Timer is stopped.</p>
+        <div class="actions no-print">
+          <button type="button" id="timer-btn">Start timer</button>
+          <button type="button" id="reset-btn">Reset timer</button>
+        </div>
+        <div class="field">
+          <label for="seconds">Seconds to finish<span class="sub">Fills in when you pause the timer. You can change it.</span></label>
+          <input type="number" id="seconds" min="0" max="3600" step="1" inputmode="numeric">
+        </div>
+      </section>
+
+      <section aria-labelledby="h-taps">
+        <h2 id="h-taps">3. Taps to finish</h2>
+        <p class="hint">Add one every time they tap or click, including wrong taps.</p>
+        <div class="counter">
+          <button type="button" id="tap-minus" class="no-print" aria-label="Remove one tap">−</button>
+          <label for="taps" class="sr-only">Taps to finish</label>
+          <input type="number" id="taps" min="0" max="999" step="1" inputmode="numeric" value="0">
+          <button type="button" id="tap-plus" class="no-print" aria-label="Add one tap">+</button>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-stuck">
+        <h2 id="h-stuck">4. Where did they get stuck?</h2>
+        <p class="hint">Check each screen where they paused, tapped the wrong thing, or asked a question. Add a short note.</p>
+        <fieldset id="stuck-set">
+          <legend>Screens where they got stuck</legend>
+          <div id="stuck-list"></div>
+        </fieldset>
+      </section>
+
+      <section aria-labelledby="h-said">
+        <h2 id="h-said">5. One thing they said</h2>
+        <div class="field">
+          <label for="quote">Their words, as close as you can get them</label>
+          <textarea id="quote" rows="2" maxlength="300"></textarea>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-fix">
+        <h2 id="h-fix">6. Top 1–2 fixes</h2>
+        <div class="field">
+          <label for="fix1">Fix 1</label>
+          <textarea id="fix1" rows="2" maxlength="200"></textarea>
+        </div>
+        <div class="field">
+          <label for="fix2">Fix 2 <span class="sub" style="display:inline">(optional)</span></label>
+          <textarea id="fix2" rows="2" maxlength="200"></textarea>
+        </div>
+      </section>
+    </form>
+
+    <section class="number" aria-labelledby="h-number">
+      <h2 id="h-number">My number</h2>
+      <p id="number-line"></p>
+      <p class="tip">This builds itself from your answers above. It's the number you'll cite in Project 4.</p>
+    </section>
+
+    <div class="actions no-print">
+      <button type="button" class="primary" id="copy-btn">Copy as text</button>
+      <button type="button" id="print-btn">Print / save as PDF</button>
+    </div>
+    <p class="status" id="out-status" role="status" aria-live="polite" aria-atomic="true"></p>
+
+    <div class="fallback" id="fallback" hidden>
+      <label for="fallback-text">Your test notes as text</label>
+      <p class="tip" id="fallback-hint">Your browser blocked copying. The text is selected. Press Cmd+C (Mac) or Ctrl+C (Windows) to copy it.</p>
+      <textarea id="fallback-text" readonly aria-describedby="fallback-hint"></textarea>
+    </div>
+
+    <p class="save-state" id="save-state">Saved only in this browser on this device.</p>
+    <p class="tip">Tip: paste the text into your notes doc under <strong>What I Learned</strong>.</p>
+  </div>
+</main>
+
+<dialog id="confirm" aria-labelledby="confirm-title" aria-describedby="confirm-body">
+  <h2 id="confirm-title">Clear the test card?</h2>
+  <p id="confirm-body">This erases everything on the card. You can't undo it.</p>
+  <div class="actions">
+    <button type="button" id="confirm-cancel">Cancel</button>
+    <button type="button" class="primary" id="confirm-ok">Yes, clear</button>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  var KEY = 'thd-storeops-p3-testcard';
+  var SCREENS = [
+    {k:'s1', label:'Screen 1', short:'screen 1'},
+    {k:'s2', label:'Screen 2', short:'screen 2'},
+    {k:'s3', label:'Screen 3', short:'screen 3'},
+    {k:'wrong', label:'Screen 4', short:'screen 4 (the goes-wrong screen)', wrong:true},
+    {k:'other', label:'another screen (cover or bonus)', short:'another screen'}
+  ];
+  var TEXT_FIELDS = ['tester','task','goal','quote','fix1','fix2'];
+
+  function blank(){ var s = {tester:'',task:'',goal:'',seconds:'',taps:0,quote:'',fix1:'',fix2:'',stuck:{},notes:{}}; return s; }
+  var EXAMPLE = {
+    tester:'Jordan (a friend)',
+    task:"You're a store associate. A Pro customer shows you his order code. Get his cart to the Pro desk.",
+    goal:'send the cart to the Pro desk',
+    seconds:'40', taps:5,
+    quote:'"Wait, where\'s the send button? Oh, it\'s way down there."',
+    fix1:'Move Send to Pro desk above the item list so it shows without scrolling.',
+    fix2:'',
+    stuck:{s2:true},
+    notes:{s2:'Tapped two item rows looking for a way to send the cart before scrolling down to Send to Pro desk.'}
+  };
+
+  var state = blank(), canSave = true;
+  var $ = function(id){ return document.getElementById(id); };
+  function t(v){ return (v == null ? '' : String(v)).trim(); }
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+  function makeAnnouncer(el){
+    var timer = null;
+    return function(msg, isWarn){
+      clearTimeout(timer); el.textContent = '';
+      timer = setTimeout(function(){ el.classList.toggle('warn', !!isWarn); el.textContent = msg; }, 80);
+    };
+  }
+  var announce = makeAnnouncer($('status'));
+  var announceOut = makeAnnouncer($('out-status'));
+
+  // ---- storage ----
+  function save(){
+    if (!canSave) return;
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+      $('save-state').textContent = 'Saved only in this browser on this device (last saved ' +
+        new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) + ').';
+    } catch(e){
+      canSave = false;
+      $('save-state').textContent = 'Autosave is off in this view. Open the full page to save your work, or copy it before you leave.';
+    }
+  }
+  function load(){
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch(e){ canSave = false; return; }
+    if (!raw) return;
+    try {
+      var d = JSON.parse(raw), out = blank();
+      if (!d || typeof d !== 'object') return;
+      TEXT_FIELDS.forEach(function(f){ if (typeof d[f] === 'string') out[f] = d[f].slice(0, 300); });
+      if (typeof d.seconds === 'string' && /^\d{0,4}$/.test(d.seconds)) out.seconds = d.seconds;
+      var n = parseInt(d.taps, 10); out.taps = isNaN(n) ? 0 : Math.max(0, Math.min(999, n));
+      SCREENS.forEach(function(s){
+        if (d.stuck && d.stuck[s.k] === true) out.stuck[s.k] = true;
+        if (d.notes && typeof d.notes[s.k] === 'string') out.notes[s.k] = d.notes[s.k].slice(0, 300);
+      });
+      state = out;
+    } catch(e){}
+  }
+
+  function hasContent(){
+    return TEXT_FIELDS.some(function(f){ return t(state[f]); }) || t(state.seconds) || state.taps > 0 ||
+      SCREENS.some(function(s){ return state.stuck[s.k] || t(state.notes[s.k]); });
+  }
+
+  // ---- stuck list ----
+  function buildStuck(){
+    var list = $('stuck-list'); list.textContent = '';
+    SCREENS.forEach(function(s){
+      var row = document.createElement('div'); row.className = 'stuck-row' + (s.wrong ? ' is-wrong' : '');
+      var lab = document.createElement('label'); lab.className = 'check';
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'st-' + s.k;
+      lab.appendChild(cb);
+      lab.appendChild(document.createTextNode('Stuck on ' + s.label));
+      if (s.wrong){ var tg = document.createElement('span'); tg.className = 'tag'; tg.textContent = 'Goes wrong'; lab.appendChild(document.createTextNode(' ')); lab.appendChild(tg); }
+      row.appendChild(lab);
+      var f = document.createElement('div'); f.className = 'field';
+      var nl = document.createElement('label'); nl.htmlFor = 'nt-' + s.k; nl.textContent = 'What happened on ' + s.label + ' (optional)';
+      var ni = document.createElement('input'); ni.type = 'text'; ni.id = 'nt-' + s.k; ni.maxLength = 300;
+      f.appendChild(nl); f.appendChild(ni); row.appendChild(f);
+      cb.addEventListener('change', function(){ if (cb.checked) state.stuck[s.k] = true; else delete state.stuck[s.k]; edited(); });
+      ni.addEventListener('input', function(){ state.notes[s.k] = ni.value; edited(); });
+      list.appendChild(row);
+    });
+  }
+
+  function fill(){
+    TEXT_FIELDS.forEach(function(f){ $(f).value = state[f]; });
+    $('seconds').value = state.seconds;
+    $('taps').value = state.taps;
+    SCREENS.forEach(function(s){ $('st-' + s.k).checked = !!state.stuck[s.k]; $('nt-' + s.k).value = state.notes[s.k] || ''; });
+    renderNumber();
+  }
+
+  TEXT_FIELDS.forEach(function(f){ $(f).addEventListener('input', function(){ state[f] = $(f).value; edited(); }); });
+  $('seconds').addEventListener('input', function(){
+    var v = $('seconds').value.replace(/[^\d]/g, '').slice(0, 4); state.seconds = v; edited();
+  });
+  $('taps').addEventListener('input', function(){
+    var n = parseInt($('taps').value, 10); state.taps = isNaN(n) ? 0 : Math.max(0, Math.min(999, n)); edited();
+  });
+  function setTaps(n){
+    state.taps = Math.max(0, Math.min(999, n)); $('taps').value = state.taps; edited();
+    announce('Taps: ' + state.taps + '.');
+  }
+  $('tap-plus').addEventListener('click', function(){ setTaps(state.taps + 1); });
+  $('tap-minus').addEventListener('click', function(){ setTaps(state.taps - 1); });
+
+  function edited(){ $('fallback').hidden = true; renderNumber(); save(); }
+
+  // ---- timer (never auto-runs) ----
+  var running = false, startedAt = 0, elapsedMs = 0, tick = null;
+  function fmt(ms){ var s = Math.floor(ms / 1000); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+  function now(){ return elapsedMs + (running ? Date.now() - startedAt : 0); }
+  function draw(){ $('clock').textContent = fmt(now()); }
+  $('timer-btn').addEventListener('click', function(){
+    if (!running){
+      running = true; startedAt = Date.now();
+      tick = setInterval(draw, 250);
+      $('timer-btn').textContent = 'Pause timer';
+      $('clock-state').textContent = 'Timer is running.';
+      announce('Timer started.');
+    } else {
+      elapsedMs = now(); running = false; clearInterval(tick); draw();
+      var secs = Math.round(elapsedMs / 1000);
+      state.seconds = String(secs); $('seconds').value = state.seconds; edited();
+      $('timer-btn').textContent = 'Resume timer';
+      var sw = secs + (secs === 1 ? ' second' : ' seconds');
+      $('clock-state').textContent = 'Timer is paused at ' + sw + '.';
+      announce('Timer paused at ' + sw + '. Seconds to finish is set to ' + secs + '.');
+    }
+  });
+  $('reset-btn').addEventListener('click', function(){
+    running = false; clearInterval(tick); elapsedMs = 0; draw();
+    $('timer-btn').textContent = 'Start timer';
+    $('clock-state').textContent = 'Timer is stopped.';
+    announce('Timer reset to zero. Seconds to finish was not changed.');
+  });
+
+  // ---- my number ----
+  function numberWord(n){ return n === 1 ? 'once' : n === 2 ? 'twice' : n + ' times'; }
+  function joinList(a){ return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
+  function numberLine(){
+    var parts = [];
+    if (state.taps > 0) parts.push(state.taps + (state.taps === 1 ? ' tap' : ' taps'));
+    if (t(state.seconds)) parts.push(t(state.seconds) + (t(state.seconds) === '1' ? ' second' : ' seconds'));
+    var stuck = SCREENS.filter(function(s){ return state.stuck[s.k]; });
+    var goal = t(state.goal) || 'finish';
+    var first = parts.length ? 'It took my tester ' + parts.join(' and ') + ' to ' + goal : 'It took my tester ___ taps and ___ seconds to ' + goal;
+    var second = stuck.length ? 'they got stuck ' + numberWord(stuck.length) + ', on ' + joinList(stuck.map(function(s){ return s.short; })) : 'they never got stuck';
+    return first + '; ' + second + '. Source: my Project 3 prototype test.';
+  }
+  function renderNumber(){ $('number-line').textContent = numberLine(); }
+
+  // ---- dialog ----
+  var dlg = $('confirm'), pending = null, returnTo = null;
+  function ask(title, body, okLabel, onOk, ret){
+    returnTo = ret;
+    if (typeof dlg.showModal !== 'function'){
+      var yes = false; try { yes = window.confirm(title + ' ' + body); } catch(e){ yes = false; }
+      if (yes) onOk(); else if (ret) ret.focus();
+      return;
+    }
+    $('confirm-title').textContent = title; $('confirm-body').textContent = body; $('confirm-ok').textContent = okLabel;
+    pending = onOk; dlg.showModal(); $('confirm-cancel').focus();
+  }
+  function closeDlg(run){
+    var fn = pending; pending = null;
+    if (dlg.open) dlg.close();
+    if (run && fn) fn(); else if (returnTo) returnTo.focus();
+  }
+  $('confirm-cancel').addEventListener('click', function(){ closeDlg(false); });
+  $('confirm-ok').addEventListener('click', function(){ closeDlg(true); });
+  dlg.addEventListener('cancel', function(e){ e.preventDefault(); closeDlg(false); });
+
+  function stopTimer(){ running = false; clearInterval(tick); elapsedMs = 0; draw(); $('timer-btn').textContent = 'Start timer'; $('clock-state').textContent = 'Timer is stopped.'; }
+
+  $('example-btn').addEventListener('click', function(){
+    var go = function(){
+      stopTimer(); state = clone(EXAMPLE); fill(); save(); $('fallback').hidden = true;
+      $('example-btn').focus();
+      announce("Marcus's example loaded: 5 taps, 40 seconds, stuck once on screen 2.");
+    };
+    if (hasContent()) ask("Replace your card with Marcus's example?", 'What you wrote will be erased. Copy it first if you want to keep it.', 'Yes, show example', go, $('example-btn'));
+    else go();
+  });
+  $('clear-btn').addEventListener('click', function(){
+    if (!hasContent()){ announce('Your test card is already empty.'); return; }
+    ask('Clear the test card?', "This erases everything on the card. You can't undo it.", 'Yes, clear', function(){
+      stopTimer(); state = blank(); fill(); save(); $('fallback').hidden = true;
+      $('clear-btn').focus();
+      announce('Cleared. Your test card is empty.');
+    }, $('clear-btn'));
+  });
+
+  // ---- copy + print ----
+  function one(v){ return t(v).replace(/\s*\n\s*/g, ' ') || '___'; }
+  function asText(){
+    var out = ['What I Learned',
+      'Tester: ' + one(state.tester),
+      'Task I gave them: ' + one(state.task),
+      'Taps: ' + (state.taps > 0 ? state.taps : '___') + ' · Time: ' + (t(state.seconds) ? t(state.seconds) + ' seconds' : '___'),
+      'Where they got stuck:'];
+    var any = false;
+    SCREENS.forEach(function(s){
+      if (state.stuck[s.k] || t(state.notes[s.k])){
+        any = true;
+        out.push('- ' + s.label.charAt(0).toUpperCase() + s.label.slice(1) + (state.stuck[s.k] ? ' (stuck)' : '') + (t(state.notes[s.k]) ? ': ' + one(state.notes[s.k]) : ''));
+      }
+    });
+    if (!any) out.push('- Nowhere');
+    out.push('One thing they said: ' + one(state.quote));
+    out.push('Top fixes:');
+    out.push('1. ' + one(state.fix1));
+    if (t(state.fix2)) out.push('2. ' + one(state.fix2));
+    out.push('My number: ' + numberLine());
+    return out.join('\n') + '\n';
+  }
+  function legacyCopy(text, btn){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', ''); ta.setAttribute('aria-hidden', 'true');
+    ta.style.position = 'fixed'; ta.style.top = '-9999px'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    var ok = false; try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    document.body.removeChild(ta); btn.focus();
+    return ok;
+  }
+  function copyText(text, btn, okMsg){
+    function done(){ $('fallback').hidden = true; announceOut(okMsg); }
+    function fail(){
+      $('fallback-text').value = text; $('fallback').hidden = false;
+      $('fallback-text').focus(); $('fallback-text').select();
+      announceOut("Couldn't copy automatically. The text is selected below. Press Ctrl+C or Cmd+C.", true);
+    }
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(done, function(){ if (legacyCopy(text, btn)) done(); else fail(); });
+    } else { if (legacyCopy(text, btn)) done(); else fail(); }
+  }
+  $('copy-btn').addEventListener('click', function(){
+    if (!hasContent()){ announceOut('Your test card is empty. Fill in a few answers first.', true); return; }
+    copyText(asText(), $('copy-btn'), 'Copied. Paste it into your notes doc under What I Learned.');
+  });
+  $('print-btn').addEventListener('click', function(){
+    announceOut('Opening print. Choose Save as PDF to keep a copy. If nothing opens, use the full-page link at the top.');
+    try { window.print(); } catch(e){ announceOut("Print didn't open here. Open the full page and try again.", true); }
+  });
+
+  buildStuck(); load(); fill();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Screen Planner – Plan Your Screens</title>
+<style>
+  :root{
+    --orange:#F96302;          /* brand fill only, always paired with dark text (5.65:1) */
+    --orange-edge:#C44E00;     /* border around orange fills (4.73:1 on white) */
+    --orange-text:#B34700;     /* orange as text on white (5.5:1) / page bg (5.13:1) */
+    --ink:#1A1A1A;
+    --text:#1E2130;
+    --muted:#4B5060;           /* 8.03:1 on white, 6.31:1 on gray box */
+    --bg:#F7F7F6;
+    --card:#FFFFFF;
+    --border:#D9D6D0;          /* decorative only */
+    --control:#767676;         /* form control boundaries (4.54:1 on white) */
+    --box:#E4E4E4;             /* gray mockup boxes */
+    --frame:#555555;           /* phone frame (7.46:1 on white) */
+    --wrong-edge:#B91C1C;      /* 6.47:1 on white */
+    --wrong-bg:#FFF0F0;
+    --wrong-ink:#7A1F1F;       /* 9.29:1 on wrong-bg */
+    --bonus-bg:#FFF1E6;
+    --bonus-ink:#8A3600;       /* 7.28:1 on bonus-bg */
+    --ok:#146A34;
+    --warn:#B91C1C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.5;
+    padding:20px 16px;max-width:1100px;margin:0 auto;
+  }
+  h1{font-size:1.35rem;line-height:1.25;margin-bottom:6px}
+  h1 .accent{color:var(--orange-text)}
+  h2{font-size:1.08rem;line-height:1.3;margin:0 0 4px}
+  .intro{color:var(--muted);margin-bottom:6px;max-width:70ch}
+  .full-link{font-size:.9rem;margin-bottom:14px}
+  a{color:var(--orange-text)}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+
+  button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--control);
+    background:#fff;color:var(--ink);padding:9px 14px;min-height:44px;font-size:.93rem;font-weight:600;
+  }
+  button:hover{background:#F3F1EC}
+  button.primary{background:var(--orange);border-color:var(--orange-edge);color:var(--ink)}
+  button.primary:hover{background:#E85C02}
+  button[aria-disabled="true"]{opacity:.6;cursor:not-allowed}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .top-actions{margin-bottom:10px}
+
+  .layout{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+  @media (min-width:900px){
+    .layout{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}
+    .preview-wrap{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+  }
+  .block{margin-bottom:20px}
+  .block:last-child{margin-bottom:0}
+  .hint{color:var(--muted);font-size:.9rem;margin-bottom:8px;max-width:70ch}
+  fieldset{border:1px solid var(--border);border-radius:10px;padding:10px 12px 12px;margin:0 0 12px;min-width:0}
+  legend{font-weight:700;font-size:.95rem;padding:0 4px}
+  fieldset.wrong{border:2px dashed var(--wrong-edge);background:var(--wrong-bg)}
+  fieldset.bonus{border:2px dashed var(--orange-text);background:var(--bonus-bg)}
+  .tag{display:inline-block;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
+    border-radius:10px;padding:1px 8px;margin-left:4px;vertical-align:1px}
+  .tag.wrong{color:var(--wrong-ink);background:#fff;border:1px solid var(--wrong-edge)}
+  .tag.bonus{color:var(--bonus-ink);background:#fff;border:1px solid var(--orange-text)}
+  .field{margin-top:8px}
+  .field label{display:block;font-weight:600;font-size:.92rem;margin-bottom:2px}
+  .field .sub{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+  input[type=text],textarea,select{
+    font:inherit;font-size:.95rem;color:var(--text);background:#fff;width:100%;
+    border:1px solid var(--control);border-radius:6px;padding:8px 10px;
+  }
+  select{min-height:44px}
+  textarea{min-height:60px;resize:vertical;line-height:1.45}
+  .bonus-note{background:var(--bonus-bg);border-left:4px solid var(--orange-text);padding:10px 12px;border-radius:6px;margin-bottom:10px;font-size:.92rem}
+  .bonus-note strong{color:var(--bonus-ink)}
+  .sub-h{font-weight:400;color:var(--muted);font-size:.95rem}
+  .count{font-size:.9rem;color:var(--muted);margin-top:8px}
+  .remove-bonus{margin-top:10px;min-height:40px;font-size:.85rem}
+
+  /* storyboard preview */
+  .preview-wrap h2{margin-bottom:2px}
+  .board-meta{font-size:.9rem;margin:6px 0 10px}
+  .board-meta p{margin:2px 0}
+  .board{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .phone{display:flex;flex-direction:column}
+  .phone-label{font-size:.8rem;font-weight:700;margin-bottom:4px}
+  .phone-body{
+    border:3px solid var(--frame);border-radius:18px;background:#fff;padding:14px 10px 12px;
+    min-height:200px;display:flex;flex-direction:column;gap:8px;font-size:.84rem
+  }
+  .phone.is-wrong .phone-body{border-style:dashed;border-color:var(--wrong-edge)}
+  .phone.is-bonus .phone-body{border-style:dashed;border-color:var(--orange-text)}
+  .ph-box{background:var(--box);border-radius:6px;padding:8px;color:var(--ink);flex:1;overflow-wrap:anywhere}
+  .ph-box .k{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+  .ph-btn{background:var(--orange);border:2px solid #8A3600;border-radius:8px;padding:6px 8px;text-align:center;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
+  .ph-btn.empty,.ph-box.empty{background:#fff;border:2px dashed var(--control);color:var(--muted);font-weight:400}
+  .ph-cap{font-size:.82rem;margin-top:6px;overflow-wrap:anywhere}
+  .ph-cap b{font-weight:700}
+  .empty-txt{color:var(--muted);font-style:italic}
+
+  .status{font-weight:600;color:var(--ok);min-height:1.5em;margin:8px 0}
+  .status.warn{color:var(--warn)}
+  .save-state{margin-top:8px;font-size:.85rem;color:var(--muted)}
+  .tip{margin-top:10px;font-size:.88rem;color:var(--muted);max-width:70ch}
+  .fallback{margin-top:12px}
+  .fallback[hidden]{display:none}
+  .fallback label{display:block;font-weight:700;font-size:.92rem}
+  .fallback textarea{min-height:160px;background:#FFFDF9}
+  .bottom{margin-top:16px}
+
+  dialog{border:2px solid var(--ink);border-radius:12px;padding:18px;max-width:min(420px,calc(100vw - 32px));color:var(--text)}
+  dialog::backdrop{background:rgba(0,0,0,.45)}
+  dialog h2{margin-bottom:8px}
+  dialog p{margin-bottom:14px}
+
+  a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{
+    outline:3px solid var(--ink);outline-offset:2px
+  }
+  @media (forced-colors:active){
+    a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid Highlight}
+    .phone-body,.ph-btn,.tag{border-color:CanvasText}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  @media print{
+    body{background:#fff;padding:0;max-width:none}
+    .no-print,#planner,.full-link,.status,.fallback,.save-state,.tip,dialog{display:none!important}
+    .card{border:0;padding:0}
+    .layout{display:block}
+    .preview-wrap{position:static;max-height:none;overflow:visible}
+    .board{grid-template-columns:repeat(3,1fr)}
+    .phone{break-inside:avoid}
+    .ph-btn{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Screen Planner: <span class="accent">Plan Your Screens</span></h1>
+  <p class="intro">Plan the 4 screens of your clickable prototype before you build anything. Pick one person and one moment. Then plan 3 main-flow screens and 1 screen for when something goes wrong. Keep it rough and gray: a few words per box is plenty.</p>
+  <p class="full-link no-print"><a href="https://vpdasgupta.github.io/tiktok/thd-storeops-screen-planner.html" target="_blank" rel="noopener">Open the Screen Planner full page<span class="sr-only"> (opens in a new tab)</span></a></p>
+
+  <div class="card">
+    <div class="actions top-actions no-print">
+      <button type="button" id="example-btn">See Marcus's example</button>
+      <button type="button" id="clear-btn">Clear</button>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite" aria-atomic="true"></p>
+
+    <div class="layout">
+      <form id="planner" autocomplete="off" novalidate>
+        <section class="block" aria-labelledby="h-who">
+          <h2 id="h-who">1. Who and when</h2>
+          <div class="field">
+            <label for="who">Who uses these screens?<span class="sub">One person. Example: "Sarah, an aisle associate"</span></label>
+            <input type="text" id="who" maxlength="120">
+          </div>
+          <div class="field">
+            <label for="moment">The moment your prototype shows<span class="sub">One moment from your Project 2 notes, in a sentence or two.</span></label>
+            <textarea id="moment" rows="2" maxlength="400"></textarea>
+          </div>
+        </section>
+
+        <section class="block" aria-labelledby="h-main">
+          <h2 id="h-main">2. Your 3 main-flow screens</h2>
+          <p class="hint">The main flow is what happens when everything works. Each screen needs what the person sees, the one thing they tap, and a one-line caption.</p>
+          <div id="main-list"></div>
+        </section>
+
+        <section class="block" aria-labelledby="h-wrong">
+          <h2 id="h-wrong">3. Your "goes wrong" screen</h2>
+          <p class="hint">Pick one Guess from your Project 2 notes that could break. This screen shows what the person sees when it does.</p>
+          <fieldset class="wrong">
+            <legend>Screen 4 <span class="tag wrong">Goes wrong</span></legend>
+            <div class="field">
+              <label for="w-on">Which main-flow screen does it break on?</label>
+              <select id="w-on">
+                <option value="">Choose a screen</option>
+                <option value="1">Screen 1</option>
+                <option value="2">Screen 2</option>
+                <option value="3">Screen 3</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="w-breaks">What breaks<span class="sub">From a Guess in your Project 2 notes, in plain words.</span></label>
+              <textarea id="w-breaks" rows="2" maxlength="300"></textarea>
+            </div>
+            <div class="field">
+              <label for="w-says">What the screen says</label>
+              <textarea id="w-says" rows="2" maxlength="300"></textarea>
+            </div>
+            <div class="field">
+              <label for="w-next">What to do next (and who can help)</label>
+              <textarea id="w-next" rows="2" maxlength="300"></textarea>
+            </div>
+            <div class="field">
+              <label for="w-cap">What this shows (one-line caption)</label>
+              <input type="text" id="w-cap" maxlength="160">
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="block" aria-labelledby="h-bonus">
+          <h2 id="h-bonus">4. Bonus screens <span class="sub-h">(optional)</span></h2>
+          <div class="bonus-note" id="bonus-note">
+            <p><strong>Optional.</strong> Only start a bonus screen once your 4 work end to end. Skipping it never costs you points. You can add up to 2 bonus screens, for 6 screens total.</p>
+          </div>
+          <div id="bonus-list"></div>
+          <button type="button" id="add-bonus" class="no-print" aria-describedby="screen-count">Add a bonus screen</button>
+          <p class="count" id="screen-count">4 of 6 screens planned (4 required).</p>
+        </section>
+      </form>
+
+      <section class="preview-wrap" aria-labelledby="h-preview">
+        <h2 id="h-preview">Preview: your rough storyboard</h2>
+        <p class="hint">This updates as you type. It's a sketch, not your final screens.</p>
+        <div class="board-meta" id="board-meta"></div>
+        <ol class="board" id="board"></ol>
+      </section>
+    </div>
+
+    <div class="actions bottom no-print">
+      <button type="button" class="primary" id="copy-btn">Copy as text</button>
+      <button type="button" id="print-btn">Print / save as PDF</button>
+    </div>
+    <p class="status" id="out-status" role="status" aria-live="polite" aria-atomic="true"></p>
+
+    <div class="fallback" id="fallback" hidden>
+      <label for="fallback-text">Your screens as text</label>
+      <p class="tip" id="fallback-hint">Your browser blocked copying. The text is selected. Press Cmd+C (Mac) or Ctrl+C (Windows) to copy it.</p>
+      <textarea id="fallback-text" readonly aria-describedby="fallback-hint"></textarea>
+    </div>
+
+    <p class="save-state" id="save-state">Saved only in this browser on this device.</p>
+    <p class="tip">Tip: paste the text into your notes doc under <strong>My Screens</strong>. You'll build from it on the next page.</p>
+  </div>
+</main>
+
+<dialog id="confirm" aria-labelledby="confirm-title" aria-describedby="confirm-body">
+  <h2 id="confirm-title">Clear everything?</h2>
+  <p id="confirm-body">This erases all your screens. You can't undo it.</p>
+  <div class="actions">
+    <button type="button" id="confirm-cancel">Cancel</button>
+    <button type="button" class="primary" id="confirm-ok">Yes, clear</button>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  var KEY = 'thd-storeops-p3-screens';
+  var MAX_BONUS = 2, REQUIRED = 4;
+  var BONUS_TYPES = [
+    {v:'wrong2', label:'A second "goes wrong" screen (a different break, from another Guess)'},
+    {v:'other',  label:'The other side of the hand-off (what the associate, Pro desk, or back room sees)'},
+    {v:'done',   label:'A "done" screen (what they see when it worked)'},
+    {v:'today',  label:'A "today" screen (how the problem looks now, for a before/after)'}
+  ];
+  var SHORT = {wrong2:'Second goes wrong', other:'Other side of the hand-off', done:'Done', today:'Today (before)'};
+
+  function blank(){
+    return {who:'', moment:'', main:[{see:'',tap:'',cap:''},{see:'',tap:'',cap:''},{see:'',tap:'',cap:''}],
+      wrong:{on:'', breaks:'', says:'', next:'', cap:''}, bonus:[]};
+  }
+  var EXAMPLE = {
+    who:'Sarah, an aisle associate, helping Marcus (a Pro contractor)',
+    moment:'Marcus shows his order code in the aisle. Sarah pulls up his saved cart on her hdPhone and sends it to the Pro desk, so he can pay without listing his items again.',
+    main:[
+      {see:"Find a Pro's order. A gray camera box for scanning the code on the customer's phone. A small gray button: Cart not found?", tap:'Scan code', cap:"Sarah starts by scanning the code on Marcus's phone."},
+      {see:"Marcus's cart: 14 items, each marked In stock here.", tap:'Send to Pro desk', cap:'His whole cart shows up on the hdPhone, so nothing gets rebuilt by hand.'},
+      {see:'Sent to the Pro desk. Order #4821 is waiting there. Tell Marcus he can pay at the Pro desk.', tap:'Done', cap:'The order gets to the Pro desk before Marcus does, so he just pays.'}
+    ],
+    wrong:{on:'1',
+      breaks:"The hdPhone can't find his online cart. (My Guess: the hdPhone can reach online orders.)",
+      says:"We couldn't find this cart. Ask the customer to open the cart in their app and read you the order number.",
+      next:'Tap Type order number. Still stuck? The Pro desk can look up the order.',
+      cap:'If the scan fails, Sarah knows what to do next and who can help.'},
+    bonus:[]
+  };
+
+  var state = blank();
+  var canSave = true;
+  var $ = function(id){ return document.getElementById(id); };
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  function t(s){ return (s || '').trim(); }
+
+  function hasContent(){
+    var s = state;
+    if (t(s.who) || t(s.moment)) return true;
+    if (s.main.some(function(m){ return t(m.see) || t(m.tap) || t(m.cap); })) return true;
+    var w = s.wrong; if (w.on || t(w.breaks) || t(w.says) || t(w.next) || t(w.cap)) return true;
+    return s.bonus.length > 0;
+  }
+
+  // ---- announcements ----
+  function makeAnnouncer(el){
+    var timer = null;
+    return function(msg, isWarn){
+      clearTimeout(timer); el.textContent = '';
+      timer = setTimeout(function(){ el.classList.toggle('warn', !!isWarn); el.textContent = msg; }, 80);
+    };
+  }
+  var announce = makeAnnouncer($('status'));
+  var announceOut = makeAnnouncer($('out-status'));
+
+  // ---- storage ----
+  function save(){
+    if (!canSave) return;
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+      $('save-state').textContent = 'Saved only in this browser on this device (last saved ' +
+        new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) + ').';
+    } catch(e){ storageFailed(); }
+  }
+  function storageFailed(){
+    if (!canSave) return;
+    canSave = false;
+    $('save-state').textContent = 'Autosave is off in this view. Open the full page to save your work, or copy it before you leave.';
+  }
+  function str(v, max){ return typeof v === 'string' ? v.slice(0, max || 400) : ''; }
+  function valid(d){
+    if (!d || typeof d !== 'object' || !Array.isArray(d.main)) return null;
+    var out = blank();
+    out.who = str(d.who, 120); out.moment = str(d.moment);
+    for (var i = 0; i < 3; i++){
+      var m = d.main[i] || {};
+      out.main[i] = {see:str(m.see, 300), tap:str(m.tap, 80), cap:str(m.cap, 160)};
+    }
+    var w = d.wrong || {};
+    out.wrong = {on: ['1','2','3'].indexOf(w.on) > -1 ? w.on : '', breaks:str(w.breaks,300), says:str(w.says,300), next:str(w.next,300), cap:str(w.cap,160)};
+    if (Array.isArray(d.bonus)) d.bonus.slice(0, MAX_BONUS).forEach(function(b){
+      b = b || {};
+      out.bonus.push({type: SHORT[b.type] ? b.type : '', see:str(b.see,300), tap:str(b.tap,80), cap:str(b.cap,160)});
+    });
+    return out;
+  }
+  function load(){
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch(e){ storageFailed(); return; }
+    if (!raw) return;
+    try { var d = valid(JSON.parse(raw)); if (d) state = d; } catch(e){}
+  }
+
+  // ---- form building ----
+  function field(id, labelText, sub, multi, max, value, onInput){
+    var wrap = document.createElement('div'); wrap.className = 'field';
+    var lab = document.createElement('label'); lab.htmlFor = id; lab.textContent = labelText;
+    if (sub){ var s = document.createElement('span'); s.className = 'sub'; s.textContent = sub; lab.appendChild(s); }
+    var inp = document.createElement(multi ? 'textarea' : 'input');
+    if (multi) inp.rows = 2; else inp.type = 'text';
+    inp.id = id; inp.maxLength = max; inp.value = value || '';
+    inp.addEventListener('input', function(){ onInput(inp.value); edited(); });
+    wrap.appendChild(lab); wrap.appendChild(inp);
+    return wrap;
+  }
+
+  function renderMain(){
+    var list = $('main-list'); list.textContent = '';
+    state.main.forEach(function(m, i){
+      var fs = document.createElement('fieldset');
+      var lg = document.createElement('legend'); lg.textContent = 'Screen ' + (i+1) + ' (main flow)';
+      fs.appendChild(lg);
+      fs.appendChild(field('m'+i+'-see', 'What they see', null, true, 300, m.see, function(v){ m.see = v; }));
+      fs.appendChild(field('m'+i+'-tap', 'What they tap', 'The one button that moves them to the next screen.', false, 80, m.tap, function(v){ m.tap = v; }));
+      fs.appendChild(field('m'+i+'-cap', 'What this shows (one-line caption)', null, false, 160, m.cap, function(v){ m.cap = v; }));
+      list.appendChild(fs);
+    });
+  }
+
+  function renderWrong(){
+    var w = state.wrong;
+    $('w-on').value = w.on; $('w-breaks').value = w.breaks; $('w-says').value = w.says;
+    $('w-next').value = w.next; $('w-cap').value = w.cap;
+  }
+  [['w-breaks','breaks'],['w-says','says'],['w-next','next'],['w-cap','cap']].forEach(function(p){
+    $(p[0]).addEventListener('input', function(){ state.wrong[p[1]] = $(p[0]).value; edited(); });
+  });
+  $('w-on').addEventListener('change', function(){ state.wrong.on = $('w-on').value; edited(); });
+  $('who').addEventListener('input', function(){ state.who = $('who').value; edited(); });
+  $('moment').addEventListener('input', function(){ state.moment = $('moment').value; edited(); });
+
+  function renderBonus(){
+    var list = $('bonus-list'); list.textContent = '';
+    state.bonus.forEach(function(b, i){
+      var n = REQUIRED + i + 1;
+      var fs = document.createElement('fieldset'); fs.className = 'bonus';
+      var lg = document.createElement('legend');
+      lg.appendChild(document.createTextNode('Screen ' + n + ' '));
+      var tg = document.createElement('span'); tg.className = 'tag bonus'; tg.textContent = 'Bonus'; lg.appendChild(tg);
+      fs.appendChild(lg);
+
+      var wrap = document.createElement('div'); wrap.className = 'field';
+      var lab = document.createElement('label'); lab.htmlFor = 'b'+i+'-type'; lab.textContent = 'Which kind of bonus screen?';
+      var sel = document.createElement('select'); sel.id = 'b'+i+'-type';
+      var o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'Choose one'; sel.appendChild(o0);
+      BONUS_TYPES.forEach(function(bt){ var o = document.createElement('option'); o.value = bt.v; o.textContent = bt.label; sel.appendChild(o); });
+      sel.value = b.type;
+      sel.addEventListener('change', function(){ b.type = sel.value; edited(); });
+      wrap.appendChild(lab); wrap.appendChild(sel); fs.appendChild(wrap);
+
+      fs.appendChild(field('b'+i+'-see', 'What they see', null, true, 300, b.see, function(v){ b.see = v; }));
+      fs.appendChild(field('b'+i+'-tap', 'What they tap', null, false, 80, b.tap, function(v){ b.tap = v; }));
+      fs.appendChild(field('b'+i+'-cap', 'What this shows (one-line caption)', null, false, 160, b.cap, function(v){ b.cap = v; }));
+
+      var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'remove-bonus no-print';
+      rm.textContent = 'Remove bonus screen ' + n;
+      rm.addEventListener('click', function(){ removeBonus(i); });
+      fs.appendChild(rm);
+      list.appendChild(fs);
+    });
+    var total = REQUIRED + state.bonus.length;
+    var full = state.bonus.length >= MAX_BONUS;
+    $('add-bonus').setAttribute('aria-disabled', full ? 'true' : 'false');
+    $('screen-count').textContent = total + ' of 6 screens planned (4 required' +
+      (state.bonus.length ? ', ' + state.bonus.length + ' bonus' : '') + ').' +
+      (full ? ' That\'s the most allowed.' : '');
+  }
+
+  // ---- preview ----
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function phone(label, tagText, tagCls, boxes, tap, cap, cls){
+    var li = el('li', 'phone' + (cls ? ' ' + cls : ''));
+    var lab = el('p', 'phone-label', label);
+    if (tagText){ var tg = el('span', 'tag ' + tagCls, tagText); lab.appendChild(document.createTextNode(' ')); lab.appendChild(tg); }
+    li.appendChild(lab);
+    var body = el('div', 'phone-body');
+    boxes.forEach(function(bx){
+      var b = el('div', 'ph-box' + (t(bx.v) ? '' : ' empty'));
+      if (bx.k) b.appendChild(el('span', 'k', bx.k));
+      b.appendChild(document.createTextNode(t(bx.v) || 'Not filled in yet'));
+      body.appendChild(b);
+    });
+    if (tap !== null){
+      var btn = el('div', 'ph-btn' + (t(tap) ? '' : ' empty'));
+      btn.appendChild(el('span', 'sr-only', 'Button: '));
+      btn.appendChild(document.createTextNode(t(tap) || 'Button not filled in yet'));
+      body.appendChild(btn);
+    }
+    li.appendChild(body);
+    var c = el('p', 'ph-cap'); c.appendChild(el('b', null, 'What this shows: '));
+    if (t(cap)) c.appendChild(document.createTextNode(t(cap))); else c.appendChild(el('span', 'empty-txt', 'not filled in yet'));
+    li.appendChild(c);
+    return li;
+  }
+  function renderPreview(){
+    var meta = $('board-meta'); meta.textContent = '';
+    var p1 = el('p'); p1.appendChild(el('strong', null, 'Who: ')); p1.appendChild(document.createTextNode(t(state.who) || 'Not filled in yet'));
+    var p2 = el('p'); p2.appendChild(el('strong', null, 'The moment: ')); p2.appendChild(document.createTextNode(t(state.moment) || 'Not filled in yet'));
+    meta.appendChild(p1); meta.appendChild(p2);
+
+    var board = $('board'); board.textContent = '';
+    state.main.forEach(function(m, i){
+      board.appendChild(phone('Screen ' + (i+1) + ' · Main flow', null, null, [{v:m.see}], m.tap, m.cap));
+    });
+    var w = state.wrong;
+    board.appendChild(phone('Screen 4' + (w.on ? ' · Breaks on screen ' + w.on : ''), 'Goes wrong', 'wrong',
+      [{k:'What broke', v:w.breaks}, {k:'Screen says', v:w.says}, {k:'What to do next', v:w.next}], null, w.cap, 'is-wrong'));
+    state.bonus.forEach(function(b, i){
+      board.appendChild(phone('Screen ' + (REQUIRED+i+1) + (b.type ? ' · ' + SHORT[b.type] : ''), 'Bonus', 'bonus',
+        [{v:b.see}], b.tap, b.cap, 'is-bonus'));
+    });
+  }
+
+  function renderAll(){
+    $('who').value = state.who; $('moment').value = state.moment;
+    renderMain(); renderWrong(); renderBonus(); renderPreview();
+  }
+  function edited(){ $('fallback').hidden = true; renderPreview(); save(); }
+
+  // ---- bonus add/remove ----
+  $('add-bonus').addEventListener('click', function(){
+    if (state.bonus.length >= MAX_BONUS){
+      announce('You already have 6 screens, the most allowed. Remove a bonus screen to add a different one.', true);
+      return;
+    }
+    state.bonus.push({type:'', see:'', tap:'', cap:''});
+    renderBonus(); edited();
+    var i = state.bonus.length - 1;
+    $('b' + i + '-type').focus();
+    announce('Bonus screen ' + (REQUIRED + i + 1) + ' added. ' + (REQUIRED + state.bonus.length) + ' of 6 screens.');
+  });
+  function removeBonus(i){
+    var b = state.bonus[i];
+    var doIt = function(){
+      state.bonus.splice(i, 1);
+      renderBonus(); edited();
+      $('add-bonus').focus();
+      announce('Bonus screen removed. ' + (REQUIRED + state.bonus.length) + ' of 6 screens.');
+    };
+    if (t(b.see) || t(b.tap) || t(b.cap)){
+      ask('Remove this bonus screen?', 'What you wrote for bonus screen ' + (REQUIRED+i+1) + ' will be erased.', 'Yes, remove', doIt, $('add-bonus'));
+    } else doIt();
+  }
+
+  // ---- confirm dialog (native <dialog>, falls back to confirm()) ----
+  var dlg = $('confirm'), pending = null, returnTo = null;
+  function ask(title, body, okLabel, onOk, ret){
+    returnTo = ret;
+    if (typeof dlg.showModal !== 'function'){
+      var yes = false; try { yes = window.confirm(title + ' ' + body); } catch(e){ yes = false; }
+      if (yes) onOk(); else if (ret) ret.focus();
+      return;
+    }
+    $('confirm-title').textContent = title; $('confirm-body').textContent = body; $('confirm-ok').textContent = okLabel;
+    pending = onOk;
+    dlg.showModal();
+    $('confirm-cancel').focus();
+  }
+  function closeDlg(run){
+    var fn = pending; pending = null;
+    if (dlg.open) dlg.close();
+    if (run && fn) fn();
+    else if (returnTo) returnTo.focus();
+  }
+  $('confirm-cancel').addEventListener('click', function(){ closeDlg(false); });
+  $('confirm-ok').addEventListener('click', function(){ closeDlg(true); });
+  dlg.addEventListener('cancel', function(e){ e.preventDefault(); closeDlg(false); });
+
+  // ---- example + clear ----
+  $('example-btn').addEventListener('click', function(){
+    var go = function(){
+      state = clone(EXAMPLE); renderAll(); save(); $('fallback').hidden = true;
+      $('example-btn').focus();
+      announce("Marcus's example loaded: 3 main-flow screens and 1 goes-wrong screen. He skipped the bonus.");
+    };
+    if (hasContent()) ask("Replace your screens with Marcus's example?", 'What you wrote will be erased. Copy it first if you want to keep it.', 'Yes, show example', go, $('example-btn'));
+    else go();
+  });
+  $('clear-btn').addEventListener('click', function(){
+    if (!hasContent()){ announce('Your planner is already empty.'); return; }
+    ask('Clear everything?', "This erases all your screens. You can't undo it.", 'Yes, clear', function(){
+      state = blank(); renderAll(); save(); $('fallback').hidden = true;
+      $('clear-btn').focus();
+      announce('Cleared. Your planner is empty.');
+    }, $('clear-btn'));
+  });
+
+  // ---- copy + print ----
+  function line(label, v){ return '- ' + label + ': ' + (t(v).replace(/\s*\n\s*/g, ' ') || '___'); }
+  function asText(){
+    var s = state, out = ['My Screens', 'Who: ' + (t(s.who) || '___'), 'The moment: ' + (t(s.moment).replace(/\s*\n\s*/g, ' ') || '___'), ''];
+    s.main.forEach(function(m, i){
+      out.push('Screen ' + (i+1) + ' (main flow)');
+      out.push(line('What they see', m.see)); out.push(line('What they tap', m.tap)); out.push(line('What this shows', m.cap)); out.push('');
+    });
+    var w = s.wrong;
+    out.push('Screen 4 (goes wrong' + (w.on ? ', breaks on screen ' + w.on : '') + ')');
+    out.push(line('What breaks', w.breaks)); out.push(line('What the screen says', w.says));
+    out.push(line('What to do next', w.next)); out.push(line('What this shows', w.cap));
+    s.bonus.forEach(function(b, i){
+      out.push('');
+      out.push('Screen ' + (REQUIRED+i+1) + ' (bonus' + (b.type ? ': ' + SHORT[b.type] : '') + ')');
+      out.push(line('What they see', b.see)); out.push(line('What they tap', b.tap)); out.push(line('What this shows', b.cap));
+    });
+    return out.join('\n') + '\n';
+  }
+  function legacyCopy(text, btn){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', ''); ta.setAttribute('aria-hidden', 'true');
+    ta.style.position = 'fixed'; ta.style.top = '-9999px'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    var ok = false; try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    document.body.removeChild(ta); btn.focus();
+    return ok;
+  }
+  function copyText(text, btn, okMsg){
+    function done(){ $('fallback').hidden = true; announceOut(okMsg); }
+    function fail(){
+      $('fallback-text').value = text; $('fallback').hidden = false;
+      $('fallback-text').focus(); $('fallback-text').select();
+      announceOut("Couldn't copy automatically. The text is selected below. Press Ctrl+C or Cmd+C.", true);
+    }
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(done, function(){ if (legacyCopy(text, btn)) done(); else fail(); });
+    } else { if (legacyCopy(text, btn)) done(); else fail(); }
+  }
+  $('copy-btn').addEventListener('click', function(){
+    if (!hasContent()){ announceOut('Your planner is empty. Fill in a few boxes first.', true); return; }
+    copyText(asText(), $('copy-btn'), 'Copied. Paste it into your notes doc under My Screens.');
+  });
+  $('print-btn').addEventListener('click', function(){
+    announceOut('Opening print. Choose Save as PDF to keep a copy. If nothing opens, use the full-page link at the top.');
+    try { window.print(); } catch(e){ announceOut("Print didn't open here. Open the full page and try again.", true); }
+  });
+
+  load(); renderAll();
+})();
+</script>
+</body>
+</html>

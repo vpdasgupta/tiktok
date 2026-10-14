@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clickable Prototype – Marcus's Sample</title>
+<style>
+  :root{
+    --orange:#F96302;          /* main button fill only, dark text on it (5.65:1) */
+    --orange-edge:#8A3600;     /* edge of orange buttons (8.05:1 on white) */
+    --orange-text:#B34700;     /* orange as text (5.5:1 on white) */
+    --ink:#1A1A1A;
+    --text:#1E2130;
+    --muted:#4B5060;
+    --bg:#F7F7F6;
+    --border:#D9D6D0;          /* decorative only */
+    --control:#767676;
+    --box:#E4E4E4;
+    --frame:#555555;
+    --wrong-edge:#B91C1C;
+    --wrong-bg:#FFF0F0;
+    --wrong-ink:#7A1F1F;
+    --bonus-bg:#FFF1E6;
+    --bonus-ink:#8A3600;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.5;
+    padding:20px 16px 32px;max-width:760px;margin:0 auto;
+  }
+  .eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;font-weight:700;color:var(--orange-text);margin-bottom:4px}
+  h1{font-size:1.35rem;line-height:1.25;margin-bottom:6px}
+  .intro{color:var(--muted);margin-bottom:6px;max-width:68ch}
+  .full-link{font-size:.9rem;margin-bottom:14px}
+  a{color:var(--orange-text)}
+  h2{font-size:1.05rem;line-height:1.3}
+  .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+
+  button{
+    font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--control);
+    background:#fff;color:var(--ink);padding:9px 14px;min-height:44px;font-size:.93rem;font-weight:600;
+  }
+  button:hover{background:#F3F1EC}
+  button[aria-disabled="true"]{opacity:.6;cursor:not-allowed}
+  .controls{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:14px}
+  .toggle{display:flex;align-items:center;gap:8px;min-height:44px;font-weight:600;cursor:pointer}
+  .toggle input{width:20px;height:20px;accent-color:var(--orange-text)}
+  .where{font-size:.9rem;color:var(--muted);margin-bottom:10px}
+
+  /* the phone */
+  .stage{display:flex;flex-direction:column;align-items:center}
+  .phone{
+    width:min(320px,100%);border:4px solid var(--frame);border-radius:30px;background:#fff;
+    padding:12px 12px 16px;min-height:520px;display:flex;flex-direction:column
+  }
+  .phone.is-wrong{border-style:dashed;border-color:var(--wrong-edge)}
+  .phone.is-bonus{border-style:dashed;border-color:var(--orange-text)}
+  .bar{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);border-bottom:1px solid var(--border);padding:0 4px 6px;margin-bottom:12px}
+  .screen{display:flex;flex-direction:column;gap:10px;flex:1}
+  .screen[hidden]{display:none}
+  .screen h2{font-size:1.15rem}
+  .screen h2:focus{outline:none}
+  .screen h2:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:4px}
+  .scr-label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:2px}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;border-radius:10px;padding:1px 8px}
+  .tag.wrong{color:var(--wrong-ink);background:var(--wrong-bg);border:1px solid var(--wrong-edge)}
+  .tag.bonus{color:var(--bonus-ink);background:var(--bonus-bg);border:1px solid var(--orange-text)}
+  .box{background:var(--box);border-radius:8px;padding:10px;color:var(--ink);font-size:.92rem}
+  .box.tall{min-height:150px;display:flex;align-items:center;justify-content:center;text-align:center;border:2px dashed var(--frame);background:#F0F0F0}
+  .rows{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .rows li{background:var(--box);border-radius:6px;padding:7px 9px;font-size:.88rem;display:flex;justify-content:space-between;gap:8px}
+  .rows .ok{font-weight:700;white-space:nowrap}
+  .alert{border:2px dashed var(--wrong-edge);background:var(--wrong-bg);color:var(--wrong-ink);border-radius:8px;padding:10px;font-size:.95rem}
+  .alert strong{display:block;font-size:1.02rem}
+  .small{font-size:.86rem;color:var(--muted)}
+  .spacer{flex:1}
+  .btns{display:flex;flex-direction:column;gap:8px}
+  .mock-main{background:var(--orange);border:2px solid var(--orange-edge);color:var(--ink);font-weight:700}
+  .mock-main:hover{background:#E85C02}
+  .mock-alt{background:#fff;border:2px solid var(--frame);color:var(--ink)}
+  .mock-small{background:var(--box);border:1px solid var(--frame);color:var(--ink);font-size:.82rem;min-height:36px;padding:6px 10px;align-self:center;font-weight:600}
+  .cover-title{font-size:1.5rem;line-height:1.2}
+  .caption{width:min(420px,100%);margin-top:12px;font-size:.95rem;background:#fff;border:1px solid var(--border);border-left:4px solid var(--orange-text);border-radius:6px;padding:10px 12px}
+  .caption b{font-weight:700}
+
+  .jump{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .jump button{min-height:40px;font-size:.85rem;font-weight:600}
+  .jump button[aria-current="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .notes ul{padding-left:20px;margin-top:6px}
+  .notes li{margin:4px 0}
+  footer{color:#595959;font-size:.8rem;text-align:center;margin-top:8px}
+
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+  @media (forced-colors:active){
+    a:focus-visible,button:focus-visible,input:focus-visible,.screen h2:focus-visible{outline:3px solid Highlight}
+    .phone,.tag,.alert{border-color:CanvasText}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Project 3 — Sample clickable prototype</p>
+  <h1>Marcus's prototype: Cart on the hdPhone</h1>
+  <p class="intro">This is what done looks like: rough, gray, and easy for a stranger to follow. Click the buttons on the phone to move through it. It has a cover, 3 main-flow screens, and 1 screen for when something goes wrong. Each screen has a caption underneath.</p>
+  <p class="full-link"><a href="https://vpdasgupta.github.io/tiktok/thd-storeops-sample-prototype.html" target="_blank" rel="noopener">Open the sample prototype full page<span class="sr-only"> (opens in a new tab)</span></a></p>
+
+  <div class="card">
+    <div class="controls">
+      <button type="button" id="back-btn">Back</button>
+      <button type="button" id="restart-btn">Restart</button>
+      <label class="toggle"><input type="checkbox" id="bonus-toggle"> Show bonus screens</label>
+    </div>
+    <p class="where" id="where"></p>
+    <p class="sr-only" id="status" role="status" aria-live="polite" aria-atomic="true"></p>
+
+    <div class="stage">
+      <section class="phone" id="phone" aria-label="Phone mockup: Sarah's hdPhone">
+        <div class="bar" aria-hidden="true"><span>hdPhone</span><span>Aisle 32</span></div>
+        <div id="screens"></div>
+      </section>
+      <p class="caption" id="caption"></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 id="h-jump">Jump to a screen</h2>
+    <ul class="jump" id="jump" aria-labelledby="h-jump"></ul>
+  </div>
+
+  <div class="card notes">
+    <h2>What to notice</h2>
+    <ul>
+      <li><strong>Exactly 4 screens are required:</strong> 3 for the main flow and 1 for when something goes wrong. The cover doesn't count.</li>
+      <li><strong>The "goes wrong" screen comes from a Guess.</strong> Marcus's biggest Guess is that the hdPhone can find an online order, so his goes-wrong screen opens from the small "Cart not found?" button on Screen 1, where the scan happens. It says what went wrong, what to do next, and who can help.</li>
+      <li><strong>Every screen has a caption</strong> that starts "What this shows."</li>
+      <li><strong>Rough and gray.</strong> Gray boxes, plain words, and orange only on the main button. No logos or photos.</li>
+      <li><strong>Bonus screens are optional.</strong> Turn on "Show bonus screens" to see 2 stretch screens: the Pro desk's side of the hand-off and a "done" screen. Only build a bonus once your 4 work end to end.</li>
+      <li><strong>Path B looks like this.</strong> If you ask an AI chat to build your prototype as one HTML file, this is about the right amount of polish.</li>
+    </ul>
+  </div>
+  <footer>Example prototype — fictional customer and details, for format reference only.</footer>
+</main>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+
+  // kind: cover | main | wrong | bonus
+  var SCREENS = [
+    {id:'cover', kind:'cover', label:'Cover', title:'Cart on the hdPhone',
+     body:[
+       ['p','box','When Marcus shows his order code, Sarah\'s hdPhone pulls up his saved cart and sends it to the Pro desk. He pays without listing his items again.'],
+       ['p','small','This depends on one Guess: that the hdPhone can reach online orders. Home Depot would need to confirm it.']
+     ],
+     buttons:[{label:'Start', to:'s1', main:true}],
+     caption:'The cover: a title and the main point. It doesn\'t count toward the 4 screens.'},
+
+    {id:'s1', kind:'main', n:1, label:'Screen 1 · Main flow', title:'Find a Pro\'s order',
+     body:[
+       ['p','box tall','Camera box: point at the code on the customer\'s phone'],
+       ['p','small','Customer: Marcus R. (Pro)']
+     ],
+     buttons:[{label:'Scan code', to:'s2', main:true},{label:'Cart not found?', to:'w1', small:true}],
+     caption:'Sarah starts by scanning the code on Marcus\'s phone.'},
+
+    {id:'s2', kind:'main', n:2, label:'Screen 2 · Main flow', title:'Marcus\'s cart: 14 items',
+     list:[['2x4 stud, 8 ft (×40)','In stock'],['Drywall screws, 5 lb','In stock'],['Joint compound','In stock'],['+ 11 more items','In stock']],
+     buttons:[{label:'Send to Pro desk', to:'s3', main:true}],
+     caption:'His whole cart shows up on the hdPhone, so nothing gets rebuilt by hand.'},
+
+    {id:'s3', kind:'main', n:3, label:'Screen 3 · Main flow', title:'Sent to the Pro desk',
+     body:[
+       ['p','box','Order #4821 is waiting at the Pro desk.'],
+       ['p','box','Tell Marcus: pay at the Pro desk. His items are already loaded.']
+     ],
+     buttons:[{label:'Done', to:'cover', main:true},{label:'See the Pro desk\'s screen (bonus)', to:'b1', bonusOnly:true}],
+     caption:'The order gets to the Pro desk before Marcus does, so he just pays.'},
+
+    {id:'w1', kind:'wrong', n:4, label:'Screen 4', title:'Cart not found',
+     alert:['We couldn\'t find this cart.','Ask the customer to open the cart in their app and read you the order number.'],
+     body:[['p','small','Still stuck? The Pro desk can look up the order.']],
+     buttons:[{label:'Type order number', to:'s2', main:true}],
+     caption:'If the scan fails, Sarah knows what to do next and who can help.'},
+
+    {id:'b1', kind:'bonus', n:5, label:'Bonus screen 5 · Pro desk view', title:'Incoming order #4821',
+     bar:['Pro desk (OrderUp!)','Register 2'],
+     list:[['From','Aisle 32, Sarah'],['Customer','Marcus R. (Pro)'],['Items','14, all loaded']],
+     body:[['p','box','Ready to pay. No need to scan items again.']],
+     buttons:[{label:'Take payment', to:'b2', main:true}],
+     caption:'Bonus, the other side of the hand-off: the Pro desk sees the same order, so Marcus doesn\'t start over.'},
+
+    {id:'b2', kind:'bonus', n:6, label:'Bonus screen 6 · Done', title:'Paid',
+     bar:['Pro desk (OrderUp!)','Register 2'],
+     body:[['p','box','14 items paid. Receipt sent to Marcus\'s phone.'],['p','small','Time at the desk: about 2 minutes.']],
+     buttons:[{label:'Start over', to:'cover', main:true}],
+     caption:'Bonus, the "done" screen: Marcus leaves without listing a single item again.'}
+  ];
+  var byId = {}; SCREENS.forEach(function(s){ byId[s.id] = s; });
+
+  var current = 'cover', history = [], showBonus = false;
+
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  function build(){
+    var wrap = $('screens');
+    SCREENS.forEach(function(s){
+      var sc = el('div', 'screen'); sc.id = 'scr-' + s.id; sc.hidden = true;
+      var h = el('h2'); h.id = 'h-' + s.id; h.tabIndex = -1;
+      if (s.kind !== 'cover'){
+        var lab = el('span', 'scr-label', s.label);
+        if (s.kind === 'wrong'){ lab.appendChild(document.createTextNode(' ')); lab.appendChild(el('span', 'tag wrong', 'Goes wrong')); }
+        if (s.kind === 'bonus'){ lab.appendChild(document.createTextNode(' ')); lab.appendChild(el('span', 'tag bonus', 'Bonus')); }
+        lab.appendChild(el('span', 'sr-only', ': '));
+        h.appendChild(lab);
+        h.appendChild(document.createTextNode(s.title));
+      } else {
+        h.className = 'cover-title';
+        var cl = el('span', 'scr-label', 'Cover'); cl.appendChild(el('span', 'sr-only', ': ')); h.appendChild(cl);
+        h.appendChild(document.createTextNode(s.title));
+      }
+      sc.appendChild(h);
+      if (s.alert){
+        var a = el('div', 'alert');
+        var icon = el('span', null, '⚠ '); icon.setAttribute('aria-hidden', 'true');
+        var st = el('strong'); st.appendChild(icon); st.appendChild(document.createTextNode(s.alert[0]));
+        a.appendChild(st); a.appendChild(document.createTextNode(s.alert[1]));
+        sc.appendChild(a);
+      }
+      if (s.list){
+        var ul = el('ul', 'rows');
+        s.list.forEach(function(r){ var li = el('li'); li.appendChild(el('span', null, r[0])); li.appendChild(el('span', 'ok', r[1])); ul.appendChild(li); });
+        sc.appendChild(ul);
+      }
+      (s.body || []).forEach(function(b){ sc.appendChild(el(b[0], b[1], b[2])); });
+      sc.appendChild(el('div', 'spacer'));
+      var btns = el('div', 'btns');
+      s.buttons.forEach(function(b){
+        var bt = el('button', b.main ? 'mock-main' : (b.small ? 'mock-small' : 'mock-alt'), b.label); bt.type = 'button';
+        if (b.bonusOnly){ bt.setAttribute('data-bonus', '1'); bt.hidden = true; }
+        bt.addEventListener('click', function(){ go(b.to, true); });
+        btns.appendChild(bt);
+      });
+      sc.appendChild(btns);
+      wrap.appendChild(sc);
+    });
+  }
+
+  function visible(){ return SCREENS.filter(function(s){ return showBonus || s.kind !== 'bonus'; }); }
+
+  function renderJump(){
+    var ul = $('jump'); ul.textContent = '';
+    visible().forEach(function(s){
+      var li = el('li');
+      var txt = s.kind === 'cover' ? 'Cover' : (s.kind === 'wrong' ? 'Screen 4: Goes wrong' : (s.kind === 'bonus' ? 'Bonus ' + s.n + ': ' + s.title : 'Screen ' + s.n + ': ' + s.title));
+      var b = el('button', null, txt); b.type = 'button';
+      if (s.id === current) b.setAttribute('aria-current', 'true');
+      b.addEventListener('click', function(){ go(s.id, true); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+
+  function show(id){
+    SCREENS.forEach(function(s){ $('scr-' + s.id).hidden = (s.id !== id); });
+    var s = byId[id];
+    var phone = $('phone');
+    phone.classList.toggle('is-wrong', s.kind === 'wrong');
+    phone.classList.toggle('is-bonus', s.kind === 'bonus');
+    var bar = phone.querySelector('.bar');
+    var bt = s.bar || ['hdPhone', 'Aisle 32'];
+    bar.children[0].textContent = bt[0]; bar.children[1].textContent = bt[1];
+    phone.setAttribute('aria-label', s.kind === 'bonus' && s.bar ? 'Phone mockup: Pro desk screen' : 'Phone mockup: Sarah\'s hdPhone');
+
+    var cap = $('caption'); cap.textContent = '';
+    cap.appendChild(el('b', null, s.kind === 'cover' ? 'About the cover: ' : 'What this shows: '));
+    cap.appendChild(document.createTextNode(s.caption));
+
+    var req = s.kind === 'main' ? 'Screen ' + s.n + ' of 4 required (main flow)' :
+              s.kind === 'wrong' ? 'Screen 4 of 4 required (goes wrong)' :
+              s.kind === 'bonus' ? 'Bonus screen (optional)' : 'Cover (not one of the 4)';
+    $('where').textContent = 'You are on: ' + req + '.';
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-bonus]'), function(b){ b.hidden = !showBonus; });
+    $('back-btn').setAttribute('aria-disabled', history.length ? 'false' : 'true');
+    renderJump();
+  }
+
+  function go(id, focus){
+    if (!byId[id] || id === current){ if (focus) $('h-' + current).focus(); return; }
+    history.push(current); current = id;
+    show(id);
+    if (focus) $('h-' + id).focus();
+  }
+
+  $('back-btn').addEventListener('click', function(){
+    if (!history.length) return;
+    current = history.pop();
+    if (!showBonus && byId[current].kind === 'bonus') current = 's3';
+    show(current); $('h-' + current).focus();
+  });
+  $('restart-btn').addEventListener('click', function(){
+    history = []; current = 'cover'; show(current); $('h-cover').focus();
+  });
+  $('bonus-toggle').addEventListener('change', function(){
+    showBonus = $('bonus-toggle').checked;
+    if (!showBonus){
+      history = history.filter(function(id){ return byId[id].kind !== 'bonus'; });
+      if (byId[current].kind === 'bonus'){ current = 's3'; }
+    }
+    show(current);
+    var st = $('status'); st.textContent = '';
+    setTimeout(function(){
+      st.textContent = showBonus ? 'Bonus screens shown. Screen 3 now has a button to the Pro desk\'s screen, and 2 bonus screens are in the jump list.'
+                                 : 'Bonus screens hidden. Showing the 4 required screens and the cover.';
+    }, 80);
+  });
+
+  build(); show(current);
+})();
+</script>
+</body>
+</html>
