@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Land the ask: sample slides</title>
+<meta name="description" content="Sample slides for The Home Depot final presentation: Land the ask. Sample content only.">
+<style>
+:root{--o:#F96302;--o-text:#A8420A;--ink:#1B1B1B;--char:#232323;--muted:#595959;--cream:#FFF4EA;--peach:#FFE3CC;--paper:#FFFFFF;--grey:#F3F3F1;--line:#D6D3CF;--focus:#1A56DB}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:16px/1.5 "Helvetica Neue",Arial,sans-serif}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:980px;margin:0 auto;padding:12px 12px 16px}
+h1{font-size:1.05rem;margin:0 0 10px;color:var(--o-text);letter-spacing:.06em;text-transform:uppercase}
+.item{container-type:inline-size;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.item[hidden]{display:none}
+.cap{padding:12px 14px 4px;min-height:132px}
+.cap h2{font-size:1.1rem;margin:0 0 .25rem}
+.cap p{margin:.2rem 0;font-size:.98rem}
+.cap .seen{color:var(--muted);font-size:.9rem}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px}
+.nav button{font:inherit;font-weight:700;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:.45rem .95rem;cursor:pointer;min-height:44px}
+.nav button:hover{background:var(--cream)}
+.nav button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.picks{display:flex;gap:6px;flex-wrap:wrap}
+.picks button{min-width:44px;padding:.45rem .7rem}
+.picks button[aria-current="true"]{background:var(--o);border-color:var(--ink);border-width:3px;text-decoration:underline;text-underline-offset:3px}
+.count{margin-left:auto;color:var(--muted);font-size:.95rem}
+/* ---------- slide canvas ---------- */
+.slide{position:relative;aspect-ratio:16/9;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);font-size:max(2.45cqw,1.029rem);line-height:1.25;border-bottom:1px solid var(--line)}
+.slide .pad{position:relative;flex:1;padding:5.5cqw 6cqw}
+.deco{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.eyebrow{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:max(1.7cqw,0.714rem);color:var(--o-text);margin:0 0 1cqw}
+.dark .eyebrow{color:var(--o)}
+.t1{font-weight:800;font-size:max(5.4cqw,2.268rem);line-height:1.05;margin:0}
+.t2{font-weight:800;font-size:max(3.5cqw,1.470rem);line-height:1.1;margin:0 0 2cqw}
+.sub{font-size:max(2.2cqw,0.924rem);margin:1.6cqw 0 0;max-width:70%}
+.small{font-size:max(1.8cqw,0.756rem)}
+.src{margin:2.4cqw 0 0;font-size:max(1.5cqw,0.630rem);color:var(--muted)}
+.dark{background:var(--char);color:#fff}
+.dark .src{color:#C9C9C9}
+.cream{background:var(--cream)}
+.logo{position:absolute;right:4cqw;top:4cqw;width:6.5cqw;height:6.5cqw;background:var(--o);color:var(--ink);font-weight:800;font-size:max(1.25cqw,0.525rem);display:grid;place-items:center;text-align:center;line-height:1.05}
+.bar-left{position:absolute;left:0;top:0;bottom:0;width:1.6cqw;background:var(--o)}
+.takeaway{position:absolute;left:0;right:0;bottom:0;background:var(--char);color:#fff;padding:1.6cqw 6cqw;font-weight:700;font-size:max(2cqw,0.840rem)}
+.box{border:.25cqw solid var(--ink);padding:1.8cqw}
+.card{background:#fff;border:.2cqw solid var(--line);padding:1.8cqw;border-radius:.6cqw}
+.row{display:flex;gap:2cqw}
+.col{flex:1}
+.tag{display:inline-block;font-weight:800;font-size:max(1.3cqw,0.546rem);letter-spacing:.06em;padding:.4cqw 1cqw;background:var(--o);color:var(--ink)}
+.tag.ghost{background:transparent;border:.2cqw solid #8A8A8A;color:var(--muted)}
+.dark .tag.ghost{color:#C9C9C9}
+.big{font-weight:800;font-size:max(9cqw,3.780rem);line-height:.95;color:var(--o);margin:0}
+.num{font-weight:800;font-size:max(6.2cqw,2.604rem);line-height:1;color:var(--o-text);margin:0 0 1cqw}
+.dark .num{color:var(--o)}
+ul.s{margin:.6cqw 0 0;padding-left:2.2cqw}
+ul.s li{margin:.4cqw 0}
+.phone{position:relative;width:17cqw;aspect-ratio:9/18;border:.6cqw solid var(--ink);border-radius:2.4cqw;background:#fff;padding:2.2cqw 1cqw 1cqw;font-size:max(1.4cqw,0.588rem);line-height:1.2}
+.phone .bar{height:2.6cqw;background:var(--o);margin:-2.2cqw -1cqw 1cqw;display:flex;align-items:center;padding:0 1cqw;font-weight:800;color:var(--ink);font-size:max(1.15cqw,0.483rem)}
+.ring{display:inline-block;border:.4cqw solid #AD1457;border-radius:50%;padding:.4cqw 1cqw;margin-left:-1cqw}
+.note{font-weight:800;color:#AD1457;font-size:max(1.6cqw,0.672rem)}
+.tier{flex:1;padding:1.6cqw;border:.25cqw solid var(--line);background:#fff}
+.tier.pick{border-color:var(--ink);background:var(--peach)}
+.check{font-weight:800}
+table.cmp{border-collapse:collapse;width:100%;font-size:max(1.9cqw,0.798rem)}
+table.cmp th,table.cmp td{border:.15cqw solid var(--line);padding:1.7cqw 1.4cqw;text-align:left}
+table.cmp thead th{background:var(--char);color:#fff}
+table.cmp th.us{background:var(--o);color:var(--ink)}
+.skipnote{position:absolute;right:3cqw;top:3cqw;background:#AD1457;color:#fff;font-weight:800;font-size:max(1.5cqw,0.630rem);padding:.6cqw 1.2cqw}
+footer{padding:36px 0 60px;color:var(--muted);font-size:.9rem}
+</style></head>
+<body><main class="wrap">
+<h1>Land the ask · sample slides</h1>
+<section class="carousel" aria-roledescription="carousel" aria-label="Sample slides: Land the ask">
+<div class="vh">The goal: leaders know exactly what you want them to do first, and how they'll know it worked. End here, not on a thank-you slide.</div>
+<div class="nav">
+<button type="button" class="prev"><span aria-hidden="true">←</span> Previous</button>
+<div class="picks" role="group" aria-label="Choose a sample" aria-describedby="kbd-hint"><button type="button" aria-label="A: The ask as a headline" title="A: The ask as a headline">A</button><button type="button" aria-label="B: Recommendation, timeline, ask and signals" title="B: Recommendation, timeline, ask and signals">B</button><button type="button" aria-label="C: Good, Better, Best" title="C: Good, Better, Best">C</button></div>
+<button type="button" class="next">Next <span aria-hidden="true">→</span></button>
+<span class="count" aria-hidden="true"></span>
+</div>
+<p class="vh" id="kbd-hint">Left and right arrow keys also change the sample.</p>
+<div class="item" role="group" aria-roledescription="slide" aria-label="1 of 3: A: The ask as a headline" data-name="A: The ask as a headline"><div class="slide dark">
+          <div class="deco" aria-hidden="true"><svg viewBox="0 0 100 100" style="position:absolute;left:-14cqw;top:-14cqw;width:48cqw;height:48cqw"><circle cx="30" cy="30" r="60" fill="#B5470A"/><circle cx="18" cy="18" r="38" fill="#F96302"/></svg></div>
+          <div class="pad" style="padding-left:37cqw;display:flex;flex-direction:column;justify-content:center">
+            <p class="eyebrow">The ask</p>
+            <p class="t2" style="font-size:max(3.8cqw,1.596rem)">Give Me Two Fan Bays and Four Weeks</p>
+            <ul class="s" style="color:#E8E8E8"><li>Put multi-price labels in two ceiling-fan bays</li><li>Time every price change against paper</li><li>Check the labels meet pricing rules</li></ul>
+            <p style="color:var(--o);font-weight:800;margin:2cqw 0 0">If payback holds near 37 months, expand to every fan aisle.</p>
+          </div>
+        </div>
+        <div class="cap">
+          <h2>A · The ask as a headline</h2>
+          <p>Your ask is the title, as a request. Three bullets say what happens, and one line says what comes next if it works.</p>
+          <p class="seen">Seen in: a Pro Xtra deck that ended on "Give me one district and one quarter."</p>
+        </div></div><div class="item" role="group" aria-roledescription="slide" aria-label="2 of 3: B: Recommendation, timeline, ask and signals" data-name="B: Recommendation, timeline, ask and signals" hidden><div class="slide">
+          <div class="pad">
+            <div class="box" style="padding:1.2cqw 1.8cqw;font-weight:800;font-style:italic;font-size:max(2cqw,0.840rem)">"I recommend The Home Depot [action] to [result], starting with [first step]."</div>
+            <svg viewBox="0 0 100 14" style="width:100%;height:auto;margin:1.6cqw 0" role="img" aria-labelledby="tl-t">
+              <title id="tl-t">Timeline arrow: Days 1–30 set up, Days 31–60 small test, Days 61–90 measure.</title>
+              <polygon points="0,5 88,5 88,1 100,7 88,13 88,9 0,9" fill="#F96302"/>
+              <g font-family="Helvetica Neue,Arial,sans-serif" font-size="2.4" font-weight="800" fill="#1B1B1B"><text x="1" y="3.4">Days 1–30: set up</text><text x="30" y="3.4">Days 31–60: small test</text><text x="62" y="3.4">Days 61–90: measure</text></g>
+            </svg>
+            <div class="row" style="min-height:36%">
+              <div class="card col" style="border-top:1cqw solid var(--o)"><p style="font-weight:800;margin:0;font-size:max(2.8cqw,1.176rem)">The ask</p><p style="margin:1cqw 0 0">[What you need: a store, data, a team, a decision]</p></div>
+              <div class="card col" style="border-top:1cqw solid var(--ink)"><p style="font-weight:800;margin:0;font-size:max(2.8cqw,1.176rem)">How we'll know it's working</p><p style="margin:1cqw 0 0">[One or two signals you can measure]</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <h2>B · Recommendation, timeline, ask and signals</h2>
+          <p>Your recommendation in one sentence, a 30-60-90 day arrow, then two boxes: what you need and how you'll measure it.</p>
+          <p class="seen">Seen in: two Pro Xtra decks with "The Ask" and "Success Signals" boxes under a timeline.</p>
+        </div></div><div class="item" role="group" aria-roledescription="slide" aria-label="3 of 3: C: Good, Better, Best" data-name="C: Good, Better, Best" hidden><div class="slide">
+          <div class="pad">
+            <p class="t2">Start Small, Then Grow</p>
+            <div class="row" style="align-items:stretch;min-height:70%">
+              <div class="tier pick"><span class="tag">MY PICK</span><p style="font-weight:800;font-size:max(3.2cqw,1.344rem);margin:1cqw 0 .6cqw">Good</p><p style="margin:0">Pause face-matching on Illinois self-checkout cameras until consent is in place.</p></div>
+              <div class="tier"><p style="font-weight:800;font-size:max(3.2cqw,1.344rem);margin:3.6cqw 0 .6cqw">Better</p><p style="margin:0">Get written consent before any camera that identifies a person.</p></div>
+              <div class="tier"><p style="font-weight:800;font-size:max(3.2cqw,1.344rem);margin:3.6cqw 0 .6cqw">Best</p><p style="margin:0">One consent standard in every state, ahead of new laws.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <h2>C · Good, Better, Best</h2>
+          <p>Three sizes of the same idea, so leaders choose how far to go. Mark the one you'd start with, using a label and not just a color.</p>
+          <p class="seen">Seen in: The Home Depot's own visual standards. It's how the company thinks about products and investments.</p>
+        </div></div>
+<div class="live vh" aria-live="polite" aria-atomic="true"></div>
+</section>
+<p class="vh">Sample content only. Replace every bracket with your own work.</p>
+</main>
+<script>
+(function(){
+  var root=document.querySelector('.carousel'), items=[].slice.call(root.querySelectorAll('.item')),
+      picks=[].slice.call(root.querySelectorAll('.picks button')), live=root.querySelector('.live'),
+      count=root.querySelector('.count'), i=0;
+  function show(n, announce){
+    i=(n+items.length)%items.length;
+    items.forEach(function(el,k){ el.hidden = k!==i; });
+    picks.forEach(function(b,k){ if(k===i) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); });
+    count.textContent=(i+1)+' of '+items.length;
+    if(announce) live.textContent='Sample '+(i+1)+' of '+items.length+': '+items[i].getAttribute('data-name');
+  }
+  root.querySelector('.prev').addEventListener('click',function(){show(i-1,true);});
+  root.querySelector('.next').addEventListener('click',function(){show(i+1,true);});
+  picks.forEach(function(b,k){ b.addEventListener('click',function(){show(k,true);}); });
+  root.addEventListener('keydown',function(e){
+    if(e.target.closest('.nav') && !(e.altKey||e.ctrlKey||e.metaKey)){ if(e.key==='ArrowRight'){show(i+1,true);e.preventDefault();} if(e.key==='ArrowLeft'){show(i-1,true);e.preventDefault();} }
+  });
+  show(0,false);
+})();
+</script>
+</body></html>

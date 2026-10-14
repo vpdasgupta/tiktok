@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Give your answer: sample slides</title>
+<meta name="description" content="Sample slides for The Home Depot final presentation: Give your answer. Sample content only.">
+<style>
+:root{--o:#F96302;--o-text:#A8420A;--ink:#1B1B1B;--char:#232323;--muted:#595959;--cream:#FFF4EA;--peach:#FFE3CC;--paper:#FFFFFF;--grey:#F3F3F1;--line:#D6D3CF;--focus:#1A56DB}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:16px/1.5 "Helvetica Neue",Arial,sans-serif}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:980px;margin:0 auto;padding:12px 12px 16px}
+h1{font-size:1.05rem;margin:0 0 10px;color:var(--o-text);letter-spacing:.06em;text-transform:uppercase}
+.item{container-type:inline-size;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.item[hidden]{display:none}
+.cap{padding:12px 14px 4px;min-height:132px}
+.cap h2{font-size:1.1rem;margin:0 0 .25rem}
+.cap p{margin:.2rem 0;font-size:.98rem}
+.cap .seen{color:var(--muted);font-size:.9rem}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px}
+.nav button{font:inherit;font-weight:700;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:.45rem .95rem;cursor:pointer;min-height:44px}
+.nav button:hover{background:var(--cream)}
+.nav button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.picks{display:flex;gap:6px;flex-wrap:wrap}
+.picks button{min-width:44px;padding:.45rem .7rem}
+.picks button[aria-current="true"]{background:var(--o);border-color:var(--ink);border-width:3px;text-decoration:underline;text-underline-offset:3px}
+.count{margin-left:auto;color:var(--muted);font-size:.95rem}
+/* ---------- slide canvas ---------- */
+.slide{position:relative;aspect-ratio:16/9;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);font-size:max(2.45cqw,1.029rem);line-height:1.25;border-bottom:1px solid var(--line)}
+.slide .pad{position:relative;flex:1;padding:5.5cqw 6cqw}
+.deco{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.eyebrow{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:max(1.7cqw,0.714rem);color:var(--o-text);margin:0 0 1cqw}
+.dark .eyebrow{color:var(--o)}
+.t1{font-weight:800;font-size:max(5.4cqw,2.268rem);line-height:1.05;margin:0}
+.t2{font-weight:800;font-size:max(3.5cqw,1.470rem);line-height:1.1;margin:0 0 2cqw}
+.sub{font-size:max(2.2cqw,0.924rem);margin:1.6cqw 0 0;max-width:70%}
+.small{font-size:max(1.8cqw,0.756rem)}
+.src{margin:2.4cqw 0 0;font-size:max(1.5cqw,0.630rem);color:var(--muted)}
+.dark{background:var(--char);color:#fff}
+.dark .src{color:#C9C9C9}
+.cream{background:var(--cream)}
+.logo{position:absolute;right:4cqw;top:4cqw;width:6.5cqw;height:6.5cqw;background:var(--o);color:var(--ink);font-weight:800;font-size:max(1.25cqw,0.525rem);display:grid;place-items:center;text-align:center;line-height:1.05}
+.bar-left{position:absolute;left:0;top:0;bottom:0;width:1.6cqw;background:var(--o)}
+.takeaway{position:absolute;left:0;right:0;bottom:0;background:var(--char);color:#fff;padding:1.6cqw 6cqw;font-weight:700;font-size:max(2cqw,0.840rem)}
+.box{border:.25cqw solid var(--ink);padding:1.8cqw}
+.card{background:#fff;border:.2cqw solid var(--line);padding:1.8cqw;border-radius:.6cqw}
+.row{display:flex;gap:2cqw}
+.col{flex:1}
+.tag{display:inline-block;font-weight:800;font-size:max(1.3cqw,0.546rem);letter-spacing:.06em;padding:.4cqw 1cqw;background:var(--o);color:var(--ink)}
+.tag.ghost{background:transparent;border:.2cqw solid #8A8A8A;color:var(--muted)}
+.dark .tag.ghost{color:#C9C9C9}
+.big{font-weight:800;font-size:max(9cqw,3.780rem);line-height:.95;color:var(--o);margin:0}
+.num{font-weight:800;font-size:max(6.2cqw,2.604rem);line-height:1;color:var(--o-text);margin:0 0 1cqw}
+.dark .num{color:var(--o)}
+ul.s{margin:.6cqw 0 0;padding-left:2.2cqw}
+ul.s li{margin:.4cqw 0}
+.phone{position:relative;width:17cqw;aspect-ratio:9/18;border:.6cqw solid var(--ink);border-radius:2.4cqw;background:#fff;padding:2.2cqw 1cqw 1cqw;font-size:max(1.4cqw,0.588rem);line-height:1.2}
+.phone .bar{height:2.6cqw;background:var(--o);margin:-2.2cqw -1cqw 1cqw;display:flex;align-items:center;padding:0 1cqw;font-weight:800;color:var(--ink);font-size:max(1.15cqw,0.483rem)}
+.ring{display:inline-block;border:.4cqw solid #AD1457;border-radius:50%;padding:.4cqw 1cqw;margin-left:-1cqw}
+.note{font-weight:800;color:#AD1457;font-size:max(1.6cqw,0.672rem)}
+.tier{flex:1;padding:1.6cqw;border:.25cqw solid var(--line);background:#fff}
+.tier.pick{border-color:var(--ink);background:var(--peach)}
+.check{font-weight:800}
+table.cmp{border-collapse:collapse;width:100%;font-size:max(1.9cqw,0.798rem)}
+table.cmp th,table.cmp td{border:.15cqw solid var(--line);padding:1.7cqw 1.4cqw;text-align:left}
+table.cmp thead th{background:var(--char);color:#fff}
+table.cmp th.us{background:var(--o);color:var(--ink)}
+.skipnote{position:absolute;right:3cqw;top:3cqw;background:#AD1457;color:#fff;font-weight:800;font-size:max(1.5cqw,0.630rem);padding:.6cqw 1.2cqw}
+footer{padding:36px 0 60px;color:var(--muted);font-size:.9rem}
+</style></head>
+<body><main class="wrap">
+<h1>Give your answer · sample slides</h1>
+<section class="carousel" aria-roledescription="carousel" aria-label="Sample slides: Give your answer">
+<div class="vh">The goal: leaders know your answer before you say another word. Your title slide carries your one-sentence answer, not just a topic.</div>
+<div class="nav">
+<button type="button" class="prev"><span aria-hidden="true">←</span> Previous</button>
+<div class="picks" role="group" aria-label="Choose a sample" aria-describedby="kbd-hint"><button type="button" aria-label="A: The answer, on dark" title="A: The answer, on dark">A</button><button type="button" aria-label="B: Name the problem" title="B: Name the problem">B</button><button type="button" aria-label="C: The answer, with what it's based on" title="C: The answer, with what it's based on">C</button></div>
+<button type="button" class="next">Next <span aria-hidden="true">→</span></button>
+<span class="count" aria-hidden="true"></span>
+</div>
+<p class="vh" id="kbd-hint">Left and right arrow keys also change the sample.</p>
+<div class="item" role="group" aria-roledescription="slide" aria-label="1 of 3: A: The answer, on dark" data-name="A: The answer, on dark"><div class="slide dark">
+          <div class="deco" aria-hidden="true"><svg viewBox="0 0 100 100" style="position:absolute;right:-6cqw;top:-10cqw;width:42cqw;height:42cqw"><circle cx="70" cy="30" r="60" fill="#B5470A"/><circle cx="85" cy="15" r="38" fill="#F96302"/></svg></div>
+          <div class="pad" style="display:flex;flex-direction:column;justify-content:center;padding-right:40cqw">
+            <p class="eyebrow">Final presentation · [Your program]</p>
+            <p class="t1">Tell Customers Who's Coming, Before They Call</p>
+            <p class="sub" style="color:#E8E8E8;max-width:none">Send every installation customer the installer's name, photo and arrival window the moment they book.</p>
+            <p class="small" style="margin-top:4cqw;color:#C9C9C9">[Your name] · [School] · [Lane]</p>
+          </div>
+        </div>
+        <div class="cap">
+          <h2>A · The answer, on dark</h2>
+          <p>A bold title plus the answer in one line underneath. A dark background makes orange easy to read and looks polished on a shared screen.</p>
+          <p class="seen">Seen in: a Pro Xtra final deck with a dark title slide and an orange arc.</p>
+        </div></div><div class="item" role="group" aria-roledescription="slide" aria-label="2 of 3: B: Name the problem" data-name="B: Name the problem" hidden><div class="slide" style="background:radial-gradient(circle at 18% 45%,#FFFFFF 0 22%,#FFE3CC 45%,#F9A262 100%)">
+          <div class="pad" style="display:flex;flex-direction:column;justify-content:center">
+            <p class="t1" style="font-size:max(6.4cqw,2.688rem);max-width:62%">The Silent Week</p>
+            <p class="sub" style="font-weight:700;max-width:58%">Between paying and installation day, customers hear nothing. Three automatic updates fix it.</p>
+            <p class="small" style="margin-top:3cqw;color:#3A3A3A">[Your name]</p>
+          </div>
+        </div>
+        <div class="cap">
+          <h2>B · Name the problem</h2>
+          <p>Lead with a short, memorable name for the problem, then the answer. Leaders at real presentations repeated names like this back to the student.</p>
+          <p class="seen">Seen in: "The Dripping Faucet," a services deck that named its problem on the title slide.</p>
+        </div></div><div class="item" role="group" aria-roledescription="slide" aria-label="3 of 3: C: The answer, with what it's based on" data-name="C: The answer, with what it's based on" hidden><div class="slide">
+          <span class="bar-left" aria-hidden="true"></span>
+          <span class="logo" aria-hidden="true">LOGO</span>
+          <div class="pad" style="display:flex;flex-direction:column;justify-content:center;padding-left:9cqw">
+            <p class="eyebrow">Based on my Project 2 breakeven · Ceiling fans</p>
+            <p class="t2" style="font-size:max(4.4cqw,1.848rem);max-width:85%">Smart Labels in Ceiling Fans: Not Yet, Unless One Label Shows Two Prices</p>
+            <p class="small" style="color:var(--muted)">[Your name] · [School]</p>
+          </div>
+        </div>
+        <div class="cap">
+          <h2>C · The answer, with what it's based on</h2>
+          <p>A small line above the title says what your answer rests on: your analysis, your data, your store area. It earns trust before slide 2.</p>
+          <p class="seen">Seen in: an installations deck whose title slide said "Based on over 1,000 calls analyzed."</p>
+        </div></div>
+<div class="live vh" aria-live="polite" aria-atomic="true"></div>
+</section>
+<p class="vh">Sample content only. Replace every bracket with your own work.</p>
+</main>
+<script>
+(function(){
+  var root=document.querySelector('.carousel'), items=[].slice.call(root.querySelectorAll('.item')),
+      picks=[].slice.call(root.querySelectorAll('.picks button')), live=root.querySelector('.live'),
+      count=root.querySelector('.count'), i=0;
+  function show(n, announce){
+    i=(n+items.length)%items.length;
+    items.forEach(function(el,k){ el.hidden = k!==i; });
+    picks.forEach(function(b,k){ if(k===i) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); });
+    count.textContent=(i+1)+' of '+items.length;
+    if(announce) live.textContent='Sample '+(i+1)+' of '+items.length+': '+items[i].getAttribute('data-name');
+  }
+  root.querySelector('.prev').addEventListener('click',function(){show(i-1,true);});
+  root.querySelector('.next').addEventListener('click',function(){show(i+1,true);});
+  picks.forEach(function(b,k){ b.addEventListener('click',function(){show(k,true);}); });
+  root.addEventListener('keydown',function(e){
+    if(e.target.closest('.nav') && !(e.altKey||e.ctrlKey||e.metaKey)){ if(e.key==='ArrowRight'){show(i+1,true);e.preventDefault();} if(e.key==='ArrowLeft'){show(i-1,true);e.preventDefault();} }
+  });
+  show(0,false);
+})();
+</script>
+</body></html>

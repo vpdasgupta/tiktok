@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prove the problem: sample slides</title>
+<meta name="description" content="Sample slides for The Home Depot final presentation: Prove the problem. Sample content only.">
+<style>
+:root{--o:#F96302;--o-text:#A8420A;--ink:#1B1B1B;--char:#232323;--muted:#595959;--cream:#FFF4EA;--peach:#FFE3CC;--paper:#FFFFFF;--grey:#F3F3F1;--line:#D6D3CF;--focus:#1A56DB}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:16px/1.5 "Helvetica Neue",Arial,sans-serif}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:980px;margin:0 auto;padding:12px 12px 16px}
+h1{font-size:1.05rem;margin:0 0 10px;color:var(--o-text);letter-spacing:.06em;text-transform:uppercase}
+.item{container-type:inline-size;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.item[hidden]{display:none}
+.cap{padding:12px 14px 4px;min-height:132px}
+.cap h2{font-size:1.1rem;margin:0 0 .25rem}
+.cap p{margin:.2rem 0;font-size:.98rem}
+.cap .seen{color:var(--muted);font-size:.9rem}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 12px}
+.nav button{font:inherit;font-weight:700;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:.45rem .95rem;cursor:pointer;min-height:44px}
+.nav button:hover{background:var(--cream)}
+.nav button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.picks{display:flex;gap:6px;flex-wrap:wrap}
+.picks button{min-width:44px;padding:.45rem .7rem}
+.picks button[aria-current="true"]{background:var(--o);border-color:var(--ink);border-width:3px;text-decoration:underline;text-underline-offset:3px}
+.count{margin-left:auto;color:var(--muted);font-size:.95rem}
+/* ---------- slide canvas ---------- */
+.slide{position:relative;aspect-ratio:16/9;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);font-size:max(2.45cqw,1.029rem);line-height:1.25;border-bottom:1px solid var(--line)}
+.slide .pad{position:relative;flex:1;padding:5.5cqw 6cqw}
+.deco{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.eyebrow{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:max(1.7cqw,0.714rem);color:var(--o-text);margin:0 0 1cqw}
+.dark .eyebrow{color:var(--o)}
+.t1{font-weight:800;font-size:max(5.4cqw,2.268rem);line-height:1.05;margin:0}
+.t2{font-weight:800;font-size:max(3.5cqw,1.470rem);line-height:1.1;margin:0 0 2cqw}
+.sub{font-size:max(2.2cqw,0.924rem);margin:1.6cqw 0 0;max-width:70%}
+.small{font-size:max(1.8cqw,0.756rem)}
+.src{margin:2.4cqw 0 0;font-size:max(1.5cqw,0.630rem);color:var(--muted)}
+.dark{background:var(--char);color:#fff}
+.dark .src{color:#C9C9C9}
+.cream{background:var(--cream)}
+.logo{position:absolute;right:4cqw;top:4cqw;width:6.5cqw;height:6.5cqw;background:var(--o);color:var(--ink);font-weight:800;font-size:max(1.25cqw,0.525rem);display:grid;place-items:center;text-align:center;line-height:1.05}
+.bar-left{position:absolute;left:0;top:0;bottom:0;width:1.6cqw;background:var(--o)}
+.takeaway{position:absolute;left:0;right:0;bottom:0;background:var(--char);color:#fff;padding:1.6cqw 6cqw;font-weight:700;font-size:max(2cqw,0.840rem)}
+.box{border:.25cqw solid var(--ink);padding:1.8cqw}
+.card{background:#fff;border:.2cqw solid var(--line);padding:1.8cqw;border-radius:.6cqw}
+.row{display:flex;gap:2cqw}
+.col{flex:1}
+.tag{display:inline-block;font-weight:800;font-size:max(1.3cqw,0.546rem);letter-spacing:.06em;padding:.4cqw 1cqw;background:var(--o);color:var(--ink)}
+.tag.ghost{background:transparent;border:.2cqw solid #8A8A8A;color:var(--muted)}
+.dark .tag.ghost{color:#C9C9C9}
+.big{font-weight:800;font-size:max(9cqw,3.780rem);line-height:.95;color:var(--o);margin:0}
+.num{font-weight:800;font-size:max(6.2cqw,2.604rem);line-height:1;color:var(--o-text);margin:0 0 1cqw}
+.dark .num{color:var(--o)}
+ul.s{margin:.6cqw 0 0;padding-left:2.2cqw}
+ul.s li{margin:.4cqw 0}
+.phone{position:relative;width:17cqw;aspect-ratio:9/18;border:.6cqw solid var(--ink);border-radius:2.4cqw;background:#fff;padding:2.2cqw 1cqw 1cqw;font-size:max(1.4cqw,0.588rem);line-height:1.2}
+.phone .bar{height:2.6cqw;background:var(--o);margin:-2.2cqw -1cqw 1cqw;display:flex;align-items:center;padding:0 1cqw;font-weight:800;color:var(--ink);font-size:max(1.15cqw,0.483rem)}
+.ring{display:inline-block;border:.4cqw solid #AD1457;border-radius:50%;padding:.4cqw 1cqw;margin-left:-1cqw}
+.note{font-weight:800;color:#AD1457;font-size:max(1.6cqw,0.672rem)}
+.tier{flex:1;padding:1.6cqw;border:.25cqw solid var(--line);background:#fff}
+.tier.pick{border-color:var(--ink);background:var(--peach)}
+.check{font-weight:800}
+table.cmp{border-collapse:collapse;width:100%;font-size:max(1.9cqw,0.798rem)}
+table.cmp th,table.cmp td{border:.15cqw solid var(--line);padding:1.7cqw 1.4cqw;text-align:left}
+table.cmp thead th{background:var(--char);color:#fff}
+table.cmp th.us{background:var(--o);color:var(--ink)}
+.skipnote{position:absolute;right:3cqw;top:3cqw;background:#AD1457;color:#fff;font-weight:800;font-size:max(1.5cqw,0.630rem);padding:.6cqw 1.2cqw}
+footer{padding:36px 0 60px;color:var(--muted);font-size:.9rem}
+</style></head>
+<body><main class="wrap">
+<h1>Prove the problem · sample slides</h1>
+<section class="carousel" aria-roledescription="carousel" aria-label="Sample slides: Prove the problem">
+<div class="vh">The goal: leaders believe the problem is real and big enough to fix. Show a number, a picture of where it breaks, or a clear diagnosis, and put the source on the slide.</div>
+<div class="nav">
+<button type="button" class="prev"><span aria-hidden="true">←</span> Previous</button>
+<div class="picks" role="group" aria-label="Choose a sample" aria-describedby="kbd-hint"><button type="button" aria-label="A: Number tiles with sources" title="A: Number tiles with sources">A</button><button type="button" aria-label="B: One hero number" title="B: One hero number">B</button><button type="button" aria-label="C: A journey line with the break marked" title="C: A journey line with the break marked">C</button><button type="button" aria-label="D: Have vs. missing" title="D: Have vs. missing">D</button></div>
+<button type="button" class="next">Next <span aria-hidden="true">→</span></button>
+<span class="count" aria-hidden="true"></span>
+</div>
+<p class="vh" id="kbd-hint">Left and right arrow keys also change the sample.</p>
+<div class="item" role="group" aria-roledescription="slide" aria-label="1 of 4: A: Number tiles with sources" data-name="A: Number tiles with sources"><div class="slide">
+          <span class="logo" aria-hidden="true">LOGO</span>
+          <div class="pad">
+            <p class="eyebrow">The cost</p>
+            <p class="t2" style="max-width:80%">Each Scan Without Consent Can Cost Damages</p>
+            <div class="row" style="margin-top:2cqw">
+              <div class="col"><p class="num">$1,000</p><p class="small">per negligent violation</p></div>
+              <div class="col"><p class="num">$5,000</p><p class="small">per intentional or reckless violation</p></div>
+              <div class="col"><p class="num">[#]</p><p class="small">shoppers a day at camera-equipped self-checkouts in your stores (labeled estimate)</p></div>
+            </div>
+            <p class="src">Source: Illinois Biometric Information Privacy Act, 740 ILCS 14/20 · Third number: my estimate</p>
+          </div>
+        </div>
+        <div class="cap">
+          <h2>A · Number tiles with sources</h2>
+          <p>Two or three big numbers, each with one line on what it means. The source line at the bottom is what makes leaders trust them.</p>
+          <p class="seen">Seen in: several decks. The strongest ones printed sources; the weaker ones didn't.</p>
+        </div></div><div class="item" role="group" aria-roledescription="slide" aria-label="2 of 4: B: One hero number" data-name="B: One hero number" hidden><div class="slide dark">
+          <div class="pad" style="display:flex;align-items:center;gap:5cqw">
+            <div><p class="big">101</p><p style="font-weight:800;font-size:max(3cqw,1.260rem);margin:0;color:var(--o)">months</p></div>
+            <div style="flex:1">
+              <p class="t2" style="font-size:max(3.2cqw,1.344rem)">Smart Labels in Ceiling Fans Take About 8 Years to Pay Back</p>
+              <p style="margin:0;color:#E8E8E8">At today's price changes and damage rate, the labels cost more than the labor they save until year 8.</p>
+              <p class="src">Source: my Project 2 Breakeven Builder (ceiling-fan worked example)</p>
+            </div>
+          </div>
+        </div>
+        <div class="cap">
+          <h2>B · One hero number</h2>
+          <p>One number, very large, with a sentence on what it means. Best when a single result carries your whole argument.</p>
+          <p class="seen">Seen in: a services deck built around one number on an orange and charcoal slide.</p>
+        </div></div><div class="item" role="group" aria-roledescription="slide" aria-label="3 of 4: C: A journey line with the break marked" data-name="C: A journey line with the break marked" hidden><div class="slide">
+          <div class="pad">
+            <p class="eyebrow">Where it breaks</p>
+            <p class="t2">After Customers Pay, Nothing Happens</p>
+            <svg viewBox="0 0 100 26" style="width:100%;height:auto;margin-top:2cqw" role="img" aria-labelledby="jl-t">
+              <title id="jl-t">Journey line: Booked, Paid, then a gap marked "Nothing happens here," then Installer assigned and Install day.</title>
+              <line x1="8" y1="10" x2="90" y2="10" stroke="#1B1B1B" stroke-width=".8"/>
+              <line x1="38" y1="10" x2="62" y2="10" stroke="#AD1457" stroke-width="1.6" stroke-dasharray="2 1.4"/>
+              <g fill="#F96302" stroke="#1B1B1B" stroke-width=".5"><circle cx="8" cy="10" r="2.6"/><circle cx="30" cy="10" r="2.6"/><circle cx="70" cy="10" r="2.6"/><circle cx="90" cy="10" r="2.6"/></g>
+              <g font-family="Helvetica Neue,Arial,sans-serif" font-size="3" font-weight="700" fill="#1B1B1B" text-anchor="middle"><text x="8" y="18.5">Booked</text><text x="30" y="18.5">Paid</text><text x="70" y="18.5">Installer</text><text x="70" y="22">assigned</text><text x="90" y="18.5">Install day</text></g>
+              <text x="50" y="6" font-family="Helvetica Neue,Arial,sans-serif" font-size="3.2" font-weight="800" fill="#AD1457" text-anchor="middle">Nothing happens here</text>
+            </svg>
+            <p class="small" style="margin-top:1cqw;max-width:80%">[Your finding: how many customers called during the gap, from your Project 2–3 analysis]</p>
+          </div>
+        </div>
+        <div class="cap">
+          <h2>C · A journey line with the break marked</h2>
+          <p>The steps your person goes through, in order, with the exact point where it fails. Good when the problem is a gap rather than a number.</p>
+          <p class="seen">Seen in: two installations decks that showed the steps from booking to installation.</p>
+        </div></div><div class="item" role="group" aria-roledescription="slide" aria-label="4 of 4: D: Have vs. missing" data-name="D: Have vs. missing" hidden><div class="slide cream">
+          <div class="pad">
+            <p class="eyebrow">The diagnosis</p>
+            <p class="t2">The Associate Isn't Unwilling. They Can't See the Account.</p>
+            <div class="row" style="margin-top:1cqw">
+              <div class="card col"><p class="small" style="font-weight:700;margin:0">What they have today</p><p style="color:var(--o-text);font-weight:800;margin:.6cqw 0">Stock, tasks, product location</p><p class="small" style="margin:0">On the phone they already carry.</p></div>
+              <div class="dark col" style="padding:1.8cqw"><p class="small" style="font-weight:700;margin:0">What's missing</p><p style="color:var(--o);font-weight:800;margin:.6cqw 0">The Pro's perks and account</p><p class="small" style="margin:0;color:#E8E8E8">So every account question goes to one desk.</p></div>
+            </div>
+          </div>
+          <div class="takeaway">The fix is access to information, not more training.</div>
+        </div>
+        <div class="cap">
+          <h2>D · Have vs. missing</h2>
+          <p>Two boxes: what people already have, and the one thing they're missing. A takeaway bar along the bottom states the point.</p>
+          <p class="seen">Seen in: a Pro Xtra deck's "diagnosis" slide. (Its title used the "not X, it's Y" pattern. Strong once, but don't repeat it on every slide.)</p>
+        </div></div>
+<div class="live vh" aria-live="polite" aria-atomic="true"></div>
+</section>
+<p class="vh">Sample content only. Replace every bracket with your own work.</p>
+</main>
+<script>
+(function(){
+  var root=document.querySelector('.carousel'), items=[].slice.call(root.querySelectorAll('.item')),
+      picks=[].slice.call(root.querySelectorAll('.picks button')), live=root.querySelector('.live'),
+      count=root.querySelector('.count'), i=0;
+  function show(n, announce){
+    i=(n+items.length)%items.length;
+    items.forEach(function(el,k){ el.hidden = k!==i; });
+    picks.forEach(function(b,k){ if(k===i) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); });
+    count.textContent=(i+1)+' of '+items.length;
+    if(announce) live.textContent='Sample '+(i+1)+' of '+items.length+': '+items[i].getAttribute('data-name');
+  }
+  root.querySelector('.prev').addEventListener('click',function(){show(i-1,true);});
+  root.querySelector('.next').addEventListener('click',function(){show(i+1,true);});
+  picks.forEach(function(b,k){ b.addEventListener('click',function(){show(k,true);}); });
+  root.addEventListener('keydown',function(e){
+    if(e.target.closest('.nav') && !(e.altKey||e.ctrlKey||e.metaKey)){ if(e.key==='ArrowRight'){show(i+1,true);e.preventDefault();} if(e.key==='ArrowLeft'){show(i-1,true);e.preventDefault();} }
+  });
+  show(0,false);
+})();
+</script>
+</body></html>
