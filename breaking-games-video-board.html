@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breaking Games Video Board</title>
+<style>
+  /* ---------------------------------------------------------------
+     Extern design system (same five values as the PFNYC dashboard).
+     --------------------------------------------------------------- */
+  :root{
+    --highlight:#DCE1FF;    /* fills — always paired with a navy border  */
+    --on-highlight:#001D69; /* ink: links, buttons, borders, focus ring  */
+    --bg:#FDF8F8;           /* canvas background                         */
+    --body:#484646;         /* body copy (8.9:1 on bg)                   */
+    --title:#1C1B1B;        /* headings (16.3:1 on bg)                   */
+    --t-fast:160ms;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:16px}
+  body{background:var(--bg);color:var(--body);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased;padding:0 0 40px}
+  .vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .skip{position:absolute;left:8px;top:-46px;z-index:20;background:var(--highlight);
+    color:var(--on-highlight);border:2px solid var(--on-highlight);border-radius:6px;
+    padding:8px 14px;font-weight:600;transition:top var(--t-fast)}
+  .skip:focus{top:8px}
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
+  textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--on-highlight);outline-offset:2px}
+
+  header.app{padding:16px 16px 8px;max-width:1100px;margin:0 auto}
+  h1{font-size:1.35rem;color:var(--title);line-height:1.2}
+  .sub{font-size:.9rem;margin-top:2px}
+  main{max-width:1100px;margin:0 auto;padding:0 16px}
+  h2{font-size:1.15rem;color:var(--title);margin:0 0 12px}
+  h3{font-size:1rem;color:var(--title);margin:0 0 6px;line-height:1.3}
+  p{margin:0 0 10px}
+  a{color:var(--on-highlight);text-decoration:underline;text-underline-offset:2px}
+
+  nav.views{display:flex;flex-wrap:wrap;gap:8px;max-width:1100px;margin:8px auto 12px;padding:0 16px}
+  nav.views button{background:var(--bg);color:var(--on-highlight);border:2px solid var(--on-highlight);
+    border-radius:8px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer;min-height:44px}
+  nav.views button[aria-current="page"]{background:var(--highlight);border-width:4px;text-decoration:underline}
+  nav.views button:hover{text-decoration:underline}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;background:var(--highlight);
+    color:var(--on-highlight);border:2px solid var(--on-highlight);border-radius:8px;padding:8px 14px;
+    font:inherit;font-weight:600;cursor:pointer;min-height:44px;text-decoration:none}
+  .btn.secondary{background:var(--bg)}
+  .btn:hover{text-decoration:underline}
+  .btn:disabled{opacity:.6;cursor:not-allowed;text-decoration:none}
+
+  section[hidden]{display:none}
+  .notice{border:2px dashed var(--on-highlight);border-radius:10px;padding:10px 14px;margin:0 0 14px;font-size:.9rem}
+
+  /* toolbar */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;margin:0 0 12px}
+  .toolbar .fld{flex:1 1 170px;max-width:230px}
+  .toolbar label{margin:0 0 4px}
+  .count{font-size:.9rem;margin:0 0 10px}
+
+  /* gallery */
+  ul.cards{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+  .card{border:2px solid var(--on-highlight);border-radius:12px;background:var(--bg);overflow:hidden;
+    display:flex;flex-direction:column;height:100%}
+  .thumb{aspect-ratio:9/16;max-height:300px;width:100%;background:var(--highlight);
+    border-bottom:2px solid var(--on-highlight);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb .ph{padding:12px;text-align:center;font-size:.85rem;color:var(--on-highlight);font-weight:600}
+  .card-body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+  dl.meta{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;font-size:.85rem}
+  dl.meta dt{font-weight:700;color:var(--title)}
+  .tested{font-size:.9rem}
+  .card-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
+  .badge{display:inline-block;border:2px solid var(--on-highlight);color:var(--on-highlight);
+    padding:1px 7px;border-radius:6px;font-size:.8rem;font-weight:700;background:var(--highlight)}
+  .badge.out{background:transparent;border-style:dashed}
+  .badges{display:flex;flex-wrap:wrap;gap:6px}
+
+  /* forms */
+  fieldset{border:2px solid var(--on-highlight);border-radius:10px;padding:12px 14px;margin:0 0 14px}
+  legend{font-weight:700;color:var(--title);padding:0 6px}
+  fieldset fieldset{margin:10px 0}
+  label{display:block;font-weight:600;color:var(--title);margin:10px 0 4px}
+  .req,.opt{font-weight:400;color:var(--body)}
+  input[type=text],input[type=search],input[type=number],select,textarea{
+    width:100%;max-width:640px;font:inherit;color:var(--body);background:var(--bg);
+    border:2px solid var(--on-highlight);border-radius:8px;padding:9px 10px;min-height:44px}
+  input[type=file]{font:inherit;max-width:640px;width:100%;padding:8px 0}
+  input[type=file]::file-selector-button{font:inherit;font-weight:600;color:var(--on-highlight);
+    background:var(--highlight);border:2px solid var(--on-highlight);border-radius:8px;padding:8px 12px;margin-right:10px;min-height:44px;cursor:pointer}
+  textarea{min-height:80px;line-height:1.4}
+  .radios label,.check label{display:flex;align-items:flex-start;gap:8px;font-weight:500;margin:6px 0;min-height:44px}
+  .radios input,.check input{width:auto;min-height:auto;transform:scale(1.25);margin-top:5px}
+  .inline-input{margin:0 0 6px 30px;max-width:610px}
+  .hint{font-weight:400;font-size:.85rem;margin:2px 0 0}
+  .field-err{font-weight:700;color:var(--title);margin:4px 0 0}
+  [aria-invalid="true"]{border-width:3px;border-style:dashed}
+  fieldset[aria-invalid="true"]{border-width:3px;border-style:dashed}
+  #submitErrors{border:3px solid var(--on-highlight);border-radius:10px;background:var(--highlight);padding:12px 14px;margin:0 0 16px}
+  #submitErrors ul{margin:6px 0 0 18px}
+  .result{border:2px solid var(--on-highlight);border-radius:10px;padding:10px 14px;margin:12px 0}
+  .result.ok{background:var(--highlight)}
+  .result.warn{border-style:dashed}
+  #uploading{font-weight:600}
+
+  /* player dialog */
+  dialog#player{border:3px solid var(--on-highlight);border-radius:12px;background:var(--bg);color:var(--body);
+    padding:16px;max-width:min(560px,calc(100vw - 32px));width:100%}
+  dialog#player::backdrop{background:rgba(28,27,27,.6)}
+  .player-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:0 0 10px}
+  .player-head h2{margin:0}
+  .frame{width:100%;aspect-ratio:9/16;max-height:70vh;border:2px solid var(--on-highlight);border-radius:8px;background:var(--highlight)}
+  .frame iframe,.frame video,.frame img{width:100%;height:100%;border:0;display:block;border-radius:6px;object-fit:contain}
+
+  .refresh-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 12px}
+  .described{font-size:.9rem;margin:10px 0 0}
+  details.desc{font-size:.9rem}
+  details.desc summary{cursor:pointer;color:var(--on-highlight);font-weight:600;min-height:44px;display:flex;align-items:center}
+
+  @media (max-width:560px){ .toolbar .fld{max-width:none} .inline-input{margin-left:0} }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to main content</a>
+
+<header class="app">
+  <h1 id="appTitle">Breaking Games Video Board</h1>
+  <p class="sub" id="modeLine">Every video and ad your cohort makes, in one place</p>
+</header>
+
+<nav class="views" aria-label="Video Board views" id="viewNav">
+  <button type="button" data-view="gallery" aria-current="page">Watch the board</button>
+  <button type="button" data-view="submit">Submit your work</button>
+</nav>
+
+<main id="main" tabindex="-1">
+  <p class="vh" role="status" aria-live="polite" id="liveStatus"></p>
+
+  <!-- ===== View: gallery (landing) ===== -->
+  <section id="view-gallery" aria-labelledby="h-gallery">
+    <h2 id="h-gallery" tabindex="-1">The board: everything your cohort has made</h2>
+    <p class="notice" id="demoNotice" hidden>Demo mode: this page isn't connected to the shared board yet.
+      Anything you add stays in this browser, and files aren't saved. See the README to connect it.</p>
+    <p id="galleryIntro">Watch your peers' work, then give feedback in the cohort Slack channel. Nothing here is posted on social media.</p>
+    <p id="partnerIntro" hidden>Short-form videos and ad concepts made by Extern students for Breaking Games, picked by the program team.
+      Each one is a student concept, not a published ad.</p>
+    <p id="downloadAllWrap" hidden><a class="btn" id="downloadAll" href="#" target="_blank" rel="noopener">Open the folder to download all files<span class="vh"> (opens in a new tab)</span></a></p>
+
+    <div class="toolbar" role="search" aria-label="Filter the board">
+      <div class="fld">
+        <label for="fType">What</label>
+        <select id="fType"><option value="">Everything</option></select>
+      </div>
+      <div class="fld">
+        <label for="fGame">Game</label>
+        <select id="fGame"><option value="">All games</option></select>
+      </div>
+      <div class="fld">
+        <label for="fPersona">Made for</label>
+        <select id="fPersona"><option value="">Anyone</option></select>
+      </div>
+      <div class="fld">
+        <label for="fSearch" id="fSearchLabel">Search name or title</label>
+        <input id="fSearch" type="search" autocomplete="off">
+      </div>
+    </div>
+    <div class="refresh-bar" aria-label="Board refresh" role="group">
+      <button class="btn secondary" type="button" id="refreshBtn">Refresh now</button>
+      <button class="btn secondary" type="button" id="pausePoll">Pause auto-refresh</button>
+      <span class="hint" id="pollNote">Auto-refreshes every 30 seconds.</span>
+    </div>
+    <p class="count" id="count" role="status" aria-live="polite"></p>
+    <ul class="cards" id="cards" aria-labelledby="h-gallery"></ul>
+  </section>
+
+  <!-- ===== View: submit ===== -->
+  <section id="view-submit" aria-labelledby="h-submit" hidden>
+    <h2 id="h-submit" tabindex="-1">Submit your work</h2>
+    <p>Upload one file at a time: a video (MP4 or MOV) or a mock-up (PNG, JPG or PDF), up to <span id="maxMbText">35</span> MB.
+      Your file goes to the program's shared folder, not to any social account.</p>
+
+    <div id="submitErrors" tabindex="-1" hidden></div>
+    <div id="submitResult" class="result" tabindex="-1" hidden></div>
+
+    <form id="submitForm" novalidate>
+      <fieldset>
+        <legend>About you</legend>
+        <label for="sName">Your name <span class="req">(required)</span></label>
+        <input id="sName" type="text" autocomplete="name" aria-required="true" aria-describedby="sNameHint">
+        <p class="hint" id="sNameHint">Shows on the board so your cohort knows whose work it is. Example: Priya D.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Your file</legend>
+        <label for="sType">What are you submitting? <span class="req">(required)</span></label>
+        <select id="sType" aria-required="true"><option value="">Choose…</option></select>
+        <label for="sFile">File <span class="req">(required)</span></label>
+        <input id="sFile" type="file" aria-required="true" accept=".mp4,.mov,.webm,.png,.jpg,.jpeg,.pdf,video/mp4,video/quicktime,video/webm,image/png,image/jpeg,application/pdf" aria-describedby="sFileHint sFileChosen">
+        <p class="hint" id="sFileHint">Too big? In CapCut, export at 1080p and 30 fps. Most 15 to 60 second videos are 10 to 30 MB.</p>
+        <p class="hint" id="sFileChosen"></p>
+        <label for="sTitle">Title <span class="req">(required)</span></label>
+        <input id="sTitle" type="text" maxlength="90" aria-required="true" aria-describedby="sTitleHint">
+        <p class="hint" id="sTitleHint">Short and specific. Example: Guess the game in 3 seconds</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>What you made</legend>
+        <label for="sGame">Game featured <span class="req">(required)</span></label>
+        <select id="sGame" aria-required="true"><option value="">Choose…</option></select>
+        <div id="sGameOtherWrap" hidden>
+          <label for="sGameOther">Other game (type the name)</label>
+          <input id="sGameOther" type="text">
+        </div>
+        <fieldset id="sPersonaGroup">
+          <legend>Made for <span class="req">(required)</span></legend>
+          <div class="radios" id="personaRadios"></div>
+        </fieldset>
+        <label for="sTested">What I tested <span class="req">(required)</span></label>
+        <input id="sTested" type="text" maxlength="200" aria-required="true" aria-describedby="sTestedHint">
+        <p class="hint" id="sTestedHint">One line from your Experiment Journal. Example: If I open with a guessing question, Dani will comment a guess.</p>
+        <label for="sDesc">Describe what's on screen <span class="req">(required)</span></label>
+        <textarea id="sDesc" maxlength="1200" aria-required="true" aria-describedby="sDescHint"></textarea>
+        <p class="hint" id="sDescHint">2 to 4 sentences for someone who can't see the video: what happens, what's shown, and any on-screen text. Example: Hands deal Caminito cards on a wooden table. Text on screen: “Guess this game in 3 seconds.” A friend laughs, then the box and the “Good game, folks.” end card appear.</p>
+        <label for="sCaption">Caption <span class="opt">(optional)</span></label>
+        <textarea id="sCaption" maxlength="600"></textarea>
+        <label for="sScore">Simulator or Ad check score <span class="opt">(optional, 0 to 100)</span></label>
+        <input id="sScore" type="number" min="0" max="100" step="1" inputmode="numeric">
+      </fieldset>
+
+      <fieldset id="sShareGroup" aria-describedby="sShareHint">
+        <legend>If Breaking Games likes it <span class="req">(required)</span></legend>
+        <p class="hint" id="sShareHint">The program team may share standout work with Breaking Games. They decide what to use, and may credit you.</p>
+        <div class="radios">
+          <label><input type="radio" name="share" value="credit" required> Share it and credit me</label>
+          <div class="inline-input" id="creditWrap" hidden>
+            <label for="sCredit">Name to credit</label>
+            <input id="sCredit" type="text" autocomplete="name">
+          </div>
+          <label><input type="radio" name="share" value="no-name" required> Share it, but without my name</label>
+          <label><input type="radio" name="share" value="cohort-only" required> Keep it inside my cohort</label>
+        </div>
+      </fieldset>
+
+      <fieldset id="sGuardGroup">
+        <legend>Guardrail check <span class="req">(required)</span></legend>
+        <div class="check">
+          <label><input type="checkbox" id="sGuard" required> I checked: no real customers or anyone under 18 on camera, no AI-made people, family-safe, accurate prices and facts, captions burned in, my description covers what's shown and any on-screen text, and any ad is labeled “concept.”</label>
+        </div>
+      </fieldset>
+
+      <p><button class="btn" type="submit" id="submitBtn">Upload to the board</button></p>
+      <p id="uploading" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+</main>
+
+<dialog id="player" aria-labelledby="playerTitle">
+  <div class="player-head">
+    <h2 id="playerTitle">Watch</h2>
+    <button type="button" class="btn secondary" id="playerClose">Close<span class="vh"> player</span></button>
+  </div>
+  <p class="hint" id="playerMeta"></p>
+  <div class="frame" id="playerFrame"></div>
+  <p class="described" id="playerDesc"></p>
+  <p class="described" id="playerCaption" hidden></p>
+  <p class="hint">Captions are burned into each video. In the player, press Shift+Tab to get back to Close. <span id="playerOpenWrap">Trouble playing? <a id="playerOpen" href="#" target="_blank" rel="noopener">Open it in Google Drive<span class="vh"> (opens in a new tab)</span></a>.</span></p>
+</dialog>
+
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ CONFIG (PM updates per cohort) ============ */
+  // Paste the Apps Script /exec URL to go live. Leave blank for demo mode.
+  var API = "https://script.google.com/macros/s/AKfycbw4pwhP0kv5AuMRiq8m0o7O9f0E_Pubdj7dEOTxBS3oKfaHjh8OzcnIYE4OBT_nw69X9g/exec";
+  // Cohort label: files are filed under this name, and the board shows only this cohort.
+  var COHORT = "Cohort 1";
+  // Optional: the "Partner picks" folder URL from makePartnerFolder(), shown on the partner view.
+  var PARTNER_FOLDER_URL = "";
+  // Games: update from Breaking Games' push list each cohort.
+  var GAMES = ["Caminito","POOP: The Game","The Game of 49","Play2Read","Sparkle*Kitty","We're Doomed!","Dwellings of Eldervale","Stripes"];
+  var MAX_MB = 35;
+  var POLL_MS = 30000;
+
+  // Keep in sync with TYPES in Code.gs.
+  var TYPES = [
+    ["bonus-clip","Bonus: first clip (Project 1)"],
+    ["video-1","Video 1 (Project 2)"],
+    ["video-2","Video 2 (Project 2)"],
+    ["ad-hook-a","Ad video: Hook A (Project 3)"],
+    ["ad-hook-b","Ad video: Hook B (Project 3)"],
+    ["ad-hook-c","Ad video: Hook C (Project 3)"],
+    ["reels-ad-mockup","Reels ad mock-up (Project 3)"],
+    ["carousel-ad-mockup","Carousel ad mock-up (Project 3)"]
+  ];
+  var PERSONAS = [["Rachel","Rachel (the current buyer)"],["Dani","Dani (new, younger players)"],["Both","Both"]];
+  var MIME_BY_EXT = {mp4:"video/mp4",mov:"video/quicktime",webm:"video/webm",png:"image/png",jpg:"image/jpeg",jpeg:"image/jpeg",pdf:"application/pdf"};
+
+  /* ============ Helpers ============ */
+  var $=function(s,r){return (r||document).querySelector(s);};
+  var params=new URLSearchParams(location.search);
+  var PARTNER=params.get("view")==="partner";
+  if(params.get("cohort")) COHORT=params.get("cohort");
+  var DEMO=!API;
+  var LSKEY="bg-video-board:v1";
+  var board=[], currentView="gallery", pollTimer=null, paused=false, sig="";
+  var demoFiles={};           // demo only: row_id -> object URL (this session)
+  var lastTrigger=null;
+
+  function store(k,v){ try{ if(v==null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} }
+  function recall(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+  function announce(msg){ var el=$("#liveStatus"); el.textContent=""; setTimeout(function(){ el.textContent=msg; },60); }
+  function typeLabel(v){ for(var i=0;i<TYPES.length;i++) if(TYPES[i][0]===v) return TYPES[i][1]; return v||""; }
+  function isVideo(m){ return /^video\//.test(m||""); }
+  function fmtMB(b){ return (b/1048576).toFixed(1)+" MB"; }
+  function fillSelect(sel,items){ items.forEach(function(it){ var o=document.createElement("option"); o.value=it[0]; o.textContent=it[1]; sel.appendChild(o); }); }
+
+  /* ============ Data layer ============ */
+  function lsLoad(){ try{ return JSON.parse(localStorage.getItem(LSKEY))||[]; }catch(e){ return []; } }
+  function lsSave(rows){ try{ localStorage.setItem(LSKEY,JSON.stringify(rows)); }catch(e){} }
+
+  function apiGet(){
+    if(DEMO){
+      var rows=lsLoad().filter(function(r){ return r.cohort===COHORT; });
+      if(PARTNER) rows=rows.filter(function(r){ return r.partner_pick==="Y" && r.share_choice!=="cohort-only"; })
+        .map(function(r){ var o=JSON.parse(JSON.stringify(r)); o.student_name=""; if(o.share_choice!=="credit") o.credit_name=""; return o; });
+      return Promise.resolve({ok:true,rows:rows});
+    }
+    var url=API+"?action="+(PARTNER?"partner":"board")+"&cohort="+encodeURIComponent(COHORT);
+    return fetch(url,{method:"GET"}).then(function(r){ return r.json(); });
+  }
+  function apiPost(payload,file){
+    if(DEMO){
+      var row={};
+      Object.keys(payload).forEach(function(k){ if(k!=="data_b64"&&k!=="action"&&k!=="guardrails_ok") row[k]=payload[k]; });
+      row.row_id="v_"+Date.now()+"_"+Math.floor(Math.random()*1e6);
+      row.timestamp=new Date().toISOString(); row.file_id=""; row.file_url=""; row.partner_pick="";
+      if(row.share_choice!=="credit") row.credit_name="";
+      var rows=lsLoad(); rows.push(row); lsSave(rows);
+      try{ if(file && window.URL && URL.createObjectURL) demoFiles[row.row_id]=URL.createObjectURL(file); }catch(e){}
+      return Promise.resolve({ok:true,row:row});
+    }
+    return fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)})
+      .then(function(r){ return r.json(); });
+  }
+
+  /* ============ Gallery ============ */
+  function displayName(r){
+    if(!PARTNER) return r.student_name||"";
+    return r.credit_name || "Extern student";
+  }
+  function thumbHtml(r){
+    if(r.file_id){
+      return '<img src="https://drive.google.com/thumbnail?id='+encodeURIComponent(r.file_id)+'&amp;sz=w480" alt="" loading="lazy" data-ph="'+(isVideo(r.mime_type)?"Video":"Mock-up")+'">';
+    }
+    return '<span class="ph">'+(isVideo(r.mime_type)?"Video":"Mock-up")+(DEMO?" (demo: file not uploaded)":"")+'</span>';
+  }
+  function filtered(){
+    var t=$("#fType").value, g=$("#fGame").value, p=$("#fPersona").value, q=$("#fSearch").value.trim().toLowerCase();
+    return board.filter(function(r){
+      if(t&&r.submission_type!==t) return false;
+      if(g&&r.game!==g) return false;
+      if(p&&r.persona!==p) return false;
+      if(q&&(displayName(r)+" "+r.title).toLowerCase().indexOf(q)===-1) return false;
+      return true;
+    }).sort(function(a,b){ return String(b.timestamp).localeCompare(String(a.timestamp)); });
+  }
+  function renderGallery(){
+    var rows=filtered(), html="";
+    rows.forEach(function(r){
+      var id="c_"+esc(r.row_id);
+      var badges='<span class="badge">'+esc(typeLabel(r.submission_type))+'</span>';
+      if(!PARTNER && r.partner_pick==="Y") badges+=' <span class="badge out"><span aria-hidden="true">★ </span>Partner pick</span>';
+      html+='<li><article class="card" aria-labelledby="'+id+'">'+
+        '<div class="thumb">'+thumbHtml(r)+'</div>'+
+        '<div class="card-body">'+
+          '<h3 id="'+id+'">'+esc(r.title)+'</h3>'+
+          '<div class="badges">'+badges+'</div>'+
+          '<dl class="meta">'+
+            '<dt>'+(PARTNER?"Credit":"By")+'</dt><dd>'+esc(displayName(r))+'</dd>'+
+            '<dt>Game</dt><dd>'+esc(r.game)+'</dd>'+
+            '<dt>Made for</dt><dd>'+esc(r.persona)+'</dd>'+
+            (r.score!==""&&r.score!=null?'<dt>Score</dt><dd>'+esc(r.score)+' of 100</dd>':'')+
+          '</dl>'+
+          (r.what_i_tested?'<p class="tested"><strong>'+(PARTNER?"The idea":"What I tested")+':</strong> '+esc(r.what_i_tested)+'</p>':'')+
+          (r.description?'<details class="desc"><summary>What\'s on screen<span class="vh">: '+esc(r.title)+'</span></summary><p>'+esc(r.description)+'</p></details>':'')+
+          '<div class="card-actions">'+
+            '<button type="button" class="btn" data-watch="'+esc(r.row_id)+'">'+(isVideo(r.mime_type)?"Watch":"View")+'<span class="vh">: '+esc(r.title)+'</span></button>'+
+            (r.file_url?'<a class="btn secondary" href="'+esc(r.file_url)+'" target="_blank" rel="noopener">Open in Drive<span class="vh">: '+esc(r.title)+' (opens in a new tab)</span></a>':'')+
+          '</div>'+
+        '</div>'+
+      '</article></li>';
+    });
+    if(!rows.length){
+      html='<li><p>'+(board.length?"Nothing matches these filters. Try clearing one.":(PARTNER?"No picks have been shared yet.":"Nothing here yet. Be the first: use Submit your work."))+'</p></li>';
+    }
+    $("#cards").innerHTML=html;
+    Array.prototype.forEach.call(document.querySelectorAll("#cards img[data-ph]"),function(img){
+      img.addEventListener("error",function(){
+        var span=document.createElement("span"); span.className="ph";
+        span.textContent=img.getAttribute("data-ph")+" (preview still processing)";
+        img.parentNode.replaceChild(span,img);
+      });
+    });
+    $("#count").textContent="Showing "+rows.length+" of "+board.length+(board.length===1?" item.":" items.");
+  }
+  $("#cards").addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button[data-watch]");
+    if(b) openPlayer(b.getAttribute("data-watch"),b);
+  });
+
+  /* ============ Player dialog ============ */
+  function openPlayer(rowId,trigger){
+    var r=board.filter(function(x){ return x.row_id===rowId; })[0]; if(!r) return;
+    lastTrigger=trigger||null;
+    $("#playerTitle").textContent=r.title;
+    $("#playerMeta").textContent=typeLabel(r.submission_type)+" · "+(PARTNER?(r.credit_name||"Extern student"):("By "+r.student_name))+" · "+r.game;
+    var frame=$("#playerFrame"), label=(isVideo(r.mime_type)?"Video":"Mock-up")+": "+r.title;
+    if(r.file_id){
+      frame.innerHTML='<iframe src="https://drive.google.com/file/d/'+encodeURIComponent(r.file_id)+'/preview" title="'+esc(label)+'" allow="fullscreen" allowfullscreen></iframe>';
+    } else if(demoFiles[r.row_id]){
+      frame.innerHTML=isVideo(r.mime_type)
+        ? '<video controls src="'+demoFiles[r.row_id]+'" aria-label="'+esc(label)+'"></video>'
+        : '<img src="'+demoFiles[r.row_id]+'" alt="'+esc(label)+'">';
+    } else {
+      frame.innerHTML='<p class="ph" style="padding:16px">Demo mode: this file wasn\'t uploaded, so there\'s nothing to play.</p>';
+    }
+    $("#playerDesc").innerHTML=r.description?'<strong>What\'s on screen:</strong> '+esc(r.description):"";
+    var cap=$("#playerCaption"); cap.hidden=!r.caption; cap.innerHTML=r.caption?'<strong>Caption:</strong> '+esc(r.caption):"";
+    var open=$("#playerOpen");
+    if(r.file_url){ open.href=r.file_url; $("#playerOpenWrap").hidden=false; } else { $("#playerOpenWrap").hidden=true; }
+    var d=$("#player");
+    if(typeof d.showModal==="function") d.showModal(); else d.setAttribute("open","");
+    $("#playerClose").focus();
+  }
+  function closePlayer(){
+    var d=$("#player");
+    if(typeof d.close==="function" && d.open) d.close(); else { d.removeAttribute("open"); onPlayerClosed(); }
+  }
+  function onPlayerClosed(){
+    $("#playerFrame").innerHTML="";            // stops playback
+    if(lastTrigger && document.body.contains(lastTrigger)) lastTrigger.focus();
+    else { var h=$("#h-gallery"); if(h) h.focus(); }
+    lastTrigger=null;
+  }
+  $("#playerClose").addEventListener("click",closePlayer);
+  $("#player").addEventListener("close",onPlayerClosed);
+  $("#player").addEventListener("click",function(e){ if(e.target===this) closePlayer(); }); // backdrop click
+
+  /* ============ Refresh + polling ============ */
+  function userBusy(){
+    var a=document.activeElement; if(!a||!a.closest) return false;
+    if($("#player").open) return true;
+    if(a.closest("#view-submit")) return true;
+    if(currentView==="gallery" && a.closest("#cards, .toolbar")) return true;
+    return false;
+  }
+  function signature(rows){ return rows.map(function(r){ return r.row_id+":"+(r.partner_pick||""); }).join("|"); }
+  function refresh(force){
+    return apiGet().then(function(res){
+      if(!res||!res.ok) return;
+      var rows=res.rows||[], added=rows.length-board.length, s=signature(rows);
+      if(!force && s===sig) return;                 // nothing changed: don't redraw
+      if(!force && currentView==="gallery" && userBusy()) return; // keep old view; retry next poll
+      board=rows; sig=s;
+      if(currentView==="gallery"){
+        renderGallery();
+        if(!force && added>0) announce(added+(added===1?" new item":" new items")+" on the board.");
+      }
+    }).catch(function(){ /* keep last good data; the next poll retries */ });
+  }
+  function startPoll(){ stopPoll(); if(!paused) pollTimer=setInterval(function(){ refresh(false); },POLL_MS); }
+  function stopPoll(){ if(pollTimer){ clearInterval(pollTimer); pollTimer=null; } }
+  $("#pausePoll").addEventListener("click",function(){
+    paused=!paused;
+    this.textContent=paused?"Resume auto-refresh":"Pause auto-refresh";
+    $("#pollNote").textContent=paused?"Auto-refresh is paused. Use Refresh now to update.":"Auto-refreshes every 30 seconds.";
+    if(paused) stopPoll(); else startPoll();
+  });
+  $("#refreshBtn").addEventListener("click",function(){ refresh(true); });  // the result count (a live region) announces the update
+
+  /* ============ Views ============ */
+  function showView(v,opts){
+    opts=opts||{}; currentView=v;
+    ["gallery","submit"].forEach(function(id){ $("#view-"+id).hidden=(id!==v); });
+    Array.prototype.forEach.call(document.querySelectorAll("nav.views button"),function(b){
+      if(b.dataset.view===v) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
+    });
+    document.title=(v==="gallery"?(PARTNER?"Video Showcase":"The board"):"Submit your work")+" | Breaking Games "+(PARTNER?"Video Showcase":"Video Board");
+    if(v==="gallery") renderGallery();
+    if(!opts.initial){ var h=$(v==="gallery"?"#h-gallery":"#h-submit"); if(h) h.focus(); }
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("nav.views button"),function(b){
+    b.addEventListener("click",function(){ showView(b.dataset.view); });
+  });
+
+  /* ============ Filters ============ */
+  var searchT=null;
+  $("#fSearch").addEventListener("input",function(){ clearTimeout(searchT); searchT=setTimeout(renderGallery,300); });
+  ["#fType","#fGame","#fPersona"].forEach(function(s){ $(s).addEventListener("change",renderGallery); });
+
+  /* ============ Submit form ============ */
+  function setErr(el,msg){
+    el.setAttribute("aria-invalid","true");
+    if(el.dataset.baseDesc===undefined) el.dataset.baseDesc=el.getAttribute("aria-describedby")||"";
+    var id=el.id+"-err", m=document.getElementById(id);
+    if(!m){ m=document.createElement("p"); m.id=id; m.className="field-err";
+      var anchor=(el.type==="checkbox"&&el.closest("label"))||el;
+      if(el.tagName==="FIELDSET") el.appendChild(m); else anchor.parentNode.insertBefore(m,anchor.nextSibling); }
+    m.textContent="Error: "+msg;
+    el.setAttribute("aria-describedby",(el.dataset.baseDesc+" "+id).trim());
+  }
+  function clearErr(el){
+    el.removeAttribute("aria-invalid");
+    var m=document.getElementById(el.id+"-err"); if(m) m.remove();
+    if(el.dataset.baseDesc!==undefined){ if(el.dataset.baseDesc) el.setAttribute("aria-describedby",el.dataset.baseDesc); else el.removeAttribute("aria-describedby"); }
+  }
+  // Errors for radio groups and checkboxes go on the controls themselves; the
+  // message is shown once inside the fieldset.
+  function setGroupErr(fs,name,msg){
+    var id=fs.id+"-err", m=document.getElementById(id);
+    if(!m){ m=document.createElement("p"); m.id=id; m.className="field-err"; fs.appendChild(m); }
+    m.textContent="Error: "+msg; fs.setAttribute("aria-invalid","true");
+    Array.prototype.forEach.call(fs.querySelectorAll('input[name="'+name+'"]'),function(el){
+      el.setAttribute("aria-invalid","true");
+      var d=(el.getAttribute("aria-describedby")||"").split(" ").filter(function(x){return x&&x!==id;});
+      d.push(id); el.setAttribute("aria-describedby",d.join(" "));
+    });
+  }
+  function clearGroupErr(fs,name){
+    var id=fs.id+"-err", m=document.getElementById(id); if(m) m.remove(); fs.removeAttribute("aria-invalid");
+    Array.prototype.forEach.call(fs.querySelectorAll('input[name="'+name+'"]'),function(el){
+      el.removeAttribute("aria-invalid");
+      var d=(el.getAttribute("aria-describedby")||"").split(" ").filter(function(x){return x&&x!==id;});
+      if(d.length) el.setAttribute("aria-describedby",d.join(" ")); else el.removeAttribute("aria-describedby");
+    });
+  }
+  function radio(name){ var els=document.getElementsByName(name); for(var i=0;i<els.length;i++) if(els[i].checked) return els[i].value; return ""; }
+  function fileMime(f){
+    if(!f) return "";
+    if(f.type && MIME_BY_EXT[(f.name.split(".").pop()||"").toLowerCase()]===f.type) return f.type;
+    var ext=(f.name.split(".").pop()||"").toLowerCase();
+    return MIME_BY_EXT[ext]||f.type||"";
+  }
+
+  $("#sGame").addEventListener("change",function(){
+    $("#sGameOtherWrap").hidden=(this.value!=="__other__");
+  });
+  document.addEventListener("change",function(e){
+    if(e.target && e.target.name==="share"){
+      var credit=e.target.value==="credit"; $("#creditWrap").hidden=!credit;
+      if(credit && !$("#sCredit").value) $("#sCredit").value=$("#sName").value;
+    }
+  });
+  $("#sFile").addEventListener("change",function(){
+    var f=this.files&&this.files[0];
+    $("#sFileChosen").textContent=f?("Selected: "+f.name+" ("+fmtMB(f.size)+")"+(f.size>MAX_MB*1048576?". This is over "+MAX_MB+" MB.":"")):"";
+  });
+
+  function validateForm(){
+    var errs=[];
+    function need(id,msg){ var el=$("#"+id); if(!el.value.trim()){ errs.push({id:id,msg:msg}); setErr(el,msg); } else clearErr(el); }
+    need("sName","Enter your name.");
+    need("sType","Choose what you're submitting.");
+    var f=$("#sFile").files&&$("#sFile").files[0], fEl=$("#sFile");
+    if(!f){ errs.push({id:"sFile",msg:"Choose a file to upload."}); setErr(fEl,"Choose a file to upload."); }
+    else if(!MIME_BY_EXT[(f.name.split(".").pop()||"").toLowerCase()]){ var tm="Use an MP4, MOV, WEBM, PNG, JPG or PDF file."; errs.push({id:"sFile",msg:tm}); setErr(fEl,tm); }
+    else if(f.size>MAX_MB*1048576){ var sm="This file is "+fmtMB(f.size)+". Export a smaller version (under "+MAX_MB+" MB) and try again."; errs.push({id:"sFile",msg:sm}); setErr(fEl,sm); }
+    else clearErr(fEl);
+    need("sTitle","Add a title.");
+    need("sGame","Choose the game featured.");
+    if($("#sGame").value==="__other__") need("sGameOther","Type the game's name.");
+    var pg=$("#sPersonaGroup");
+    if(!radio("persona")){ errs.push({id:"sPersonaGroup",msg:"Choose who it's made for."}); setGroupErr(pg,"persona","Choose who it's made for."); } else clearGroupErr(pg,"persona");
+    need("sTested","Add one line on what you tested.");
+    need("sDesc","Describe what's on screen.");
+    var sc=$("#sScore");
+    if(sc.value!=="" && (isNaN(+sc.value)||+sc.value<0||+sc.value>100)){ errs.push({id:"sScore",msg:"Score must be a number from 0 to 100."}); setErr(sc,"Score must be a number from 0 to 100."); } else clearErr(sc);
+    var sg=$("#sShareGroup"), share=radio("share");
+    if(!share){ errs.push({id:"sShareGroup",msg:"Choose how your work can be shared."}); setGroupErr(sg,"share","Choose how your work can be shared."); } else clearGroupErr(sg,"share");
+    if(share==="credit") need("sCredit","Enter the name to credit."); else clearErr($("#sCredit"));
+    var gd=$("#sGuard");
+    if(!gd.checked){ errs.push({id:"sGuard",msg:"Confirm the guardrail check."}); setErr(gd,"Confirm the guardrail check."); } else clearErr(gd);
+    return errs;
+  }
+  function showErrors(errs){
+    var box=$("#submitErrors");
+    box.innerHTML="<h3>There "+(errs.length===1?"is 1 problem":"are "+errs.length+" problems")+" with your upload</h3><ul>"+
+      errs.map(function(e){ return '<li><a href="#'+e.id+'">'+esc(e.msg)+"</a></li>"; }).join("")+"</ul>";
+    box.hidden=false; box.focus();
+    Array.prototype.forEach.call(box.querySelectorAll("a"),function(a){
+      a.addEventListener("click",function(ev){
+        ev.preventDefault(); var t=document.getElementById(a.getAttribute("href").slice(1));
+        if(t){ (t.tagName==="FIELDSET"?(t.querySelector("input")||t):t).focus(); }
+      });
+    });
+  }
+  function showResult(kind,msg){ var el=$("#submitResult"); el.className="result "+kind; el.textContent=msg; el.hidden=false; el.focus(); }
+  function readBase64(file){
+    return new Promise(function(resolve,reject){
+      var fr=new FileReader();
+      fr.onload=function(){ var s=String(fr.result||""); resolve(s.slice(s.indexOf(",")+1)); };
+      fr.onerror=function(){ reject(fr.error); };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  var uploading=false;
+  $("#submitForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    if(uploading) return;
+    $("#submitResult").hidden=true;
+    var errs=validateForm();
+    if(errs.length){ showErrors(errs); return; }
+    $("#submitErrors").hidden=true;
+
+    var f=$("#sFile").files[0], game=$("#sGame").value==="__other__"?$("#sGameOther").value.trim():$("#sGame").value;
+    var share=radio("share");
+    var payload={action:"submitVideo",cohort:COHORT,student_name:$("#sName").value.trim(),
+      submission_type:$("#sType").value,title:$("#sTitle").value.trim(),game:game,persona:radio("persona"),
+      what_i_tested:$("#sTested").value.trim(),description:$("#sDesc").value.trim(),caption:$("#sCaption").value.trim(),score:$("#sScore").value.trim(),
+      share_choice:share,credit_name:share==="credit"?$("#sCredit").value.trim():"",
+      guardrails_ok:true,file_name:f.name,mime_type:fileMime(f)};
+
+    uploading=true; $("#submitBtn").disabled=true;
+    $("#uploading").textContent="Uploading "+typeLabel(payload.submission_type)+" ("+fmtMB(f.size)+"). This can take up to a minute. Keep this tab open.";
+    readBase64(f).then(function(b64){ payload.data_b64=b64; return apiPost(payload,f); })
+    .then(function(r){
+      if(!r||!r.ok){ showResult("warn","Upload didn't go through: "+((r&&r.error)||"unknown error")+". Try again, or post the file in Slack and tell your PM."); return; }
+      store("bg-video-board:name",payload.student_name);
+      store("bg-video-board:share",share);
+      if(share==="credit") store("bg-video-board:credit",payload.credit_name);
+      showResult("ok","Uploaded: “"+payload.title+"” is on the board. Share the title in Slack to ask for feedback.");
+      ["sTitle","sTested","sDesc","sCaption","sScore","sGameOther"].forEach(function(id){ $("#"+id).value=""; });
+      $("#sFile").value=""; $("#sFileChosen").textContent=""; $("#sType").selectedIndex=0; $("#sGame").selectedIndex=0;
+      $("#sGameOtherWrap").hidden=true; $("#sGuard").checked=false;
+      Array.prototype.forEach.call(document.getElementsByName("persona"),function(el){ el.checked=false; });
+      refresh(true);
+    })
+    .catch(function(){ showResult("warn","Upload didn't go through. Check your connection and try again, or post the file in Slack and tell your PM."); })
+    .then(function(){ uploading=false; $("#submitBtn").disabled=false; $("#uploading").textContent=""; });
+  });
+
+  /* ============ Init ============ */
+  function init(){
+    fillSelect($("#fType"),TYPES);
+    fillSelect($("#sType"),TYPES);
+    var g=GAMES.map(function(x){ return [x,x]; });
+    fillSelect($("#fGame"),g); fillSelect($("#sGame"),g.concat([["__other__","Other…"]]));
+    fillSelect($("#fPersona"),PERSONAS);
+    $("#personaRadios").innerHTML=PERSONAS.map(function(p){
+      return '<label><input type="radio" name="persona" value="'+esc(p[0])+'" required> '+esc(p[1])+'</label>';
+    }).join("");
+    $("#maxMbText").textContent=MAX_MB;
+
+    if(PARTNER){
+      $("#appTitle").textContent="Breaking Games Video Showcase";
+      $("#modeLine").textContent="Student concepts from Extern's Social Media Content & Brand Strategy externship";
+      $("#viewNav").hidden=true;
+      $("#h-gallery").textContent="Picks from the program team";
+      $("#galleryIntro").hidden=true; $("#partnerIntro").hidden=false;
+      $("#fSearchLabel").textContent="Search credit or title";
+      if(PARTNER_FOLDER_URL){ $("#downloadAll").href=PARTNER_FOLDER_URL; $("#downloadAllWrap").hidden=false; }
+    }
+    if(DEMO){ $("#demoNotice").hidden=false; $("#modeLine").textContent+=" (demo mode)"; }
+
+    var nm=recall("bg-video-board:name"); if(nm) $("#sName").value=nm;
+    var cr=recall("bg-video-board:credit"); if(cr) $("#sCredit").value=cr;
+    var sh=recall("bg-video-board:share");
+    if(sh){ Array.prototype.forEach.call(document.getElementsByName("share"),function(el){ if(el.value===sh) el.checked=true; }); $("#creditWrap").hidden=(sh!=="credit"); }
+
+    refresh(true).then(function(){ showView("gallery",{initial:true}); startPoll(); });
+    document.addEventListener("visibilitychange",function(){ if(document.hidden) stopPoll(); else if(!paused) startPoll(); });
+  }
+  init();
+})();
+</script>
+</body>
+</html>
