@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+BRAND BRIEF BUILDER: Breaking Games social media externship (2 parts, 1 file)
+Forked 2026-10-19 from the TikTok Pro Crew Gear Builder
+(vpdasgupta.github.io/tiktok/pcg-brand-brief-builder.html) and the YouthBuild
+fork (../../../tiktok-youthbuild/09-assets/interactives/youthbuild-brand-brief-builder.html).
+
+Content sources (use ONLY these):
+  ../../03-overview/breaking-games-social-overview.md
+  ../../02-scope/breaking-games-social-scope-v3.md  (authoritative)
+Style: ../style/tiktok-style-guide.md (light theme, TikTok tokens, AA reds).
+Chrome and a11y patterns: ../templates/breaking-games-steps-slides-template.html
+
+  Part 1 = Project 2, Week 2 (screens 1-5)  -> Brief v1
+  Part 2 = Project 3, Week 5 (screens 6-10) -> final 1-page Brand Strategy Brief
+
+Anything still owed by Breaking Games shows as {PM: ...}. Search for "{PM:" and
+replace each one when the input arrives (Caminito details, push list, palette,
+fonts, peer-account handles and follower counts).
+
+Storage: localStorage key "breaking-games-brand-brief-builder-v2", always in
+try/catch. Students can also export a text backup and restore it, so Part 2
+works if storage was cleared between Week 2 and Week 5.
+
+Deploy (not yet): vpdasgupta/tiktok as breaking-games-brand-brief-builder.html
+================================================================================
+-->
+<title>Brand Brief Builder - Breaking Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Tokens and ratios: ../style/tiktok-style-guide.md */
+  :root{
+    --canvas:#F8FAFC;       /* page */
+    --card:#FFFFFF;
+    --ink:#0F172A;          /* 17.9:1 on white */
+    --ink-soft:#5A6478;     /* 5.9:1 white, 5.7:1 canvas, 5.1:1 pink tint */
+    --line:#E9E9E7;         /* decorative only */
+    --edge:#64748B;         /* control borders, 4.8:1 */
+    --tt-cyan:#25F4EE;      /* fill only on light */
+    --tt-red:#FE2C55;       /* fill only on light */
+    --red-ink:#CC0F3A;      /* 5.7:1 on white; white on it 5.7:1 */
+    --red-dark:#A80C30;
+    --pink-tint:#FFE9EF;    /* selected / current tint */
+    --teal-ink:#0E7C86;     /* 4.95:1 on white */
+    --cyan-tint:#E6FDFC;
+    --amber-ink:#9A5B00;    /* 5.0:1 on amber tint */
+    --amber-tint:#FFF4E5;
+    --ok:#146A34;           /* 6.9:1 white, 5.8:1 pink tint */
+    --err:#B42318;          /* 6.5:1 white, 6.0:1 pink tint */
+    --err-bg:#FEF3F2;
+    --night:#0C0B10;
+    --night-soft:#A89FA2;   /* 7.6:1 on night */
+    --gradient:linear-gradient(90deg,#25F4EE,#A665A7 50%,#FE2C55);
+    --radius:16px; --radius-sm:10px;
+    --shadow:0 1px 2px rgba(15,23,42,.06),0 10px 28px -14px rgba(15,23,42,.22);
+    --focus:#0F172A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--canvas);color:var(--ink);line-height:1.5;padding:16px;max-width:1100px;margin:0 auto;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+  a{color:var(--red-ink);text-underline-offset:2px;font-weight:600}
+  h2{font-size:1.5rem;line-height:1.2;font-weight:800;letter-spacing:-.01em;margin-bottom:10px}
+  h2:focus{outline:none}
+  h2:focus-visible{outline:3px solid var(--focus);outline-offset:4px;border-radius:4px}
+  h3,h2.h3{font-size:1.05rem;line-height:1.3;font-weight:700;letter-spacing:0;margin-bottom:0}
+  p+p{margin-top:8px}
+  :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .skip{position:absolute;left:16px;top:-80px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:999px;z-index:10;min-height:44px;display:inline-flex;align-items:center}
+  .skip:focus{top:8px}
+
+  /* hero (deck chrome from the BG template) */
+  .hero{color:#fff;border-radius:var(--radius);padding:20px 24px 24px;
+    background:var(--gradient) bottom/100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%,rgba(254,44,85,.28),transparent 70%),
+      radial-gradient(50% 120% at 100% 0%,rgba(37,244,238,.18),transparent 70%),var(--night)}
+  .hero :focus-visible{outline-color:var(--tt-cyan)}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--night-soft)}
+  h1{font-size:1.75rem;line-height:1.15;font-weight:800;letter-spacing:-.01em;color:#fff;margin-top:4px}
+  .grad{background:var(--gradient);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .sub{color:#fff;margin-top:6px;max-width:68ch}
+  .hero .line{color:var(--night-soft);font-weight:700;margin-top:4px}
+
+  /* part switch + meta bar */
+  .bar{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 16px;margin-top:12px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+  .switch{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .switch-label{font-weight:700;font-size:.92rem}
+  .part-btn{border-radius:999px}
+  .part-btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .part-btn[aria-pressed="true"]::before{content:"✓ " / "";font-weight:800}
+  .part-btn .wk{font-weight:500}
+  .meta{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:center;font-size:.92rem;margin-left:auto}
+  .meta a{display:inline-flex;align-items:center;min-height:44px}
+  .save{color:var(--ink-soft)}
+  .notice{margin-top:10px;padding:10px 14px;border:1px solid var(--amber-ink);border-left:6px solid var(--amber-ink);background:var(--amber-tint);border-radius:var(--radius-sm);font-weight:600}
+  details.backup{margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:4px 16px}
+  details.backup>summary{min-height:44px;display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer;list-style:none}
+  details.backup>summary::-webkit-details-marker{display:none}
+  details.backup>summary::before{content:"\25B8" / "";display:inline-block;transition:transform .15s}
+  details.backup[open]>summary::before{transform:rotate(90deg)}
+  details.backup[open]{padding-bottom:16px}
+  .backup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:16px;margin-top:6px}
+
+  /* layout + stepper */
+  .layout{display:block;margin-top:14px}
+  nav#nav{margin-bottom:14px}
+  .nav-toggle{width:100%;justify-content:space-between}
+  .nav-toggle .chev{transition:transform .15s}
+  nav.open .nav-toggle .chev{transform:rotate(180deg)}
+  #step-list{list-style:none;margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:6px}
+  nav:not(.open) #step-list{display:none}
+  .step{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;border-radius:8px;background:transparent;padding:8px 10px;min-height:44px;font-weight:500}
+  .step:hover{background:var(--canvas)}
+  .step[aria-current="step"]{background:var(--pink-tint);box-shadow:inset 4px 0 0 var(--red-ink);font-weight:700}
+  .step .n{flex:0 0 auto;width:1.7em;height:1.7em;border-radius:50%;border:1px solid var(--edge);display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;background:#fff}
+  .step[aria-current="step"] .n{border:2px solid var(--ink)}
+  .step .l{flex:1 1 auto}
+  .step .st{display:block;font-size:.8rem;font-weight:600;color:var(--ink-soft)}
+  .step .st.done{color:var(--ok)}
+  .step .st.warn{color:var(--err)}
+  .layout.solo nav#nav{display:none}
+  @media (min-width:720px){
+    .layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:18px;align-items:start}
+    .layout.solo{display:block}
+    .nav-toggle{display:none}
+    nav:not(.open) #step-list{display:block}
+    #step-list{margin-top:0}
+  }
+
+  main{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 28px;min-width:0}
+  .badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--red-ink);background:var(--pink-tint);border-radius:999px;padding:4px 12px;margin-bottom:10px}
+  .guide{background:var(--canvas);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;max-width:74ch}
+  .time{display:inline-block;margin-left:4px;background:#fff;color:var(--ink);border:1px solid var(--edge);font-weight:700;font-size:.8rem;padding:0 8px;border-radius:999px}
+  .req-note{font-size:.9rem;color:var(--ink-soft);margin-bottom:12px}
+  .body>*+*{margin-top:18px}
+
+  /* fields */
+  fieldset{border:0;min-width:0}
+  legend{font-weight:700;margin-bottom:6px;padding:0;font-size:1rem}
+  .field{display:flex;flex-direction:column;gap:4px;max-width:62ch}
+  .field label{font-weight:700}
+  .req{font-weight:400;color:var(--ink-soft)}
+  .hint{font-size:.92rem;color:var(--ink-soft)}
+  .in,select{font:inherit;color:var(--ink);background:#fff;width:100%;min-height:44px;border:1px solid var(--edge);border-radius:8px;padding:8px 10px}
+  textarea.in{resize:vertical;line-height:1.45}
+  .in[aria-invalid="true"],select[aria-invalid="true"]{border:2px solid var(--err)}
+  .err{color:var(--err);font-weight:700;font-size:.92rem;background:var(--err-bg);border-left:4px solid var(--err);padding:4px 8px;border-radius:4px;margin:2px 0 6px}
+  .count{font-weight:700;margin-bottom:8px}
+  button{font:inherit;cursor:pointer;border-radius:999px;border:1px solid var(--edge);background:#fff;color:var(--ink);padding:9px 18px;min-height:44px;font-weight:700;font-size:.95rem;display:inline-flex;align-items:center;gap:6px}
+  button:hover{border-color:var(--ink);background:var(--canvas)}
+  button.primary{background:var(--red-ink);border-color:var(--red-ink);color:#fff}
+  button.primary:hover{background:var(--red-dark);border-color:var(--red-dark)}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+  /* choices and cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));gap:10px}
+  .choice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--edge);border-radius:var(--radius-sm);padding:12px;background:#fff;cursor:pointer;min-height:44px}
+  .choice input{flex:0 0 auto;width:22px;height:22px;margin-top:2px;accent-color:var(--red-ink)}
+  .choice .t{font-weight:700;display:block}
+  .choice .d{display:block;font-size:.92rem;color:var(--ink-soft)}
+  .choice .x{display:block;font-size:.92rem;margin-top:2px}
+  .tick{display:none;margin-left:auto;flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--red-ink);color:#fff;align-items:center;justify-content:center;font-weight:800;font-size:.9rem}
+  .choice:has(input:checked),.ccard:has(.pick input:checked){border:3px solid var(--ink);background:var(--pink-tint)}
+  .choice:has(input:checked){padding:10px}
+  .choice:has(input:checked) .tick,.pick:has(input:checked) .tick{display:inline-flex}
+  .choice:has(input:focus-visible),.pick:has(input:focus-visible),.radio:has(input:focus-visible){outline:3px solid var(--focus);outline-offset:2px}
+  .choice input:focus-visible,.pick input:focus-visible,.radio input:focus-visible{outline:none}
+  .tag{display:inline-block;color:#fff;font-weight:700;font-size:.75rem;padding:1px 8px;border-radius:999px;margin-bottom:4px;background:var(--ink)}
+  .tag.want{background:var(--teal-ink)}
+  .card,.ccard{border:1px solid var(--edge);border-radius:var(--radius-sm);padding:14px;background:#fff;min-width:0}
+  .card.soft{background:var(--canvas);border-color:var(--line)}
+  .ccard .role{font-size:.92rem;color:var(--ink-soft)}
+  .flag{display:inline-block;margin-top:6px;background:var(--amber-tint);color:var(--amber-ink);border:1px solid var(--amber-ink);font-weight:700;font-size:.85rem;padding:2px 8px;border-radius:6px}
+  dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin:10px 0;font-size:.92rem}
+  dt{font-weight:700}
+  dd{overflow-wrap:anywhere}
+  .pick{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 12px;margin-top:10px;border:1px solid var(--edge);border-radius:999px;cursor:pointer;font-weight:700;background:#fff}
+  .pick input{width:22px;height:22px;accent-color:var(--red-ink)}
+  .radios{display:flex;flex-wrap:wrap;gap:8px}
+  .radio{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:6px 14px;border:1px solid var(--edge);border-radius:999px;cursor:pointer;background:#fff;font-weight:600}
+  .radio input{width:20px;height:20px;accent-color:var(--red-ink)}
+  .radio:has(input:checked){border:3px solid var(--ink);background:var(--pink-tint);padding:4px 12px;font-weight:700}
+  .pm{display:inline;background:var(--amber-tint);color:var(--amber-ink);border:1px dashed var(--amber-ink);border-radius:4px;padding:0 4px;font-weight:700;font-size:.92em}
+  .persona{border-top:4px solid var(--ink)}
+
+  /* reasoning helpers */
+  .ws{border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--canvas);padding:12px 14px;max-width:74ch}
+  .ws h3{font-size:.95rem;margin-bottom:6px}
+  .ws ul{list-style:none}
+  .ws li{display:grid;grid-template-columns:5.2em minmax(0,1fr);gap:8px;padding:4px 0}
+  .ws li+li{border-top:1px solid var(--line)}
+  .lab{font-weight:800;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;align-self:start;padding-top:2px}
+  .lab.weak{color:var(--err)}
+  .lab.strong{color:var(--ok)}
+  .lab.ex{color:var(--teal-ink)}
+  .tips{border:1px solid var(--teal-ink);border-left:6px solid var(--teal-ink);background:var(--cyan-tint);border-radius:var(--radius-sm);padding:10px 14px;max-width:74ch}
+  .tips h3{font-size:.95rem;color:var(--teal-ink);margin-bottom:4px}
+  .tips ul{padding-left:1.2em}
+  .heads{border:1px solid var(--amber-ink);border-left:6px solid var(--amber-ink);background:var(--amber-tint);border-radius:var(--radius-sm);padding:8px 12px}
+  .heads strong{color:var(--amber-ink)}
+  .fwlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:10px;list-style:none}
+  .fwlist li{border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 12px;background:#fff;font-size:.92rem}
+  .fwlist strong{display:block;font-size:1rem}
+  .video-card{border:1px solid var(--edge);border-radius:var(--radius);padding:16px}
+  .video-card>legend{font-size:1.1rem;font-weight:800;padding:0 6px;margin-left:-6px}
+  .video-card .inner>*+*{margin-top:12px}
+
+  /* sliders */
+  .slider{max-width:62ch}
+  .slider input[type=range]{width:100%;min-height:44px;accent-color:var(--red-ink)}
+  .ends{display:flex;justify-content:space-between;font-size:.88rem;color:var(--ink-soft)}
+  .val{font-weight:700}
+
+  /* colors */
+  .crow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:flex-end;padding:10px 0;border-bottom:1px solid var(--line)}
+  .crow .field{flex:1 1 170px}
+  .swatch{width:44px;height:44px;border-radius:8px;border:1px solid var(--edge);flex:0 0 auto;forced-color-adjust:none}
+  .picker{display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:700}
+  input[type=color]{width:56px;height:44px;border:1px solid var(--edge);border-radius:8px;background:#fff;padding:2px;cursor:pointer}
+  .hex{font-family:ui-monospace,"SF Mono",Menlo,monospace;overflow-wrap:anywhere}
+  .ratio{flex:1 1 100%;font-size:.88rem;color:var(--ink-soft)}
+
+  /* preview, errors, output */
+  .preview{border:2px dashed var(--edge);border-radius:var(--radius-sm);padding:12px;background:var(--canvas);font-size:1.05rem}
+  .err-summary{border:3px solid var(--err);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;background:#fff}
+  .err-summary h3{color:var(--err);margin-bottom:6px}
+  .err-summary ul{padding-left:1.2em}
+  .err-summary a{color:var(--err);display:inline-block;padding:6px 0}
+  .todo{border:2px solid var(--ink);border-radius:var(--radius-sm);padding:12px 14px}
+  .todo ul{padding-left:1.2em;margin-top:6px}
+  .todo a{display:inline-block;padding:6px 0}
+  .brief{border:1px solid var(--line);border-radius:var(--radius-sm);padding:20px}
+  .brief-title{font-size:1.25rem;font-weight:800;padding-bottom:8px;margin-bottom:10px;background:var(--gradient) bottom/100% 4px no-repeat}
+  .brief .sig{font-weight:700}
+  .brief h3{margin:16px 0 4px}
+  .brief ul{padding-left:1.2em}
+  .brief li+li{margin-top:4px}
+  .missing{color:var(--ink-soft);font-style:italic}
+  .tscroll{overflow-x:auto;margin-top:6px}
+  table{border-collapse:collapse;width:100%;font-size:.92rem}
+  caption{text-align:left;font-weight:700;padding-bottom:6px}
+  th,td{border:1px solid var(--edge);padding:6px 8px;text-align:left;vertical-align:top}
+  thead th{background:var(--pink-tint)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0!important}
+  .chips li{display:flex;align-items:center;gap:6px;margin:0!important}
+  .chips .swatch{width:28px;height:28px}
+  .copied{font-size:.9rem;font-weight:700;color:var(--ok)}
+  .pager{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:24px;padding-top:16px;border-top:1px solid var(--line)}
+  .startgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}
+  .startcard{border:1px solid var(--edge);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:10px}
+  .startcard ul{padding-left:1.2em;font-size:.95rem}
+  .startcard .actions{margin-top:auto}
+
+  dialog{border:2px solid var(--ink);border-radius:var(--radius);padding:20px;max-width:min(440px,calc(100vw - 32px));color:var(--ink)}
+  dialog::backdrop{background:rgba(12,11,16,.6)}
+  dialog h2{font-size:1.25rem}
+  dialog .actions{margin-top:16px}
+
+  @media (max-width:640px){
+    body{padding:12px 16px}
+    main{padding:18px 16px}
+    .hero{padding:18px 18px 22px}
+    h1{font-size:1.45rem}
+    h2{font-size:1.3rem}
+    .meta{margin-left:0}
+  }
+  @media (max-width:420px){
+    dl{grid-template-columns:1fr}
+    dd{margin-bottom:4px}
+    .ws li{grid-template-columns:1fr;gap:0}
+    .brief{padding:14px}
+  }
+  @media (forced-colors:active){
+    .grad{color:CanvasText;background:none}
+    .choice:has(input:checked),.ccard:has(.pick input:checked),.radio:has(input:checked){border:3px solid Highlight}
+    .tick,.tag,.time,.flag,.pm,.badge{border:1px solid CanvasText}
+    .step[aria-current="step"]{outline:2px solid Highlight}
+    .part-btn[aria-pressed="true"]{outline:2px solid Highlight}
+    :focus-visible{outline:3px solid Highlight}
+    .err,.err-summary{border-color:CanvasText}
+  }
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+  @media print{
+    @page{margin:14mm}
+    body{background:#fff;color:#000;padding:0;max-width:none;font-size:10.5pt}
+    .skip,header,.bar,details.backup,nav,.pager,#sr-status,dialog,.guide,.req-note,.badge,.out-tools,.todo,.err-summary{display:none!important}
+    .layout{display:block}
+    main{border:0;padding:0;box-shadow:none}
+    section{display:none!important}
+    section.printing{display:block!important}
+    section.printing h2{display:none}
+    .brief{border:0;padding:0}
+    .brief-title{background:none;border-bottom:2px solid #000}
+    .brief h3,.brief ul,.brief p,tr{break-inside:avoid}
+    th,td{border:1px solid #000}
+    thead th{background:#fff}
+    a{color:#000}
+  }
+</style>
+</head>
+<body>
+<a class="skip" id="skip" href="#main">Skip to current screen</a>
+<header>
+  <div class="hero">
+    <p class="eyebrow">Breaking Games × TikTok</p>
+    <h1>Brand Brief <span class="grad">Builder</span></h1>
+    <p class="sub">Two parts, one tool. Part 1 builds Brief v1 in Project 2. Part 2 finishes your 1-page Brand Strategy Brief in Project 3.</p>
+    <p class="line">Good game, folks.</p>
+  </div>
+  <div class="bar">
+    <div class="switch" role="group" aria-labelledby="switch-label">
+      <span class="switch-label" id="switch-label">Builder part:</span>
+      <button type="button" class="part-btn" id="part-1" aria-pressed="false">Part 1 <span class="wk">· Project 2, Week 2</span></button>
+      <button type="button" class="part-btn" id="part-2" aria-pressed="false">Part 2 <span class="wk">· Project 3, Week 5</span></button>
+    </div>
+    <p class="meta">
+      <a href="https://vpdasgupta.github.io/tiktok/breaking-games-brand-brief-builder.html" target="_blank" rel="noopener">Open the Builder in a new tab<span class="sr-only"> (opens in a new tab)</span></a>
+      <span class="save" id="save-state">Your answers save in this browser as you work.</span>
+    </p>
+  </div>
+  <p class="notice" id="store-msg" hidden>Your work can't be saved in this view. Before you close it, open "Back up or restore your answers" and save your backup text, or open the tool in a new tab.</p>
+  <details class="backup" id="backup">
+    <summary>Back up or restore your answers</summary>
+    <div class="backup-grid">
+      <div class="field" style="max-width:none">
+        <h2 id="bk-h" class="h3">Export my answers</h2>
+        <p class="hint" id="bk-hint">Your answers live only in this browser. Save this text in a Google Doc or a note before Week 5, or before you switch devices. It holds both parts.</p>
+        <div class="actions">
+          <button type="button" id="bk-show">Show my backup text</button>
+          <button type="button" id="bk-copy">Copy backup</button>
+          <button type="button" id="bk-dl">Download backup .txt</button>
+          <span class="copied" id="bk-copied"></span>
+        </div>
+        <label for="bk-text" class="sr-only">Your backup text</label>
+        <textarea class="in" id="bk-text" rows="5" readonly hidden aria-describedby="bk-hint"></textarea>
+      </div>
+      <div class="field" style="max-width:none">
+        <h2 class="h3">Restore from a backup</h2>
+        <label for="im-text">Paste your backup text</label>
+        <p class="hint" id="im-hint">This replaces the answers in this browser with the ones in your backup. Use it in Part 2 if your Part 1 answers are gone.</p>
+        <textarea class="in" id="im-text" rows="5" aria-describedby="im-hint" spellcheck="false"></textarea>
+        <div class="actions" style="margin-top:6px"><button type="button" id="im-go">Restore my answers</button></div>
+      </div>
+    </div>
+  </details>
+</header>
+
+<div class="layout" id="layout">
+  <nav aria-label="Screens in this part" id="nav">
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="step-list"><span id="nav-label">All screens</span><span class="chev" aria-hidden="true">&#9662;</span></button>
+    <ol id="step-list"></ol>
+  </nav>
+
+  <main id="main" tabindex="-1">
+    <div id="sections"></div>
+    <div class="pager" id="pager">
+      <button type="button" id="back">Back</button>
+      <button type="button" id="next" class="primary">Next</button>
+    </div>
+    <p id="sr-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+
+    <dialog id="dlg" aria-labelledby="dlg-h" aria-describedby="dlg-d">
+      <h2 id="dlg-h">Start over?</h2>
+      <p id="dlg-d">This clears every answer in both parts, and you can't undo it. If you want a copy, cancel and export your answers first.</p>
+      <div class="actions">
+        <button type="button" id="dlg-cancel" class="primary">Cancel</button>
+        <button type="button" id="dlg-ok">Yes, clear everything</button>
+      </div>
+    </dialog>
+  </main>
+</div>
+
+<script>
+/* =====================================================================
+   PROGRAM CONTENT. Every fact below comes from the overview or scope v3.
+   {PM: ...} marks an input Breaking Games still owes. Replace it in place.
+   ===================================================================== */
+var SITE = 'https://breakinggames.com';
+var CTA = 'Find your next game night: link in bio';
+var BRAND_LINE = 'Good game, folks.';
+var END_CARD = 'Every video ends with the same 1 to 2 second end card: the Breaking Games logo + "Good game, folks."';
+var RELAUNCH = 'Relaunch Breaking Games on TikTok, led by its new game, Caminito. Breaking Games makes party, family and strategy games, like POOP, Sparkle*Kitty and Dwellings of Eldervale. Many people know a Breaking Games game but not the company behind it. TikTok @breakinggamesllc has 1,301 followers and has been quiet since October 2024. Instagram @breaking_games (4,243 followers) and Facebook are where it is most active today. The new brand is "Good game, folks.": connection, face-to-face play and making memories by playing games. The goal is new customers: new players find Breaking Games, like it, and buy from it.';
+var CAMINITO = '{PM: Caminito launch date, price, ages, player count and a one-line "how it plays"}';
+
+var PERSONAS = [
+  {id:'rachel', name:'Rachel', age:38, label:'Core: the current buyer', where:'Instagram and Facebook',
+   who:'Two kids, 8 and 11. Hosts game night with the neighbors about once a month. Buys games as gifts. Scrolls Instagram and Facebook in the evening.',
+   moment:'A rainy Saturday or a family birthday; wants one game the kids and grandparents can all play.',
+   pain:'No patience for a long rulebook. Has bought games that sat on the shelf. Knows a few games, not the company.',
+   win:'Saves the post, taps through to the new site, buys, and at the end of the night everyone says "good game."',
+   games:'Caminito, The Game of 49, Play2Read, POOP',
+   weak:'Rachel is on Facebook.',
+   strong:'Sunday night after the kids are in bed, Rachel scrolls Instagram looking for a birthday gift her 11-year-old and the grandparents can both play.'},
+  {id:'dani', name:'Dani', age:21, label:'Stretch: new, younger players', where:'TikTok',
+   who:'College junior. Hosts game night most Fridays. Scrolls #gamenight and #boardgames on TikTok.',
+   moment:'Planning a game night for 8 people, half of whom don\'t know each other, and a play-along clip makes her laugh.',
+   pain:'Doesn\'t know which game works for a mixed group. Has never heard of Breaking Games. Skips anything that looks like an ad.',
+   win:'Comments her answer, saves, taps the link, and remembers "Breaking Games."',
+   games:'Caminito, quick party picks from the push list',
+   weak:'Dani likes games.',
+   strong:'Thursday night, the group chat is planning Friday\'s game night for 8, half of them strangers, and Dani is scrolling #gamenight for something everyone can learn fast.'}
+];
+
+/* Guardrails: proposed, pending Breaking Games confirmation. All 9 apply. */
+var GUARDS = [
+  {id:'post', t:'Don\'t post', d:'Never post program work to any social account, Breaking Games\' or your own. Don\'t reach out to creators, retailers or customers.', kind:'dont'},
+  {id:'people', t:'No real customers, no one under 18', d:'Don\'t film or name real customers or players. No one under 18 on camera. Friends may appear as hands or voices only, with their OK.', kind:'dont'},
+  {id:'ai', t:'Nothing invented', d:'No AI-generated people presented as real. No invented reviews, quotes or reactions.', kind:'dont'},
+  {id:'family', t:'Family-safe games only', d:'Family and all-ages party games only. Hypothetically Fun appears only in the roast. No adult or edgy titles. Humor stays family-safe, and the voice stays fun and warm, not edgy.', kind:'want'},
+  {id:'facts', t:'Accurate product facts', d:'Price, ages and player count only from the approved facts, with the date checked. Don\'t feature a sold-out game.', kind:'want'},
+  {id:'games', t:'Say "games," not "toys"', d:'Never say Breaking Games made or owns Cards Against Humanity or Exploding Kittens, or that it\'s "behind" them.', kind:'want'},
+  {id:'disclose', t:'Disclose', d:'Creator or gifted-product content in any plan carries a clear FTC disclosure. Label your drafts as externship concepts.', kind:'want'},
+  {id:'credit', t:'Credit others', d:'Credit other creators and brands. Stitch or duet only public posts that allow it.', kind:'want'},
+  {id:'roast', t:'Roast the post, not the person', d:'Raw roast notes stay in the program. Anything Breaking Games may see uses the client version. Never comment on, tag or message creators you review. Never use or tag @breakinggames on Instagram.', kind:'dont'}
+];
+
+var PILLAR_HINTS = [
+  'Gameplay, play-alongs, reactions.',
+  'Which Breaking Games game fits your group or gift list. This is the house-brand pillar.',
+  'The laugh, the rematch, the end of the game when everyone says "good game." The brand line in action.'
+];
+var DEFAULT_PILLARS = ['Play It Out Loud', 'A Game for Every Table', 'Good Game Moments'];
+
+var FWS = [
+  {id:'tutorial', t:'Tutorial', s:'Hook with a problem, show the steps, end on the result.',
+   ex:'"Learn Caminito before your snacks are out." Adult hands play the first turn, with the game named on screen.', energy:'teaches'},
+  {id:'day', t:'Day-in-the-Life', s:'Follow one moment through real time, start to finish.',
+   ex:'A Friday game night, start to finish: the box opens, the first turn, the last turn, and the whole table says "good game."', energy:'shows'},
+  {id:'transform', t:'Transformation', s:'Show the before, the change, then the after.',
+   ex:'Before: the shelf of games nobody plays. After: one game everyone at the table gets in 10 seconds.', energy:'shows'},
+  {id:'trend', t:'Trend-Based (family-safe only)', s:'Borrow a popular format or sound and give it a real game-night message.',
+   ex:'A "POV:" clip from the player who just lost and wants a rematch. Only if the sound and joke are family-safe.', energy:'entertains'},
+  {id:'story', t:'Storytelling (published stories, credited)', s:'Set up, build to a turning point, land the change.',
+   ex:'How Café Chaos was made with YouTuber The Odd1sOut (2021), retold with credit. Check stock before you feature it.', energy:'tells'},
+  {id:'play', t:'Play-Along', s:'Ask a "can you guess?" question, pause, then reveal.',
+   ex:'"Can you answer before the table does?" A question hook, like the archive\'s "What song plays when…" post, with the answer at the end.', energy:'invites'},
+  {id:'edu', t:'Educational', s:'Open with a surprising point, teach 3 quick tips, recap.',
+   ex:'"3 signs a game will work when half your group are strangers." Tips first, then one Breaking Games pick.', energy:'teaches'}
+];
+
+/* Games: approved facts, checked 2026-10-13 unless noted. */
+var GAMES = [
+  {id:'caminito', t:'Caminito', facts:CAMINITO, note:'Hero game. Suggested for Video 1.', hero:true},
+  {id:'poop', t:'POOP: The Game', facts:'$10, ages 6+', note:'Checked Oct 13, 2026.'},
+  {id:'g49', t:'The Game of 49', facts:'$20', note:'Checked Oct 13, 2026.'},
+  {id:'play2read', t:'Play2Read early-reader card games', facts:'$13 each', note:'Line added May 2025.'},
+  {id:'sparkle', t:'Sparkle*Kitty', facts:'$24.99, ages 9+, 3 to 8 players', note:'Showed sold out on Oct 13, 2026.', sold:true},
+  {id:'doomed', t:'We\'re Doomed!', facts:'$35, 4 to 12 players', note:'Showed sold out on Oct 13, 2026.', sold:true},
+  {id:'eldervale', t:'Dwellings of Eldervale 2nd Edition', facts:'$99.99; expansions published Aug 2026', note:'Standard showed sold out on Oct 13, 2026.', sold:true},
+  {id:'push', t:'A game from the push list', facts:'{PM: push-list games for this cohort, with stock checked}', note:'Push-list games come first once the list arrives.'}
+];
+var SOLD_NOTE = 'Check stock before you pick it. Guardrail 5: don\'t feature a sold-out game.';
+
+/* Who to learn from: peer cards from the P1 roast set (scope v3). */
+var BASELINE = [
+  ['TikTok', '@breakinggamesllc: 1,301 followers, last post about Oct 7, 2024. The 4 most recent posts got 595 to 1,049 views. Benchmark to beat: "Keep Calm or Panic?" (Jul 17, 2024), 1,049 views.'],
+  ['Instagram', '@breaking_games: 4,243 followers, last post May 10, 2026. Creator posts from @truejoyboardgaming and @60minutegamer appear on its grid.'],
+  ['Watch out', '@breakinggames on Instagram is an unrelated person. Never use or tag it.']
+];
+var PEERS = [
+  {id:'truejoy', name:'@truejoyboardgaming', role:'Creator who posts about Breaking Games titles (TikTok and Instagram)', followers:'{PM: followers and pull date}',
+   facts:[['TikTok', 'Rocking Raft clip, 1,706 views, vs. a horse-stable card game clip, 92 views. An 18× gap on the same account.'],
+          ['Instagram', 'Stripes Reel, 72 likes (the Reels benchmark, Mar 13, 2026), vs. a The Game of 49 how-to-play Reel, 17 likes.']],
+   lesson:'Physical action in frame and a concrete "when you\'d play it" beat explaining rules in the caption.'},
+  {id:'op', name:'The Op', role:'Game publisher (peer brand)', followers:'{PM: TikTok handle, followers and pull date}',
+   facts:[['Reach', 'About 8M views in a month, mostly from non-followers, with lo-fi clips and an 80/20 content mix.'],
+          ['Collab', 'A creator collab with Smosh reached 3M views. It is pinned.'],
+          ['Qork', 'Its Qork post is the roast\'s reminder to measure at 7 days.']],
+   flag:'The 3M post is pinned and a creator collab. Treat it as a ceiling, not a target.',
+   lesson:'A dormant or small account can still reach new people, because followers aren\'t a direct factor on TikTok.'},
+  {id:'bigpotato', name:'Big Potato', role:'Party game publisher (peer brand)', followers:'{PM: TikTok handle, followers and pull date}',
+   facts:[['Hit', 'Cards vs Gravity, 3M views. It is pinned.'],
+          ['Flop', 'A Traitors TV tie-in, 564 views.']],
+   flag:'The 3M post is pinned. Treat it as a ceiling, not a target.',
+   lesson:'A tie-in alone doesn\'t carry a post. The game still has to be clear and fun on screen.'},
+  {id:'ek', name:'Exploding Kittens', role:'Card game publisher (peer brand)', followers:'{PM: TikTok handle, followers and pull date}',
+   facts:[['Hit', '"JUST DON\'T BUST," 59.6K views. In the roast it sits next to Big Potato\'s 564-view tie-in.']],
+   flag:'Learn from it only. Never say Breaking Games made it, owns it or is "behind" it.',
+   lesson:'A short, loud catchphrase hook can carry a whole clip.'},
+  {id:'sixty', name:'@60minutegamer', role:'Creator on Breaking Games\' Instagram grid', followers:'{PM: followers and pull date}',
+   facts:[['Post', 'A Sparkle*Kitty carousel with a "builds on Uno" anchor. Its question got no replies.']],
+   lesson:'A familiar anchor ("like Uno, but…") helps new players. A question needs a reason to answer.'}
+];
+
+var SLIDERS = [
+  {k:'formal', a:'Formal', b:'Casual', w:['Very formal','Mostly formal','Halfway between formal and casual','Mostly casual','Very casual']},
+  {k:'serious', a:'Serious', b:'Playful', w:['Very serious','Mostly serious','Halfway between serious and playful','Mostly playful','Very playful']},
+  {k:'polished', a:'Polished', b:'Lo-fi', w:['Very polished','Mostly polished','Halfway between polished and lo-fi','Mostly lo-fi','Very lo-fi']}
+];
+var IMG_RULE = 'Real games on a real table, adult hands only, warm light, people playing together (hands, voices, laughter). No AI-made "families." No one under 18 on camera.';
+
+var METRICS = [
+  {id:'saves', t:'Saves', d:'Rachel saves gift ideas. A save says "I want this later."'},
+  {id:'shares', t:'Shares', d:'Someone sent it to their group chat or game-night crew.'},
+  {id:'comments', t:'Comments', d:'Dani\'s win is commenting her answer. Great for Play-Along.'},
+  {id:'taps', t:'Profile visits and link taps', d:'The step before a sale on the new site.'},
+  {id:'follows', t:'New followers', d:'People who want more from Breaking Games, not just one game.'},
+  {id:'per100', t:'Likes per 100 followers (Reels)', d:'Fair across account sizes. The Reels benchmark is 4.4.'}
+];
+var AD_METRICS = [
+  {id:'hook', t:'Hook rate', d:'How many people who saw the ad kept watching past the first seconds.'},
+  {id:'ctr', t:'Click-through rate', d:'How many people who saw the ad tapped through to the site.'},
+  {id:'cps', t:'Cost per sale', d:'What the ad spent for each sale it brought in.'}
+];
+var INS_TAGS = [{id:'genz', t:'Gen Z (Dani)'}, {id:'buyer', t:'The current buyer (Rachel)'}, {id:'ads', t:'Ads'}];
+
+var SECTIONS = [
+  {key:'start', part:0, t:'Choose your part'},
+  {key:'personas', part:1, n:1, t:'Your two players', time:'8 min', g:'Read Rachel and Dani\'s cards. For each one, write the moment you saw from your own scroll and what would make her stop.'},
+  {key:'guard', part:1, n:2, t:'Client guardrails', time:'4 min', g:'Read all 9 client guardrails and pick the 3 that will shape your brand the most. All 9 still apply to everything you make.'},
+  {key:'promise', part:1, n:3, t:'Brand promise', time:'5 min', g:'Finish one sentence: who Breaking Games helps, how they feel, and how it helps.'},
+  {key:'pillars', part:1, n:4, t:'Content pillars', time:'4 min', g:'Keep or reword the 3 content pillars. Every video fits one of them. A 4th is optional.'},
+  {key:'fw', part:1, n:5, t:'Videos 1 and 2', time:'12 min', g:'Pick a framework for each video, tag the persona it targets, and pick its game and pillar. Framework 1 = Video 1.'},
+  {key:'out1', part:1, out:1, t:'Your Brief v1', time:'2 min', g:'Check your Brief v1, then copy it into a Google Doc. Export your answers too, so Part 2 can pick up where you left off.'},
+  {key:'voice', part:2, n:6, t:'Voice and visuals', time:'8 min', g:'Lock the voice ("Good game, folks." and fun and warm, not edgy), your 3 voice words, 3 tone sliders, your palette and your imagery words.'},
+  {key:'learn', part:2, n:7, t:'Who to learn from', time:'8 min', g:'Scan the ' + PEERS.length + ' peer cards, pick 2, and write what works and what Breaking Games would borrow.'},
+  {key:'snap', part:2, n:8, t:'Game Snapshot', time:'8 min', g:'Run the 10-second test on 2 hero games. Then finish one sentence about what the games need from the Breaking Games brand.'},
+  {key:'ins', part:2, n:9, t:'Strategy insights', time:'8 min', g:'Pick 3 "What I learned" lines from your Experiment Journal and write each one in the client version: one about Gen Z, one about the current buyer, one about ads.'},
+  {key:'measure', part:2, n:10, t:'Measurement', time:'5 min', g:'Choose the numbers beyond views that show the brand is working, and the one ad number from your test plan.'},
+  {key:'out2', part:2, out:2, t:'Your final brief', time:'3 min', g:'Check your 1-page Brand Strategy Brief, then copy it into your Google Doc.'}
+];
+
+(function(){
+  var KEY = 'breaking-games-brand-brief-builder-v2';
+  var $ = function(id){ return document.getElementById(id); };
+  var SEC = {}; SECTIONS.forEach(function(s){ SEC[s.key] = s; });
+  function partKeys(p){ return SECTIONS.filter(function(s){ return s.part === p; }).map(function(s){ return s.key; }); }
+  var P1 = partKeys(1), P2 = partKeys(2);
+  function inputKeys(p){ return partKeys(p).filter(function(k){ return !SEC[k].out; }); }
+
+  function blankVid(){ return {fw:'', persona:'', game:'', pillar:'', moment:'', why:''}; }
+  function blankIns(){ return {learned:'', should:'', evidence:'', tag:''}; }
+  function defaults(){
+    return {part:0, cur:'start', last:{'1':'personas', '2':'voice'}, seen:{},
+      persona:{rachel:{moment:'', stop:''}, dani:{moment:'', stop:''}},
+      guard:[], promise:{who:'', feel:'', by:''},
+      pillars:DEFAULT_PILLARS.slice(), p4on:false, p4:'Behind the Box',
+      vids:[blankVid(), blankVid()],
+      words:['', '', ''], sl:{formal:3, serious:3, polished:3}, palSrc:'', colors:['', '', ''], imagery:['', '', ''],
+      learn:[], learnNotes:{}, snap:[], snapNotes:{}, need:'',
+      ins:[blankIns(), blankIns(), blankIns()],
+      metrics:[], metricWhy:'', ad:'', adWhy:''};
+  }
+  var S = defaults();
+  var shown = {};
+
+  /* ---------- tiny DOM helper ---------- */
+  function h(tag, a, kids){
+    var e = document.createElement(tag);
+    if (a) Object.keys(a).forEach(function(k){
+      var v = a[k]; if (v == null || v === false) return;
+      if (k === 'text') e.textContent = v;
+      else if (k === 'class') e.className = v;
+      else if (k === 'value' || k === 'checked') e[k] = v;
+      else if (k.slice(0,2) === 'on') e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? '' : v);
+    });
+    (kids || []).forEach(function(c){
+      if (c == null) return;
+      if (Array.isArray(c)) c.forEach(function(x){ if (x != null) e.appendChild(typeof x === 'string' ? document.createTextNode(x) : x); });
+      else e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return e;
+  }
+  /* text with {PM: ...} placeholders shown as marked chips */
+  function rich(str){
+    var out = [], re = /\{PM:[^}]*\}/g, last = 0, m;
+    while ((m = re.exec(str))){ if (m.index > last) out.push(str.slice(last, m.index)); out.push(h('span', {class:'pm', text:m[0]})); last = m.index + m[0].length; }
+    if (last < str.length) out.push(str.slice(last));
+    return out;
+  }
+  function t(s){ return (s || '').trim(); }
+  function sr(txt){ return h('span', {class:'sr-only', text:txt}); }
+  function blank(){ return h('span', {}, [h('span', {'aria-hidden':'true', text:'___'}), sr('blank')]); }
+  function secLabel(key){ var s = SEC[key]; return (s.n ? 'screen ' + s.n + ': ' : '') + s.t; }
+  function addDesc(el, id){ var d = (el.getAttribute('aria-describedby') || '').split(' ').filter(Boolean); if (d.indexOf(id) < 0) d.push(id); el.setAttribute('aria-describedby', d.join(' ')); }
+  function rmDesc(el, id){ var d = (el.getAttribute('aria-describedby') || '').split(' ').filter(function(x){ return x && x !== id; }); if (d.length) el.setAttribute('aria-describedby', d.join(' ')); else el.removeAttribute('aria-describedby'); }
+  function byId(list, id){ return list.filter(function(x){ return x.id === id; })[0]; }
+  function personaName(id){ var p = byId(PERSONAS, id); return p ? p.name + ', ' + p.age : ''; }
+  function gameName(id){ var g = byId(GAMES, id); return g ? g.t : ''; }
+
+  /* ---------- announcements: one polite live region ---------- */
+  var annTimer;
+  function announce(msg){ var r = $('sr-status'); clearTimeout(annTimer); r.textContent = ''; annTimer = setTimeout(function(){ r.textContent = msg; }, 80); }
+
+  /* ---------- storage (always in try/catch) ---------- */
+  var canSave = true, saveTimer;
+  function storageFailed(){
+    if (!canSave) return;
+    canSave = false; $('store-msg').hidden = false; $('save-state').textContent = 'Not saved in this view.';
+    announce("Your work can't be saved in this view. Export your answers before you close it.");
+  }
+  function save(){
+    if (!canSave) return;
+    try {
+      localStorage.setItem(KEY, JSON.stringify(S));
+      $('save-state').textContent = 'Saved ' + new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}).toLowerCase();
+    } catch(e){ storageFailed(); }
+  }
+  function merge(d){
+    var base = defaults();
+    Object.keys(base).forEach(function(k){ if (d && d[k] != null && typeof d[k] === typeof base[k] && Array.isArray(d[k]) === Array.isArray(base[k])) base[k] = d[k]; });
+    while (base.vids.length < 2) base.vids.push(blankVid()); base.vids = base.vids.slice(0, 2);
+    while (base.ins.length < 3) base.ins.push(blankIns()); base.ins = base.ins.slice(0, 3);
+    ['rachel','dani'].forEach(function(p){ if (!base.persona[p]) base.persona[p] = {moment:'', stop:''}; });
+    if (!SEC[base.cur]) base.cur = 'start';
+    if ([0,1,2].indexOf(base.part) < 0) base.part = 0;
+    if (SEC[base.cur].part !== base.part) base.cur = base.part ? (base.part === 1 ? P1[0] : P2[0]) : 'start';
+    return base;
+  }
+  function load(){
+    var raw;
+    try { localStorage.setItem(KEY + '-test', '1'); localStorage.removeItem(KEY + '-test'); raw = localStorage.getItem(KEY); }
+    catch(e){ canSave = false; $('store-msg').hidden = false; $('save-state').textContent = 'Not saved in this view.'; return; }
+    if (!raw) return;
+    try { S = merge(JSON.parse(raw)); } catch(e){ /* ignore a bad save */ }
+  }
+  function changed(){ updateStepper(); clearTimeout(saveTimer); saveTimer = setTimeout(save, 600); }
+
+  /* ---------- field builders ---------- */
+  function field(o){
+    var hid = o.hint ? o.id + '-hint' : null;
+    var inp = h(o.multi ? 'textarea' : 'input', {id:o.id, class:'in', type:o.multi ? null : (o.type || 'text'), rows:o.multi ? (o.rows || 3) : null,
+      value:o.value || '', 'aria-describedby':hid, 'aria-required':o.opt ? null : 'true', autocomplete:'off', spellcheck:o.nospell ? 'false' : null});
+    inp.addEventListener('input', function(){ o.set(inp.value); if (o.after) o.after(inp); changed(); });
+    if (o.onchange) inp.addEventListener('change', o.onchange);
+    return h('div', {class:'field'}, [
+      h('label', {for:o.id}, [o.label, h('span', {class:'req', text:o.opt ? ' (optional)' : ' (required)'})]),
+      o.hint ? h('p', {class:'hint', id:hid, text:o.hint}) : null, inp]);
+  }
+  function selectField(o){
+    var sel = h('select', {id:o.id, 'aria-required':'true', 'aria-describedby':o.hint ? o.id + '-hint' : null, onchange:function(){ o.set(sel.value); if (o.after) o.after(); changed(); }});
+    sel.appendChild(h('option', {value:'', text:o.placeholder || 'Choose one'}));
+    o.options.forEach(function(op){ sel.appendChild(h('option', {value:op[0], text:op[1]})); });
+    sel.value = o.value || '';
+    return h('div', {class:'field'}, [h('label', {for:o.id}, [o.label, h('span', {class:'req', text:' (required)'})]),
+      o.hint ? h('p', {class:'hint', id:o.id + '-hint', text:o.hint}) : null, sel]);
+  }
+  function radioGroup(o){
+    var fs = h('fieldset', {id:o.id, 'aria-required':null}, [h('legend', {}, [o.legend, h('span', {class:'req', text:' (required)'})])]);
+    var row = h('div', {class:'radios'});
+    o.options.forEach(function(op, i){
+      row.appendChild(h('label', {class:'radio'}, [h('input', {type:'radio', name:o.id, id:o.id + '-' + op[0], value:op[0], checked:o.value === op[0],
+        onchange:function(){ o.set(op[0]); if (o.after) o.after(); changed(); }}), op[1]]));
+    });
+    fs.appendChild(row); return fs;
+  }
+  function ws(rows, title){
+    return h('div', {class:'ws'}, [h('h3', {text:title || 'Weak vs. strong'}), h('ul', {}, rows.map(function(r){
+      return h('li', {}, [h('span', {class:'lab ' + r[0], text:r[0] === 'ex' ? 'Example' : r[0] === 'weak' ? 'Weak' : 'Strong'}), h('span', {text:r[1]})]); }))]);
+  }
+  function tips(title, items){ return h('div', {class:'tips'}, [h('h3', {text:title}), h('ul', {}, items.map(function(i){ return h('li', {text:i}); }))]); }
+  function countLine(id, n, need, noun){
+    var p = $(id); if (!p) return;
+    p.textContent = n + ' of ' + need + ' selected' + (n > need ? ': uncheck ' + (n - need) + ' ' + noun + (n - need === 1 ? '' : 's') : '');
+  }
+  function toggleIn(arr, v, on){ var i = arr.indexOf(v); if (on && i < 0) arr.push(v); if (!on && i >= 0) arr.splice(i, 1); }
+  function pillarOptions(){ var o = S.pillars.map(t).filter(Boolean); if (S.p4on && t(S.p4)) o.push(t(S.p4)); return o; }
+
+  /* =====================================================================
+     SCREENS
+     ===================================================================== */
+  var R = {};
+
+  R.start = function(b){
+    b.appendChild(h('p', {}, ['You\'ll use this Builder twice. Each part takes about 40 minutes or less, and your answers carry over. Pick the part your task page asks for.']));
+    b.appendChild(h('div', {class:'startgrid'}, [1, 2].map(function(p){
+      var list = inputKeys(p).map(function(k){ return SEC[k].n + '. ' + SEC[k].t; });
+      return h('div', {class:'startcard'}, [
+        h('h3', {text:p === 1 ? 'Part 1: Project 2, Week 2' : 'Part 2: Project 3, Week 5'}),
+        h('p', {class:'hint', text:p === 1 ? 'About 35 minutes. Ends with Brief v1 (half a page).' : 'About 40 minutes. Ends with your final 1-page Brand Strategy Brief.'}),
+        h('ul', {}, list.map(function(x){ return h('li', {text:x}); })),
+        h('div', {class:'actions'}, [h('button', {type:'button', class:'primary', id:'start-' + p, onclick:function(){ setPart(p); }, text:'Start Part ' + p})])]);
+    })));
+    b.appendChild(h('p', {class:'hint', text:'Starting Part 2 on a different device or browser? Open "Back up or restore your answers" above and paste the backup you saved at the end of Part 1.'}));
+  };
+
+  R.personas = function(b){
+    b.appendChild(h('p', {}, ['Breaking Games wants to reach two equal audiences. Every video, crossover and ad you make gets tagged with the one it targets, and you pitch why.']));
+    PERSONAS.forEach(function(p){
+      var st = S.persona[p.id];
+      b.appendChild(h('div', {class:'card persona'}, [
+        h('h3', {text:p.name + ', ' + p.age + ' (' + p.label.toLowerCase() + ')'}),
+        h('dl', {}, [h('dt', {text:'Who'}), h('dd', {text:p.who}), h('dt', {text:'Moment'}), h('dd', {text:p.moment}),
+          h('dt', {text:'Pain point'}), h('dd', {text:p.pain}), h('dt', {text:'Win'}), h('dd', {text:p.win}), h('dt', {text:'Best-fit games'}), h('dd', {text:p.games})]),
+        h('div', {style:'margin-top:12px'}, [field({id:'pm-' + p.id + '-moment', label:p.name + '\'s moment, from your scroll', multi:true, rows:2, value:st.moment,
+          hint:'One sentence: when and where would ' + p.name + ' see a Breaking Games post? Use what you saw scrolling as ' + p.name + ' on ' + p.where + '.', set:function(v){ st.moment = v; }})]),
+        h('div', {style:'margin-top:10px'}, [field({id:'pm-' + p.id + '-stop', label:'What would make ' + p.name + ' stop scrolling', multi:true, rows:2, value:st.stop,
+          hint:'One line. Think about her pain point.', set:function(v){ st.stop = v; }})]),
+        h('div', {style:'margin-top:10px'}, [ws([['weak', p.weak], ['strong', p.strong]], 'Weak vs. strong moment')])
+      ]));
+    });
+    b.appendChild(tips('Tip', ['You\'re Gen Z, so you\'re the expert on Dani. Rachel is where you practice writing for a buyer unlike you.']));
+  };
+
+  R.guard = function(b){
+    var fs = h('fieldset', {id:'fs-guard', 'aria-describedby':'guard-hint count-guard'}, [h('legend', {}, ['Pick exactly 3 of the ' + GUARDS.length + ' guardrails ', h('span', {class:'req', text:'(required)'})]),
+      h('p', {class:'hint', id:'guard-hint', text:'These are proposed and waiting for Breaking Games to confirm. Every video follows all 9. Your 3 are the ones that shape your brand the most.'}),
+      h('p', {class:'count', id:'count-guard'})]);
+    var g = h('div', {class:'grid'});
+    GUARDS.forEach(function(x, i){
+      g.appendChild(h('label', {class:'choice'}, [
+        h('input', {type:'checkbox', id:'g-' + x.id, 'aria-labelledby':'g-' + x.id + '-t', 'aria-describedby':'g-' + x.id + '-k g-' + x.id + '-d', checked:S.guard.indexOf(x.id) > -1, onchange:function(e){
+          toggleIn(S.guard, x.id, e.target.checked); countLine('count-guard', S.guard.length, 3, 'guardrail');
+          announce(S.guard.length + ' of 3 guardrails selected.' + (S.guard.length > 3 ? ' Uncheck one.' : '')); changed(); }}),
+        h('span', {}, [h('span', {class:'tag' + (x.kind === 'want' ? ' want' : ''), id:'g-' + x.id + '-k', text:x.kind === 'want' ? 'Client wants' : 'Client says don\'t'}),
+          h('span', {class:'t', id:'g-' + x.id + '-t', text:(i + 1) + '. ' + x.t}), h('span', {class:'x', id:'g-' + x.id + '-d', text:x.d})]),
+        h('span', {class:'tick', 'aria-hidden':'true', text:'✓'})]));
+    });
+    fs.appendChild(g); b.appendChild(fs);
+    b.appendChild(tips('How to choose', ['Pick the rules that change what you film, not just what you avoid. For example, "No one under 18 on camera" changes every family game-night shot.', 'Use the full list as a checklist before every upload.']));
+    countLine('count-guard', S.guard.length, 3, 'guardrail');
+  };
+
+  R.promise = function(b){
+    function upd(){ $('promise-preview').textContent = promiseText() || 'Fill in all 3 parts to see your full sentence here.'; }
+    b.appendChild(h('p', {}, ['Pattern: ', h('strong', {}, ['Breaking Games helps ', blank(), ' feel ', blank(), ' by ', blank(), '.'])]));
+    [['who', 'Breaking Games helps... (who)', 'Name a real group. Example: friends planning a game night where not everyone knows each other'],
+     ['feel', '...feel... (what feeling)', 'Example: like the whole table is in on the fun'],
+     ['by', '...by... (how)', 'Example: showing a game you can learn in 10 seconds and play together tonight']].forEach(function(x){
+      b.appendChild(field({id:'pr-' + x[0], label:x[1], value:S.promise[x[0]], hint:x[2], set:function(v){ S.promise[x[0]] = v; }, after:upd}));
+    });
+    b.appendChild(h('div', {}, [h('h3', {text:'Preview'}), h('p', {class:'hint', text:'Updates as you type.'}), h('p', {class:'preview', id:'promise-preview'})]));
+    b.appendChild(ws([['weak', 'Breaking Games helps people feel happy by making fun games.'],
+      ['strong', 'Breaking Games helps families with no patience for a long rulebook feel like everyone at the table is in on it by showing games you can learn in 10 seconds.']]));
+    b.appendChild(tips('Check yours', ['Could a bank or a phone brand say the same sentence? Then make it more about game night.', 'Does it fit "Good game, folks."? The brand is about connection and face-to-face play.']));
+    upd();
+  };
+  function promiseText(){ var p = S.promise; return (t(p.who) && t(p.feel) && t(p.by)) ? 'Breaking Games helps ' + t(p.who) + ' feel ' + t(p.feel) + ' by ' + t(p.by).replace(/\.$/, '') + '.' : ''; }
+
+  R.pillars = function(b){
+    S.pillars.forEach(function(p, i){
+      b.appendChild(field({id:'pil-' + i, label:'Pillar ' + (i + 1), value:p, hint:'What it covers: ' + PILLAR_HINTS[i] + ' Keep it or reword it.', set:function(v){ S.pillars[i] = v; }}));
+    });
+    var p4f = field({id:'pil-3', label:'Pillar 4', opt:true, value:S.p4, hint:'Designers and how a game gets made.', set:function(v){ S.p4 = v; }});
+    p4f.hidden = !S.p4on;
+    b.appendChild(h('label', {class:'pick', style:'max-width:62ch'}, [h('input', {type:'checkbox', id:'p4-on', checked:S.p4on, onchange:function(e){
+      S.p4on = e.target.checked; p4f.hidden = !S.p4on; changed();
+      announce(S.p4on ? 'Pillar 4 added below.' : 'Pillar 4 removed.'); }}), 'Add an optional 4th pillar: Behind the Box', h('span', {class:'tick', 'aria-hidden':'true', text:'✓'})]));
+    b.appendChild(p4f);
+    b.appendChild(ws([['weak', 'Fun stuff.'], ['strong', 'Good Game Moments: the laugh, the rematch, the end of the game when everyone says "good game."']]));
+  };
+
+  R.fw = function(b){
+    b.appendChild(h('h3', {text:'The 7 frameworks'}));
+    b.appendChild(h('ul', {class:'fwlist'}, FWS.map(function(f){ return h('li', {}, [h('strong', {text:f.t}), h('span', {text:'Structure: ' + f.s}), h('br'), h('span', {text:'Breaking Games example: ' + f.ex})]); })));
+    b.appendChild(tips('How to narrow it down', ['Pick 2 different energies. Play-Along + Day-in-the-Life works. Tutorial + Educational doesn\'t, because both teach.',
+      'Match the persona. Dani comments her guess, so Play-Along fits her. Rachel wants one game the whole family can play.',
+      'Be honest about filming. You\'ll make these videos in the next few days with adult hands, your voice and the product image deck.']));
+    S.vids.forEach(function(v, i){
+      var n = i + 1;
+      var trendNote = h('p', {class:'heads', id:'trend-' + n, hidden:v.fw !== 'trend'}, [h('strong', {text:'Heads up: '}), 'Trend-Based is family-safe only. Use a trend only if the sound and the joke fit "fun and warm, not edgy" and still show the game. If the idea only works because the sound is popular, pick a different framework.']);
+      var fs = h('fieldset', {class:'video-card', id:'vid-' + n}, [h('legend', {text:'Video ' + n}), h('div', {class:'inner'}, [
+        selectField({id:'v' + n + '-fw', label:'Framework ' + n, value:v.fw, options:FWS.map(function(f){ return [f.id, f.t]; }), set:function(x){ v.fw = x; },
+          after:function(){ trendNote.hidden = v.fw !== 'trend'; var f = byId(FWS, v.fw); updateSuggest(); announce(f ? 'Video ' + n + ' framework: ' + f.t + '.' + (v.fw === 'trend' ? ' A heads-up note was added below it.' : '') : 'Video ' + n + ' framework cleared.'); }}),
+        trendNote,
+        radioGroup({id:'v' + n + '-persona', legend:'Persona tag: who is Video ' + n + ' for?', value:v.persona, options:PERSONAS.map(function(p){ return [p.id, p.name + ', ' + p.age]; }), set:function(x){ v.persona = x; }, after:updateSuggest}),
+        selectField({id:'v' + n + '-game', label:'Game', value:v.game, hint:'Check stock first. Don\'t feature a sold-out game.', options:GAMES.map(function(g){ return [g.id, g.t + (g.sold ? ' (check stock)' : '')]; }), set:function(x){ v.game = x; }, after:updateSuggest}),
+        selectField({id:'v' + n + '-pillar', label:'Pillar', value:v.pillar, options:pillarOptions().map(function(p){ return [p, p]; }), placeholder:'Choose a pillar', set:function(x){ v.pillar = x; }}),
+        field({id:'v' + n + '-moment', label:'Calendar moment', opt:true, value:v.moment, hint:'For example: Friday game night, a birthday, a rainy day, or a gift moment.', set:function(x){ v.moment = x; }, onchange:updateSuggest}),
+        field({id:'v' + n + '-why', label:'Why this framework', multi:true, rows:2, value:v.why, hint:'One line: why does it fit Breaking Games and the persona you tagged?', set:function(x){ v.why = x; }})
+      ])]);
+      b.appendChild(fs);
+    });
+    b.appendChild(h('div', {class:'card soft', id:'suggest-box'}, [h('h3', {text:'Suggestions for this pair'}), h('ul', {id:'suggest', style:'padding-left:1.2em;margin-top:4px'})]));
+    b.appendChild(ws([['weak', 'Play-Along is popular.'], ['strong', 'Play-Along gets Dani to comment her guess, which is her win, and shows Caminito on the table by second 3.']], 'Weak vs. strong "why"'));
+    updateSuggest();
+  };
+  function suggestions(){
+    var a = S.vids[0], c = S.vids[1], out = [];
+    out.push(a.game === 'caminito' ? 'Video 1 features Caminito. Nice: it\'s the hero game.' : 'Suggested: feature Caminito in Video 1.');
+    out.push(a.fw === 'play' || c.fw === 'play' ? 'One video is a Play-Along. Good: it invites comments.' : 'Suggested: make one of your 2 videos a Play-Along.');
+    out.push(t(a.moment) || t(c.moment) ? 'One video is tied to a calendar moment.' : 'Suggested: tie one video to a calendar moment.');
+    if (a.persona && c.persona) out.push(a.persona !== c.persona ? 'Each video targets a different persona.' : 'Suggested: Video 2 targets the persona Video 1 didn\'t.');
+    if (a.fw && a.fw === c.fw) out.push('Both videos use the same framework. Pick 2 different ones.');
+    [a, c].forEach(function(v, i){ var g = byId(GAMES, v.game); if (g && g.sold) out.push('Video ' + (i + 1) + ': ' + g.t + ' showed sold out on Oct 13, 2026. Check stock before you film.'); });
+    return out;
+  }
+  var lastSuggest = null;
+  function updateSuggest(){
+    var ul = $('suggest'); if (!ul) return;
+    var next = suggestions();
+    /* Announce only lines that are new since the last render (for example a sold-out or same-framework warning). The list itself is not a live region. */
+    var added = lastSuggest ? next.filter(function(x){ return lastSuggest.indexOf(x) < 0; }) : [];
+    lastSuggest = next;
+    ul.textContent = ''; next.forEach(function(s){ ul.appendChild(h('li', {text:s})); });
+    if (added.length) setTimeout(function(){ announce(added.join(' ')); }, 700);
+  }
+
+  R.out1 = function(b){ outScreen(b, 1); };
+
+  R.voice = function(b){
+    b.appendChild(h('div', {class:'card soft'}, [h('h3', {text:'Fixed by the brand'}), h('ul', {style:'padding-left:1.2em;margin-top:4px'}, [
+      h('li', {}, ['Brand line: ', h('strong', {text:'"Good game, folks."'}), ' Write it exactly like that until the brand guide says otherwise.']),
+      h('li', {text:'Voice: fun and warm, not edgy. Friendly humor is welcome; the joke is never on a person or a group.'}),
+      h('li', {text:'No anti-screens angle ("put down your phone"). Show people choosing the table, not rejecting their phones.'}),
+      h('li', {text:END_CARD})])]));
+    var wf = h('fieldset', {id:'fs-words', 'aria-describedby':'words-hint'}, [h('legend', {text:'3 voice words'}), h('p', {class:'hint', id:'words-hint', text:'Words that sit inside "fun and warm, not edgy." Pick ones only a game night could own.'})]);
+    S.words.forEach(function(w, i){ var f = field({id:'w-' + i, label:'Voice word ' + (i + 1), value:w, set:function(v){ S.words[i] = v; }}); f.style.marginTop = '8px'; wf.appendChild(f); });
+    b.appendChild(wf);
+    b.appendChild(ws([['weak', 'savage, unhinged, chaotic (edgy, off-brand)'], ['weak', 'fun, good, nice (any brand could say these)'], ['strong', 'warm, quick, playful']], 'Weak vs. strong voice words'));
+    var sf = h('fieldset', {'aria-describedby':'sliders-hint'}, [h('legend', {text:'Tone sliders'}), h('p', {class:'hint', id:'sliders-hint', text:'5 steps each. Use the arrow keys to move a slider.'})]);
+    SLIDERS.forEach(function(s){
+      var out = h('span', {class:'val', id:'sv-' + s.k, text:s.w[S.sl[s.k] - 1]});
+      var inp = h('input', {type:'range', id:'sl-' + s.k, min:'1', max:'5', step:'1', value:String(S.sl[s.k]), 'aria-valuetext':s.w[S.sl[s.k] - 1]});
+      inp.addEventListener('input', function(){ var v = +inp.value; S.sl[s.k] = v; inp.setAttribute('aria-valuetext', s.w[v - 1]); out.textContent = s.w[v - 1]; changed(); });
+      sf.appendChild(h('div', {class:'slider', style:'margin-top:12px'}, [h('label', {for:'sl-' + s.k, style:'font-weight:700'}, [s.a + ' to ' + s.b + ': ']), out, inp,
+        h('div', {class:'ends', 'aria-hidden':'true'}, [h('span', {text:s.a}), h('span', {text:s.b})])]));
+    });
+    b.appendChild(sf);
+
+    b.appendChild(radioGroup({id:'fs-palsrc', legend:'Where does your palette come from?', value:S.palSrc,
+      options:[['guide', 'The agency brand guide'], ['temp', 'Temporary palette from the current logo']], set:function(x){ S.palSrc = x; }}));
+    var fs = h('fieldset', {id:'fs-colors', 'aria-describedby':'pal-hint pal-temp-hint'}, [h('legend', {}, ['Your palette: 3 to 5 colors ', h('span', {class:'req', text:'(required)'})]),
+      h('p', {class:'hint', id:'pal-hint'}, ['Type a hex code (like #CC0F3A) or use the picker. Brand guide colors: '].concat(rich('{PM: brand guide palette, owed by Michael from Kathy}')).concat(['.'])),
+      h('p', {class:'hint', id:'pal-temp-hint'}, rich('Temporary palette (until the brand guide arrives): {PM: hex codes sampled from the current Breaking Games logo}. Label it "temporary." Each color shows its contrast so you know if it can carry small text.')),
+      h('div', {id:'color-rows'}), h('div', {class:'actions', style:'margin-top:10px'}, [h('button', {type:'button', id:'add-color', text:'Add a color', onclick:addColor})])]);
+    b.appendChild(fs); renderColors();
+    var im = h('fieldset', {id:'fs-img', 'aria-describedby':'img-hint'}, [h('legend', {text:'3 imagery words'}), h('p', {class:'hint', id:'img-hint', text:'How should every frame feel? The rule underneath: ' + IMG_RULE})]);
+    S.imagery.forEach(function(w, i){ var f = field({id:'im-' + i, label:'Imagery word ' + (i + 1), value:w, set:function(v){ S.imagery[i] = v; }}); f.style.marginTop = '8px'; im.appendChild(f); });
+    b.appendChild(im);
+    b.appendChild(ws([['weak', 'dark, neon, glitchy'], ['strong', 'warm light, hands mid-move, real table']], 'Weak vs. strong imagery words'));
+  };
+  function lum(hex){ var c = [1,3,5].map(function(i){ var v = parseInt(hex.substr(i, 2), 16) / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; }
+  function ratio(a, b){ var x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  function ratioText(hex){
+    if (!HEX.test(hex)) return 'Enter a 6-digit hex code to see its contrast.';
+    var w = ratio(hex, '#FFFFFF'), d = ratio(hex, '#0F172A');
+    function verdict(r){ return r >= 4.5 ? 'OK for small text' : r >= 3 ? 'large text or shapes only' : 'fill only, no text'; }
+    return 'As text on white: ' + w.toFixed(1) + ':1 (' + verdict(w) + '). Dark text on it: ' + d.toFixed(1) + ':1 (' + verdict(d) + ').';
+  }
+  function renderColors(){
+    var box = $('color-rows'); if (!box) return; box.textContent = '';
+    S.colors.forEach(function(c, i){
+      var ok = HEX.test(t(c));
+      var sw = h('span', {class:'swatch', 'aria-hidden':'true', style:'background:' + (ok ? t(c) : '#ffffff')});
+      var pick = h('input', {type:'color', id:'cp-' + i, value:ok ? t(c).toLowerCase() : '#ffffff'});
+      var rt = h('p', {class:'ratio', id:'hex-' + i + '-ratio', text:ratioText(t(c))});
+      var f = field({id:'hex-' + i, label:'Color ' + (i + 1) + ' hex code', value:c, nospell:true, set:function(v){ S.colors[i] = v; }, after:function(inp){
+        var v = t(inp.value); rt.textContent = ratioText(v); if (HEX.test(v)){ pick.value = v.toLowerCase(); sw.style.background = v; } }});
+      var hexIn = f.querySelector('input'); hexIn.classList.add('hex'); addDesc(hexIn, 'pal-hint'); addDesc(hexIn, 'hex-' + i + '-ratio');
+      pick.addEventListener('input', function(){ var v = pick.value.toUpperCase(); S.colors[i] = v; $('hex-' + i).value = v; sw.style.background = v; rt.textContent = ratioText(v); changed(); });
+      box.appendChild(h('div', {class:'crow'}, [sw, f, h('label', {class:'picker', for:'cp-' + i}, ['Picker', sr(' for color ' + (i + 1)), pick]),
+        h('button', {type:'button', onclick:function(){ removeColor(i); }}, ['Remove', sr(' color ' + (i + 1))]), rt]));
+    });
+  }
+  function addColor(){
+    if (S.colors.length >= 5){ announce('You already have 5 colors, the most allowed. Remove one to add another.'); return; }
+    S.colors.push(''); renderColors(); changed(); $('hex-' + (S.colors.length - 1)).focus();
+    announce('Color ' + S.colors.length + ' added. ' + S.colors.length + ' of 5 colors.');
+  }
+  function removeColor(i){
+    S.colors.splice(i, 1); renderColors(); changed();
+    var f = $('hex-' + Math.max(0, i - 1)); (f || $('add-color')).focus();
+    announce('Color ' + (i + 1) + ' removed. ' + S.colors.length + ' color' + (S.colors.length === 1 ? '' : 's') + ' left.');
+  }
+
+  R.learn = function(b){
+    b.appendChild(h('div', {class:'card soft'}, [h('h3', {text:'Where Breaking Games starts'}),
+      h('dl', {}, BASELINE.map(function(r){ return [h('dt', {text:r[0]}), h('dd', {text:r[1]})]; }).reduce(function(a, x){ return a.concat(x); }, []))]));
+    b.appendChild(h('p', {}, ['These are accounts to learn from, not rivals. Numbers come from the program\'s roast set and keep changing after they were pulled.']));
+    var fs = h('fieldset', {id:'fs-learn', 'aria-describedby':'count-learn'}, [h('legend', {}, ['Pick exactly 2 accounts to learn from ', h('span', {class:'req', text:'(required)'})]),
+      h('p', {class:'count', id:'count-learn'})]);
+    var g = h('div', {class:'grid'});
+    PEERS.forEach(function(c){
+      var dl = h('dl', {}, [h('dt', {text:'Followers'}), h('dd', {}, rich(c.followers))]);
+      c.facts.forEach(function(f){ dl.appendChild(h('dt', {text:f[0]})); dl.appendChild(h('dd', {text:f[1]})); });
+      g.appendChild(h('div', {class:'ccard'}, [
+        h('h3', {text:c.name}), h('p', {class:'role', text:c.role}),
+        c.flag ? h('p', {class:'flag', text:c.flag}) : null, dl,
+        h('p', {style:'font-size:.92rem'}, [h('strong', {text:'Roast lesson: '}), c.lesson]),
+        h('label', {class:'pick'}, [h('input', {type:'checkbox', id:'lp-' + c.id, checked:S.learn.indexOf(c.id) > -1, onchange:function(e){
+          toggleIn(S.learn, c.id, e.target.checked); countLine('count-learn', S.learn.length, 2, 'account'); renderLearnNotes();
+          announce(S.learn.length + ' of 2 accounts selected.' + (S.learn.length > 2 ? ' Uncheck one.' : e.target.checked ? ' Two questions about ' + c.name + ' were added below the cards.' : '')); changed(); }}),
+          'Learn from ' + c.name, h('span', {class:'tick', 'aria-hidden':'true', text:'✓'})])]));
+    });
+    fs.appendChild(g); b.appendChild(fs);
+    b.appendChild(h('div', {id:'learn-notes'}));
+    b.appendChild(ws([['weak', 'Post more.'], ['strong', 'Borrow The Op\'s lo-fi clips made for people who don\'t follow yet: phone-shot hands mid-move, not polished ads.']], 'Weak vs. strong "borrow"'));
+    countLine('count-learn', S.learn.length, 2, 'account'); renderLearnNotes();
+  };
+  function renderLearnNotes(){
+    var box = $('learn-notes'); if (!box) return; box.textContent = '';
+    S.learn.forEach(function(id){
+      var c = byId(PEERS, id); if (!c) return;
+      var n = S.learnNotes[id] = S.learnNotes[id] || {works:'', borrow:''};
+      box.appendChild(h('div', {class:'card', style:'margin-top:12px'}, [h('h3', {text:'Your notes on ' + c.name}),
+        h('div', {style:'margin-top:8px'}, [field({id:'ln-' + id + '-works', label:'What works for ' + c.name, multi:true, rows:2, value:n.works, hint:'One line in your own words.', set:function(v){ n.works = v; }})]),
+        h('div', {style:'margin-top:10px'}, [field({id:'ln-' + id + '-borrow', label:'What Breaking Games would borrow from ' + c.name, multi:true, rows:2, value:n.borrow, hint:'One line. Make it something Breaking Games could do with its own games.', set:function(v){ n.borrow = v; }})])]));
+    });
+  }
+
+  R.snap = function(b){
+    b.appendChild(h('p', {}, ['The 10-second test: a stranger scrolling past could tell what the game is and why it\'s fun within 10 seconds, with the sound off. Pick 2 hero games and test the way you\'d show each one.']));
+    var fs = h('fieldset', {id:'fs-snap', 'aria-describedby':'snap-hint count-snap'}, [h('legend', {}, ['Pick exactly 2 games ', h('span', {class:'req', text:'(required)'})]),
+      h('p', {class:'hint', id:'snap-hint', text:'Suggested: Caminito plus one game that is in stock.'}), h('p', {class:'count', id:'count-snap'})]);
+    var g = h('div', {class:'grid'});
+    GAMES.forEach(function(x){
+      g.appendChild(h('label', {class:'choice'}, [
+        h('input', {type:'checkbox', id:'sg-' + x.id, 'aria-labelledby':'sg-' + x.id + '-t', 'aria-describedby':'sg-' + x.id + '-d', checked:S.snap.indexOf(x.id) > -1, onchange:function(e){
+          toggleIn(S.snap, x.id, e.target.checked); countLine('count-snap', S.snap.length, 2, 'game'); renderSnapNotes();
+          announce(S.snap.length + ' of 2 games selected.' + (S.snap.length > 2 ? ' Uncheck one.' : e.target.checked ? ' Test questions for ' + x.t + ' were added below the cards.' : '')); changed(); }}),
+        h('span', {}, [x.hero ? h('span', {class:'tag', text:'Hero game'}) : null, h('span', {class:'t', id:'sg-' + x.id + '-t', text:x.t}),
+          h('span', {class:'x', id:'sg-' + x.id + '-d'}, rich(x.facts + '. ' + x.note + (x.sold ? ' ' + SOLD_NOTE : '')))]),
+        h('span', {class:'tick', 'aria-hidden':'true', text:'✓'})]));
+    });
+    fs.appendChild(g); b.appendChild(fs);
+    b.appendChild(h('div', {id:'snap-notes'}));
+    b.appendChild(ws([['weak', 'It\'s a fun game.'], ['strong', 'In 10 seconds: hands flip a card, the table groans, and the caption says "POOP: The Game, ages 6+." Passes.']], 'Weak vs. strong 10-second test'));
+    b.appendChild(h('div', {class:'card'}, [h('h3', {text:'What the games need from the brand'}),
+      h('p', {style:'margin:6px 0 10px'}, [h('strong', {}, ['Our games need ', blank(), ' from the Breaking Games brand.'])]),
+      field({id:'need', label:'Our games need... (what)', multi:true, rows:2, value:S.need, hint:'Finish the sentence. Example: a house name people remember, so a fan of one game finds the next one.', set:function(v){ S.need = v; }})]));
+    countLine('count-snap', S.snap.length, 2, 'game'); renderSnapNotes();
+  };
+  function renderSnapNotes(){
+    var box = $('snap-notes'); if (!box) return; box.textContent = '';
+    S.snap.forEach(function(id){
+      var g = byId(GAMES, id); if (!g) return;
+      var n = S.snapNotes[id] = S.snapNotes[id] || {seen:'', pass:'', fix:''};
+      var fixWrap = h('div', {hidden:n.pass !== 'no'}, [field({id:'sn-' + id + '-fix', label:'One fix so ' + g.t + ' passes', value:n.fix, hint:'Example: show the first move in second 1 and name the game on screen.', set:function(v){ n.fix = v; }})]);
+      box.appendChild(h('div', {class:'card', style:'margin-top:12px'}, [h('h3', {text:'10-second test: ' + g.t}),
+        h('div', {style:'margin-top:8px'}, [field({id:'sn-' + id + '-seen', label:'What a viewer sees in the first 10 seconds', multi:true, rows:2, value:n.seen, hint:'Describe your best idea for showing ' + g.t + ', frame by frame, sound off.', set:function(v){ n.seen = v; }})]),
+        h('div', {style:'margin-top:10px'}, [radioGroup({id:'sn-' + id + '-pass', legend:'Does it pass the 10-second test?', value:n.pass, options:[['yes', 'Yes, it passes'], ['no', 'Not yet']],
+          set:function(x){ n.pass = x; }, after:function(){ fixWrap.hidden = n.pass !== 'no'; if (n.pass === 'no') announce('A fix field was added below.'); }})]),
+        h('div', {style:'margin-top:10px'}, [fixWrap])]));
+    });
+  }
+  function needText(){ var v = t(S.need).replace(/\.$/, ''); return v ? 'Our games need ' + v + ' from the Breaking Games brand.' : ''; }
+
+  R.ins = function(b){
+    b.appendChild(h('p', {}, ['Use the client version: Toast (what worked), Evidence (which experiment showed it), Recommendation (what Breaking Games should do). Start from the "What I learned" lines in your Experiment Journal.']));
+    b.appendChild(h('p', {class:'hint', id:'ins-mix', text:'Your 3 insights need one of each tag: Gen Z, the current buyer, and ads.'}));
+    S.ins.forEach(function(x, i){
+      var n = i + 1;
+      b.appendChild(h('fieldset', {class:'video-card', id:'ins-' + n}, [h('legend', {text:'Insight ' + n}), h('div', {class:'inner'}, [
+        (function(rg){ addDesc(rg, 'ins-mix'); return rg; })(radioGroup({id:'in' + n + '-tag', legend:'This insight is about', value:x.tag, options:INS_TAGS.map(function(g){ return [g.id, g.t]; }), set:function(v){ x.tag = v; }})),
+        field({id:'in' + n + '-learned', label:'I learned...', multi:true, rows:2, value:x.learned, hint:'What worked, in one line.', set:function(v){ x.learned = v; }}),
+        field({id:'in' + n + '-evidence', label:'Evidence', value:x.evidence, hint:'Which experiment, video or ad showed it? Example: Experiment 2, Video 2 vs. Video 1 simulator scores.', set:function(v){ x.evidence = v; }}),
+        field({id:'in' + n + '-should', label:'...so Breaking Games should...', multi:true, rows:2, value:x.should, hint:'One clear recommendation.', set:function(v){ x.should = v; }})])]));
+    });
+    b.appendChild(ws([['weak', 'Gen Z likes trends.'], ['strong', 'I learned my Play-Along video got more comments than my Tutorial (Experiment 2), so Breaking Games should open with a question viewers can answer in the comments.']]));
+    b.appendChild(tips('Keep it client-ready', ['Talk about the post, never the person, the team or the creator.', 'Don\'t quote anyone from a partner meeting. Use what your own experiments showed.']));
+  };
+  function insLine(x){ return t(x.learned) ? 'I learned ' + t(x.learned).replace(/^i learned\s*/i, '').replace(/\.$/, '') + ', so Breaking Games should ' + (t(x.should).replace(/^so breaking games should\s*/i, '').replace(/\.$/, '') || '___') + '.' : ''; }
+
+  R.measure = function(b){
+    b.appendChild(h('div', {class:'card soft'}, [h('h3', {text:'The benchmarks'}), h('dl', {}, [
+      h('dt', {text:'TikTok'}), h('dd', {text:'"Keep Calm or Panic?" on @breakinggamesllc (Jul 17, 2024): 1,049 views.'}),
+      h('dt', {text:'Reels'}), h('dd', {text:'@truejoyboardgaming Stripes Reel (Mar 13, 2026): 72 likes, about 4.4 likes per 100 followers.'}),
+      h('dt', {text:'Window'}), h('dd', {text:'Measure 7 days after posting. Leave out boosted and pinned posts.'})])]));
+    var fs = h('fieldset', {id:'fs-metrics', 'aria-describedby':'count-metrics'}, [h('legend', {}, ['Organic: pick 2 or 3 numbers beyond views ', h('span', {class:'req', text:'(required)'})]),
+      h('p', {class:'count', id:'count-metrics'})]);
+    var g = h('div', {class:'grid'});
+    METRICS.forEach(function(m){
+      g.appendChild(h('label', {class:'choice'}, [h('input', {type:'checkbox', id:'mt-' + m.id, 'aria-labelledby':'mt-' + m.id + '-t', 'aria-describedby':'mt-' + m.id + '-d', checked:S.metrics.indexOf(m.id) > -1, onchange:function(e){
+          toggleIn(S.metrics, m.id, e.target.checked); metricCount(); announce(S.metrics.length + ' selected. Pick 2 or 3.' + (S.metrics.length > 3 ? ' Uncheck one.' : '')); changed(); }}),
+        h('span', {}, [h('span', {class:'t', id:'mt-' + m.id + '-t', text:m.t}), h('span', {class:'d', id:'mt-' + m.id + '-d', text:m.d})]), h('span', {class:'tick', 'aria-hidden':'true', text:'✓'})]));
+    });
+    fs.appendChild(g); b.appendChild(fs);
+    b.appendChild(field({id:'metric-why', label:'Why these numbers', multi:true, rows:2, value:S.metricWhy, hint:'One line tying them to the goal: new players find Breaking Games, like it, and buy from it.', set:function(v){ S.metricWhy = v; }}));
+    var ad = h('fieldset', {id:'fs-ad'}, [h('legend', {}, ['Ad: the one number from your ad test plan ', h('span', {class:'req', text:'(required)'})])]);
+    var ag = h('div', {class:'grid'});
+    AD_METRICS.forEach(function(m){
+      ag.appendChild(h('label', {class:'choice'}, [h('input', {type:'radio', name:'ad', id:'ad-' + m.id, 'aria-labelledby':'ad-' + m.id + '-t', 'aria-describedby':'ad-' + m.id + '-d', checked:S.ad === m.id, onchange:function(){ S.ad = m.id; changed(); }}),
+        h('span', {}, [h('span', {class:'t', id:'ad-' + m.id + '-t', text:m.t}), h('span', {class:'d', id:'ad-' + m.id + '-d', text:m.d})]), h('span', {class:'tick', 'aria-hidden':'true', text:'✓'})]));
+    });
+    ad.appendChild(ag); b.appendChild(ad);
+    b.appendChild(field({id:'ad-why', label:'Why this ad number', multi:true, rows:2, value:S.adWhy, hint:'Use the same reason as your ad test plan. Ads are concepts: you never run or pay for one.', set:function(v){ S.adWhy = v; }}));
+    b.appendChild(ws([['weak', 'Get lots of views.'], ['strong', 'Saves and link taps at 7 days, because Rachel saves gift ideas and the goal is new customers.']]));
+    metricCount();
+  };
+  function metricCount(){ var p = $('count-metrics'); if (p) p.textContent = S.metrics.length + ' selected (pick 2 or 3)' + (S.metrics.length > 3 ? ': uncheck ' + (S.metrics.length - 3) : ''); }
+
+  R.out2 = function(b){ outScreen(b, 2); };
+
+  function outScreen(b, p){
+    b.appendChild(h('div', {class:'todo', id:'todo-' + p}));
+    b.appendChild(h('article', {class:'brief', id:'brief-' + p, 'aria-labelledby':'brief-title-' + p}));
+    b.appendChild(h('div', {class:'card out-tools'}, [h('h3', {text:'Save your brief'}),
+      h('ol', {style:'padding-left:1.2em;margin-top:6px'}, [
+        h('li', {text:p === 1 ? 'Select Copy as text, then paste it into a new Google Doc named "BG-Brief-v1-[YourName]".' : 'Select Copy as text, then paste it into a Google Doc named "BG-Brand-Brief-[YourName]".'}),
+        h('li', {text:p === 1 ? 'Open "Back up or restore your answers" at the top and save your backup text. Part 2 starts from it in Week 5.' : 'Fix any formatting so it reads cleanly on one page.'}),
+        h('li', {text:'Set sharing to "Anyone with the link can view" before you submit the link.'})]),
+      h('div', {class:'actions', style:'margin-top:10px'}, [
+        h('button', {type:'button', class:'primary', id:'copy-' + p, onclick:function(){ copyText(fullText(p), $('copy-' + p), 'Brief copied as plain text.', 'copied-' + p, p); }}, ['Copy as text']),
+        h('button', {type:'button', id:'dl-' + p, onclick:function(){ download(fullText(p), 'bg-brand-brief-' + (p === 1 ? 'v1-' : 'final-')); }, text:'Download .txt'}),
+        h('button', {type:'button', id:'print-' + p, onclick:function(){ renderOutput(p); doPrint(p); }, text:'Print'}),
+        p === 1 ? h('button', {type:'button', id:'to-p2', onclick:function(){ setPart(2); }, text:'Go to Part 2'}) : null,
+        h('button', {type:'button', id:'reset-' + p, onclick:function(){ openReset($('reset-' + p)); }, text:'Reset'}),
+        h('span', {class:'copied', id:'copied-' + p})]),
+      h('div', {id:'fallback-' + p, hidden:true, style:'margin-top:12px'}, [h('div', {class:'field', style:'max-width:none'}, [
+        h('label', {for:'fallback-text-' + p, text:'Your brief as text'}), h('p', {class:'hint', id:'fb-hint-' + p, text:'Copying was blocked. The text is selected: press Ctrl+C (Windows) or Cmd+C (Mac).'}),
+        h('textarea', {class:'in', id:'fallback-text-' + p, readonly:true, rows:8, 'aria-describedby':'fb-hint-' + p})])])]));
+  }
+  function doPrint(p){ var s = $('sec-out' + p); s.classList.add('printing'); window.print(); setTimeout(function(){ s.classList.remove('printing'); }, 500); }
+
+  /* ---------- validation ---------- */
+  var HEX = /^#[0-9a-f]{6}$/i;
+  function V(k){
+    var e = [];
+    function add(id, msg, focus){ e.push({id:id, msg:msg, focus:focus || id}); }
+    if (k === 'personas') PERSONAS.forEach(function(p){ var st = S.persona[p.id];
+      if (!t(st.moment)) add('pm-' + p.id + '-moment', 'Error: Write ' + p.name + '\'s moment in one sentence.');
+      if (!t(st.stop)) add('pm-' + p.id + '-stop', 'Error: Write what would make ' + p.name + ' stop scrolling.'); });
+    if (k === 'guard' && S.guard.length !== 3) add('fs-guard', 'Error: Pick exactly 3 of the ' + GUARDS.length + ' guardrails. You have ' + S.guard.length + ' selected.', 'g-' + GUARDS[0].id);
+    if (k === 'promise'){
+      if (!t(S.promise.who)) add('pr-who', 'Error: Fill in who Breaking Games helps.');
+      if (!t(S.promise.feel)) add('pr-feel', 'Error: Fill in how they feel.');
+      if (!t(S.promise.by)) add('pr-by', 'Error: Fill in how Breaking Games does it.');
+    }
+    if (k === 'pillars'){
+      S.pillars.forEach(function(p, i){ if (!t(p)) add('pil-' + i, 'Error: Name pillar ' + (i + 1) + '. You can type the original: ' + DEFAULT_PILLARS[i] + '.'); });
+      if (S.p4on && !t(S.p4)) add('pil-3', 'Error: Name pillar 4, or uncheck the 4th pillar.');
+    }
+    if (k === 'fw') S.vids.forEach(function(v, i){ var n = i + 1;
+      if (!v.fw) add('v' + n + '-fw', 'Error: Choose a framework for Video ' + n + '.');
+      else if (n === 2 && v.fw === S.vids[0].fw) add('v2-fw', 'Error: Video 2 uses the same framework as Video 1. Choose a different one.');
+      if (!v.persona) add('v' + n + '-persona', 'Error: Tag Video ' + n + ' with Rachel or Dani.', 'v' + n + '-persona-rachel');
+      if (!v.game) add('v' + n + '-game', 'Error: Choose a game for Video ' + n + '.');
+      if (!v.pillar || pillarOptions().indexOf(v.pillar) < 0) add('v' + n + '-pillar', 'Error: Choose a pillar for Video ' + n + '.');
+      if (!t(v.why)) add('v' + n + '-why', 'Error: Say why you picked this framework for Video ' + n + '.'); });
+    if (k === 'voice'){
+      S.words.forEach(function(w, i){ if (!t(w)) add('w-' + i, 'Error: Add voice word ' + (i + 1) + '.'); });
+      if (!S.palSrc) add('fs-palsrc', 'Error: Choose where your palette comes from.', 'fs-palsrc-guide');
+      if (S.colors.length < 3 || S.colors.length > 5) add('fs-colors', 'Error: Use 3 to 5 colors. You have ' + S.colors.length + '.', S.colors.length > 5 ? 'hex-0' : 'add-color');
+      S.colors.forEach(function(c, i){ if (!HEX.test(t(c))) add('hex-' + i, 'Error: Enter color ' + (i + 1) + ' as a 6-digit hex code, like #CC0F3A.'); });
+      S.imagery.forEach(function(w, i){ if (!t(w)) add('im-' + i, 'Error: Add imagery word ' + (i + 1) + '.'); });
+    }
+    if (k === 'learn'){
+      if (S.learn.length !== 2) add('fs-learn', 'Error: Pick exactly 2 accounts to learn from. You have ' + S.learn.length + ' selected.', 'lp-' + PEERS[0].id);
+      S.learn.forEach(function(id){ var c = byId(PEERS, id), n = S.learnNotes[id] || {}; if (!c) return;
+        if (!t(n.works)) add('ln-' + id + '-works', 'Error: Write one line on what works for ' + c.name + '.');
+        if (!t(n.borrow)) add('ln-' + id + '-borrow', 'Error: Write one line on what Breaking Games would borrow from ' + c.name + '.'); });
+    }
+    if (k === 'snap'){
+      if (S.snap.length !== 2) add('fs-snap', 'Error: Pick exactly 2 games. You have ' + S.snap.length + ' selected.', 'sg-' + GAMES[0].id);
+      S.snap.forEach(function(id){ var g = byId(GAMES, id), n = S.snapNotes[id] || {}; if (!g) return;
+        if (!t(n.seen)) add('sn-' + id + '-seen', 'Error: Describe what a viewer sees in the first 10 seconds of ' + g.t + '.');
+        if (!n.pass) add('sn-' + id + '-pass', 'Error: Say whether ' + g.t + ' passes the 10-second test.', 'sn-' + id + '-pass-yes');
+        if (n.pass === 'no' && !t(n.fix)) add('sn-' + id + '-fix', 'Error: Write one fix so ' + g.t + ' passes.'); });
+      if (!t(S.need)) add('need', 'Error: Finish the sentence: Our games need … from the Breaking Games brand.');
+    }
+    if (k === 'ins'){
+      S.ins.forEach(function(x, i){ var n = i + 1;
+        if (!x.tag) add('in' + n + '-tag', 'Error: Tag insight ' + n + ' as Gen Z, the current buyer, or ads.', 'in' + n + '-tag-genz');
+        if (!t(x.learned)) add('in' + n + '-learned', 'Error: Write what you learned for insight ' + n + '.');
+        if (!t(x.evidence)) add('in' + n + '-evidence', 'Error: Name the evidence for insight ' + n + '.');
+        if (!t(x.should)) add('in' + n + '-should', 'Error: Write what Breaking Games should do for insight ' + n + '.'); });
+      var tags = S.ins.map(function(x){ return x.tag; }).filter(Boolean);
+      if (tags.length === 3){ var miss = INS_TAGS.filter(function(g){ return tags.indexOf(g.id) < 0; });
+        if (miss.length) add('in3-tag', 'Error: Your insights need one of each tag. Missing: ' + miss.map(function(g){ return g.t; }).join(' and ') + '.', 'in3-tag-genz'); }
+    }
+    if (k === 'measure'){
+      if (S.metrics.length < 2 || S.metrics.length > 3) add('fs-metrics', 'Error: Pick 2 or 3 organic numbers. You have ' + S.metrics.length + ' selected.', 'mt-' + METRICS[0].id);
+      if (!t(S.metricWhy)) add('metric-why', 'Error: Write why these numbers matter.');
+      if (!S.ad) add('fs-ad', 'Error: Choose the one ad number from your test plan.', 'ad-' + AD_METRICS[0].id);
+      if (!t(S.adWhy)) add('ad-why', 'Error: Write why this ad number matters.');
+    }
+    return e;
+  }
+  function showErr(id, msg){
+    var el = $(id); if (!el) return;
+    var p = $(id + '-err');
+    if (!p){
+      p = h('p', {class:'err', id:id + '-err'});
+      if (el.tagName === 'FIELDSET'){ var lg = el.querySelector('legend'); lg.parentNode.insertBefore(p, lg.nextSibling); }
+      else el.parentNode.insertBefore(p, el);
+    }
+    p.textContent = msg; addDesc(el, id + '-err');
+    if (el.tagName === 'FIELDSET'){ el.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(function(i){ addDesc(i, id + '-err'); }); }
+    else el.setAttribute('aria-invalid', 'true');
+  }
+  function clearErr(id){ var p = $(id + '-err'); if (p) p.remove(); var el = $(id); if (el){ rmDesc(el, id + '-err'); el.removeAttribute('aria-invalid');
+    if (el.tagName === 'FIELDSET') el.querySelectorAll('input').forEach(function(i){ if (i.getAttribute('aria-describedby')) rmDesc(i, id + '-err'); }); } }
+  function clearAll(k){ (shown[k] || []).forEach(clearErr); shown[k] = []; var s = $('sum-' + k); if (s) s.hidden = true; }
+  function summary(k, list){
+    var s = $('sum-' + k); if (!list.length){ s.hidden = true; s.removeAttribute('data-sig'); return; }
+    var sig = list.map(function(x){ return x.msg; }).join('|');
+    if (!s.hidden && s.getAttribute('data-sig') === sig) return;
+    s.setAttribute('data-sig', sig); s.textContent = '';
+    s.appendChild(h('h3', {id:'sum-h-' + k, text:'Fix ' + list.length + (list.length === 1 ? ' thing' : ' things') + ' before continuing'}));
+    s.appendChild(h('ul', {}, list.map(function(x){ return h('li', {}, [h('a', {href:'#' + x.focus, text:x.msg, onclick:function(ev){ ev.preventDefault(); var f = $(x.focus); if (f){ if (f.tagName === 'FIELDSET') f.setAttribute('tabindex', '-1'); f.focus(); } }})]); })));
+    s.hidden = false;
+  }
+  function showErrors(k, focus){
+    clearAll(k);
+    var list = V(k); list.forEach(function(x){ showErr(x.id, x.msg); });
+    shown[k] = list.map(function(x){ return x.id; });
+    summary(k, list);
+    if (focus && list.length) $('sum-' + k).focus();
+    return list.length;
+  }
+  function refreshErrors(){
+    var k = S.cur; if (!shown[k] || !shown[k].length) return;
+    var list = V(k), ids = list.map(function(x){ return x.id; });
+    shown[k].forEach(function(id){ if (ids.indexOf(id) < 0 || !$(id + '-err')) clearErr(id); });
+    var keep = list.filter(function(x){ return shown[k].indexOf(x.id) > -1; });
+    keep.forEach(function(x){ showErr(x.id, x.msg); });
+    shown[k] = keep.map(function(x){ return x.id; });
+    summary(k, keep);
+  }
+
+  /* ---------- shell, stepper, navigation ---------- */
+  function status(k){
+    if (SEC[k].out) return '';
+    if (!S.seen[k]) return 'Not started';
+    return V(k).length ? 'Needs attention' : 'Done';
+  }
+  function kicker(s){
+    if (s.part === 0) return 'Start here';
+    var keys = inputKeys(s.part), i = keys.indexOf(s.key);
+    return s.out ? 'Part ' + s.part + ' output' : 'Part ' + s.part + ' · Screen ' + s.n + ' (' + (i + 1) + ' of ' + keys.length + ')';
+  }
+  function buildShell(){
+    var wrap = $('sections'), ol = $('step-list');
+    SECTIONS.forEach(function(s){
+      wrap.appendChild(h('section', {id:'sec-' + s.key, 'aria-labelledby':'h-' + s.key, hidden:true}, [
+        h('p', {class:'badge', text:kicker(s)}),
+        h('h2', {id:'h-' + s.key, tabindex:'-1', text:s.t}),
+        s.g ? h('p', {class:'guide'}, [h('strong', {text:'What to do here: '}), s.g, ' ', h('span', {class:'time', text:'About ' + s.time})]) : null,
+        (s.part && !s.out) ? h('p', {class:'req-note', text:'Fields marked (required) need an answer before you continue.'}) : null,
+        h('div', {class:'err-summary', id:'sum-' + s.key, role:'group', tabindex:'-1', 'aria-labelledby':'sum-h-' + s.key, hidden:true}),
+        h('div', {class:'body', id:'body-' + s.key})]));
+      if (!s.part) return;
+      ol.appendChild(h('li', {id:'li-' + s.key, 'data-part':String(s.part)}, [h('button', {type:'button', class:'step', id:'st-' + s.key, onclick:function(){ leave(); go(s.key); }}, [
+        h('span', {class:'n', 'aria-hidden':'true', text:s.out ? '★' : String(s.n)}), sr(s.out ? 'Output: ' : 'Screen ' + s.n + ': '),
+        h('span', {class:'l'}, [s.t, sr(', '), h('span', {class:'st', id:'sts-' + s.key})])])]));
+    });
+  }
+  function renderAll(){ SECTIONS.forEach(function(s){ var b = $('body-' + s.key); b.textContent = ''; shown[s.key] = []; $('sum-' + s.key).hidden = true; R[s.key](b); }); }
+  function updateStepper(){
+    SECTIONS.forEach(function(s){ if (!s.part) return; var st = status(s.key), el = $('sts-' + s.key);
+      el.textContent = st; el.className = 'st' + (st === 'Done' ? ' done' : st === 'Needs attention' ? ' warn' : ''); });
+  }
+  function leave(){ if (SEC[S.cur].part && !SEC[S.cur].out) S.seen[S.cur] = true; clearAll(S.cur); }
+  function rebuild(k){ var b = $('body-' + k); b.textContent = ''; shown[k] = []; $('sum-' + k).hidden = true; R[k](b); }
+  function go(k, noFocus){
+    var s = SEC[k], prevPart = S.part;
+    S.cur = k; S.part = s.part; if (s.part) S.last[String(s.part)] = k;
+    SECTIONS.forEach(function(x){
+      $('sec-' + x.key).hidden = x.key !== k;
+      var b = $('st-' + x.key); if (b){ if (x.key === k) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); }
+      var li = $('li-' + x.key); if (li) li.hidden = x.part !== s.part;
+    });
+    $('layout').classList.toggle('solo', !s.part);
+    $('nav-label').textContent = s.part ? 'Part ' + s.part + ' screens' : 'All screens';
+    [1, 2].forEach(function(p){ $('part-' + p).setAttribute('aria-pressed', String(s.part === p)); });
+    if (k === 'fw') rebuild('fw');
+    if (s.out) renderOutput(s.out);
+    var keys = s.part ? partKeys(s.part) : [], i = keys.indexOf(k);
+    $('pager').hidden = !s.part;
+    $('back').hidden = i <= 0;
+    $('next').hidden = i < 0 || i === keys.length - 1;
+    if (i >= 0 && i < keys.length - 1) $('next').textContent = 'Next: ' + SEC[keys[i + 1]].t;
+    setNav(false); updateStepper(); changed();
+    if (!noFocus){ var hd = $('h-' + k); hd.focus(); if (hd.scrollIntoView) hd.scrollIntoView({block:'start'}); }
+    if (!noFocus && prevPart !== s.part && s.part) announce('Now on Part ' + s.part + '. ' + SEC[k].t + '.');
+  }
+  function setPart(p){
+    leave();
+    var k = S.last[String(p)]; if (!SEC[k] || SEC[k].part !== p) k = p === 1 ? P1[0] : P2[0];
+    go(k);
+  }
+  function setNav(open){ $('nav').classList.toggle('open', open); $('nav-toggle').setAttribute('aria-expanded', String(open)); }
+  $('nav-toggle').addEventListener('click', function(){ setNav($('nav-toggle').getAttribute('aria-expanded') !== 'true'); });
+  $('skip').addEventListener('click', function(e){ e.preventDefault(); $('h-' + S.cur).focus(); });
+  $('part-1').addEventListener('click', function(){ setPart(1); });
+  $('part-2').addEventListener('click', function(){ setPart(2); });
+  $('back').addEventListener('click', function(){ var keys = partKeys(S.part), i = keys.indexOf(S.cur); leave(); go(keys[i - 1]); });
+  $('next').addEventListener('click', function(){
+    var keys = partKeys(S.part), i = keys.indexOf(S.cur);
+    if (showErrors(S.cur, true)){ S.seen[S.cur] = true; updateStepper(); announce('Fix the items listed before you continue.'); return; }
+    S.seen[S.cur] = true; clearAll(S.cur); go(keys[i + 1]);
+  });
+  $('main').addEventListener('change', refreshErrors);
+  $('main').addEventListener('focusout', function(){ setTimeout(refreshErrors, 0); });
+
+  /* ---------- output ---------- */
+  var MISSING = 'Not filled in yet';
+  function words(){ return S.words.map(t).filter(Boolean); }
+  function palette(){ return S.colors.map(t).filter(function(c){ return HEX.test(c); }).map(function(c){ return c.toUpperCase(); }); }
+  function tone(){ return SLIDERS.map(function(s){ return s.w[S.sl[s.k] - 1].toLowerCase(); }).join('; '); }
+  function guardList(){ return S.guard.map(function(id){ return byId(GUARDS, id); }).filter(Boolean); }
+  function palLabel(){ return S.palSrc === 'temp' ? ' (temporary, from the current logo)' : S.palSrc === 'guide' ? ' (from the brand guide)' : ''; }
+
+  function renderOutput(p){
+    var todo = $('todo-' + p); if (!todo) return; todo.textContent = '';
+    var keys = p === 1 ? inputKeys(1) : inputKeys(1).concat(inputKeys(2));
+    var bad = keys.map(function(k){ return [k, V(k).length]; }).filter(function(x){ return x[1]; });
+    if (bad.length){
+      todo.appendChild(h('h3', {text:'Still to finish'}));
+      todo.appendChild(h('p', {text:'Your brief shows "' + MISSING + '" where something is missing.' + (p === 2 && bad.some(function(x){ return SEC[x[0]].part === 1; }) ? ' Part 1 answers missing? Restore your backup from the top of the page.' : '')}));
+      todo.appendChild(h('ul', {}, bad.map(function(x){ return h('li', {}, [h('a', {href:'#sec-' + x[0], onclick:function(e){ e.preventDefault(); go(x[0]); S.seen[x[0]] = true; showErrors(x[0], false); updateStepper(); },
+        text:'Part ' + SEC[x[0]].part + ', screen ' + SEC[x[0]].n + ': ' + SEC[x[0]].t + ' (' + x[1] + (x[1] === 1 ? ' thing' : ' things') + ' to fix)'})]); })));
+      todo.hidden = false;
+    } else todo.hidden = true;
+
+    var br = $('brief-' + p); br.textContent = '';
+    function sec(title, kids){ br.appendChild(h('h3', {text:title})); kids.forEach(function(k){ br.appendChild(k); }); }
+    function para(txt){ return txt ? h('p', {}, rich(txt)) : h('p', {class:'missing', text:MISSING}); }
+    function list(items){ return items.length ? h('ul', {}, items.map(function(i){ return h('li', {}, typeof i === 'string' ? rich(i) : i); })) : para(''); }
+    br.appendChild(h('p', {class:'brief-title', id:'brief-title-' + p, text:p === 1 ? 'Brand Strategy Brief v1: Breaking Games TikTok Relaunch' : 'Brand Strategy Brief: Breaking Games TikTok Relaunch'}));
+    br.appendChild(h('p', {class:'sig', text:'Brand line: "Good game, folks."  ·  Voice: fun and warm, not edgy'}));
+    sec('Relaunch challenge', [para(RELAUNCH)]);
+    sec('Call to action', [h('p', {}, ['"' + CTA + '" → ', h('a', {href:SITE, target:'_blank', rel:'noopener'}, ['breakinggames.com', sr(' (opens in a new tab)')]), ' (or a game page, such as Caminito\'s). ' + END_CARD])]);
+    sec('Who we\'re for', [list(PERSONAS.map(function(pp){ var st = S.persona[pp.id];
+      return [h('strong', {text:pp.name + ', ' + pp.age + ' (' + pp.label.toLowerCase() + '): '}), 'Moment: ' + (t(st.moment) || MISSING) + ' Stops for: ' + (t(st.stop) || MISSING)]; }))]);
+    sec('Guardrails: our top 3 (all 9 apply)', [list(guardList().map(function(g){ return [h('strong', {text:g.t + ': '}), g.d]; }))]);
+    sec('Brand promise', [para(promiseText())]);
+    sec('Content pillars', [list(pillarOptions())]);
+    br.appendChild(h('h3', {text:'Videos 1 and 2'}));
+    var tb = h('tbody');
+    S.vids.forEach(function(v, i){ var f = byId(FWS, v.fw);
+      tb.appendChild(h('tr', {}, [h('th', {scope:'row', text:'Video ' + (i + 1)}), h('td', {text:f ? f.t : MISSING}), h('td', {text:personaName(v.persona) || MISSING}),
+        h('td', {text:gameName(v.game) || MISSING}), h('td', {text:v.pillar || MISSING}), h('td', {text:(t(v.why) || MISSING) + (t(v.moment) ? ' Moment: ' + t(v.moment) + '.' : '')})])); });
+    br.appendChild(h('div', {class:'tscroll', role:'region', 'aria-labelledby':'fw-cap-' + p, tabindex:'0'}, [h('table', {}, [
+      h('caption', {id:'fw-cap-' + p, text:'Framework N = Video N, with its persona tag'}),
+      h('thead', {}, [h('tr', {}, ['Video', 'Framework', 'Persona', 'Game', 'Pillar', 'Why'].map(function(x){ return h('th', {scope:'col', text:x}); }))]), tb])]));
+    if (p === 2){
+      sec('Voice and visuals', [
+        palette().length ? h('ul', {class:'chips', 'aria-label':'Palette'}, palette().map(function(c){ return h('li', {}, [h('span', {class:'swatch', 'aria-hidden':'true', style:'background:' + c}), h('span', {class:'hex', text:c})]); })) : para(''),
+        list(['Voice words: ' + (words().join(', ') || MISSING), 'Tone: ' + tone(), 'Palette' + palLabel() + ': ' + (palette().join(', ') || MISSING),
+          'Fonts and logo: from the brand guide {PM: fonts and logo lockup}', 'Imagery: ' + (S.imagery.map(t).filter(Boolean).join(', ') || MISSING) + '. ' + IMG_RULE])]);
+      sec('Who we learn from', [list(S.learn.map(function(id){ var c = byId(PEERS, id), n = S.learnNotes[id] || {}; if (!c) return '';
+        return [h('strong', {text:c.name + ': '}), 'What works: ' + (t(n.works) || MISSING) + ' What we\'d borrow: ' + (t(n.borrow) || MISSING)]; }).filter(Boolean))]);
+      sec('Game Snapshot', [list(S.snap.map(function(id){ var g = byId(GAMES, id), n = S.snapNotes[id] || {}; if (!g) return '';
+        return [h('strong', {text:g.t + ': '}), 'First 10 seconds: ' + (t(n.seen) || MISSING) + ' 10-second test: ' + (n.pass === 'yes' ? 'passes.' : n.pass === 'no' ? 'not yet. Fix: ' + (t(n.fix) || MISSING) : MISSING)]; }).filter(Boolean)), para(needText())]);
+      sec('Strategy insights', [list(S.ins.map(function(x){ var tag = byId(INS_TAGS, x.tag);
+        return [h('strong', {text:(tag ? tag.t : 'Untagged') + ': '}), (insLine(x) || MISSING) + (t(x.evidence) ? ' Evidence: ' + t(x.evidence) + '.' : '')]; }))]);
+      var adm = byId(AD_METRICS, S.ad);
+      sec('How we\'ll measure', [list([
+        'Organic, at 7 days: ' + (S.metrics.map(function(id){ return byId(METRICS, id).t.toLowerCase(); }).join(', ') || MISSING) + '. ' + (t(S.metricWhy) || ''),
+        'Benchmarks: TikTok "Keep Calm or Panic?" 1,049 views; Reels 4.4 likes per 100 followers.',
+        'Ad (concept only): ' + (adm ? adm.t.toLowerCase() : MISSING) + '. ' + (t(S.adWhy) || '')])]);
+    }
+    br.appendChild(h('p', {class:'hint', style:'margin-top:14px', text:'Externship concept for Breaking Games. Not for posting.'}));
+  }
+
+  function fullText(p){
+    var L = [], line = function(s){ L.push(s == null ? '' : s); };
+    line(p === 1 ? 'BRAND STRATEGY BRIEF v1: BREAKING GAMES TIKTOK RELAUNCH' : 'BRAND STRATEGY BRIEF: BREAKING GAMES TIKTOK RELAUNCH');
+    line('Brand line: "Good game, folks." | Voice: fun and warm, not edgy'); line('');
+    line('RELAUNCH CHALLENGE'); line(RELAUNCH); line('');
+    line('CALL TO ACTION'); line('"' + CTA + '" -> ' + SITE + ' (or a game page, such as Caminito\'s). ' + END_CARD); line('');
+    line('WHO WE\'RE FOR'); PERSONAS.forEach(function(pp){ var st = S.persona[pp.id]; line('- ' + pp.name + ', ' + pp.age + ' (' + pp.label.toLowerCase() + '): Moment: ' + (t(st.moment) || MISSING) + ' Stops for: ' + (t(st.stop) || MISSING)); }); line('');
+    line('GUARDRAILS: OUR TOP 3 (ALL 9 APPLY)'); guardList().forEach(function(g){ line('- ' + g.t + ': ' + g.d); }); if (!S.guard.length) line(MISSING); line('');
+    line('BRAND PROMISE'); line(promiseText() || MISSING); line('');
+    line('CONTENT PILLARS'); pillarOptions().forEach(function(x){ line('- ' + x); }); line('');
+    line('VIDEOS 1 AND 2 (Framework N = Video N)');
+    S.vids.forEach(function(v, i){ var f = byId(FWS, v.fw); line('Video ' + (i + 1) + ': ' + (f ? f.t : MISSING) + ' | For: ' + (personaName(v.persona) || MISSING) + ' | Game: ' + (gameName(v.game) || MISSING) + ' | Pillar: ' + (v.pillar || MISSING) + (t(v.moment) ? ' | Moment: ' + t(v.moment) : '') + ' | Why: ' + (t(v.why) || MISSING)); });
+    line('');
+    if (p === 2){
+      line('VOICE AND VISUALS');
+      line('- Voice words: ' + (words().join(', ') || MISSING)); line('- Tone: ' + tone());
+      line('- Palette' + palLabel() + ': ' + (palette().join(', ') || MISSING)); line('- Fonts and logo: from the brand guide {PM: fonts and logo lockup}');
+      line('- Imagery: ' + (S.imagery.map(t).filter(Boolean).join(', ') || MISSING) + '. ' + IMG_RULE); line('');
+      line('WHO WE LEARN FROM'); S.learn.forEach(function(id){ var c = byId(PEERS, id), n = S.learnNotes[id] || {}; if (c) line('- ' + c.name + ': What works: ' + (t(n.works) || MISSING) + ' What we\'d borrow: ' + (t(n.borrow) || MISSING)); }); if (!S.learn.length) line(MISSING); line('');
+      line('GAME SNAPSHOT'); S.snap.forEach(function(id){ var g = byId(GAMES, id), n = S.snapNotes[id] || {}; if (g) line('- ' + g.t + ': First 10 seconds: ' + (t(n.seen) || MISSING) + ' 10-second test: ' + (n.pass === 'yes' ? 'passes.' : n.pass === 'no' ? 'not yet. Fix: ' + (t(n.fix) || MISSING) : MISSING)); }); if (!S.snap.length) line(MISSING);
+      line(needText() || 'Our games need: ' + MISSING); line('');
+      line('STRATEGY INSIGHTS'); S.ins.forEach(function(x){ var tag = byId(INS_TAGS, x.tag); line('- ' + (tag ? tag.t : 'Untagged') + ': ' + (insLine(x) || MISSING) + (t(x.evidence) ? ' Evidence: ' + t(x.evidence) + '.' : '')); }); line('');
+      var adm = byId(AD_METRICS, S.ad);
+      line('HOW WE\'LL MEASURE');
+      line('- Organic, at 7 days: ' + (S.metrics.map(function(id){ return byId(METRICS, id).t.toLowerCase(); }).join(', ') || MISSING) + '. ' + t(S.metricWhy));
+      line('- Benchmarks: TikTok "Keep Calm or Panic?" 1,049 views; Reels 4.4 likes per 100 followers.');
+      line('- Ad (concept only): ' + (adm ? adm.t.toLowerCase() : MISSING) + '. ' + t(S.adWhy)); line('');
+    }
+    line('Externship concept for Breaking Games. Not for posting.');
+    return L.join('\n');
+  }
+
+  /* ---------- copy / download / backup / reset ---------- */
+  function legacyCopy(text){
+    var ta = h('textarea', {readonly:true, style:'position:fixed;top:-9999px;opacity:0'}); ta.value = text;
+    document.body.appendChild(ta); ta.select(); var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+    ta.remove(); return ok;
+  }
+  function copyText(text, btn, okMsg, visId, p, selectEl){
+    function done(){ btn.focus(); if (p) $('fallback-' + p).hidden = true; var v = $(visId); if (v){ v.textContent = 'Copied'; setTimeout(function(){ v.textContent = ''; }, 4000); } announce(okMsg); }
+    function fail(){
+      var el = selectEl;
+      if (!el && p){ $('fallback-text-' + p).value = text; $('fallback-' + p).hidden = false; el = $('fallback-text-' + p); }
+      if (el){ el.hidden = false; el.focus(); el.select(); }
+      announce("Couldn't copy automatically. The text is selected. Press Ctrl+C or Cmd+C to copy it.");
+    }
+    function legacy(){ if (legacyCopy(text)) done(); else fail(); }
+    try { if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, legacy); else legacy(); } catch(e){ legacy(); }
+  }
+  function download(text, prefix){
+    var name = prefix + new Date().toISOString().slice(0, 10) + '.txt';
+    try {
+      var url = URL.createObjectURL(new Blob([text], {type:'text/plain;charset=utf-8'}));
+      var a = h('a', {href:url, download:name}); document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      announce('Downloading ' + name + '. If nothing downloads, use Copy instead.');
+    } catch(e){ announce('Download was blocked in this view. Use Copy instead.'); }
+  }
+  var BK_HEAD = 'BREAKING GAMES BRAND BRIEF BUILDER BACKUP (v2). Paste all of this into "Restore from a backup."';
+  function backupText(){ var d = JSON.parse(JSON.stringify(S)); return BK_HEAD + '\n' + JSON.stringify(d); }
+  $('bk-show').addEventListener('click', function(){ var ta = $('bk-text'); ta.value = backupText(); ta.hidden = false; ta.focus(); ta.select(); announce('Your backup text is shown and selected.'); });
+  $('bk-copy').addEventListener('click', function(){ $('bk-text').value = backupText(); copyText(backupText(), $('bk-copy'), 'Backup copied. Paste it somewhere safe.', 'bk-copied', null, $('bk-text')); });
+  $('bk-dl').addEventListener('click', function(){ download(backupText(), 'bg-brief-backup-'); });
+  $('im-go').addEventListener('click', function(){
+    var ta = $('im-text'), raw = ta.value, i = raw.indexOf('{'), j = raw.lastIndexOf('}'), d = null;
+    var old = $('im-err'); if (old) old.remove(); rmDesc(ta, 'im-err'); ta.removeAttribute('aria-invalid');
+    if (i > -1 && j > i){ try { d = JSON.parse(raw.slice(i, j + 1)); } catch(e){ d = null; } }
+    if (!d || typeof d !== 'object' || !d.persona){
+      var p = h('p', {class:'err', id:'im-err', text:'Error: That doesn\'t look like a Builder backup. Paste the whole text, starting with "BREAKING GAMES BRAND BRIEF BUILDER BACKUP."'});
+      ta.parentNode.insertBefore(p, ta); addDesc(ta, 'im-err'); ta.setAttribute('aria-invalid', 'true'); ta.focus(); return;
+    }
+    var keepPart = S.part;
+    S = merge(d); if (keepPart){ S.part = keepPart; S.cur = S.last[String(keepPart)] && SEC[S.last[String(keepPart)]] && SEC[S.last[String(keepPart)]].part === keepPart ? S.last[String(keepPart)] : (keepPart === 1 ? P1[0] : P2[0]); }
+    ta.value = ''; renderAll(); save(); go(S.cur, true);
+    announce('Your answers were restored.'); $('im-go').focus();
+  });
+
+  var dlg = $('dlg'), resetFrom = null;
+  function openReset(btn){
+    resetFrom = btn;
+    if (typeof dlg.showModal !== 'function'){ if (window.confirm('Start over? This clears every answer in both parts.')) doReset(); return; }
+    dlg.showModal(); $('dlg-cancel').focus();
+  }
+  function doReset(){
+    S = defaults();
+    try { localStorage.removeItem(KEY); } catch(e){}
+    renderAll(); go('start'); save();
+    announce('Your answers were reset. Both parts are empty again.');
+  }
+  $('dlg-cancel').addEventListener('click', function(){ dlg.close('cancel'); });
+  $('dlg-ok').addEventListener('click', function(){ dlg.close('ok'); });
+  dlg.addEventListener('close', function(){
+    var ok = dlg.returnValue === 'ok'; dlg.returnValue = '';
+    if (ok) doReset(); else if (resetFrom) resetFrom.focus();
+  });
+  window.addEventListener('beforeprint', function(){ var s = SEC[S.cur]; if (s.out) renderOutput(s.out); });
+  function flush(){ if (saveTimer){ clearTimeout(saveTimer); saveTimer = null; save(); } }
+  window.addEventListener('pagehide', flush);
+  document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') flush(); });
+
+  /* ---------- start ---------- */
+  load();
+  buildShell(); renderAll();
+  go(S.cur, true);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Breaking Games x TikTok concept decoder: The four parts of an ad (Project 3, page 03)
+  Built 2026-10-19 from _asset-specs.md asset 2 (concept-decoder DECK: 4 parts, 2 rounds, perspective Dani)
+  and 03-training-ads-are-a-different-room.md. Re-skinned into the step-deck chrome; 2 + 2x3 = 8 slides.
+  Both ads are made-up samples.
+  Style: ../../09-assets/style/tiktok-style-guide.md. Chrome and a11y patterns:
+  ../../09-assets/templates/breaking-games-steps-slides-template.html.
+  The slide text mirrors the page's "Text version of the interactive" toggle. Edit both together.
+  WCAG 2.2 AA: one H1; inactive slides hidden; focus moves to each slide's h2; polite live region;
+  44px targets; reveals use real buttons with aria-expanded; state shown in words, not color alone;
+  reflows to one column at 640px; prefers-reduced-motion respected. No external data calls.
+  Every ad or mock-up shown is labeled "Concept".
+  Deploy: https://vpdasgupta.github.io/tiktok/breaking-games-p3-anatomy-of-an-ad.html
+-->
+<title>The four parts of an ad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #F8FAFC; --card: #FFFFFF; --ink: #0F172A; --ink-soft: #5A6478;
+    --line: #E9E9E7; --edge: #64748B; --tt-cyan: #25F4EE; --tt-red: #FE2C55;
+    --red-ink: #CC0F3A; --red-dark: #A80C30; --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86; --cyan-tint: #E6FDFC; --amber-ink: #9A5B00; --amber-tint: #FFF4E5;
+    --night: #0C0B10; --night-ink: #E2E8F0; --night-soft: #A89FA2;
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px; --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.5; padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a, input, textarea { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  a { color: var(--red-ink); }
+
+  .deck { max-width: 920px; margin: 0 auto; }
+  .deck-head {
+    margin-bottom: 14px; padding: 18px 24px 22px; border-radius: var(--radius); color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .deck-head :focus-visible { outline-color: var(--tt-cyan); }
+  .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); }
+  .deck-title { font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .grad-word { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @media (forced-colors: active) { .grad-word { color: CanvasText; background: none; } }
+
+  .slide {
+    overflow-wrap: anywhere;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 26px 32px 24px;
+    aspect-ratio: 16 / 9; display: flex; flex-direction: column;
+  }
+  .step-num {
+    align-self: flex-start; display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
+  }
+  .slide h2 { font-size: 28px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 10px 0 12px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 18px; margin: 0 0 12px; }
+  .slide .lead { font-size: 21px; line-height: 1.45; }
+  .slide .plain { margin: 0 0 12px; padding-left: 22px; font-size: 18px; }
+  .slide .plain li { margin-bottom: 6px; }
+  .icon { font-size: 40px; line-height: 1; margin: 4px 0 8px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--pink-tint); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+
+  .chip { display: inline-block; align-self: flex-start; background: var(--pink-tint); color: var(--ink); font-weight: 700; border-radius: 999px; padding: 6px 14px; font-size: 15px; margin: 4px 0 12px; }
+  .chip.cta { background: var(--night); color: #FFFFFF; }
+  .callout { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 4px 0 12px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 4px 0 14px; }
+  .grid.two { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .box { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background: var(--canvas); }
+  .box h3 { font-size: 17px; margin: 0 0 6px; line-height: 1.3; }
+  .box p { font-size: 15px; margin: 0 0 8px; }
+  .box p:last-child { margin-bottom: 0; }
+  .box .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+  .stat { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background:
+      linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas); }
+  .stat .big { display: block; font-size: 24px; font-weight: 800; line-height: 1.2; }
+  .stat .small { display: block; font-size: 14px; color: var(--ink-soft); }
+  .caption { font-size: 14px; color: var(--ink-soft); margin-top: -6px; }
+
+  .person { display: flex; gap: 12px; align-items: flex-start; }
+  .avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--ink); background: var(--cyan-tint); border: 2px solid var(--teal-ink); }
+
+  .status-pill { display: inline-block; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 3px 10px; margin-bottom: 6px; border: 1px solid currentColor; }
+  .status-pill.use { color: var(--teal-ink); background: var(--cyan-tint); }
+  .status-pill.check { color: var(--amber-ink); background: var(--amber-tint); }
+  .status-pill.no { color: var(--red-ink); background: var(--pink-tint); }
+
+  .tbl { width: 100%; border-collapse: collapse; margin: 0 0 12px; font-size: 15px; }
+  .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .tbl thead th { white-space: nowrap; overflow-wrap: normal; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .tbl tbody th { white-space: nowrap; }
+
+  .btn {
+    min-height: 44px; min-width: 44px; border-radius: 999px; padding: 10px 18px; font-size: 15px; font-weight: 700; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--edge); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { border-color: var(--ink); }
+  .btn.primary { background: var(--red-ink); border-color: var(--red-ink); color: #FFFFFF; }
+  .btn.primary:hover { background: var(--red-dark); border-color: var(--red-dark); }
+  .btn[aria-pressed="true"] { background: var(--ink); color: #FFFFFF; border-color: var(--ink); }
+  .btn[aria-pressed="true"]::after { content: " (your pick)" / ""; font-weight: 600; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 12px; align-items: center; }
+
+  .qa { border-top: 1px solid var(--line); padding: 10px 0; }
+  .qa p { margin: 0 0 6px; font-weight: 600; }
+  .answer { margin-top: 8px; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--cyan-tint); border-left: 4px solid var(--teal-ink); font-size: 16px; }
+  .answer b.lbl { color: var(--teal-ink); }
+  .feedback { margin-top: 4px; padding: 12px 16px; border-radius: var(--radius-sm); border-left: 4px solid var(--ink); background: var(--canvas); font-size: 16px; }
+  .feedback.right { background: var(--cyan-tint); border-color: var(--teal-ink); }
+  .feedback.wrong { background: var(--amber-tint); border-color: var(--amber-ink); }
+  .feedback .verdict { font-weight: 800; }
+
+  .roast-note { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 17px; margin: 0 0 12px; }
+  .roast-note b { color: var(--red-ink); }
+  .prompt { font-size: 15px; color: var(--ink-soft); }
+  .tagged { margin: 0; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--ink); border-radius: 999px; padding: 1px 8px; margin-right: 6px; vertical-align: 2px; background: var(--card); }
+
+  label.field { display: block; font-weight: 700; font-size: 16px; margin: 4px 0 6px; }
+  textarea { width: 100%; min-height: 76px; font-size: 16px; padding: 10px 12px; border: 1px solid var(--edge); border-radius: var(--radius-sm); color: var(--ink); background: var(--card); resize: vertical; }
+  fieldset { border: 0; padding: 0; margin: 0 0 10px; }
+  legend { font-weight: 700; font-size: 16px; margin-bottom: 6px; padding: 0; }
+  .radio-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radio-card { position: relative; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 16px; border: 1px solid var(--edge); border-radius: 999px; font-weight: 700; cursor: pointer; background: var(--card); }
+  .radio-card input { width: 20px; height: 20px; margin: 0; accent-color: var(--red-ink); }
+  .radio-card:has(input:checked) { border: 2px solid var(--ink); background: var(--pink-tint); }
+  .radio-card:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sample-text { margin: 0 0 10px; border: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas);
+    border-radius: var(--radius-sm); padding: 10px 14px 10px 18px; font-size: 15px; }
+  .disclosure { margin: 6px 0 10px; }
+  .link-btn { min-height: 44px; background: none; border: 0; padding: 8px 0; color: var(--red-ink); font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
+  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; list-style: none; margin: 0; padding: 0; }
+  .dot { width: 30px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--edge); background: var(--card); }
+  .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); }
+  .dot[aria-current="step"]::before { width: 26px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); }
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin: 6px 0 0; }
+
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .deck-head { padding: 14px 16px 18px; }
+    .deck-title { font-size: 21px; }
+    .slide { aspect-ratio: auto; padding: 20px 18px; }
+    .slide h2 { font-size: 21px; }
+    .slide p, .slide .plain { font-size: 16px; }
+    .slide .lead { font-size: 17px; }
+    .grid, .grid.two { grid-template-columns: 1fr; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; }
+    .nav-btn { flex: 1; }
+  }
+  @media (max-width: 420px) {
+    .tbl thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .tbl tr, .tbl th, .tbl td { display: block; width: auto; }
+    .tbl tbody th { padding-bottom: 0; border-bottom: 0; white-space: normal; }
+    .tbl tr { border-bottom: 1px solid var(--line); padding: 4px 0; }
+    .tbl td { border-bottom: 0; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+
+  .nav-btn[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+  .gate-why { font-size: 14px; color: var(--ink-soft); text-align: center; margin: 6px 0 0; }
+  .concept-tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink); background: #FFFFFF; border: 1px solid var(--ink); border-radius: 999px; padding: 1px 8px; }
+  .slide .sub { font-size: 16px; color: var(--ink-soft); margin: -4px 0 12px; }
+
+  .intro-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 4px 0 14px; }
+  .persona { display: flex; gap: 12px; align-items: flex-start; background: var(--cyan-tint); border-left: 4px solid var(--teal-ink); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 16px; }
+  .persona .who { font-weight: 800; }
+  .stakes { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0 0 14px; }
+  .stakes li { font-size: 14px; font-weight: 700; border: 1px solid var(--edge); border-radius: 999px; padding: 4px 12px; background: var(--card); }
+  .round-tag { align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-ink); background: var(--cyan-tint); border-radius: 999px; padding: 4px 12px; margin: 0; }
+  .clues { list-style: none; padding: 0; margin: 0 0 10px; display: grid; gap: 8px; }
+  .frame { display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: start; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 14px;
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas); font-size: 16px; }
+  .frame .when { font-weight: 800; font-size: 14px; padding-top: 2px; }
+  .frame .meta { display: block; margin-bottom: 2px; }
+  .guess { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; margin: 2px 0 6px; }
+  .guess .field-wrap { flex: 1 1 240px; }
+  .guess label { display: block; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .guess input { width: 100%; min-height: 44px; font-size: 16px; padding: 8px 12px; border: 1px solid var(--edge); border-radius: var(--radius-sm); color: var(--ink); background: var(--card); }
+  .result { font-size: 16px; margin: 4px 0 0; min-height: 1.5em; }
+  .result.yes { font-weight: 700; }
+  .parts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; list-style: none; padding: 0; margin: 0; }
+  .part { border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--canvas); padding: 12px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+  .slide .part p { font-size: 14px; }
+  .part .pe { font-size: 26px; line-height: 1; }
+  .part h3 { font-size: 17px; margin: 2px 0; line-height: 1.25; }
+  .part .def { color: var(--ink-soft); margin: 0; }
+  .part .when { margin: 0; font-weight: 700; }
+  .part .inad { margin: auto 0 0; padding-top: 8px; border-top: 1px solid var(--line); }
+  .dani-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 4px; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opts .radio-card { border-radius: var(--radius-sm); justify-content: flex-start; }
+  .stake-line { font-weight: 800; margin: 6px 0 0; }
+  .rules2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 12px; }
+  .bridge { border-left: 4px solid var(--red-ink); background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 700; font-size: 17px; margin: 0; }
+  @media (max-width: 760px) { .parts { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) {
+    .intro-row, .opts, .rules2 { grid-template-columns: 1fr; }
+    .frame { grid-template-columns: 1fr; gap: 2px; }
+  }
+  @media (max-width: 420px) { .parts { grid-template-columns: 1fr; } }
+
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <header class="deck-head">
+    <p class="eyebrow">Breaking Games × Project 3</p>
+    <h1 class="deck-title" id="deckTitle">The four parts of an <span class="grad-word">ad.</span></h1>
+  </header>
+
+  <div id="slides">
+    <section class="slide" aria-labelledby="h-0" hidden>
+      <p class="step-num">🎲 The four parts of an ad</p>
+      <h2 id="h-0" tabindex="-1">Guess what the ad is selling</h2>
+      <p class="lead">Two sample ads, built up second by second. Guess what each one is selling as fast as you can. Then see what made it easy, or hard, to tell.</p>
+      <div class="intro-row">
+        <div class="persona"><span aria-hidden="true" style="font-size:26px">👀</span><p style="margin:0;font-size:16px">You'll also look through the eyes of <span class="who">Dani, 21, a stranger who skips anything that looks like an ad.</span></p></div>
+        <div>
+          <p style="font-size:15px;margin:0 0 6px;font-weight:700">What's at stake, round by round</p>
+          <ul class="stakes"><li>Round 1: Rachel stops</li><li>Round 2: Dani scrolls past</li></ul>
+        </div>
+      </div>
+      <div class="btn-row"><button type="button" class="btn primary" id="startBtn">Start round 1<span aria-hidden="true"> →</span></button></div>
+    </section>
+    <section class="slide" aria-labelledby="h-1" hidden>
+      <p class="round-tag">Round 1 of 2 · a sample ad that works</p>
+      <h2 id="h-1" tabindex="-1">What is this ad selling?</h2>
+      <ol class="clues" aria-label="What the ad shows so far"><li class="frame" id="cl0-0"><span class="when">Second 0</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>Adult hands tip cards onto a kitchen table. Text: "Rainy Saturday. Kids bored."</span></li><li class="frame" id="cl0-1" hidden><span class="when">Second 2</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>The POOP: The Game box slides in, with "Breaking Games" in the corner.</span></li><li class="frame" id="cl0-2" hidden><span class="when">Second 5</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>Voices laugh off camera as a card is played.</span></li><li class="frame" id="cl0-3" hidden><span class="when">End card</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>"$10, ages 6 and up. Find your next game night." plus "Good game, folks."</span></li></ol>
+      <form class="guess" id="gf0" autocomplete="off">
+        <div class="field-wrap"><label for="g0">Your guess</label><input id="g0" type="text" autocomplete="off" spellcheck="false" aria-describedby="res0"></div>
+        <button type="submit" class="btn primary">Guess</button>
+        <button type="button" class="btn" id="mc0">Next second of the ad</button>
+      </form>
+      <p class="result" id="res0" tabindex="-1"></p>
+    </section>
+    <section class="slide" aria-labelledby="h-2" hidden>
+      <div class="dani-head"><p class="round-tag">Round 1 of 2 · a family card game</p><span class="concept-tag">Sample ad, concept</span></div>
+      <h2 id="h-2" tabindex="-1">You probably guessed by second 2.</h2>
+      <p class="sub">The hook named a moment, and the brand and game showed up before you could scroll.</p>
+      <ul class="parts" aria-label="The four parts, in this ad"><li class="part"><span class="pe" aria-hidden="true">✨</span><h3>Hook</h3><p class="def">A moment that stops the scroll: a question, a problem or a surprise.</p><p class="when">When: First 1 to 3 seconds</p><p class="inad"><strong>In this ad:</strong> "Rainy Saturday. Kids bored." at second 0.</p></li><li class="part"><span class="pe" aria-hidden="true">🏷️</span><h3>Brand and game</h3><p class="def">The viewer can see who it's from ("Breaking Games") and which game it is.</p><p class="when">When: By 3 seconds</p><p class="inad"><strong>In this ad:</strong> The box and "Breaking Games" at second 2.</p></li><li class="part"><span class="pe" aria-hidden="true">🎁</span><h3>One offer</h3><p class="def">One game and one reason to buy (for example: "$10, ages 6 and up"). Not a list of everything.</p><p class="when">When: Middle</p><p class="inad"><strong>In this ad:</strong> $10, ages 6 and up.</p></li><li class="part"><span class="pe" aria-hidden="true">➡️</span><h3>One next step</h3><p class="def">One call to action (CTA), said out loud and shown on screen, pointing to one page on breakinggames.com.</p><p class="when">When: End card</p><p class="inad"><strong>In this ad:</strong> Find your next game night, on the end card.</p></li></ul>
+    </section>
+    <section class="slide" aria-labelledby="h-3" hidden>
+      <div class="dani-head"><p class="round-tag">Round 1 of 2 · Dani's view</p><span class="concept-tag">Sample ad, concept</span></div>
+      <h2 id="h-3" tabindex="-1">Which part did the most work for a stranger?</h2>
+      <p class="sub" id="dh0">Dani, 21, skips anything that looks like an ad. Think about the moment you knew what it was. Pick one, then try the others.</p>
+      <fieldset aria-describedby="dh0">
+        <legend class="sr-only">Which part did the most work for a stranger?</legend>
+        <div class="opts" id="opts0"><label class="radio-card"><input type="radio" name="dani0" value="hook"> Hook</label><label class="radio-card"><input type="radio" name="dani0" value="brand"> Brand and game</label><label class="radio-card"><input type="radio" name="dani0" value="offer"> One offer</label><label class="radio-card"><input type="radio" name="dani0" value="next"> One next step</label></div>
+      </fieldset>
+      <div class="feedback" id="fb0" hidden></div>
+    </section>
+    <section class="slide" aria-labelledby="h-4" hidden>
+      <p class="round-tag">Round 2 of 2 · a sample ad that doesn't work</p>
+      <h2 id="h-4" tabindex="-1">What is this ad selling?</h2>
+      <ol class="clues" aria-label="What the ad shows so far"><li class="frame" id="cl1-0"><span class="when">Second 0</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>A logo on a plain background.</span></li><li class="frame" id="cl1-1" hidden><span class="when">Second 2</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>"$10! Shop now!"</span></li><li class="frame" id="cl1-2" hidden><span class="when">Second 5</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>A slide of rules text.</span></li><li class="frame" id="cl1-3" hidden><span class="when">End</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>The same logo again.</span></li></ol>
+      <form class="guess" id="gf1" autocomplete="off">
+        <div class="field-wrap"><label for="g1">Your guess</label><input id="g1" type="text" autocomplete="off" spellcheck="false" aria-describedby="res1"></div>
+        <button type="submit" class="btn primary">Guess</button>
+        <button type="button" class="btn" id="mc1">Next second of the ad</button>
+      </form>
+      <p class="result" id="res1" tabindex="-1"></p>
+    </section>
+    <section class="slide" aria-labelledby="h-5" hidden>
+      <div class="dani-head"><p class="round-tag">Round 2 of 2 · hard to tell</p><span class="concept-tag">Sample ad, concept</span></div>
+      <h2 id="h-5" tabindex="-1">Hard to tell, right?</h2>
+      <p class="sub">It has a price and a button, but nothing made you stop, and the game is never shown being played.</p>
+      <ul class="parts" aria-label="The four parts, in this ad"><li class="part"><span class="pe" aria-hidden="true">✨</span><h3>Hook</h3><p class="def">A moment that stops the scroll: a question, a problem or a surprise.</p><p class="when">When: First 1 to 3 seconds</p><p class="inad"><strong>In this ad:</strong> Missing. It opens on a logo.</p></li><li class="part"><span class="pe" aria-hidden="true">🏷️</span><h3>Brand and game</h3><p class="def">The viewer can see who it's from ("Breaking Games") and which game it is.</p><p class="when">When: By 3 seconds</p><p class="inad"><strong>In this ad:</strong> Brand yes, game never shown in play.</p></li><li class="part"><span class="pe" aria-hidden="true">🎁</span><h3>One offer</h3><p class="def">One game and one reason to buy (for example: "$10, ages 6 and up"). Not a list of everything.</p><p class="when">When: Middle</p><p class="inad"><strong>In this ad:</strong> $10, but for what?</p></li><li class="part"><span class="pe" aria-hidden="true">➡️</span><h3>One next step</h3><p class="def">One call to action (CTA), said out loud and shown on screen, pointing to one page on breakinggames.com.</p><p class="when">When: End card</p><p class="inad"><strong>In this ad:</strong> "Shop now" at second 2, before you care.</p></li></ul>
+    </section>
+    <section class="slide" aria-labelledby="h-6" hidden>
+      <div class="dani-head"><p class="round-tag">Round 2 of 2 · Dani's view</p><span class="concept-tag">Sample ad, concept</span></div>
+      <h2 id="h-6" tabindex="-1">What would you fix first?</h2>
+      <p class="sub" id="dh1">Dani, 21, skips anything that looks like an ad. Which part would make a stranger stay for second 3? Pick one, then try the others.</p>
+      <fieldset aria-describedby="dh1">
+        <legend class="sr-only">What would you fix first?</legend>
+        <div class="opts" id="opts1"><label class="radio-card"><input type="radio" name="dani1" value="hook"> Hook</label><label class="radio-card"><input type="radio" name="dani1" value="brand"> Brand and game</label><label class="radio-card"><input type="radio" name="dani1" value="offer"> One offer</label><label class="radio-card"><input type="radio" name="dani1" value="next"> One next step</label></div>
+      </fieldset>
+      <div class="feedback" id="fb1" hidden></div>
+    </section>
+    <section class="slide" aria-labelledby="h-7" hidden>
+      <p class="step-num">Wrap-up</p>
+      <h2 id="h-7" tabindex="-1">Every ad that works has four parts</h2>
+      <p class="lead">A hook, the brand and game by second 3, one offer and one next step.</p>
+      <p>Dani skips anything that looks like an ad. So an ad that works has to feel like a post for the first 3 seconds (a real moment, not a logo), and still show the brand and game by second 3.</p>
+      <p style="font-weight:700;margin-bottom:8px">Two more rules come with ads</p>
+      <div class="rules2">
+        <div class="box"><h3><span aria-hidden="true">🔇 </span>Sound off</h3><p>Many people watch without sound, so burn in captions and put key words on screen.</p></div>
+        <div class="box"><h3><span aria-hidden="true">🧪 </span>Test more than one hook</h3><p>You can't know which opening wins, so you'll make 3 versions that differ only in the first 3 seconds.</p></div>
+      </div>
+      <p class="bridge">Next, you'll spot these four parts in real ads in the Roast Deck's Ads tab.</p>
+    </section>
+  </div>
+
+  <nav class="slide-nav" aria-label="Slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <p class="gate-why" id="gateWhy" hidden></p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+<script>
+window.DECK = (() => {
+  const ROUNDS = [{"answer": "a family card game", "answers": ["card game", "family game", "poop", "game"], "n": 4, "clues": ["Second 0: Adult hands tip cards onto a kitchen table. Text: \"Rainy Saturday. Kids bored.\"", "Second 2: The POOP: The Game box slides in, with \"Breaking Games\" in the corner.", "Second 5: Voices laugh off camera as a card is played.", "End card: \"$10, ages 6 and up. Find your next game night.\" plus \"Good game, folks.\""], "options": {"hook": [false, "It made you stop, but it didn't tell you what it was."], "brand": [true, "Yes. Seeing the box and the name by second 3 is what turns a stopped scroll into a known game."], "offer": [false, "Helpful, but only after you already cared."], "next": [false, "Needed, but it comes last."]}, "stake": "Rachel stops scrolling."}, {"answer": "hard to tell", "answers": ["no idea", "not sure", "cant tell", "a game", "dont know", "hard to tell"], "n": 4, "clues": ["Second 0: A logo on a plain background.", "Second 2: \"$10! Shop now!\"", "Second 5: A slide of rules text.", "End: The same logo again."], "options": {"hook": [true, "Yes. Without a hook, no one sees the rest."], "brand": [false, "Show the game being played, but only after the hook."], "offer": [false, "It's there; it just has nothing to sell yet."], "next": [false, "Move it to the end card."]}, "stake": "Dani scrolls past."}];
+  const NAMES = {"hook": "Hook", "brand": "Brand and game", "offer": "One offer", "next": "One next step"};
+  const KEY2 = "bg-deck:breaking-games-p3-anatomy-of-an-ad:state";
+  const st = { shown: ROUNDS.map(() => 1), revealed: ROUNDS.map(() => false), picked: ROUNDS.map(() => null) };
+  try { const s = JSON.parse(localStorage.getItem(KEY2) || "null"); if (s && s.shown && s.shown.length === ROUNDS.length) Object.assign(st, s); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY2, JSON.stringify(st)); } catch (e) {} };
+  const $ = id => document.getElementById(id);
+  const norm = s => s.toLowerCase().replace(/[\u2019']/g, "").replace(/\s+/g, " ").trim();
+  let api;
+
+  function showClues(r) { for (let k = 0; k < ROUNDS[r].n; k++) $("cl" + r + "-" + k).hidden = k >= st.shown[r]; }
+  function setResult(r, msg, yes) { const p = $("res" + r); p.textContent = msg; p.className = "result" + (yes ? " yes" : ""); }
+  function finishRound(r, guessed, quiet) {
+    st.revealed[r] = true; st.shown[r] = ROUNDS[r].n; showClues(r);
+    /* The form is about to hide: if focus is inside it, move focus to the result so it isn't lost. */
+    const hadFocus = $("gf" + r).contains(document.activeElement);
+    $("gf" + r).hidden = true;
+    const msg = (guessed ? "Nice. It's " : "The answer: ") + ROUNDS[r].answer + ". Select Next to see the four parts.";
+    setResult(r, msg, true);
+    save(); window.deckRefresh();
+    if (hadFocus) $("res" + r).focus();
+    if (!quiet) api.announce(msg);
+  }
+  function moreClue(r, prefix) {
+    const R = ROUNDS[r];
+    if (st.shown[r] < R.n) {
+      st.shown[r]++; showClues(r); save();
+      api.announce((prefix ? prefix + " " : "") + R.clues[st.shown[r] - 1]);
+      if (st.shown[r] === R.n) $("mc" + r).textContent = "Show the answer";
+    } else finishRound(r, false);
+  }
+  function pick(r, k, quiet) {
+    st.picked[r] = k; save();
+    const [key, text] = ROUNDS[r].options[k];
+    const fb = $("fb" + r);
+    fb.hidden = false;
+    fb.className = "feedback" + (key ? " right" : "");
+    const verdict = key ? "Best pick." : "Fair pick, but not the main one.";
+    fb.innerHTML = '<p style="margin:0"><span class="verdict">' + NAMES[k] + ": " + verdict + "</span> " + text + "</p>" +
+      '<p class="stake-line">Stakes: ' + ROUNDS[r].stake + "</p>";
+    window.deckRefresh();
+    if (!quiet) api.announce(NAMES[k] + ". " + verdict + " " + text);
+  }
+
+  return {
+    id: "breaking-games-p3-anatomy-of-an-ad",
+    gate(step) {
+      if (step === 1 || step === 4) { const r = step === 1 ? 0 : 1; return st.revealed[r] ? "" : "Guess or show the answer to continue."; }
+      if (step === 3 || step === 6) { const r = step === 3 ? 0 : 1; return st.picked[r] ? "" : "Pick a part to continue."; }
+      return "";
+    },
+    init(a) {
+      api = a;
+      $("startBtn").onclick = () => a.goTo(1, true);
+      ROUNDS.forEach((R, r) => {
+        showClues(r);
+        if (st.shown[r] === R.n) $("mc" + r).textContent = "Show the answer";
+        $("mc" + r).onclick = () => moreClue(r);
+        $("gf" + r).onsubmit = e => {
+          e.preventDefault();
+          const v = norm($("g" + r).value);
+          if (!v) { setResult(r, "Type a guess first, or select Next second of the ad.", false); a.announce("Type a guess first, or select Next second of the ad."); return; }
+          if (R.answers.some(x => v.includes(x))) finishRound(r, true);
+          else if (st.shown[r] < R.n) { setResult(r, "Not quite. Here's the next second of the ad.", false); moreClue(r, "Not quite. Here's the next second of the ad."); }
+          else { setResult(r, "Not quite. Guess again, or show the answer.", false); a.announce("Not quite. Guess again, or show the answer."); }
+        };
+        if (st.revealed[r]) finishRound(r, false, true);
+        document.querySelectorAll('input[name="dani' + r + '"]').forEach(inp => {
+          inp.addEventListener("change", () => pick(r, inp.value));
+          if (st.picked[r] === inp.value) { inp.checked = true; pick(r, inp.value, true); }
+        });
+      });
+    }
+  };
+})();
+</script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DECK = window.DECK;
+  const KEY = "bg-deck:" + DECK.id;
+  const slides = [...document.querySelectorAll(".slide")];
+  const total = slides.length;
+  const label = i => `Slide ${i + 1} of ${total}`;
+  slides.forEach((s, i) => { const p = s.querySelector(".step-num"); if (p && !p.textContent.trim()) p.textContent = `${i + 1} of ${total}`; });
+
+  const announce = msg => { const st = $("status"); st.textContent = ""; setTimeout(() => { st.textContent = msg; }, 40); };
+  window.deckAnnounce = announce;
+
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0;
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = Math.min(saved.step || 0, total - 1); seen = Math.min(saved.seen || 0, total - 1); } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    const why = (!last && typeof DECK.gate === "function") ? DECK.gate(step) : "";
+    $("gateWhy").textContent = why; $("gateWhy").hidden = !why;
+    if (why) { $("nextBtn").setAttribute("aria-disabled", "true"); $("nextBtn").setAttribute("aria-describedby", "gateWhy"); }
+    else { $("nextBtn").removeAttribute("aria-disabled"); $("nextBtn").removeAttribute("aria-describedby"); }
+    $("nextBtn").innerHTML = last ? "Last slide" : 'Next<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (typeof DECK.onShow === "function") DECK.onShow(step, slides[step]);
+    if (moveFocus) { slides[step].querySelector("h2").focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+  window.deckGoTo = goTo;
+  window.deckRefresh = () => goTo(step, false);
+  function tryGo(i) {
+    if (i > step && typeof DECK.gate === "function") {
+      for (let k = step; k < i; k++) { const why = DECK.gate(k); if (why) { if (k !== step) goTo(k, true); else announce(why); return; } }
+    }
+    goTo(i, true);
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => tryGo(step + 1);
+  dots.forEach(d => d.onclick = () => tryGo(+d.dataset.step));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, input, textarea, select, [role=radiogroup]")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); tryGo(step + 1); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+
+  /* Reveal buttons: <button data-reveal="id" aria-expanded="false" aria-controls="id"> */
+  document.querySelectorAll("[data-reveal]").forEach(b => {
+    const target = $(b.dataset.reveal);
+    /* One label; aria-expanded carries the state. The revealed content sits right after the button, so it is not announced separately. */
+    b.addEventListener("click", () => {
+      const open = b.getAttribute("aria-expanded") !== "true";
+      b.setAttribute("aria-expanded", String(open));
+      target.hidden = !open;
+    });
+  });
+
+  if (typeof DECK.init === "function") DECK.init({ announce, goTo, KEY });
+  /* Deep link for previews and QA: #s=N opens slide N (1-based). */
+  const m = location.hash.match(/s=(\d+)/);
+  if (m) step = Math.min(total, Math.max(1, +m[1])) - 1;
+  goTo(step, false);
+  if (/open/.test(location.hash)) slides[step].querySelectorAll("[data-reveal], [data-q='" + (step) + "'], [data-pick]").forEach((b, i) => { if (b.dataset.reveal || i === 0) b.click(); });
+})();
+</script>
+</body>
+</html>

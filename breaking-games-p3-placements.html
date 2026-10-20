@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Breaking Games x TikTok concept deck: One ad idea, four placements (Project 3, page 08)
+  Built 2026-10-19 from _asset-specs.md asset 3 and 09-training-instagram-and-facebook.md.
+  Phone frames are drawn in HTML/CSS (no images). Placement shapes are Meta's standard formats: confirm
+  against Meta's current ad specs before shipping.
+  Style: ../../09-assets/style/tiktok-style-guide.md. Chrome and a11y patterns:
+  ../../09-assets/templates/breaking-games-steps-slides-template.html.
+  The slide text mirrors the page's "Text version of the interactive" toggle. Edit both together.
+  WCAG 2.2 AA: one H1; inactive slides hidden; focus moves to each slide's h2; polite live region;
+  44px targets; reveals use real buttons with aria-expanded; state shown in words, not color alone;
+  reflows to one column at 640px; prefers-reduced-motion respected. No external data calls.
+  Every ad or mock-up shown is labeled "Concept".
+  Deploy: https://vpdasgupta.github.io/tiktok/breaking-games-p3-placements.html
+-->
+<title>One ad idea, four placements</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #F8FAFC; --card: #FFFFFF; --ink: #0F172A; --ink-soft: #5A6478;
+    --line: #E9E9E7; --edge: #64748B; --tt-cyan: #25F4EE; --tt-red: #FE2C55;
+    --red-ink: #CC0F3A; --red-dark: #A80C30; --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86; --cyan-tint: #E6FDFC; --amber-ink: #9A5B00; --amber-tint: #FFF4E5;
+    --night: #0C0B10; --night-ink: #E2E8F0; --night-soft: #A89FA2;
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px; --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.5; padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a, input, textarea { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  a { color: var(--red-ink); }
+
+  .deck { max-width: 920px; margin: 0 auto; }
+  .deck-head {
+    margin-bottom: 14px; padding: 18px 24px 22px; border-radius: var(--radius); color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .deck-head :focus-visible { outline-color: var(--tt-cyan); }
+  .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); }
+  .deck-title { font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .grad-word { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @media (forced-colors: active) { .grad-word { color: CanvasText; background: none; } }
+
+  .slide {
+    overflow-wrap: anywhere;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 26px 32px 24px;
+    aspect-ratio: 16 / 9; display: flex; flex-direction: column;
+  }
+  .step-num {
+    align-self: flex-start; display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
+  }
+  .slide h2 { font-size: 28px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 10px 0 12px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 18px; margin: 0 0 12px; }
+  .slide .lead { font-size: 21px; line-height: 1.45; }
+  .slide .plain { margin: 0 0 12px; padding-left: 22px; font-size: 18px; }
+  .slide .plain li { margin-bottom: 6px; }
+  .icon { font-size: 40px; line-height: 1; margin: 4px 0 8px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--pink-tint); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+
+  .chip { display: inline-block; align-self: flex-start; background: var(--pink-tint); color: var(--ink); font-weight: 700; border-radius: 999px; padding: 6px 14px; font-size: 15px; margin: 4px 0 12px; }
+  .chip.cta { background: var(--night); color: #FFFFFF; }
+  .callout { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 4px 0 12px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 4px 0 14px; }
+  .grid.two { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .box { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background: var(--canvas); }
+  .box h3 { font-size: 17px; margin: 0 0 6px; line-height: 1.3; }
+  .box p { font-size: 15px; margin: 0 0 8px; }
+  .box p:last-child { margin-bottom: 0; }
+  .box .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+  .stat { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background:
+      linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas); }
+  .stat .big { display: block; font-size: 24px; font-weight: 800; line-height: 1.2; }
+  .stat .small { display: block; font-size: 14px; color: var(--ink-soft); }
+  .caption { font-size: 14px; color: var(--ink-soft); margin-top: -6px; }
+
+  .person { display: flex; gap: 12px; align-items: flex-start; }
+  .avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--ink); background: var(--cyan-tint); border: 2px solid var(--teal-ink); }
+
+  .status-pill { display: inline-block; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 3px 10px; margin-bottom: 6px; border: 1px solid currentColor; }
+  .status-pill.use { color: var(--teal-ink); background: var(--cyan-tint); }
+  .status-pill.check { color: var(--amber-ink); background: var(--amber-tint); }
+  .status-pill.no { color: var(--red-ink); background: var(--pink-tint); }
+
+  .tbl { width: 100%; border-collapse: collapse; margin: 0 0 12px; font-size: 15px; }
+  .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .tbl thead th { white-space: nowrap; overflow-wrap: normal; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .tbl tbody th { white-space: nowrap; }
+
+  .btn {
+    min-height: 44px; min-width: 44px; border-radius: 999px; padding: 10px 18px; font-size: 15px; font-weight: 700; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--edge); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { border-color: var(--ink); }
+  .btn.primary { background: var(--red-ink); border-color: var(--red-ink); color: #FFFFFF; }
+  .btn.primary:hover { background: var(--red-dark); border-color: var(--red-dark); }
+  .btn[aria-pressed="true"] { background: var(--ink); color: #FFFFFF; border-color: var(--ink); }
+  .btn[aria-pressed="true"]::after { content: " (your pick)" / ""; font-weight: 600; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 12px; align-items: center; }
+
+  .qa { border-top: 1px solid var(--line); padding: 10px 0; }
+  .qa p { margin: 0 0 6px; font-weight: 600; }
+  .answer { margin-top: 8px; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--cyan-tint); border-left: 4px solid var(--teal-ink); font-size: 16px; }
+  .answer b.lbl { color: var(--teal-ink); }
+  .feedback { margin-top: 4px; padding: 12px 16px; border-radius: var(--radius-sm); border-left: 4px solid var(--ink); background: var(--canvas); font-size: 16px; }
+  .feedback.right { background: var(--cyan-tint); border-color: var(--teal-ink); }
+  .feedback.wrong { background: var(--amber-tint); border-color: var(--amber-ink); }
+  .feedback .verdict { font-weight: 800; }
+
+  .roast-note { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 17px; margin: 0 0 12px; }
+  .roast-note b { color: var(--red-ink); }
+  .prompt { font-size: 15px; color: var(--ink-soft); }
+  .tagged { margin: 0; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--ink); border-radius: 999px; padding: 1px 8px; margin-right: 6px; vertical-align: 2px; background: var(--card); }
+
+  label.field { display: block; font-weight: 700; font-size: 16px; margin: 4px 0 6px; }
+  textarea { width: 100%; min-height: 76px; font-size: 16px; padding: 10px 12px; border: 1px solid var(--edge); border-radius: var(--radius-sm); color: var(--ink); background: var(--card); resize: vertical; }
+  fieldset { border: 0; padding: 0; margin: 0 0 10px; }
+  legend { font-weight: 700; font-size: 16px; margin-bottom: 6px; padding: 0; }
+  .radio-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radio-card { position: relative; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 16px; border: 1px solid var(--edge); border-radius: 999px; font-weight: 700; cursor: pointer; background: var(--card); }
+  .radio-card input { width: 20px; height: 20px; margin: 0; accent-color: var(--red-ink); }
+  .radio-card:has(input:checked) { border: 2px solid var(--ink); background: var(--pink-tint); }
+  .radio-card:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sample-text { margin: 0 0 10px; border: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas);
+    border-radius: var(--radius-sm); padding: 10px 14px 10px 18px; font-size: 15px; }
+  .disclosure { margin: 6px 0 10px; }
+  .link-btn { min-height: 44px; background: none; border: 0; padding: 8px 0; color: var(--red-ink); font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
+  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; list-style: none; margin: 0; padding: 0; }
+  .dot { width: 30px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--edge); background: var(--card); }
+  .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); }
+  .dot[aria-current="step"]::before { width: 26px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); }
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin: 6px 0 0; }
+
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .deck-head { padding: 14px 16px 18px; }
+    .deck-title { font-size: 21px; }
+    .slide { aspect-ratio: auto; padding: 20px 18px; }
+    .slide h2 { font-size: 21px; }
+    .slide p, .slide .plain { font-size: 16px; }
+    .slide .lead { font-size: 17px; }
+    .grid, .grid.two { grid-template-columns: 1fr; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; }
+    .nav-btn { flex: 1; }
+  }
+  @media (max-width: 420px) {
+    .tbl thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .tbl tr, .tbl th, .tbl td { display: block; width: auto; }
+    .tbl tbody th { padding-bottom: 0; border-bottom: 0; white-space: normal; }
+    .tbl tr { border-bottom: 1px solid var(--line); padding: 4px 0; }
+    .tbl td { border-bottom: 0; }
+    .tbl td[data-label]::before { content: attr(data-label) ": "; font-weight: 700; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+
+  .nav-btn[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+  .concept-tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink); background: #FFFFFF; border: 1px solid var(--ink); border-radius: 999px; padding: 1px 8px; }
+  .slide .sub { font-size: 16px; color: var(--ink-soft); margin: -4px 0 12px; }
+
+  .place { display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: center; }
+  .kv { margin: 0; }
+  .kv div { margin-bottom: 12px; }
+  .kv dt { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 2px; }
+  .kv dd { margin: 0; font-size: 18px; }
+  .kv .warn dd { background: var(--amber-tint); border-left: 4px solid var(--amber-ink); border-radius: 6px; padding: 6px 10px; }
+  .kv .warn dt { color: var(--amber-ink); }
+
+  /* Drawn mock-ups (decorative boxes; each has role="img" and a full text label) */
+  .phone { position: relative; width: 168px; aspect-ratio: 9 / 16; border-radius: 22px; border: 6px solid var(--night); overflow: hidden; color: #FFFFFF;
+    background: radial-gradient(80% 60% at 30% 35%, #6B3A47, transparent 70%), linear-gradient(165deg, #4A2533, #1E1520 65%, #120F16); font-size: 11px; line-height: 1.3; flex: none; }
+  .phone.big { width: 200px; }
+  .m-acct { position: absolute; top: 10px; left: 9px; right: 56px; font-weight: 700; font-size: 9px; overflow-wrap: normal; white-space: nowrap; }
+  .m-acct span { display: block; font-weight: 500; opacity: 1; color: #E2E8F0; }
+  .m-tag { position: absolute; top: 9px; right: 7px; font-size: 8px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; background: #FFFFFF; color: var(--ink); border-radius: 999px; padding: 1px 6px; }
+  .m-hook { position: absolute; left: 10px; right: 10px; top: 30%; font-size: 15px; font-weight: 800; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+  .m-box { position: absolute; left: 50%; top: 52%; transform: translateX(-50%) rotate(-4deg); width: 64px; height: 48px; border-radius: 4px; background: #FFF4E5; color: var(--ink);
+    font-size: 9px; font-weight: 800; display: grid; place-items: center; text-align: center; line-height: 1.15; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
+  .m-bottom { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 9px 10px; background: rgba(12,11,16,.82); border-top: 2px dashed var(--tt-cyan); }
+  .m-bottom p { margin: 0 0 3px; font-size: 10px; }
+  .m-bottom .hl { font-weight: 800; font-size: 11px; }
+  .m-btn { white-space: nowrap; display: inline-block; margin-top: 3px; background: #FFFFFF; color: var(--ink); font-weight: 800; font-size: 10px; border-radius: 6px; padding: 3px 10px; }
+  .m-bars { position: absolute; top: 5px; left: 8px; right: 8px; display: flex; gap: 3px; }
+  .m-bars i { flex: 1; height: 2px; background: rgba(255,255,255,.55); border-radius: 2px; }
+  .m-bars i:first-child { background: #FFFFFF; }
+  .phone .m-acct.st { top: 13px; }
+  .m-swipe { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; }
+
+  .feed { width: 210px; border: 1px solid var(--edge); border-radius: 12px; background: #FFFFFF; overflow: hidden; font-size: 11px; color: var(--ink); flex: none; }
+  .feed .f-top { display: flex; justify-content: space-between; align-items: center; padding: 7px 9px; font-weight: 700; font-size: 10px; }
+  .feed .f-top span span { display: block; font-weight: 500; color: var(--ink-soft); }
+  .feed .f-tag { font-size: 9px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--ink); border-radius: 999px; padding: 1px 6px; }
+  .feed .f-media { position: relative; aspect-ratio: 4 / 5; background: radial-gradient(80% 60% at 30% 35%, #6B3A47, transparent 70%), linear-gradient(165deg, #4A2533, #1E1520 65%, #120F16); }
+  .feed .f-media .m-box { top: 38%; width: 80px; height: 60px; font-size: 10px; }
+  .feed .f-foot { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding: 8px 9px; background: var(--canvas); font-weight: 800; font-size: 11px; }
+  .feed .f-foot .m-btn { margin: 0; background: var(--ink); color: #FFFFFF; }
+
+  .carousel { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .cards { display: grid; grid-template-columns: repeat(4, 120px); gap: 8px; list-style: none; padding: 0; margin: 0; }
+  .cards li { aspect-ratio: 1; border-radius: 10px; padding: 10px; display: flex; align-items: flex-end; font-size: 13px; font-weight: 800; line-height: 1.25; color: #FFFFFF;
+    background: radial-gradient(80% 60% at 30% 35%, #6B3A47, transparent 70%), linear-gradient(165deg, #4A2533, #1E1520 65%, #120F16); }
+  .cards li:last-child { background: var(--night); align-items: center; justify-content: center; text-align: center; }
+  .swipe { font-size: 26px; color: var(--ink-soft); }
+  .mock-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 8px; font-size: 14px; font-weight: 700; }
+
+  .marker { position: absolute; width: 22px; height: 22px; border-radius: 50%; background: var(--red-ink); color: #FFFFFF; border: 2px solid #FFFFFF; font-size: 12px; font-weight: 800; display: grid; place-items: center; }
+  .parts3 { list-style: none; padding: 0; margin: 0 0 10px; }
+  .parts3 li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; margin-bottom: 12px; font-size: 17px; }
+  .parts3 .n { width: 28px; height: 28px; border-radius: 50%; background: var(--red-ink); color: #FFFFFF; font-weight: 800; display: grid; place-items: center; font-size: 14px; }
+  .note { font-size: 15px; color: var(--ink-soft); margin: 0; }
+
+  .checklist { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 28px; }
+  .checklist li { break-inside: avoid; display: grid; grid-template-columns: 26px 1fr; gap: 8px; font-size: 16px; margin-bottom: 10px; }
+  .checklist .ic { font-weight: 800; color: var(--teal-ink); }
+
+  .tbl.compare td, .tbl.compare th { font-size: 14px; padding: 6px 10px; }
+  .tbl.compare th { overflow-wrap: normal; word-break: normal; hyphens: auto; }
+  .tbl.compare tbody th { white-space: normal; width: 22%; font-weight: 700; }
+  .tbl.compare thead th:not(:first-child) { width: 39%; }
+  @media (max-width: 420px) { .tbl.compare tbody th, .tbl.compare thead th:not(:first-child) { width: auto; } }
+
+  .check-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 8px 0 10px; }
+  .closing { font-weight: 800; margin: 10px 0 0; }
+
+  @media (max-width: 640px) {
+    .place { grid-template-columns: 1fr; gap: 16px; justify-items: start; }
+    .cards { grid-template-columns: repeat(2, minmax(0, 130px)); }
+    .checklist { columns: 1; }
+    .kv dd, .parts3 li { font-size: 16px; }
+  }
+
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <header class="deck-head">
+    <p class="eyebrow">Breaking Games × Project 3</p>
+    <h1 class="deck-title" id="deckTitle">One ad idea, four <span class="grad-word">placements.</span></h1>
+  </header>
+
+  <div id="slides">
+    <section class="slide" aria-labelledby="h-0" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-0" tabindex="-1">Where Breaking Games' ads run</h2>
+      <p class="lead">Instagram and Facebook are where Breaking Games is most active and where its ads run.</p>
+      <p>Here's how one idea fits each spot: Reels, Feed, Stories and a carousel. Then you'll learn the three parts of every ad and try one quick check.</p>
+      <ul class="stakes-row btn-row" aria-label="The four placements" style="list-style:none;padding:0">
+        <li class="chip"><span aria-hidden="true">🎬</span> Reels ad</li><li class="chip"><span aria-hidden="true">🖼️</span> Feed ad</li><li class="chip"><span aria-hidden="true">⏱️</span> Stories ad</li><li class="chip"><span aria-hidden="true">🃏</span> Carousel ad</li>
+      </ul>
+    </section>
+    <section class="slide" aria-labelledby="h-1" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-1" tabindex="-1">Same idea, different room</h2>
+      <table class="tbl compare">
+        <caption class="sr-only">TikTok compared with Instagram and Facebook</caption>
+        <thead><tr><th scope="col"><span class="sr-only">Topic</span></th><th scope="col">TikTok</th><th scope="col">Instagram and Facebook</th></tr></thead>
+        <tbody><tr><th scope="row">How people find you</th><td data-label="TikTok">Mostly the For You feed, even with few followers</td><td data-label="Instagram and Facebook">Reels and Explore for new people, plus followers. Ads reach people who don't follow you.</td></tr><tr><th scope="row">What feels normal</th><td data-label="TikTok">Raw, fast, in the moment</td><td data-label="Instagram and Facebook">A bit more polished and on-brand, especially on the profile grid</td></tr><tr><th scope="row">What wins</th><td data-label="TikTok">Watch time and rewatches</td><td data-label="Instagram and Facebook">Watch time, plus saves, shares and profile visits</td></tr><tr><th scope="row">Captions</th><td data-label="TikTok">Short, often one line</td><td data-label="Instagram and Facebook">Room for a longer caption with one extra detail</td></tr><tr><th scope="row">Life of a post</th><td data-label="TikTok">Spikes fast, fades fast</td><td data-label="Instagram and Facebook">Feed posts keep working on the profile for months</td></tr><tr><th scope="row">Breaking Games today</th><td data-label="TikTok"><code>@breakinggamesllc</code>: 1,301 followers, quiet since its last post in October 2024</td><td data-label="Instagram and Facebook"><code>@breaking_games</code>: 4,243 followers. Most active here, and where its ads run.</td></tr></tbody>
+      </table>
+    </section>
+    <section class="slide" aria-labelledby="h-2" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-2" tabindex="-1">Reels ad</h2>
+      <div class="place">
+        <div class="phone" role="img" aria-label="Concept mock-up of a Reels ad, 9 by 16 vertical. Top: @breaking_games, Sponsored, and a Concept tag. Middle: hands tip cards onto a table, with the hook text 'Rainy Saturday. Kids bored.' and the POOP: The Game box. Bottom band, covered by the ad's text and button: primary text, the headline 'POOP: The Game, $10' and a Shop now button.">
+          <div class="m-acct">@breaking_games<span>Sponsored</span></div><div class="m-tag">Concept</div>
+          <div class="m-hook">Rainy Saturday. Kids bored.</div>
+          <div class="m-box">POOP:<br>The Game</div>
+          <div class="m-bottom"><p>Primary text…</p><p class="hl">POOP: The Game, $10</p><span class="m-btn">Shop now</span></div>
+        </div>
+        <dl class="kv"><div><dt>Shape</dt><dd>9:16 vertical video.</dd></div><div><dt>Best for</dt><dd>Reaching new people with video.</dd></div><div><dt>Example</dt><dd>Your ad video, with your strongest hook.</dd></div><div class="warn"><dt>Watch out</dt><dd>The ad's text and button cover the bottom (the dashed line in the mock-up), so keep your words in the middle.</dd></div></dl>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-3" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-3" tabindex="-1">Feed ad</h2>
+      <div class="place">
+        <div class="feed" role="img" aria-label="Concept mock-up of a Feed ad, 4 by 5. Top: @breaking_games, Sponsored, and a Concept tag. A photo of the POOP: The Game box on a table. Under it, the headline 'POOP: The Game, $10' and a Shop now button.">
+          <div class="f-top"><span>@breaking_games<span>Sponsored</span></span><span class="f-tag">Concept</span></div>
+          <div class="f-media"><div class="m-box">POOP:<br>The Game</div></div>
+          <div class="f-foot"><span>POOP: The Game, $10</span><span class="m-btn">Shop now</span></div>
+        </div>
+        <dl class="kv"><div><dt>Shape</dt><dd>4:5 or 1:1, image or video.</dd></div><div><dt>Best for</dt><dd>People scrolling their main feed.</dd></div><div><dt>Example</dt><dd>One POOP photo with the headline "POOP: The Game, $10."</dd></div></dl>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-4" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-4" tabindex="-1">Stories ad</h2>
+      <div class="place">
+        <div class="phone" role="img" aria-label="Concept mock-up of a Stories ad, 9 by 16 full screen. Story progress bars across the top, @breaking_games, Sponsored, and a Concept tag. Middle: a short cut of the ad. Bottom: a Shop now button.">
+          <div class="m-bars"><i></i><i></i><i></i></div>
+          <div class="m-acct st">@breaking_games<span>Sponsored</span></div><div class="m-tag" style="top:14px">Concept</div>
+          <div class="m-hook" style="top:40%">A short cut of your ad</div>
+          <div class="m-swipe"><span class="m-btn">Shop now</span></div>
+        </div>
+        <dl class="kv"><div><dt>Shape</dt><dd>9:16, full screen.</dd></div><div><dt>Best for</dt><dd>A quick tap-through between friends' stories.</dd></div><div><dt>Example</dt><dd>A short cut of your ad.</dd></div></dl>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-5" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-5" tabindex="-1">Carousel ad</h2>
+      <p class="mock-head">Example cards <span class="concept-tag">Concept</span></p>
+      <div class="carousel">
+        <ol class="cards" aria-label="Concept carousel ad from @breaking_games, 4 cards"><li>Which game fits your table?</li><li>Kids 6 and up? POOP: The Game, $10</li><li>Early readers? Play2Read card games, $13 each</li><li>Good game, folks.</li></ol>
+        <span class="swipe" aria-hidden="true">→</span>
+      </div>
+      <div style="margin-top:14px"><dl class="kv"><div><dt>Shape</dt><dd>2 or more swipeable cards, 1:1 or 4:5.</dd></div><div><dt>Best for</dt><dd>Comparing or listing, built for swiping and saving.</dd></div></dl></div>
+    </section>
+    <section class="slide" aria-labelledby="h-6" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-6" tabindex="-1">The three parts of every ad</h2>
+      <div class="place">
+        <div class="phone big" role="img" aria-label="Concept mock-up of a Reels ad from @breaking_games, marked Sponsored. Marker 1 on the primary text: 'Rainy Saturday? This one's for ages 6 and up.' Marker 2 on the headline: 'POOP: The Game, $10.' Marker 3 on the Shop now button.">
+          <div class="m-acct">@breaking_games<span>Sponsored</span></div><div class="m-tag">Concept</div>
+          <div class="m-hook" style="top:26%">Rainy Saturday. Kids bored.</div>
+          <div class="m-box" style="top:46%">POOP:<br>The Game</div>
+          <div class="m-bottom" style="padding-right:30px"><p>Rainy Saturday? This one's for ages 6 and up.</p><p class="hl">POOP: The Game, $10</p><span class="m-btn">Shop now</span></div>
+          <span class="marker" style="right:5px;bottom:62px">1</span><span class="marker" style="right:5px;bottom:36px">2</span><span class="marker" style="left:76px;bottom:9px">3</span>
+        </div>
+        <div>
+          <ol class="parts3">
+            <li><span class="n" aria-hidden="true">1</span><span><strong>Primary text:</strong> 1 or 2 short lines next to the video or image. Your first line is your hook.</span></li>
+            <li><span class="n" aria-hidden="true">2</span><span><strong>Headline:</strong> bold, next to the button. The game and the offer, in a few words.</span></li>
+            <li><span class="n" aria-hidden="true">3</span><span><strong>Call-to-action button:</strong> a button the app provides, such as "Shop now" or "Learn more." Pick the one that matches your landing page.</span></li>
+          </ol>
+          <p class="note">The app also adds a "Sponsored" label and the account name, <code>@breaking_games</code>.</p>
+        </div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-7" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-7" tabindex="-1">Measure Instagram by followers</h2>
+      <p class="lead">On TikTok, engagement is measured against views. On Instagram, it's measured against followers, so big and small accounts can be compared.</p>
+      <p><strong>Always say which one you used.</strong></p>
+      <div class="stat" style="max-width:520px"><span class="small">Reels benchmark</span><span class="big">About 4.4 likes per 100 followers</span><span class="small">A creator Reel for Stripes: 72 likes.</span></div>
+    </section>
+    <section class="slide" aria-labelledby="h-8" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-8" tabindex="-1">Adapt, don't copy</h2>
+      <p class="sub">Your checklist for turning a TikTok into an Instagram or Facebook ad.</p>
+      <ul class="checklist"><li><span class="ic" aria-hidden="true">✓</span><span>Export clean from CapCut, not a downloaded TikTok with a watermark.</span></li><li><span class="ic" aria-hidden="true">✓</span><span>Keep text in the middle of the frame. In a Reels ad, the primary text and button cover the bottom.</span></li><li><span class="ic" aria-hidden="true">✓</span><span>Rewrite any TikTok-only words in your first line.</span></li><li><span class="ic" aria-hidden="true">✓</span><span>Pick a cover frame that shows the game.</span></li><li><span class="ic" aria-hidden="true">✓</span><span>Write primary text with the hook first, one extra detail, and one call to action.</span></li><li><span class="ic" aria-hidden="true">✓</span><span>Match the Look slide of your mood board (palette marked "temporary" until the brand guide arrives).</span></li><li><span class="ic" aria-hidden="true">✓</span><span>Label every mock-up "Concept."</span></li></ul>
+    </section>
+    <section class="slide" aria-labelledby="h-9" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-9" tabindex="-1">Quick check</h2>
+      <fieldset>
+        <legend>Your idea is "Which Breaking Games game fits your table?" Which placement fits best?</legend>
+        <div class="radio-row"><label class="radio-card"><input type="radio" name="place" value="Reels ad"> Reels ad</label><label class="radio-card"><input type="radio" name="place" value="Feed ad"> Feed ad</label><label class="radio-card"><input type="radio" name="place" value="Stories ad"> Stories ad</label><label class="radio-card"><input type="radio" name="place" value="Carousel ad"> Carousel ad</label></div>
+      </fieldset>
+      <div class="check-actions"><button type="button" class="btn primary" id="checkBtn">Check</button></div>
+      <div class="feedback" id="checkFb" hidden></div>
+      <p class="closing" id="closing" hidden>Next up: you'll build a Reels ad and a carousel ad of your own.</p>
+    </section>
+  </div>
+
+  <nav class="slide-nav" aria-label="Slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <span class="sr-only" id="gateWhy"></span>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+<script>
+window.DECK = {
+  id: "breaking-games-p3-placements",
+  init(api) {
+    const FB = {
+      "Carousel ad": [true, "Yes. One game per card lets people swipe to compare."],
+      "Reels ad": [false, "Good for showing play, but it shows one game at a time. Try again."],
+      "Feed ad": [false, "One image can't compare several games. Try again."],
+      "Stories ad": [false, "Stories go by fast; there's no time to compare. Try again."]
+    };
+    const fb = document.getElementById("checkFb");
+    /* A new pick clears the old result so feedback is never stale. */
+    document.querySelectorAll('input[name="place"]').forEach(i => i.addEventListener("change", () => {
+      fb.hidden = true; fb.textContent = ""; document.getElementById("closing").hidden = true;
+    }));
+    document.getElementById("checkBtn").addEventListener("click", () => {
+      const pick = document.querySelector('input[name="place"]:checked');
+      fb.hidden = false;
+      if (!pick) { fb.className = "feedback"; fb.textContent = "Pick a placement first, then select Check."; api.announce(fb.textContent); return; }
+      const [ok, text] = FB[pick.value];
+      fb.className = "feedback " + (ok ? "right" : "wrong");
+      fb.innerHTML = '<span class="verdict">' + (ok ? "Correct: " : "Not quite: ") + pick.value + ".</span> " + text;
+      const closing = document.getElementById("closing");
+      closing.hidden = !ok;
+      api.announce((ok ? "Correct. " : "Not quite. ") + text + (ok ? " " + closing.textContent : ""));
+    });
+  }
+};
+</script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DECK = window.DECK;
+  const KEY = "bg-deck:" + DECK.id;
+  const slides = [...document.querySelectorAll(".slide")];
+  const total = slides.length;
+  const label = i => `Slide ${i + 1} of ${total}`;
+  slides.forEach((s, i) => { const p = s.querySelector(".step-num"); if (p && !p.textContent.trim()) p.textContent = `${i + 1} of ${total}`; });
+
+  const announce = msg => { const st = $("status"); st.textContent = ""; setTimeout(() => { st.textContent = msg; }, 40); };
+  window.deckAnnounce = announce;
+
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0;
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = Math.min(saved.step || 0, total - 1); seen = Math.min(saved.seen || 0, total - 1); } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    const why = (!last && typeof DECK.gate === "function") ? DECK.gate(step) : "";
+    $("gateWhy").textContent = why;
+    if (why) { $("nextBtn").setAttribute("aria-disabled", "true"); $("nextBtn").setAttribute("aria-describedby", "gateWhy"); }
+    else { $("nextBtn").removeAttribute("aria-disabled"); $("nextBtn").removeAttribute("aria-describedby"); }
+    $("nextBtn").innerHTML = last ? "Last slide" : 'Next<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (typeof DECK.onShow === "function") DECK.onShow(step, slides[step]);
+    if (moveFocus) { slides[step].querySelector("h2").focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+  window.deckGoTo = goTo;
+  window.deckRefresh = () => goTo(step, false);
+  function tryGo(i) {
+    if (i > step && typeof DECK.gate === "function") {
+      for (let k = step; k < i; k++) { const why = DECK.gate(k); if (why) { if (k !== step) goTo(k, true); else announce(why); return; } }
+    }
+    goTo(i, true);
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => tryGo(step + 1);
+  dots.forEach(d => d.onclick = () => tryGo(+d.dataset.step));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, input, textarea, select, [role=radiogroup]")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); tryGo(step + 1); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+
+  /* Reveal buttons: <button data-reveal="id" aria-expanded="false" aria-controls="id"> */
+  document.querySelectorAll("[data-reveal]").forEach(b => {
+    const target = $(b.dataset.reveal);
+    /* One label; aria-expanded carries the state. The revealed content sits right after the button, so it is not announced separately. */
+    b.addEventListener("click", () => {
+      const open = b.getAttribute("aria-expanded") !== "true";
+      b.setAttribute("aria-expanded", String(open));
+      target.hidden = !open;
+    });
+  });
+
+  if (typeof DECK.init === "function") DECK.init({ announce, goTo, KEY });
+  /* Deep link for previews and QA: #s=N opens slide N (1-based). */
+  const m = location.hash.match(/s=(\d+)/);
+  if (m) step = Math.min(total, Math.max(1, +m[1])) - 1;
+  goTo(step, false);
+  if (/open/.test(location.hash)) slides[step].querySelectorAll("[data-reveal], [data-q='" + (step) + "'], [data-pick]").forEach((b, i) => { if (b.dataset.reveal || i === 0) b.click(); });
+})();
+</script>
+</body>
+</html>

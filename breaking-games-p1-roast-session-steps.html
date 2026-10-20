@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+TASK STEPS SLIDES — Breaking Games skin (TikTok-program look, 2026-10-19)
+Forked from templates/interactive-formats/task-steps-slides-template.html.
+Only the CSS and the default TASK demo changed. Style guide:
+output/programs/socialmedia/breaking-games/09-assets/style/tiktok-style-guide.md
+================================================================================
+Design source: https://curious-tanuki-b3a260.netlify.app/ (Task view, the
+"one step per slide" slider). The side and bottom panels from that design (people
+panel, journey drawer, submission bar) are NOT here. Notion can't host them.
+
+WHAT IT IS
+  The steps of ONE task page, one step per slide. Each slide has:
+    - a short instruction (1–3 sentences)
+    - a sample (optional): what this step's output looks like, or code to copy
+    - "You're on track if…" (one line)
+    - "If you're stuck…" (1–2 bullets)
+  An optional last slide shows how the task is evaluated.
+
+HOW TO CUSTOMIZE
+  Edit ONLY the TASK object below. Everything under "DO NOT EDIT" is the engine.
+  - deckId: unique kebab-case slug (remembers the learner's place per task)
+  - steps[]: 3–6 steps. Strings may contain simple inline HTML (<b>, <code>, <a>).
+  - sample: { label, kind: "text" | "code", body }   (omit if the step has none)
+  - evaluation: omit it entirely if the task isn't graded.
+
+DEPLOY
+  github-pages-deployer → vpdasgupta/tiktok as breaking-games-p1-roast-session-steps.html,
+  then on the Notion task page:
+  <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-p1-roast-session-steps.html"></embed>
+  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  page (see task-page-v2-template.md).
+
+ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
+  - Inactive slides use `hidden` (removed from the accessibility tree and tab order).
+  - On Back/Next/dot navigation, focus moves to the new slide's heading.
+  - A polite live region announces "Step K of N".
+  - Progress dots are real buttons with aria-label and aria-current="step"; state is
+    shown by shape and fill (not color alone) and the text counter.
+  - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
+  - Arrow keys change step except inside links and scrollable samples.
+  - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+================================================================================
+-->
+<title>Task Steps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* ============================ EDIT THIS ============================ */
+const TASK = {
+  deckId: "bg-p1-roast-session",
+  title: "Roast 4 Pairs of Real Posts",
+  exampleUrl: "https://vpdasgupta.github.io/tiktok/breaking-games-p1-roast-notes-example.png",
+  steps: [
+    {
+      title: "Set up your roast notes",
+      instruction: "Open the <a href=\"https://vpdasgupta.github.io/tiktok/breaking-games-roast-deck.html\" target=\"_blank\" rel=\"noopener\">Roast Deck<span class=\"sr-only\"> (opens in a new tab)</span></a> in one tab. In another, make a Google Doc named <code>BG Roast Notes - [Your Name]</code> and set it up like this.",
+      sample: { label: "Sample: the start of your doc", kind: "text",
+        body: "Pair A: Mixtape (135.8K views) vs. Shadow Kitty explainer (651 views)\nRoast:\nToast:\nFix:\nPattern:\nRepeat for Pairs B, C and D. Then add: The benchmark, My 3 patterns for Gen Z, Client version (for Michael)." },
+      onTrack: "your doc has a spot for all 4 pairs, the benchmark, your 3 patterns and one client version.",
+      stuck: [
+        "The Roast Deck shows each pair side by side with the platform, followers and the visible number. Click a post's link to watch it, but don't like, comment on or follow any account you review."
+      ]
+    },
+    {
+      title: "Roast Pairs A and B",
+      instruction: "For each pair, watch both posts. Then write one line each for <b>Roast</b>, <b>Toast</b> and <b>Fix</b>, and a <b>pattern</b> in a few words. About 10 minutes per pair.",
+      sample: { label: "Sample (Pair B, the pair from the video)", kind: "text",
+        body: "Roast: “Version 2 is just a promo. Snooze.”\nToast: “The hit asks me a question in the first second, so I want to answer it.”\nFix: “Lead with the question and put free shipping in the caption.”\nPattern: “Ask a question up front.”" },
+      onTrack: "each line is about what's on screen (the hook, the words, the action), not about who made it.",
+      stuck: [
+        "Pair A's hit was likely boosted (paid to reach more people). Ask: “What would still work without paid reach?”",
+        "Can't name the toast? Watch only the first 3 seconds of each post. What made you keep watching?"
+      ]
+    },
+    {
+      title: "Roast Pairs C and D",
+      instruction: "Same 3 lines and a pattern for each. Pair C is on Instagram, so compare <b>likes</b>. Pair D is on TikTok, so compare <b>views</b>. Both pairs come from the same creator, @truejoyboardgaming.",
+      sample: { label: "Sample (a bonus card, so you can see the shape)", kind: "text",
+        body: "Hit: Exploding Kittens, “JUST DON'T BUST”, 59.6K views\nFlop: Big Potato, “if you love The Traitors…”, 564 views\nRoast: “The Traitors post leans on a TV show and never shows why the game is fun.”\nToast: “JUST DON'T BUST gives me stakes in 3 words.”\nFix: “Open on the tense moment, then name the game.”\nPattern: “Stakes beat borrowed hype.”" },
+      onTrack: "your Pair D pattern explains an 18× gap between two posts from the same creator.",
+      stuck: [
+        "Try the 10-second test: watch 10 seconds with the sound off. Can you tell what the game is and why it's fun?",
+        "Want more practice? The bonus cards in the Roast Deck are optional."
+      ]
+    },
+    {
+      title: "Meet the benchmark",
+      instruction: "Open Pair B again. “Keep Calm or Panic?” (1,049 views) is the <b>benchmark</b>: the real post you'll try to beat with your videos. In one or two lines, write why it's a fair target, and why Hypothetically Fun's 207.4K views is the ceiling, not the target.",
+      sample: { label: "Sample student work", kind: "text",
+        body: "“‘Keep Calm or Panic?’ is a fair target because it's on Breaking Games' own account, @breakinggamesllc, and its 1,049 views are about 3 times the 350 a typical small account gets. Hypothetically Fun's 207.4K was likely paid for, so it's the ceiling, not the target.”" },
+      onTrack: "your line mentions that it's on Breaking Games' own account and gives the number.",
+      stuck: [
+        "Put it in your own words. Your numbers can match the sample, since everyone in the cohort beats the same benchmark."
+      ]
+    },
+    {
+      title: "Name your 3 patterns for Gen Z",
+      instruction: "Look across all 4 pattern lines. Pick the 3 that would help most on a relaunched Breaking Games TikTok. For each, write the pattern and the pair that proves it. In Project 2, these 3 become your starting hunches.",
+      sample: { label: "Sample", kind: "text",
+        body: "1. Ask a question up front. Proof: Pair B, “Keep Calm or Panic?” earned 1,049 views vs. 595 for the promo version on the same account." },
+      onTrack: "every pattern points to a pair and a number.",
+      stuck: [
+        "Two patterns say the same thing? Merge them and look for a third in a different part of the post: the hook, the action on screen, or the caption.",
+        "Want to check yourself? The program team spotted these 6: hook by 3 seconds; the game is clear in 10 seconds; ask a question or invite a guess; real hands, faces or voices; name the game on screen and in the caption; one game, one moment. A different pattern is fine if it has a pair and a number."
+      ]
+    },
+    {
+      title: "Write a client version of your strongest pattern",
+      instruction: "Rewrite your strongest pattern as if Michael at Breaking Games will read it: <b>Toast</b>, then <b>Evidence</b>, then <b>Recommendation</b>. Use the word swaps from the roast training.",
+      sample: { label: "Sample (Pair B's client version)", kind: "text",
+        body: "“On the same account, the question-led ‘Keep Calm or Panic?’ post earned 1,049 views, about 75% more than the promo version (595). We recommend leading with a question and saving the offer for the caption.”" },
+      onTrack: "a Breaking Games team member could read it without feeling criticized, and it still has a number or a same-account comparison.",
+      stuck: [
+        "Still sounds like a roast, or has no number? Cut “flopped,” “obviously,” “clearly” and “just,” start with what works, and borrow a number from the pair that proves your pattern.",
+        "Want a second check? Paste it into Claude or ChatGPT and ask: “Point out anything that sounds like a dig at a person, has no number, or uses flopped, obviously, clearly or just. Don't rewrite it.” You decide what to change."
+      ]
+    }
+  ],
+  evaluation: {
+    title: "How it will be evaluated",
+    intro: "Your PM reviews your roast notes when you submit them with your mood board at the end of the week.",
+    criteria: [
+      { name: "Roast, Toast, Fix", lookFor: "All 4 pairs, each with a roast, toast, fix and pattern, about the post, never the person." },
+      { name: "3 patterns", lookFor: "Each one backed by a pair and a number." },
+      { name: "Benchmark", lookFor: "Says why “Keep Calm or Panic?” is a fair target, and that 207.4K is the ceiling, not the target." },
+      { name: "Client version", lookFor: "Toast, Evidence, Recommendation, with no roast words." }
+    ],
+    finish: "Done? Keep your doc open. Your mood board borrows from it next. Good game, folks."
+  }
+};
+/* ======================= DO NOT EDIT BELOW ======================== */
+</script>
+<style>
+  /* Skin: Breaking Games on the TikTok-program look.
+     Tokens and ratios: ../style/tiktok-style-guide.md */
+  :root {
+    --canvas: #F8FAFC;      /* page background */
+    --card: #FFFFFF;
+    --ink: #0F172A;         /* 17.9:1 on white, 17.1:1 on canvas */
+    --ink-soft: #5A6478;    /* 5.9:1 on white, 5.7:1 on canvas, 5.1:1 on pink tint */
+    --line: #E9E9E7;        /* decorative only */
+    --edge: #64748B;        /* UI borders, 4.8:1 on white, 4.6:1 on canvas */
+    --tt-cyan: #25F4EE;     /* FILL ONLY on light (1.4:1 on white) */
+    --tt-red: #FE2C55;      /* FILL/accent only on light (3.7:1 on white) */
+    --red-ink: #CC0F3A;     /* AA text/button variant of --tt-red: 5.7:1 on white */
+    --red-dark: #A80C30;    /* hover, 7.6:1 */
+    --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86;    /* AA text variant of --tt-cyan: 5.0:1 on white */
+    --cyan-tint: #E6FDFC;
+    --amber-ink: #9A5B00;   /* 5.4:1 on white, 5.0:1 on amber tint */
+    --amber-tint: #FFF4E5;
+    --night: #0C0B10;       /* hero / code background */
+    --night-ink: #E2E8F0;   /* 15.9:1 on night */
+    --night-soft: #A89FA2;  /* 7.6:1 on night, 5.1:1 at the brightest glow */
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck { max-width: 880px; margin: 0 auto; }
+
+  /* Hero band: the dark TikTok header with red and teal glows and a gradient rule */
+  .deck-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 14px; padding: 20px 24px 24px; border-radius: var(--radius);
+    color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .deck-title { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .deck-head :focus-visible { outline-color: var(--tt-cyan); }
+  .btn-example {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
+    border: 2px solid var(--tt-cyan); color: #FFFFFF; background: transparent;
+    border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 700; text-decoration: none;
+  }
+  .btn-example:hover { background: var(--tt-cyan); color: var(--night); }
+
+  .slide {
+    overflow-wrap: anywhere;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 32px 24px;
+  }
+  .step-num {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
+  }
+  .slide h2 { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 10px 0 10px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 16px; margin: 0 0 16px; }
+  .step-items { font-size: 16px; margin: -8px 0 16px; padding-left: 24px; }
+  .step-items li { margin-bottom: 6px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--pink-tint); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+
+  .sample { margin: 0 0 16px; }
+  .sample-label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 6px; }
+  .sample-text {
+    margin: 0; border: 1px solid var(--line);
+    /* decorative cyan-to-red bar on the left edge (same gradient as the step graphics) */
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas);
+    border-radius: var(--radius-sm); padding: 12px 16px 12px 18px; font-size: 15px; white-space: pre-wrap;
+  }
+  .sample pre {
+    margin: 0; background: var(--night); color: var(--night-ink); border-radius: var(--radius-sm); padding: 14px 16px;
+    font-size: 14px; overflow-x: auto; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .sample pre code { background: none; padding: 0; color: inherit; }
+  .copy-btn {
+    margin-top: 8px; min-height: 44px; border: 1px solid var(--edge); background: var(--card); color: var(--ink);
+    border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .copy-btn:hover { border-color: var(--red-ink); color: var(--red-ink); }
+
+  .check { font-size: 15px; padding: 10px 14px; border-left: 4px solid; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 8px; }
+  .check b { display: block; font-size: 13px; letter-spacing: .02em; margin-bottom: 2px; }
+  .check.ok { border-color: var(--teal-ink); background: var(--cyan-tint); }
+  .check.ok b { color: var(--teal-ink); }
+  .check.stuck { border-color: var(--amber-ink); background: var(--amber-tint); }
+  .check.stuck b { color: var(--amber-ink); }
+  .check ul { margin: 4px 0 0; padding-left: 18px; }
+
+  .eval-table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 15px; }
+  .eval-table caption { text-align: left; }
+  .eval-table th, .eval-table td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .eval-table thead th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .eval-table tbody th { width: 30%; }
+  .finish { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 0; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
+  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .dot {
+    /* 44px hit area around a small visual dot */
+    width: 32px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer;
+    display: grid; place-items: center;
+  }
+  .dot::before {
+    content: ""; width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--edge); background: var(--card);
+  }
+  .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); } /* filled = visited, outline = not yet */
+  .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); } /* wide pill = current */
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+
+  @media (max-width: 420px) {
+    .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .eval-table tr, .eval-table th, .eval-table td { display: block; width: auto; }
+    .eval-table tbody th { padding-bottom: 0; border-bottom: 0; }
+  }
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .deck-head { padding: 16px 18px 20px; }
+    .deck-title { font-size: 21px; }
+    .slide { padding: 20px 18px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; justify-content: center; }
+    .nav-btn { flex: 1; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <div class="deck-head">
+    <h1 class="deck-title" id="deckTitle"></h1>
+    <a class="btn-example" id="exampleLink" target="_blank" rel="noopener" hidden>See the example<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+  </div>
+
+  <div id="slides"></div>
+
+  <nav class="slide-nav" aria-label="Task steps">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next step<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const steps = TASK.steps, ev = TASK.evaluation;
+  const total = steps.length + (ev ? 1 : 0);
+  const KEY = "task-steps:" + TASK.deckId;
+
+  $("deckTitle").textContent = TASK.title;
+  document.title = TASK.title + " · Steps";
+  if (TASK.exampleUrl) { $("exampleLink").href = TASK.exampleUrl; $("exampleLink").hidden = false; }
+
+  const label = i => (ev && i === total - 1) ? "How it's evaluated" : `Step ${i + 1} of ${steps.length}`;
+
+  function sampleHtml(s, i) {
+    if (!s) return "";
+    const lbl = `<p class="sample-label" id="sl-${i}">${s.label || "Sample"}</p>`;
+    if (s.kind === "code") {
+      const esc = s.body.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      return `<div class="sample">${lbl}<pre role="region" tabindex="0" aria-labelledby="sl-${i}"><code>${esc}</code></pre>
+        <button type="button" class="copy-btn" data-copy="${i}">Copy code</button></div>`;
+    }
+    return `<div class="sample">${lbl}<p class="sample-text">${s.body}</p></div>`;
+  }
+
+  const html = steps.map((s, i) => `
+    <section class="slide" aria-labelledby="h-${i}" hidden>
+      <p class="step-num">${label(i)}</p>
+      <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
+      <p>${s.instruction}</p>
+      ${s.items && s.items.length ? `<ol class="step-items">${s.items.map(x => `<li>${x}</li>`).join("")}</ol>` : ""}
+      ${sampleHtml(s.sample, i)}
+      ${s.onTrack ? `<div class="check ok"><b>You're on track if…</b>${s.onTrack}</div>` : ""}
+      ${s.stuck && s.stuck.length ? `<div class="check stuck"><b>If you're stuck…</b><ul>${s.stuck.map(x => `<li>${x}</li>`).join("")}</ul></div>` : ""}
+    </section>`);
+
+  if (ev) {
+    const i = total - 1;
+    html.push(`
+    <section class="slide" aria-labelledby="h-${i}" hidden>
+      <p class="step-num">${label(i)}</p>
+      <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
+      ${ev.intro ? `<p>${ev.intro}</p>` : ""}
+      <table class="eval-table">
+        <caption class="sr-only">Evaluation criteria</caption>
+        <thead><tr><th scope="col">Criterion</th><th scope="col">What reviewers look for</th></tr></thead>
+        <tbody>${ev.criteria.map(c => `<tr><th scope="row">${c.name}</th><td>${c.lookFor}</td></tr>`).join("")}</tbody>
+      </table>
+      ${ev.finish ? `<p class="finish">${ev.finish}</p>` : ""}
+    </section>`);
+  }
+  $("slides").innerHTML = html.join("");
+
+  const slides = [...document.querySelectorAll(".slide")];
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0, announceTimer;
+  // Clear the live region, then set it after 40ms, so a repeated message is announced again.
+  function announce(msg) {
+    clearTimeout(announceTimer);
+    $("status").textContent = "";
+    announceTimer = setTimeout(() => { $("status").textContent = msg; }, 40);
+  }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = saved.step || 0; seen = saved.seen || 0; } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    $("nextBtn").innerHTML = last ? "Last step" : 'Next step<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (moveFocus) { $("h-" + step).focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => goTo(step + 1, true);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.step, true));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, pre, input, textarea")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+  document.addEventListener("click", async e => {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    try { await navigator.clipboard.writeText(steps[+b.dataset.copy].sample.body); b.textContent = "Copied"; }
+    catch (err) { b.textContent = "Select the code and copy it"; }
+    announce(b.textContent);
+    setTimeout(() => b.textContent = "Copy code", 2500);
+  });
+
+  goTo(step, false);
+})();
+</script>
+</body>
+</html>

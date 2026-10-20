@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Breaking Games x TikTok concept deck: Your mission
+  Built 2026-10-19 from the asset specs in this folder (_asset-specs.md).
+  Style: ../../09-assets/style/tiktok-style-guide.md. Chrome and a11y patterns:
+  ../../09-assets/templates/breaking-games-steps-slides-template.html.
+  The slide text mirrors the page's "Text version of the interactive" toggle. Edit both together.
+  WCAG 2.2 AA: one H1; inactive slides hidden; focus moves to each slide's h2; polite live region;
+  44px targets; reveals use real buttons with aria-expanded; state shown in words, not color alone;
+  reflows to one column at 640px; prefers-reduced-motion respected. No external data calls.
+  Deploy: https://vpdasgupta.github.io/tiktok/breaking-games-p0-mission.html
+-->
+<title>Your mission</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #F8FAFC; --card: #FFFFFF; --ink: #0F172A; --ink-soft: #5A6478;
+    --line: #E9E9E7; --edge: #64748B; --tt-cyan: #25F4EE; --tt-red: #FE2C55;
+    --red-ink: #CC0F3A; --red-dark: #A80C30; --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86; --cyan-tint: #E6FDFC; --amber-ink: #9A5B00; --amber-tint: #FFF4E5;
+    --night: #0C0B10; --night-ink: #E2E8F0; --night-soft: #A89FA2;
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px; --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.5; padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a, input, textarea { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  a { color: var(--red-ink); }
+
+  .deck { max-width: 920px; margin: 0 auto; }
+  .deck-head {
+    margin-bottom: 14px; padding: 18px 24px 22px; border-radius: var(--radius); color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .deck-head :focus-visible { outline-color: var(--tt-cyan); }
+  .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); }
+  .deck-title { font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .grad-word { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @media (forced-colors: active) { .grad-word { color: CanvasText; background: none; } }
+
+  .slide {
+    overflow-wrap: anywhere;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 26px 32px 24px;
+    aspect-ratio: 16 / 9; display: flex; flex-direction: column;
+  }
+  .step-num {
+    align-self: flex-start; display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
+  }
+  .slide h2 { font-size: 28px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 10px 0 12px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 18px; margin: 0 0 12px; }
+  .slide .lead { font-size: 21px; line-height: 1.45; }
+  .slide .plain { margin: 0 0 12px; padding-left: 22px; font-size: 18px; }
+  .slide .plain li { margin-bottom: 6px; }
+  .icon { font-size: 40px; line-height: 1; margin: 4px 0 8px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--pink-tint); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+
+  .chip { display: inline-block; align-self: flex-start; background: var(--pink-tint); color: var(--ink); font-weight: 700; border-radius: 999px; padding: 6px 14px; font-size: 15px; margin: 4px 0 12px; }
+  .chip.cta { background: var(--night); color: #FFFFFF; }
+  .callout { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 4px 0 12px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 4px 0 14px; }
+  .grid.two { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .box { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background: var(--canvas); }
+  .box h3 { font-size: 17px; margin: 0 0 6px; line-height: 1.3; }
+  .box p { font-size: 15px; margin: 0 0 8px; }
+  .box p:last-child { margin-bottom: 0; }
+  .box .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+  .stat { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background:
+      linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas); }
+  .stat .big { display: block; font-size: 24px; font-weight: 800; line-height: 1.2; }
+  .stat .small { display: block; font-size: 14px; color: var(--ink-soft); }
+  .caption { font-size: 14px; color: var(--ink-soft); margin-top: -6px; }
+
+  .person { display: flex; gap: 12px; align-items: flex-start; }
+  .avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--ink); background: var(--cyan-tint); border: 2px solid var(--teal-ink); }
+
+  .status-pill { display: inline-block; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 3px 10px; margin-bottom: 6px; border: 1px solid currentColor; }
+  .status-pill.use { color: var(--teal-ink); background: var(--cyan-tint); }
+  .status-pill.check { color: var(--amber-ink); background: var(--amber-tint); }
+  .status-pill.no { color: var(--red-ink); background: var(--pink-tint); }
+
+  .tbl { width: 100%; border-collapse: collapse; margin: 0 0 12px; font-size: 15px; }
+  .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .tbl thead th { white-space: nowrap; overflow-wrap: normal; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .tbl tbody th { white-space: nowrap; }
+
+  .btn {
+    min-height: 44px; min-width: 44px; border-radius: 999px; padding: 10px 18px; font-size: 15px; font-weight: 700; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--edge); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { border-color: var(--ink); }
+  .btn.primary { background: var(--red-ink); border-color: var(--red-ink); color: #FFFFFF; }
+  .btn.primary:hover { background: var(--red-dark); border-color: var(--red-dark); }
+  .btn[aria-pressed="true"] { background: var(--ink); color: #FFFFFF; border-color: var(--ink); }
+  .btn[aria-pressed="true"]::after { content: " (your pick)" / ""; font-weight: 600; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 12px; align-items: center; }
+
+  .qa { border-top: 1px solid var(--line); padding: 10px 0; }
+  .qa p { margin: 0 0 6px; font-weight: 600; }
+  .answer { margin-top: 8px; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--cyan-tint); border-left: 4px solid var(--teal-ink); font-size: 16px; }
+  .answer b.lbl { color: var(--teal-ink); }
+  .feedback { margin-top: 4px; padding: 12px 16px; border-radius: var(--radius-sm); border-left: 4px solid var(--ink); background: var(--canvas); font-size: 16px; }
+  .feedback.right { background: var(--cyan-tint); border-color: var(--teal-ink); }
+  .feedback.wrong { background: var(--amber-tint); border-color: var(--amber-ink); }
+  .feedback .verdict { font-weight: 800; }
+
+  .roast-note { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 17px; margin: 0 0 12px; }
+  .roast-note b { color: var(--red-ink); }
+  .prompt { font-size: 15px; color: var(--ink-soft); }
+  .tagged { margin: 0; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--ink); border-radius: 999px; padding: 1px 8px; margin-right: 6px; vertical-align: 2px; background: var(--card); }
+
+  label.field { display: block; font-weight: 700; font-size: 16px; margin: 4px 0 6px; }
+  textarea { width: 100%; min-height: 76px; font-size: 16px; padding: 10px 12px; border: 1px solid var(--edge); border-radius: var(--radius-sm); color: var(--ink); background: var(--card); resize: vertical; }
+  fieldset { border: 0; padding: 0; margin: 0 0 10px; }
+  legend { font-weight: 700; font-size: 16px; margin-bottom: 6px; padding: 0; }
+  .radio-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radio-card { position: relative; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 16px; border: 1px solid var(--edge); border-radius: 999px; font-weight: 700; cursor: pointer; background: var(--card); }
+  .radio-card input { width: 20px; height: 20px; margin: 0; accent-color: var(--red-ink); }
+  .radio-card:has(input:checked) { border: 2px solid var(--ink); background: var(--pink-tint); }
+  .radio-card:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sample-text { margin: 0 0 10px; border: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas);
+    border-radius: var(--radius-sm); padding: 10px 14px 10px 18px; font-size: 15px; }
+  .disclosure { margin: 6px 0 10px; }
+  .link-btn { min-height: 44px; background: none; border: 0; padding: 8px 0; color: var(--red-ink); font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
+  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; list-style: none; margin: 0; padding: 0; }
+  .dot { width: 30px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--edge); background: var(--card); }
+  .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); }
+  .dot[aria-current="step"]::before { width: 26px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); }
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin: 6px 0 0; }
+
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .deck-head { padding: 14px 16px 18px; }
+    .deck-title { font-size: 21px; }
+    .slide { aspect-ratio: auto; padding: 20px 18px; }
+    .slide h2 { font-size: 21px; }
+    .slide p, .slide .plain { font-size: 16px; }
+    .slide .lead { font-size: 17px; }
+    .grid, .grid.two { grid-template-columns: 1fr; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; }
+    .nav-btn { flex: 1; }
+  }
+  @media (max-width: 420px) {
+    .dot { width: 26px; }
+    .tbl thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .tbl tr, .tbl th, .tbl td { display: block; width: auto; }
+    .tbl tbody th { padding-bottom: 0; border-bottom: 0; white-space: normal; }
+    .tbl tr { border-bottom: 1px solid var(--line); padding: 4px 0; }
+    .tbl td { border-bottom: 0; }
+    .tbl td::before, .tbl tbody th::before { content: attr(data-label) ": "; font-weight: 700; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <header class="deck-head">
+    <p class="eyebrow">Breaking Games × TikTok</p>
+    <h1 class="deck-title" id="deckTitle">Your mission</h1>
+  </header>
+
+  <div id="slides">
+    <section class="slide" aria-labelledby="h-0" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-0" tabindex="-1">Who Breaking Games is</h2>
+      <div class="icon" aria-hidden="true">🎲</div>
+      <p class="lead">A tabletop game publisher: "an indie game publishing division of AdMagic," based in Netcong, New Jersey. It launched at Toy Fair in 2015.</p>
+      <p>It makes party, family and strategy games, like POOP, Sparkle*Kitty and Dwellings of Eldervale, and helps independent designers get their games made and sold.</p>
+      <p class="chip">Say "games," never "toys."</p>
+    </section>
+    <section class="slide" aria-labelledby="h-1" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-1" tabindex="-1">The new brand</h2>
+      <div class="icon" aria-hidden="true">🃏</div>
+      <p class="lead">A branding agency just finished it. The brand line is <strong>"Good game, folks."</strong></p>
+      <p>It's about connection, playing face to face, and making memories around a table. The tone is fun and warm, not edgy.</p>
+      <p>There's also a new breakinggames.com.</p>
+    </section>
+    <section class="slide" aria-labelledby="h-2" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-2" tabindex="-1">The hero game</h2>
+      <div class="icon" aria-hidden="true">🧩</div>
+      <p class="lead"><strong>Caminito</strong> is brand-new and leads the relaunch.</p>
+      <p>Your program manager will share its details and photos as Breaking Games sends them.</p>
+    </section>
+    <section class="slide" aria-labelledby="h-3" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-3" tabindex="-1">The challenge</h2>
+      <div class="grid two" aria-hidden="true">
+        <div class="stat"><span class="small"><code>@breakinggamesllc</code> on TikTok</span><span class="big">1,301 followers</span></div>
+        <div class="stat"><span class="small">Last post</span><span class="big">October 2024</span></div>
+      </div>
+      <p>Breaking Games' TikTok, <code>@breakinggamesllc</code>, has 1,301 followers and hasn't posted since October 2024 (checked October 2026).</p>
+      <p>Its Instagram, <code>@breaking_games</code>, and Facebook are where it's most active today.</p>
+      <p><strong>People know single games, not the company behind them.</strong></p>
+    </section>
+    <section class="slide" aria-labelledby="h-4" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-4" tabindex="-1">Your role and the goal</h2>
+      <p class="lead">You're the content creator and brand strategist for the TikTok relaunch.</p>
+      <p>The goal: new players find Breaking Games, like it and buy from it.</p>
+      <p>Every video points to one place:</p>
+      <p class="chip cta">"Find your next game night: link in bio" (breakinggames.com)</p>
+    </section>
+    <section class="slide" aria-labelledby="h-5" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-5" tabindex="-1">Your 6 weeks</h2>
+      <table class="tbl">
+        <caption class="sr-only">Your 6 weeks</caption>
+        <thead><tr><th scope="col">Week</th><th scope="col">What you'll do</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" data-label="Week">1</th><td data-label="What you'll do">Orientation, then Project 1: roast real posts (hits vs. flops) and build a mood board. Optional: try a first clip.</td></tr>
+          <tr><th scope="row" data-label="Week">2</th><td data-label="What you'll do">Project 2: meet your two players (personas), give feedback on the new website, make Video 1.</td></tr>
+          <tr><th scope="row" data-label="Week">3</th><td data-label="What you'll do">Project 2: get mentor and peer feedback, start a holiday content calendar, make Video 2.</td></tr>
+          <tr><th scope="row" data-label="Week">4</th><td data-label="What you'll do">Project 3: roast real ads and turn your best video into an ad with 3 hooks.</td></tr>
+          <tr><th scope="row" data-label="Week">5</th><td data-label="What you'll do">Project 3: fit your ad to Instagram and Facebook, and lock in your brand strategy.</td></tr>
+          <tr><th scope="row" data-label="Week">6</th><td data-label="What you'll do">Project 4: build and pitch your Relaunch Playbook.</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="slide" aria-labelledby="h-6" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-6" tabindex="-1">What you'll hand over</h2>
+      <p class="lead">Your <strong>TikTok Relaunch Playbook</strong>: an 8-slide brand strategy deck and a video pitch of about 5 minutes, featuring your best TikTok and your ad, plus a holiday content calendar, a 1-page brand brief and notes on the new website.</p>
+      <div class="callout"><p>You never post anything. Your program manager shares your work with Breaking Games, which may credit externs whose work it uses.</p></div>
+    </section>
+    <section class="slide" aria-labelledby="h-7" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-7" tabindex="-1">Who you'll work with</h2>
+      <div class="grid">
+        <div class="box person"><span class="avatar" aria-hidden="true">SS</span><div><h3>Shari Spiro</h3><p>Founder and CEO of Breaking Games, named an EY Entrepreneur of the Year (2016). Your company guide, invited to see the Week 6 finals.</p></div></div>
+        <div class="box person"><span class="avatar" aria-hidden="true">MC</span><div><h3>Michael Caruso</h3><p>Content and design at AdMagic and Breaking Games. Reviews your Video 2 in Week 3.</p></div></div>
+        <div class="box person"><span class="avatar" aria-hidden="true">PM</span><div><h3>Your program manager</h3><p>Your go-to for every question. You'll meet them next.</p></div></div>
+      </div>
+      <p><strong>All contact with the Breaking Games team goes through your program manager.</strong></p>
+    </section>
+  </div>
+
+  <nav class="slide-nav" aria-label="Slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+<script>
+window.DECK = { id: "breaking-games-p0-mission" };
+
+</script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DECK = window.DECK;
+  const KEY = "bg-deck:" + DECK.id;
+  const slides = [...document.querySelectorAll(".slide")];
+  const total = slides.length;
+  const label = i => `Slide ${i + 1} of ${total}`;
+  slides.forEach((s, i) => { const p = s.querySelector(".step-num"); if (p && !p.textContent.trim()) p.textContent = `${i + 1} of ${total}`; });
+
+  const announce = msg => { const st = $("status"); st.textContent = ""; setTimeout(() => { st.textContent = msg; }, 40); };
+  window.deckAnnounce = announce;
+
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0;
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = Math.min(saved.step || 0, total - 1); seen = Math.min(saved.seen || 0, total - 1); } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    $("nextBtn").innerHTML = last ? "Last slide" : 'Next<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (typeof DECK.onShow === "function") DECK.onShow(step, slides[step]);
+    if (moveFocus) { slides[step].querySelector("h2").focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+  window.deckGoTo = goTo;
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => goTo(step + 1, true);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.step, true));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, input, textarea, select, [role=radiogroup]")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+
+  /* Reveal buttons: <button data-reveal="id" aria-expanded="false" aria-controls="id"> */
+  document.querySelectorAll("[data-reveal]").forEach(b => {
+    const target = $(b.dataset.reveal);
+    /* One label; aria-expanded carries the state. The revealed content sits right after the button, so it is not announced separately. */
+    b.addEventListener("click", () => {
+      const open = b.getAttribute("aria-expanded") !== "true";
+      b.setAttribute("aria-expanded", String(open));
+      target.hidden = !open;
+    });
+  });
+
+  if (typeof DECK.init === "function") DECK.init({ announce, goTo, KEY });
+  /* Deep link for previews and QA: #s=N opens slide N (1-based). */
+  const m = location.hash.match(/s=(\d+)/);
+  if (m) step = Math.min(total, Math.max(1, +m[1])) - 1;
+  goTo(step, false);
+  if (/open/.test(location.hash)) slides[step].querySelectorAll("[data-reveal], [data-q='" + (step) + "'], [data-pick]").forEach((b, i) => { if (b.dataset.reveal || i === 0) b.click(); });
+})();
+</script>
+</body>
+</html>

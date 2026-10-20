@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+POST PERFORMANCE SIMULATOR — Breaking Games social media externship
+Spec: 02-scope/breaking-games-social-scope-v3.md ("Post Performance Simulator")
+      03-overview/breaking-games-social-overview.md ("Beat the Benchmark",
+      "Post Performance Simulator")
+Style: 09-assets/style/tiktok-style-guide.md (TikTok-program look, light theme)
+Chrome + a11y patterns: 09-assets/templates/breaking-games-steps-slides-template.html
+
+WHAT IT DOES
+  TikTok mode: 20-item checklist in 7 blocks (100 points) -> score, score by
+    block, estimated views range vs. the 1,049-view benchmark, missed items
+    with fixes, Copy summary.
+  Reels mode: same checklist, 580-view baseline, shown as likes per 100
+    followers vs. the 4.4 Stripes benchmark (a "stretch benchmark").
+  Ad mode (P3): separate 100-point checklist, fixes only, NO estimate.
+
+PRIVACY
+  No external data calls (no fetch, APIs or analytics). The Inter web font link
+  follows the style guide but is optional; system fonts take over without it.
+  The in-progress checklist is saved per viewer in localStorage
+  ("bg-post-simulator-v1"), wrapped in try/catch. The tool works without it.
+
+ACCESSIBILITY (WCAG 2.2 AA)
+  - Mode switch is a native radio group in a fieldset/legend.
+  - One fieldset/legend per rubric block, native checkboxes.
+  - The visible score updates instantly but is NOT a live region. A separate
+    polite live region gets one summary after changes settle (debounced), so
+    screen readers don't hear every tick.
+  - The bar is role="img" with a full text label, and the same numbers are
+    printed as text next to it. Verdicts use words and shapes, not color alone.
+  - 44px targets, 3px focus ring, reduced motion, reflow to 320px, one H1.
+================================================================================
+-->
+<title>Post Performance Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* ======================= CONFIG (program team edits here) ======================= */
+const SIM = {
+  version: "Sim v0",
+  versionDate: "2026-10-19",
+  storageKey: "bg-post-simulator-v1",
+  tiktok: {
+    baseline: 350,              // Socialinsider 2025, 1–5K-follower tier average
+    benchmark: 1049,            // @breakinggamesllc "Keep Calm or Panic?" (Jul 17, 2024), boost status unconfirmed
+    benchmarkName: "\"Keep Calm or Panic?\" (@breakinggamesllc, Jul 17, 2024)",
+    axis: [30, 10000],          // log-scale bar limits (views)
+    ticks: [100, 300, 1000, 3000, 10000]
+  },
+  reels: {
+    baseline: 580,              // Socialinsider Instagram, 1–5K tier (views)
+    likesPer100: 0.52,          // likes per 100 followers at multiplier 1×
+    benchmark: 4.4,             // @truejoyboardgaming Stripes Reel: 72 likes ≈ 4.4 per 100 followers
+    benchmarkName: "Stripes Reel (@truejoyboardgaming, Mar 13, 2026)",
+    axis: [0.05, 15],
+    ticks: [0.1, 0.3, 1, 3, 10]
+  },
+  // multiplier = mA × mB^(score/100). Range = mid ÷ spread to mid × spread.
+  mA: 0.25,
+  mB: 40,
+  spread: 2.5,
+  // "Near" band: not in the spec. Simplest reading: the middle estimate is
+  // within ±10% of the benchmark. Above/below outside that band.
+  nearBand: 0.10,
+  dormancy: 1.0                 // no source covers a relaunch after 24 months
+};
+
+/* Organic checklist (TikTok + Reels share it). Wording and points are from the
+   scope rubric table; every weight is given there, so none were split evenly. */
+const ORGANIC = [
+  { id: "A", name: "Hook", sub: "0 to 3 seconds", items: [
+    { id: "a1", pts: 8,  text: "Game or faces in frame by 1 second", fix: "Open on the game or a face in the first second. Cut any intro or logo." },
+    { id: "a2", pts: 7,  text: "Text hook on screen by 2 seconds", fix: "Add a short text hook on screen by 2 seconds, 7 words or fewer." },
+    { id: "a3", pts: 10, text: "Question, conflict or \"no-context\" moment by 3 seconds", fix: "Open with a question, a clash or an out-of-context moment by 3 seconds." }
+  ]},
+  { id: "B", name: "Watch-through", items: [
+    { id: "b1", pts: 8, text: "Length fits the content: 15 to 60 seconds, or 60+ with a story", fix: "Trim to 15 to 60 seconds, or only run longer if there's a story arc." },
+    { id: "b2", pts: 7, text: "Payoff, reveal or loop at the end", fix: "End on a payoff: the reveal, the winner, or a loop back to the first frame." },
+    { id: "b3", pts: 5, text: "No dead air; a visual change every 2 to 3 seconds", fix: "Cut dead air. Change the shot, angle or text every 2 to 3 seconds." }
+  ]},
+  { id: "C", name: "Participation", items: [
+    { id: "c1", pts: 10, text: "Play-along, guess or debate prompt", fix: "Ask viewers to guess, play along or pick a side before the reveal." },
+    { id: "c2", pts: 5,  text: "Tag-a-friend or share trigger", fix: "Add a share trigger, like \"Tag the friend who always wins.\"" }
+  ]},
+  { id: "D", name: "Native and human", items: [
+    { id: "d1", pts: 5, text: "Phone-shot, lo-fi", fix: "Shoot it on a phone at a real table. Skip the polished ad look." },
+    { id: "d2", pts: 6, text: "Real people reacting: voice, face or hands", fix: "Show real reactions: a voice, a face, or hands in play." },
+    { id: "d3", pts: 4, text: "No logo, price or code in the first 3 seconds", fix: "Move the logo, price or code past 3 seconds, or onto the end card." }
+  ]},
+  { id: "E", name: "10-second test", items: [
+    { id: "e1", pts: 6, text: "Game understood in 10 seconds", fix: "Show what the game is, and how you win, within 10 seconds." },
+    { id: "e2", pts: 4, text: "Game named on screen and in the caption", fix: "Put the game's name on screen and in the caption." }
+  ]},
+  { id: "F", name: "Discoverability and timing", items: [
+    { id: "f1", pts: 3, text: "3 to 5 specific hashtags, including a niche tag", fix: "Use 3 to 5 specific hashtags, including one niche game tag." },
+    { id: "f2", pts: 2, text: "Search keywords in the caption", fix: "Write the caption with words people search for, like the game type and \"game night.\"" },
+    { id: "f3", pts: 3, text: "Seasonal or trend tie-in with a payoff", fix: "Tie it to a season or trend, and make sure the tie-in pays off in the video." },
+    { id: "f4", pts: 2, text: "Planned for an early-morning or evening slot", fix: "Plan the post for an early-morning or evening slot." }
+  ]},
+  { id: "G", name: "Access and compliance", items: [
+    { id: "g1", pts: 3, text: "Burned-in captions", fix: "Burn in captions so it works with the sound off." },
+    { id: "g2", pts: 2, text: "Disclosure, if it's a creator collab", fix: "Add the paid-partnership label or #ad disclosure for a creator collab.", collab: true }
+  ]}
+];
+
+/* Ad mode checklist (P3). Wording and points from the scope's Ad mode table. */
+const AD = [
+  { id: "A", name: "Stop the scroll", sub: "0 to 3 seconds", items: [
+    { id: "xa1", pts: 10, text: "Game and Breaking Games brand in frame by 3 seconds", fix: "Get the game and the Breaking Games brand on screen by 3 seconds." },
+    { id: "xa2", pts: 10, text: "Hook line on screen by 2 seconds", fix: "Put your hook line on screen by 2 seconds." },
+    { id: "xa3", pts: 10, text: "Speaks to one persona's moment", fix: "Pick one persona and show their moment, not everyone's." }
+  ]},
+  { id: "B", name: "One message", items: [
+    { id: "xb1", pts: 10, text: "One game, one offer or reason to buy", fix: "Cut to one game and one offer or reason to buy." },
+    { id: "xb2", pts: 10, text: "Benefit clear without sound", fix: "Make the benefit readable on screen so it lands with the sound off." }
+  ]},
+  { id: "C", name: "Sound-off ready", items: [
+    { id: "xc1", pts: 8, text: "Burned-in captions", fix: "Burn in captions for every spoken line." },
+    { id: "xc2", pts: 7, text: "Key words on screen, inside safe zones", fix: "Move key words inside the safe zones, away from the edges and buttons." }
+  ]},
+  { id: "D", name: "Clear next step", items: [
+    { id: "xd1", pts: 8, text: "One CTA, said and shown", fix: "Use one call to action, and both say it and show it." },
+    { id: "xd2", pts: 7, text: "Landing page on breakinggames.com matches the ad", fix: "Link to the breakinggames.com page for the same game and offer." }
+  ]},
+  { id: "E", name: "Built for the placement", items: [
+    { id: "xe1", pts: 5, text: "9:16 for Reels and Stories; 4:5 or 1:1 for feed and carousel cards", fix: "Export the right shape: 9:16 for Reels and Stories, 4:5 or 1:1 for feed." },
+    { id: "xe2", pts: 5, text: "15 to 30 seconds", fix: "Trim the ad to 15 to 30 seconds." }
+  ]},
+  { id: "F", name: "Honest and on-brand", items: [
+    { id: "xf1", pts: 4, text: "Accurate price and facts, with the date checked", fix: "Check every price and fact against the approved list, with today's date." },
+    { id: "xf2", pts: 3, text: "No invented reviews or AI people", fix: "Remove invented reviews and AI-generated people." },
+    { id: "xf3", pts: 3, text: "Fun and warm, not edgy; \"Good game, folks.\" end card", fix: "Warm up the tone and end on the \"Good game, folks.\" card." }
+  ]}
+];
+</script>
+<style>
+  /* Tokens: ../style/tiktok-style-guide.md, sections 2 and 9 */
+  :root {
+    --canvas: #F8FAFC;
+    --card: #FFFFFF;
+    --ink: #0F172A;
+    --ink-soft: #5A6478;
+    --line: #E9E9E7;        /* decorative only */
+    --edge: #64748B;        /* control borders */
+    --tt-cyan: #25F4EE;     /* fill only on light */
+    --tt-red: #FE2C55;      /* fill/accent only on light */
+    --red-ink: #CC0F3A;
+    --red-dark: #A80C30;
+    --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86;
+    --cyan-tint: #E6FDFC;
+    --amber-ink: #9A5B00;
+    --amber-tint: #FFF4E5;
+    --night: #0C0B10;
+    --night-ink: #E2E8F0;
+    --night-soft: #A89FA2;
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.5;
+    padding: 16px; -webkit-font-smoothing: antialiased;
+  }
+  button, input, textarea { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .wrap { max-width: 1040px; margin: 0 auto; }
+
+  /* Hero band */
+  .hero {
+    color: #FFFFFF; border-radius: var(--radius); padding: 20px 24px 24px; margin-bottom: 14px;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .hero :focus-visible { outline-color: var(--tt-cyan); }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); margin: 0 0 4px; }
+  .hero h1 { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0 0 6px; }
+  .hero p.sub { margin: 0; color: var(--night-ink); font-size: 15px; }
+  .hero-link {
+    display: inline-flex; align-items: center; min-height: 44px; margin-top: 12px;
+    border: 2px solid var(--tt-cyan); color: #FFFFFF; border-radius: 999px; padding: 8px 16px;
+    font-size: 14px; font-weight: 700; text-decoration: none;
+  }
+  .hero-link:hover { background: var(--tt-cyan); color: var(--night); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px 28px; overflow-wrap: anywhere; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0; }
+  h2 { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 10px 0 12px; }
+  h3 { font-size: 17px; font-weight: 800; margin: 22px 0 8px; }
+  p { margin: 0 0 12px; }
+
+  /* Framing callout (always on screen) */
+  .framing { background: var(--amber-tint); border-left: 4px solid var(--amber-ink); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 12px 16px; margin: 0 0 14px; font-size: 15px; }
+  .framing b { color: var(--amber-ink); }
+
+  /* Mode switch: native radios styled as pills */
+  .modes { border: 0; margin: 0 0 14px; padding: 0; min-width: 0; }
+  .modes legend { font-weight: 800; font-size: 15px; padding: 0; margin-bottom: 8px; }
+  .mode-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mode { position: relative; }
+  .mode input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .mode label {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 18px;
+    border: 1px solid var(--edge); border-radius: 999px; background: var(--card); cursor: pointer;
+    font-size: 15px; font-weight: 700;
+  }
+  .mode label::before { /* radio ring: empty = off, filled = on (shape, not color) */
+    content: ""; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--edge); background: var(--card); flex: none;
+  }
+  .mode input:checked + label { border: 2px solid var(--ink); background: var(--pink-tint); }
+  .mode input:checked + label::before { border-color: var(--red-ink); box-shadow: inset 0 0 0 3px var(--card); background: var(--red-ink); }
+  @media (forced-colors: active) { .mode input:checked + label::before { background: Highlight; border-color: Highlight; } }
+  .mode input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .mode label:hover { border-color: var(--ink); }
+  .mode small { font-weight: 500; color: var(--ink-soft); font-size: 13px; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+
+  /* Checklist */
+  .block { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 8px 14px 10px; margin: 0 0 12px; min-width: 0; }
+  .block legend { padding: 0 6px; font-weight: 800; font-size: 16px; }
+  .block legend .pts { font-weight: 600; color: var(--ink-soft); font-size: 14px; }
+  .item { display: flex; align-items: flex-start; gap: 12px; min-height: 44px; padding: 8px 4px; border-radius: 8px; cursor: pointer; }
+  .item + .item { border-top: 1px solid var(--line); }
+  .item:hover { background: var(--canvas); }
+  .item input { width: 22px; height: 22px; margin: 1px 0 0; flex: none; accent-color: var(--red-ink); cursor: pointer; }
+  .item .txt { flex: 1; font-size: 15px; }
+  .item .pts { flex: none; font-size: 13px; font-weight: 700; color: var(--ink-soft); white-space: nowrap; }
+  .item .na { display: block; font-size: 13px; color: var(--ink-soft); }
+
+  .toggles { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 8px 14px 10px; margin: 0 0 12px; min-width: 0; }
+  .toggles legend { padding: 0 6px; font-weight: 800; font-size: 16px; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .btn { min-height: 44px; border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--edge); }
+  .btn:hover { border-color: var(--ink); }
+  .btn.primary { background: var(--red-ink); border-color: var(--red-ink); color: #FFFFFF; }
+  .btn.primary:hover { background: var(--red-dark); border-color: var(--red-dark); }
+
+  /* Results */
+  .score-line { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin: 4px 0 6px; }
+  .score-num { font-size: 48px; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
+  .score-of { font-size: 18px; font-weight: 700; color: var(--ink-soft); }
+  .estimate { font-size: 16px; }
+  .estimate strong { font-weight: 800; }
+
+  .verdict { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); border-left: 4px solid; font-weight: 700; margin: 0 0 12px; }
+  .verdict .shape { font-size: 18px; line-height: 1; }
+  .verdict.above { background: var(--cyan-tint); border-color: var(--teal-ink); }
+  .verdict.above .word { color: var(--teal-ink); }
+  .verdict.near { background: var(--pink-tint); border-color: var(--red-ink); }
+  .verdict.near .word { color: var(--red-ink); }
+  .verdict.below { background: var(--amber-tint); border-color: var(--amber-ink); }
+  .verdict.below .word { color: var(--amber-ink); }
+  .verdict .rest { font-weight: 500; }
+
+  /* Bar (log scale). Decorative shapes; the role="img" label + printed text carry the meaning. */
+  .bar-wrap { margin: 8px 0 4px; padding-top: 30px; }
+  .bar { position: relative; height: 28px; border: 1px solid var(--edge); border-radius: 6px; background: var(--canvas); }
+  .bar .range { position: absolute; top: 3px; bottom: 3px; border-radius: 4px; border: 2px solid var(--ink);
+    background: repeating-linear-gradient(135deg, var(--pink-tint) 0 6px, #FFFFFF 6px 10px); }
+  .bar .mid { position: absolute; top: -4px; bottom: -4px; width: 4px; margin-left: -2px; background: var(--ink); border-radius: 2px; }
+  .bar .bench { position: absolute; top: -30px; bottom: -6px; width: 0; border-left: 3px dashed var(--red-ink); }
+  .bar .bench span { position: absolute; top: 0; left: 6px; font-size: 12px; font-weight: 700; color: var(--red-ink); white-space: nowrap; background: var(--card); padding: 0 3px; }
+  .bar .bench.flip span { left: auto; right: 6px; }
+  .ticks { position: relative; height: 20px; font-size: 12px; color: var(--ink-soft); }
+  .ticks span { position: absolute; transform: translateX(-50%); top: 2px; white-space: nowrap; }
+  .bar-key { font-size: 13px; color: var(--ink-soft); margin: 2px 0 12px; }
+
+  .adlabel { background: var(--cyan-tint); border-left: 4px solid var(--teal-ink); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 12px 16px; margin: 0 0 12px; }
+  .adlabel b { color: var(--teal-ink); }
+
+  .stop { background: var(--amber-tint); border-left: 4px solid var(--amber-ink); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 12px 16px; margin: 0 0 12px; }
+  .stop b { color: var(--amber-ink); }
+  .warn { background: var(--pink-tint); border: 2px solid var(--red-ink); border-radius: var(--radius-sm); padding: 12px 16px; margin: 0 0 12px; }
+  .warn b { color: var(--red-ink); }
+
+  .blocks { list-style: none; margin: 0; padding: 0; }
+  .blocks li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .blocks .val { font-weight: 700; white-space: nowrap; }
+  .blocks .meter { grid-column: 1 / -1; height: 8px; border-radius: 999px; border: 1px solid var(--edge); background: var(--canvas); overflow: hidden; }
+  .blocks .meter i { display: block; height: 100%; background: var(--gradient); }
+
+  .fixes { margin: 0; padding-left: 22px; }
+  .fixes li { margin-bottom: 8px; font-size: 15px; }
+  .fixes .what { font-weight: 700; }
+  .fixes .lost { color: var(--ink-soft); font-weight: 600; white-space: nowrap; }
+  .none { font-size: 15px; color: var(--ink-soft); }
+
+  .copy-row { margin-top: 18px; }
+  .copy-status { font-size: 14px; color: var(--ink-soft); margin: 8px 0 0; min-height: 1.5em; }
+  .fallback { width: 100%; min-height: 160px; margin-top: 8px; font-size: 14px; border: 1px solid var(--edge); border-radius: var(--radius-sm); padding: 10px; }
+  .foot { font-size: 13px; color: var(--ink-soft); margin-top: 16px; }
+
+  .skip { display: none; }
+
+  @media (max-width: 820px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .skip { display: inline-flex; }
+  }
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .hero { padding: 16px 18px 20px; }
+    .hero h1 { font-size: 21px; }
+    .card { padding: 18px 16px; }
+    h2 { font-size: 20px; }
+    .block, .toggles { padding: 6px 10px 8px; }
+    .score-num { font-size: 40px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .bar .range, .bar .mid, .blocks .meter i { transition: left .2s ease, width .2s ease; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Breaking Games × TikTok</p>
+    <h1>Post Performance Simulator</h1>
+    <p class="sub">Check off what your video does. See your score, what to fix, and how it stacks up against the benchmark. Good game, folks.</p>
+    <a class="hero-link skip" href="#result-h">Jump to your result</a>
+  </header>
+
+  <main>
+    <p class="framing" id="framing"><b>Estimate, not a prediction.</b> Based on 2024–25 averages for accounts with 1–5K followers, checked against Breaking Games' own posts and creator posts about its games, and a scoring model we built for teaching. Real results vary 10× or more. Use it to compare drafts, not to promise numbers.</p>
+
+    <form id="sim" novalidate onsubmit="return false">
+      <fieldset class="modes">
+        <legend>What are you scoring?</legend>
+        <div class="mode-row">
+          <div class="mode"><input type="radio" name="mode" id="m-tiktok" value="tiktok" checked><label for="m-tiktok">TikTok <small>organic video</small></label></div>
+          <div class="mode"><input type="radio" name="mode" id="m-reels" value="reels"><label for="m-reels">Instagram Reels <small>organic</small></label></div>
+          <div class="mode"><input type="radio" name="mode" id="m-ad" value="ad"><label for="m-ad">Ad mode <small>Project 3 ad</small></label></div>
+        </div>
+      </fieldset>
+
+      <div class="layout">
+        <section class="card" aria-labelledby="check-h">
+          <p class="badge" id="check-badge">20 items · 100 points</p>
+          <h2 id="check-h">Your checklist</h2>
+          <p id="check-intro">Check each item your video really does. Mentors watch the video, so only check what's on screen.</p>
+
+          <fieldset class="toggles" id="organic-toggles">
+            <legend>About this post</legend>
+            <label class="item"><input type="checkbox" id="collab"><span class="txt">It's a creator collab (a creator made or posted it with Breaking Games)</span></label>
+            <label class="item"><input type="checkbox" id="boosted"><span class="txt">It will be boosted or paid</span></label>
+          </fieldset>
+
+          <div id="list-organic"></div>
+          <div id="list-ad" hidden></div>
+
+          <div class="actions">
+            <button type="button" class="btn" id="clearBtn">Clear this checklist</button>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="result-h" id="result">
+          <p class="badge" id="result-badge">TikTok mode</p>
+          <h2 id="result-h" tabindex="-1">Your result</h2>
+
+          <div class="stop" id="boostStop" hidden>
+            <p><b>Boosted posts are out of scope.</b> This simulator scores organic posts only. A boost buys reach, so views would reflect the budget, not your video. Uncheck "boosted" to score it as an organic post, or use Ad mode for a paid ad.</p>
+          </div>
+
+          <div id="resultBody">
+            <div class="score-line"><span class="score-num" id="scoreNum">0</span><span class="score-of">out of 100</span></div>
+
+            <div id="estBlock">
+              <p class="estimate" id="estText"></p>
+              <p class="verdict" id="verdict"></p>
+              <div class="bar-wrap">
+                <div class="bar" id="bar" role="img">
+                  <div class="range" id="barRange"></div>
+                  <div class="mid" id="barMid"></div>
+                  <div class="bench" id="barBench"><span id="barBenchLbl"></span></div>
+                </div>
+                <div class="ticks" id="ticks" aria-hidden="true"></div>
+              </div>
+              <p class="bar-key" aria-hidden="true">Striped band = your estimated range. Solid line = middle estimate. Dashed line = benchmark. Log scale.</p>
+              <p class="none" id="stretchNote" hidden>The Reels benchmark is a <b>stretch benchmark</b> for now. Under these starting numbers, matching it takes a score of about 96. It gets a real baseline once Breaking Games shares Instagram Insights.</p>
+            </div>
+
+            <p class="adlabel" id="adLabel" hidden><b>Ad check, not an estimate.</b> This checks your ad against what tends to work. It can't tell you how an ad will perform.</p>
+
+            <div class="warn" id="discWarn" hidden><p><b>Blocking: add the disclosure.</b> A creator collab needs a paid-partnership label or #ad disclosure before it can post. Fix this first.</p></div>
+
+            <h3 id="blocks-h">Score by block</h3>
+            <ul class="blocks" id="blocks" aria-labelledby="blocks-h"></ul>
+
+            <h3 id="fixes-h">What to fix</h3>
+            <p class="none" id="fixIntro"></p>
+            <ol class="fixes" id="fixes" aria-labelledby="fixes-h"></ol>
+
+            <div class="copy-row">
+              <button type="button" class="btn primary" id="copyBtn">Copy summary</button>
+              <p class="copy-status" id="copyStatus"></p>
+              <label for="fallbackText" class="sr-only" id="fallbackLbl">Summary text to copy</label>
+              <textarea class="fallback" id="fallbackText" readonly hidden></textarea>
+            </div>
+          </div>
+          <p class="foot" id="foot"></p>
+        </section>
+      </div>
+    </form>
+    <div class="sr-only" role="status" aria-live="polite" id="live"></div>
+  </main>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const fmtViews = n => (n >= 100 ? Math.round(n / 10) * 10 : Math.round(n)).toLocaleString("en-US");
+  const fmtRate = n => n < 1 ? n.toFixed(2) : n.toFixed(1);
+
+  /* ---------- state + storage ---------- */
+  let state = { mode: "tiktok", organic: {}, ad: {}, collab: false, boosted: false };
+  try {
+    const saved = JSON.parse(localStorage.getItem(SIM.storageKey) || "null");
+    if (saved && typeof saved === "object") state = Object.assign(state, saved);
+  } catch (e) {}
+  const save = () => { try { localStorage.setItem(SIM.storageKey, JSON.stringify(state)); } catch (e) {} };
+
+  /* ---------- render checklists ---------- */
+  function renderList(blocks, key, host) {
+    host.innerHTML = blocks.map(b => {
+      const total = b.items.reduce((s, i) => s + i.pts, 0);
+      return `<fieldset class="block"><legend>${b.id}. ${b.name}${b.sub ? `, ${b.sub}` : ""} <span class="pts">(${total} points)</span></legend>
+        ${b.items.map(i => `<label class="item" for="${i.id}">
+          <input type="checkbox" id="${i.id}" data-list="${key}" ${state[key][i.id] ? "checked" : ""}>
+          <span class="txt">${i.text}${i.collab ? `<span class="na" id="${i.id}-na"></span>` : ""}</span>
+          <span class="pts">${i.pts} pts</span></label>`).join("")}
+      </fieldset>`;
+    }).join("");
+  }
+  renderList(ORGANIC, "organic", $("list-organic"));
+  renderList(AD, "ad", $("list-ad"));
+  $("collab").checked = !!state.collab;
+  $("boosted").checked = !!state.boosted;
+  const radio = document.querySelector(`input[name=mode][value="${state.mode}"]`);
+  if (radio) radio.checked = true; else state.mode = "tiktok";
+
+  /* ---------- scoring ---------- */
+  function score(blocks, key) {
+    let total = 0; const byBlock = []; const missed = [];
+    blocks.forEach(b => {
+      let got = 0, max = 0;
+      b.items.forEach(i => {
+        max += i.pts;
+        // Disclosure only applies to creator collabs. Not a collab -> N/A, points awarded.
+        const na = i.collab && !state.collab;
+        if (state[key][i.id] || na) got += i.pts;
+        else missed.push({ block: b.name, ...i });
+      });
+      total += got; byBlock.push({ name: b.name, got, max });
+    });
+    missed.sort((a, b) => b.pts - a.pts);
+    return { total, byBlock, missed };
+  }
+  const multiplier = s => SIM.mA * Math.pow(SIM.mB, s / 100) * SIM.dormancy;
+
+  function estimate(mode, s) {
+    const m = multiplier(s);
+    if (mode === "tiktok") {
+      const c = SIM.tiktok, mid = c.baseline * m;
+      return { mid, lo: mid / SIM.spread, hi: mid * SIM.spread, bench: c.benchmark, cfg: c,
+        fmt: fmtViews, fmtB: n => n.toLocaleString("en-US"), unit: "views", benchText: `${c.benchmark.toLocaleString("en-US")} views` };
+    }
+    // Reels (simplest reading of the scope): likes per 100 followers = 0.52 × multiplier,
+    // same ÷2.5 to ×2.5 band. Views (580 × multiplier) shown as a side note only.
+    const c = SIM.reels, mid = c.likesPer100 * m;
+    return { mid, lo: mid / SIM.spread, hi: mid * SIM.spread, bench: c.benchmark, cfg: c, views: c.baseline * m,
+      fmt: fmtRate, fmtB: n => String(n), unit: "likes per 100 followers", benchText: `${c.benchmark} likes per 100 followers` };
+  }
+  function verdictOf(mid, bench) {
+    const r = mid / bench;
+    if (r > 1 + SIM.nearBand) return { k: "above", word: "Above the benchmark", shape: "▲" };
+    if (r < 1 - SIM.nearBand) return { k: "below", word: "Below the benchmark", shape: "▼" };
+    return { k: "near", word: "Near the benchmark", shape: "●" };
+  }
+
+  /* ---------- bar ---------- */
+  function pos(v, [a, b]) {
+    const p = (Math.log(v) - Math.log(a)) / (Math.log(b) - Math.log(a));
+    return Math.max(0, Math.min(1, p)) * 100;
+  }
+  function drawBar(e, mode) {
+    const ax = e.cfg.axis;
+    const l = pos(e.lo, ax), r = pos(e.hi, ax), b = pos(e.bench, ax);
+    $("barRange").style.left = l + "%"; $("barRange").style.width = Math.max(1, r - l) + "%";
+    $("barMid").style.left = pos(e.mid, ax) + "%";
+    $("barBench").style.left = b + "%";
+    $("barBench").classList.toggle("flip", b > 70);
+    $("barBenchLbl").textContent = "Benchmark " + e.fmtB(e.bench);
+    $("ticks").innerHTML = e.cfg.ticks.map(t => `<span style="left:${pos(t, ax)}%">${mode === "tiktok" ? (t >= 1000 ? t / 1000 + "K" : t) : t}</span>`).join("");
+    $("bar").setAttribute("aria-label",
+      `Bar chart, log scale. Your estimated range is ${e.fmt(e.lo)} to ${e.fmt(e.hi)} ${e.unit}, middle about ${e.fmt(e.mid)}. The benchmark is ${e.benchText}.`);
+  }
+
+  /* ---------- update ---------- */
+  let liveTimer = null, summary = "";
+  function update(announce) {
+    const mode = state.mode, isAd = mode === "ad";
+    const key = isAd ? "ad" : "organic";
+    $("list-organic").hidden = isAd; $("organic-toggles").hidden = isAd;
+    $("list-ad").hidden = !isAd;
+    const n = isAd ? AD.reduce((s, b) => s + b.items.length, 0) : 20;
+    $("check-badge").textContent = `${n} items · 100 points`;
+    $("check-intro").textContent = isAd
+      ? "Check each item your ad really does. Ad mode is for paid ads only and never estimates views or clicks."
+      : "Check each item your video really does. Mentors watch the video, so only check what's on screen.";
+    $("result-badge").textContent = isAd ? "Ad mode" : mode === "reels" ? "Instagram Reels mode" : "TikTok mode";
+
+    // Disclosure N/A note
+    const naEl = $("g2-na");
+    if (naEl) naEl.textContent = state.collab ? "Required: this is a creator collab." : "Not a collab, so this counts as done.";
+
+    const boosted = !isAd && state.boosted;
+    $("boostStop").hidden = !boosted;
+    $("resultBody").hidden = boosted;
+
+    const s = score(isAd ? AD : ORGANIC, key);
+    $("scoreNum").textContent = s.total;
+
+    // Score by block
+    $("blocks").innerHTML = s.byBlock.map(b => `<li><span>${b.name}</span><span class="val">${b.got} of ${b.max}</span>
+      <span class="meter" aria-hidden="true"><i style="width:${(b.got / b.max) * 100}%"></i></span></li>`).join("");
+
+    // Fixes
+    $("fixIntro").textContent = s.missed.length
+      ? `${s.missed.length} missed ${s.missed.length === 1 ? "item" : "items"}, biggest points first.`
+      : "Nothing missed. Every item is checked.";
+    $("fixes").hidden = !s.missed.length;
+    $("fixes").innerHTML = s.missed.map(m => `<li><span class="what">${m.block}: ${m.text}</span> <span class="lost">(${m.pts} pts)</span><br>${m.fix}</li>`).join("");
+
+    const discMissing = !isAd && state.collab && !state.organic.g2;
+    $("discWarn").hidden = !discMissing;
+
+    $("estBlock").hidden = isAd;
+    $("adLabel").hidden = !isAd;
+    $("stretchNote").hidden = mode !== "reels";
+
+    let liveMsg, est = null, v = null;
+    if (isAd) {
+      liveMsg = `Ad check score ${s.total} of 100. ${s.missed.length} items to fix. Ad check, not an estimate.`;
+    } else {
+      est = estimate(mode, s.total); v = verdictOf(est.mid, est.bench);
+      if (mode === "tiktok") {
+        $("estText").innerHTML = `Estimated views: <strong>about ${fmtViews(est.mid)}</strong>, likely between ${fmtViews(est.lo)} and ${fmtViews(est.hi)}. Benchmark: ${est.benchText}, ${SIM.tiktok.benchmarkName}.`;
+      } else {
+        $("estText").innerHTML = `Estimated likes per 100 followers: <strong>about ${fmtRate(est.mid)}</strong>, likely between ${fmtRate(est.lo)} and ${fmtRate(est.hi)} (about ${fmtViews(est.views)} views). Stretch benchmark: ${est.bench} likes per 100 followers, ${SIM.reels.benchmarkName}.`;
+      }
+      $("verdict").className = "verdict " + v.k;
+      $("verdict").innerHTML = `<span class="shape" aria-hidden="true">${v.shape}</span><span><span class="word">${v.word}.</span> <span class="rest">Middle estimate ${est.fmt(est.mid)} vs. ${est.fmtB(est.bench)}.</span></span>`;
+      drawBar(est, mode);
+      liveMsg = boosted
+        ? "Boosted posts are out of scope. Uncheck boosted to get a score."
+        : `Score ${s.total} of 100. About ${est.fmt(est.mid)} ${est.unit}. ${v.word}.${discMissing ? " Blocking: add the collab disclosure." : ""}`;
+    }
+
+    $("foot").textContent = `${SIM.version}, ${SIM.versionDate}. Starting numbers for teaching, not a validated model.${isAd ? "" : " Organic posts only."}`;
+
+    // Copy summary text
+    const top = s.missed.slice(0, 2).map((m, i) => `${i + 1}) ${m.fix}`).join(" ");
+    const modeName = isAd ? "Ad mode" : mode === "reels" ? "Instagram Reels mode" : "TikTok mode";
+    const lines = [`Breaking Games Post Performance Simulator (${SIM.version}, ${SIM.versionDate}), ${modeName}`, `Score: ${s.total}/100`];
+    if (isAd) {
+      lines.push("Ad check, not an estimate.");
+    } else if (mode === "tiktok") {
+      lines.push(`Estimated views: about ${fmtViews(est.mid)} (${fmtViews(est.lo)} to ${fmtViews(est.hi)})`,
+        `Benchmark: ${est.benchText}. ${v.word}.`);
+    } else {
+      lines.push(`Estimated likes per 100 followers: about ${fmtRate(est.mid)} (${fmtRate(est.lo)} to ${fmtRate(est.hi)})`,
+        `Stretch benchmark: ${est.bench} likes per 100 followers. ${v.word}.`);
+    }
+    if (discMissing) lines.push("Blocking: collab disclosure missing.");
+    lines.push(s.missed.length ? `Top fixes: ${top}` : "Top fixes: none, every item checked.");
+    if (!isAd) lines.push("Estimate, not a prediction.");
+    summary = lines.join("\n");
+
+    save();
+    if (announce) {
+      clearTimeout(liveTimer);
+      liveTimer = setTimeout(() => { $("live").textContent = liveMsg; }, 900);
+    }
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener("change", e => {
+    const t = e.target;
+    if (t.name === "mode") { state.mode = t.value; $("fallbackText").hidden = true; $("copyStatus").textContent = ""; }
+    else if (t.id === "collab") state.collab = t.checked;
+    else if (t.id === "boosted") state.boosted = t.checked;
+    else if (t.dataset.list) state[t.dataset.list][t.id] = t.checked;
+    else return;
+    update(true);
+  });
+
+  /* Clear the live region, then set it, so a repeated message is still announced. */
+  const say = m => { const l = $("live"); l.textContent = ""; setTimeout(() => { l.textContent = m; }, 50); };
+
+  $("clearBtn").addEventListener("click", () => {
+    clearTimeout(liveTimer);
+    const key = state.mode === "ad" ? "ad" : "organic";
+    state[key] = {};
+    document.querySelectorAll(`input[data-list="${key}"]`).forEach(c => c.checked = false);
+    update(false);
+    say("Checklist cleared. Score 0 of 100.");
+  });
+
+  $("copyBtn").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(summary);
+      $("copyStatus").textContent = "Copied. Paste it into your submission.";
+      $("fallbackText").hidden = true;
+    } catch (err) {
+      const ta = $("fallbackText");
+      ta.value = summary; ta.hidden = false; ta.focus(); ta.select();
+      $("copyStatus").textContent = "Couldn't copy automatically. The summary is selected below. Press Ctrl+C or Command+C.";
+    }
+    say($("copyStatus").textContent);
+  });
+
+  update(false);
+})();
+</script>
+</body>
+</html>

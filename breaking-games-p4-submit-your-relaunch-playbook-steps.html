@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+TASK STEPS SLIDES — Breaking Games skin (TikTok-program look, 2026-10-19)
+Forked from templates/interactive-formats/task-steps-slides-template.html.
+Only the CSS and the default TASK demo changed. Style guide:
+output/programs/socialmedia/breaking-games/09-assets/style/tiktok-style-guide.md
+================================================================================
+Design source: https://curious-tanuki-b3a260.netlify.app/ (Task view, the
+"one step per slide" slider). The side and bottom panels from that design (people
+panel, journey drawer, submission bar) are NOT here. Notion can't host them.
+
+WHAT IT IS
+  The steps of ONE task page, one step per slide. Each slide has:
+    - a short instruction (1–3 sentences)
+    - a sample (optional): what this step's output looks like, or code to copy
+    - "You're on track if…" (one line)
+    - "If you're stuck…" (1–2 bullets)
+  An optional last slide shows how the task is evaluated.
+
+HOW TO CUSTOMIZE
+  Edit ONLY the TASK object below. Everything under "DO NOT EDIT" is the engine.
+  - deckId: unique kebab-case slug (remembers the learner's place per task)
+  - steps[]: 3–6 steps. Strings may contain simple inline HTML (<b>, <code>, <a>).
+  - sample: { label, kind: "text" | "code", body }   (omit if the step has none)
+  - evaluation: omit it entirely if the task isn't graded.
+
+DEPLOY
+  github-pages-deployer → vpdasgupta/tiktok as breaking-games-p4-submit-your-relaunch-playbook-steps.html,
+  then on the Notion task page:
+  <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-p4-submit-your-relaunch-playbook-steps.html"></embed>
+  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  page (see task-page-v2-template.md).
+
+ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
+  - Inactive slides use `hidden` (removed from the accessibility tree and tab order).
+  - On Back/Next/dot navigation, focus moves to the new slide's heading.
+  - A polite live region announces "Step K of N".
+  - Progress dots are real buttons with aria-label and aria-current="step"; state is
+    shown by shape and fill (not color alone) and the text counter.
+  - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
+  - Arrow keys change step except inside links and scrollable samples.
+  - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+================================================================================
+-->
+<title>Task Steps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* ============================ EDIT THIS ============================ */
+const TASK = {
+  "deckId": "bg-p4-submit-your-relaunch-playbook",
+  "title": "Submit Your Relaunch Playbook",
+  "exampleUrl": "https://vpdasgupta.github.io/tiktok/breaking-games-p4-submit-your-playbook-example.png",
+  "steps": [
+    {
+      "title": "Build your playbook folder",
+      "instruction": "Make one Google Drive folder called <code>BG-Relaunch-Playbook-[YourName]</code> and set it up like the tree below. Your best TikTok and ad files are already on the <b>Video Board</b>: open each card, click Open in Drive, and copy the file into your folder. Add the Creator Seeding Kit only if you made it.",
+      "sample": {
+        "label": "Your folder",
+        "kind": "code",
+        "body": "BG-Relaunch-Playbook-[YourName]/\n  00-Cover-Note\n  01-Pitch/\n    BG-Relaunch-Deck-[YourName].pdf\n    (deck link, Loom link and journal link go in the cover note)\n  02-Strategy/\n    BG-Brand-Brief-[YourName].pdf\n    BG-Holiday-Calendar-[YourName]\n    BG-Site-Notes-[YourName]\n  03-Videos/\n    BG-BestTikTok-[YourName].mp4\n    BG-Ad-HookA-[YourName].mp4\n    BG-Ad-HookB-[YourName].mp4\n    BG-Ad-HookC-[YourName].mp4\n  04-Ads/\n    BG-Ad-Mockups-[YourName]   (Reels ad + carousel ad, labeled \"concept\")\n    BG-Ad-Test-Plan-[YourName]\n  05-Bonus/   (only if you made it)\n    Creator Seeding Kit"
+      },
+      "onTrack": "every item in the tree is in place, named the same way.",
+      "stuck": [
+        "Brief: save the 1-page Brand Strategy Brief from Builder Part 2 as a PDF.",
+        "Can't find a file? Your Video Board card has an Open in Drive link for every video and mock-up you uploaded."
+      ]
+    },
+    {
+      "title": "Write your cover note",
+      "instruction": "Make a Google Doc called <code>00-Cover-Note</code>. It's the first thing Breaking Games opens, so keep it to <b>half a page</b>, with your three links at the top. Use the template below, and add your \"Based on peer feedback, I changed ___\" line from your peer swap.",
+      "sample": {
+        "label": "Sample student work",
+        "kind": "code",
+        "body": "BREAKING GAMES: TIKTOK RELAUNCH PLAYBOOK\nAn externship concept by [Your Name]. Nothing here has been posted or run.\n\nThe plan in one sentence: Breaking Games' TikTok comes back as the place to find your next game night.\n\nWatch the pitch (about 5 min): [Loom link]\nView the deck: [deck link]\nExperiment Journal (view only): [journal link]\n\nWhat's inside:\n- 01-Pitch: deck PDF\n- 02-Strategy: 1-page Brand Strategy Brief, Holiday Content Calendar, website notes\n- 03-Videos: best TikTok + ad video in 3 hook versions\n- 04-Ads: Reels ad and carousel ad mock-ups (concept) + ad test plan\n\nStart here: test the problem hook first, because it won the cohort hook vote.\nBased on peer feedback, I changed slide 2's title to a full sentence."
+      },
+      "onTrack": "someone who opens only the cover note knows your plan and can reach every link in one click.",
+      "stuck": [
+        "Want it tighter? Paste it into an AI chat: \"Here's the cover note for my Breaking Games TikTok relaunch playbook: [PASTE your cover note]. Make it clearer and shorter without changing any facts, links, names or numbers. Keep it fun and warm, not edgy. No em dashes, no hype words.\""
+      ]
+    },
+    {
+      "title": "Run the final check",
+      "instruction": "Open your folder in a <b>private or incognito</b> browser window, so you see exactly what a reviewer sees. Click every link, then go down the checklist. Last, check your <b>Video Board sharing choice</b> on every upload: credit me, share without my name (it says \"Extern student\"), or keep it inside my cohort. You can't edit an upload yourself, so to change a choice or fix your credit name, message [PM NAME] in Slack before the Week 6 final.",
+      "sample": {
+        "label": "The final checklist",
+        "kind": "text",
+        "body": "THE PACKAGE\n- Deck link opens; Loom link plays, about 5 minutes; journal link opens (view only)\n- Brief, calendar (6 to 8 moments with go-live dates), website notes\n- Best TikTok + 3 hook versions of the ad\n- Reels and carousel ad mock-ups labeled \"concept\" + test plan\n\nTHE DECK\n- Action titles on all 8 slides; best TikTok with its score vs. the benchmark\n- Says which persona each piece targets\n- Metrics beyond views, with the engagement-rate method labeled\n- A source and date for every fact\n\nTHE GUARDRAILS\n- Nothing posted anywhere; no real customers, no one under 18, no AI people\n- Family games only; prices, ages and player counts match the product page, and the game is in stock\n- \"Games,\" not \"toys\"; never @breakinggames\n- FTC disclosure on any creator idea\n- Every critique in the client version: what works, evidence, a recommendation\n\nTHE VIDEO BOARD\n- I know the sharing choice on every upload, and my credit name is spelled the way I want"
+      },
+      "onTrack": "every line is true and every link opens in the private window.",
+      "stuck": [
+        "A link asks for access? Set that file or folder to \"Anyone with the link can view,\" then test it again in the private window.",
+        "Not sure what you picked on the Video Board? Ask [PM NAME] to check. Choosing not to share is always OK, and it doesn't affect your grade."
+      ]
+    },
+    {
+      "title": "Submit your links",
+      "instruction": "Set the folder to \"Anyone with the link can view\" and copy the folder link. Paste it in the submission on the page, with your <b>deck link</b> and your <b>Loom link</b>. Keep the folder where it is: [PM NAME] uses it for the handoff to Breaking Games.",
+      "sample": {
+        "label": "What you paste in the submission",
+        "kind": "text",
+        "body": "Playbook folder: [folder link]\nDeck: [deck link]\nVideo pitch: [Loom link]"
+      },
+      "onTrack": "all three links open for someone who isn't signed in.",
+      "stuck": [
+        "Done and submitted beats perfect and late. If one small thing still bugs you, submit now and tell [PM NAME] what you'd fix."
+      ]
+    }
+  ],
+  "evaluation": {
+    "title": "How it will be evaluated",
+    "intro": "Your program manager reviews your Relaunch Playbook on these four things. Shari Spiro and Michael Caruso may judge the Week 6 final.",
+    "criteria": [
+      {
+        "name": "Story",
+        "lookFor": "8 action titles that tell the plan on their own, with the big idea first."
+      },
+      {
+        "name": "Proof",
+        "lookFor": "Every insight backed by an experiment; your best TikTok with its score vs. the benchmark; your ad with its lead hook, both mock-ups and a test plan."
+      },
+      {
+        "name": "Pitch",
+        "lookFor": "About 5 minutes, with a clear story: what you learned, who it's for, what you made, what's next."
+      },
+      {
+        "name": "Package and guardrails",
+        "lookFor": "Every item in the folder, every link opens, facts sourced, concepts labeled, client version throughout, nothing posted."
+      }
+    ],
+    "finish": "Done? Submit your links on the page below. One short step left: wrap up your externship."
+  }
+};
+/* ======================= DO NOT EDIT BELOW ======================== */
+</script>
+<style>
+  /* Skin: Breaking Games on the TikTok-program look.
+     Tokens and ratios: ../style/tiktok-style-guide.md */
+  :root {
+    --canvas: #F8FAFC;      /* page background */
+    --card: #FFFFFF;
+    --ink: #0F172A;         /* 17.9:1 on white, 17.1:1 on canvas */
+    --ink-soft: #5A6478;    /* 5.9:1 on white, 5.7:1 on canvas, 5.1:1 on pink tint */
+    --line: #E9E9E7;        /* decorative only */
+    --edge: #64748B;        /* UI borders, 4.8:1 on white, 4.6:1 on canvas */
+    --tt-cyan: #25F4EE;     /* FILL ONLY on light (1.4:1 on white) */
+    --tt-red: #FE2C55;      /* FILL/accent only on light (3.7:1 on white) */
+    --red-ink: #CC0F3A;     /* AA text/button variant of --tt-red: 5.7:1 on white */
+    --red-dark: #A80C30;    /* hover, 7.6:1 */
+    --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86;    /* AA text variant of --tt-cyan: 5.0:1 on white */
+    --cyan-tint: #E6FDFC;
+    --amber-ink: #9A5B00;   /* 5.4:1 on white, 5.0:1 on amber tint */
+    --amber-tint: #FFF4E5;
+    --night: #0C0B10;       /* hero / code background */
+    --night-ink: #E2E8F0;   /* 15.9:1 on night */
+    --night-soft: #A89FA2;  /* 7.6:1 on night, 5.1:1 at the brightest glow */
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck { max-width: 880px; margin: 0 auto; }
+
+  /* Hero band: the dark TikTok header with red and teal glows and a gradient rule */
+  .deck-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 14px; padding: 20px 24px 24px; border-radius: var(--radius);
+    color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .deck-title { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .deck-head :focus-visible { outline-color: var(--tt-cyan); }
+  .btn-example {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
+    border: 2px solid var(--tt-cyan); color: #FFFFFF; background: transparent;
+    border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 700; text-decoration: none;
+  }
+  .btn-example:hover { background: var(--tt-cyan); color: var(--night); }
+
+  .slide {
+    overflow-wrap: anywhere;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 32px 24px;
+  }
+  .step-num {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
+  }
+  .slide h2 { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 10px 0 10px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 16px; margin: 0 0 16px; }
+  .step-items { font-size: 16px; margin: -8px 0 16px; padding-left: 24px; }
+  .step-items li { margin-bottom: 6px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--pink-tint); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+
+  .sample { margin: 0 0 16px; }
+  .sample-label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 6px; }
+  .sample-text {
+    margin: 0; border: 1px solid var(--line);
+    /* decorative cyan-to-red bar on the left edge (same gradient as the step graphics) */
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas);
+    border-radius: var(--radius-sm); padding: 12px 16px 12px 18px; font-size: 15px; white-space: pre-wrap;
+  }
+  .sample pre {
+    margin: 0; background: var(--night); color: var(--night-ink); border-radius: var(--radius-sm); padding: 14px 16px;
+    font-size: 14px; overflow-x: auto; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .sample pre code { background: none; padding: 0; color: inherit; }
+  .copy-btn {
+    margin-top: 8px; min-height: 44px; border: 1px solid var(--edge); background: var(--card); color: var(--ink);
+    border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .copy-btn:hover { border-color: var(--red-ink); color: var(--red-ink); }
+
+  .check { font-size: 15px; padding: 10px 14px; border-left: 4px solid; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 8px; }
+  .check b { display: block; font-size: 13px; letter-spacing: .02em; margin-bottom: 2px; }
+  .check.ok { border-color: var(--teal-ink); background: var(--cyan-tint); }
+  .check.ok b { color: var(--teal-ink); }
+  .check.stuck { border-color: var(--amber-ink); background: var(--amber-tint); }
+  .check.stuck b { color: var(--amber-ink); }
+  .check ul { margin: 4px 0 0; padding-left: 18px; }
+
+  .eval-table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 15px; }
+  .eval-table caption { text-align: left; }
+  .eval-table th, .eval-table td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .eval-table thead th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .eval-table tbody th { width: 30%; }
+  .finish { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 0; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
+  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .dot {
+    /* 44px hit area around a small visual dot */
+    width: 32px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer;
+    display: grid; place-items: center;
+  }
+  .dot::before {
+    content: ""; width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--edge); background: var(--card);
+  }
+  .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); } /* filled = visited, outline = not yet */
+  .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); } /* wide pill = current */
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+
+  @media (max-width: 420px) {
+    .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .eval-table tr, .eval-table th, .eval-table td { display: block; width: auto; }
+    .eval-table tbody th { padding-bottom: 0; border-bottom: 0; }
+  }
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .deck-head { padding: 16px 18px 20px; }
+    .deck-title { font-size: 21px; }
+    .slide { padding: 20px 18px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; justify-content: center; }
+    .nav-btn { flex: 1; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <div class="deck-head">
+    <h1 class="deck-title" id="deckTitle"></h1>
+    <a class="btn-example" id="exampleLink" target="_blank" rel="noopener" hidden>See the example<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+  </div>
+
+  <div id="slides"></div>
+
+  <nav class="slide-nav" aria-label="Task steps">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next step<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const steps = TASK.steps, ev = TASK.evaluation;
+  const total = steps.length + (ev ? 1 : 0);
+  const KEY = "task-steps:" + TASK.deckId;
+
+  $("deckTitle").textContent = TASK.title;
+  document.title = TASK.title + " · Steps";
+  if (TASK.exampleUrl) { $("exampleLink").href = TASK.exampleUrl; $("exampleLink").hidden = false; }
+
+  const label = i => (ev && i === total - 1) ? "How it's evaluated" : `Step ${i + 1} of ${steps.length}`;
+
+  function sampleHtml(s, i) {
+    if (!s) return "";
+    const lbl = `<p class="sample-label" id="sl-${i}">${s.label || "Sample"}</p>`;
+    if (s.kind === "code") {
+      const esc = s.body.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      return `<div class="sample">${lbl}<pre role="region" tabindex="0" aria-labelledby="sl-${i}"><code>${esc}</code></pre>
+        <button type="button" class="copy-btn" data-copy="${i}">Copy code</button></div>`;
+    }
+    return `<div class="sample">${lbl}<p class="sample-text">${s.body}</p></div>`;
+  }
+
+  const html = steps.map((s, i) => `
+    <section class="slide" aria-labelledby="h-${i}" hidden>
+      <p class="step-num">${label(i)}</p>
+      <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
+      <p>${s.instruction}</p>
+      ${s.items && s.items.length ? `<ol class="step-items">${s.items.map(x => `<li>${x}</li>`).join("")}</ol>` : ""}
+      ${sampleHtml(s.sample, i)}
+      ${s.onTrack ? `<div class="check ok"><b>You're on track if…</b>${s.onTrack}</div>` : ""}
+      ${s.stuck && s.stuck.length ? `<div class="check stuck"><b>If you're stuck…</b><ul>${s.stuck.map(x => `<li>${x}</li>`).join("")}</ul></div>` : ""}
+    </section>`);
+
+  if (ev) {
+    const i = total - 1;
+    html.push(`
+    <section class="slide" aria-labelledby="h-${i}" hidden>
+      <p class="step-num">${label(i)}</p>
+      <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
+      ${ev.intro ? `<p>${ev.intro}</p>` : ""}
+      <table class="eval-table">
+        <caption class="sr-only">Evaluation criteria</caption>
+        <thead><tr><th scope="col">Criterion</th><th scope="col">What reviewers look for</th></tr></thead>
+        <tbody>${ev.criteria.map(c => `<tr><th scope="row">${c.name}</th><td>${c.lookFor}</td></tr>`).join("")}</tbody>
+      </table>
+      ${ev.finish ? `<p class="finish">${ev.finish}</p>` : ""}
+    </section>`);
+  }
+  $("slides").innerHTML = html.join("");
+
+  const slides = [...document.querySelectorAll(".slide")];
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0, announceTimer;
+  // Clear the live region, then set it after 40ms, so a repeated message is announced again.
+  function announce(msg) {
+    clearTimeout(announceTimer);
+    $("status").textContent = "";
+    announceTimer = setTimeout(() => { $("status").textContent = msg; }, 40);
+  }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = saved.step || 0; seen = saved.seen || 0; } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    $("nextBtn").innerHTML = last ? "Last step" : 'Next step<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (moveFocus) { $("h-" + step).focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => goTo(step + 1, true);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.step, true));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, pre, input, textarea")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+  document.addEventListener("click", async e => {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    try { await navigator.clipboard.writeText(steps[+b.dataset.copy].sample.body); b.textContent = "Copied"; }
+    catch (err) { b.textContent = "Select the code and copy it"; }
+    announce(b.textContent);
+    setTimeout(() => b.textContent = "Copy code", 2500);
+  });
+
+  goTo(step, false);
+})();
+</script>
+</body>
+</html>

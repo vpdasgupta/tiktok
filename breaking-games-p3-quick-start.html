@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Breaking Games x TikTok concept deck: Project 3 Quick Start ("Project 3 in six moves")
+  Built 2026-10-19 from _asset-specs.md asset 1 and 01-training-quick-start.md.
+  Style: ../../09-assets/style/tiktok-style-guide.md. Chrome and a11y patterns:
+  ../../09-assets/templates/breaking-games-steps-slides-template.html.
+  The slide text mirrors the page's "Text version of the interactive" toggle. Edit both together.
+  WCAG 2.2 AA: one H1; inactive slides hidden; focus moves to each slide's h2; polite live region;
+  44px targets; reveals use real buttons with aria-expanded; state shown in words, not color alone;
+  reflows to one column at 640px; prefers-reduced-motion respected. No external data calls.
+  Every ad or mock-up shown is labeled "Concept".
+  Deploy: https://vpdasgupta.github.io/tiktok/breaking-games-p3-quick-start.html
+-->
+<title>Project 3 Quick Start</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #F8FAFC; --card: #FFFFFF; --ink: #0F172A; --ink-soft: #5A6478;
+    --line: #E9E9E7; --edge: #64748B; --tt-cyan: #25F4EE; --tt-red: #FE2C55;
+    --red-ink: #CC0F3A; --red-dark: #A80C30; --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86; --cyan-tint: #E6FDFC; --amber-ink: #9A5B00; --amber-tint: #FFF4E5;
+    --night: #0C0B10; --night-ink: #E2E8F0; --night-soft: #A89FA2;
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px; --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.5; padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a, input, textarea { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  a { color: var(--red-ink); }
+
+  .deck { max-width: 920px; margin: 0 auto; }
+  .deck-head {
+    margin-bottom: 14px; padding: 18px 24px 22px; border-radius: var(--radius); color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .deck-head :focus-visible { outline-color: var(--tt-cyan); }
+  .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); }
+  .deck-title { font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .grad-word { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @media (forced-colors: active) { .grad-word { color: CanvasText; background: none; } }
+
+  .slide {
+    overflow-wrap: anywhere;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 26px 32px 24px;
+    aspect-ratio: 16 / 9; display: flex; flex-direction: column;
+  }
+  .step-num {
+    align-self: flex-start; display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
+  }
+  .slide h2 { font-size: 28px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 10px 0 12px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 18px; margin: 0 0 12px; }
+  .slide .lead { font-size: 21px; line-height: 1.45; }
+  .slide .plain { margin: 0 0 12px; padding-left: 22px; font-size: 18px; }
+  .slide .plain li { margin-bottom: 6px; }
+  .icon { font-size: 40px; line-height: 1; margin: 4px 0 8px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--pink-tint); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+
+  .chip { display: inline-block; align-self: flex-start; background: var(--pink-tint); color: var(--ink); font-weight: 700; border-radius: 999px; padding: 6px 14px; font-size: 15px; margin: 4px 0 12px; }
+  .chip.cta { background: var(--night); color: #FFFFFF; }
+  .callout { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 4px 0 12px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 4px 0 14px; }
+  .grid.two { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .box { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background: var(--canvas); }
+  .box h3 { font-size: 17px; margin: 0 0 6px; line-height: 1.3; }
+  .box p { font-size: 15px; margin: 0 0 8px; }
+  .box p:last-child { margin-bottom: 0; }
+  .box .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+  .stat { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background:
+      linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas); }
+  .stat .big { display: block; font-size: 24px; font-weight: 800; line-height: 1.2; }
+  .stat .small { display: block; font-size: 14px; color: var(--ink-soft); }
+  .caption { font-size: 14px; color: var(--ink-soft); margin-top: -6px; }
+
+  .person { display: flex; gap: 12px; align-items: flex-start; }
+  .avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--ink); background: var(--cyan-tint); border: 2px solid var(--teal-ink); }
+
+  .status-pill { display: inline-block; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 3px 10px; margin-bottom: 6px; border: 1px solid currentColor; }
+  .status-pill.use { color: var(--teal-ink); background: var(--cyan-tint); }
+  .status-pill.check { color: var(--amber-ink); background: var(--amber-tint); }
+  .status-pill.no { color: var(--red-ink); background: var(--pink-tint); }
+
+  .tbl { width: 100%; border-collapse: collapse; margin: 0 0 12px; font-size: 15px; }
+  .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .tbl thead th { white-space: nowrap; overflow-wrap: normal; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .tbl tbody th { white-space: nowrap; }
+
+  .btn {
+    min-height: 44px; min-width: 44px; border-radius: 999px; padding: 10px 18px; font-size: 15px; font-weight: 700; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--edge); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { border-color: var(--ink); }
+  .btn.primary { background: var(--red-ink); border-color: var(--red-ink); color: #FFFFFF; }
+  .btn.primary:hover { background: var(--red-dark); border-color: var(--red-dark); }
+  .btn[aria-pressed="true"] { background: var(--ink); color: #FFFFFF; border-color: var(--ink); }
+  .btn[aria-pressed="true"]::after { content: " (your pick)" / ""; font-weight: 600; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 12px; align-items: center; }
+
+  .qa { border-top: 1px solid var(--line); padding: 10px 0; }
+  .qa p { margin: 0 0 6px; font-weight: 600; }
+  .answer { margin-top: 8px; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--cyan-tint); border-left: 4px solid var(--teal-ink); font-size: 16px; }
+  .answer b.lbl { color: var(--teal-ink); }
+  .feedback { margin-top: 4px; padding: 12px 16px; border-radius: var(--radius-sm); border-left: 4px solid var(--ink); background: var(--canvas); font-size: 16px; }
+  .feedback.right { background: var(--cyan-tint); border-color: var(--teal-ink); }
+  .feedback.wrong { background: var(--amber-tint); border-color: var(--amber-ink); }
+  .feedback .verdict { font-weight: 800; }
+
+  .roast-note { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 17px; margin: 0 0 12px; }
+  .roast-note b { color: var(--red-ink); }
+  .prompt { font-size: 15px; color: var(--ink-soft); }
+  .tagged { margin: 0; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--ink); border-radius: 999px; padding: 1px 8px; margin-right: 6px; vertical-align: 2px; background: var(--card); }
+
+  label.field { display: block; font-weight: 700; font-size: 16px; margin: 4px 0 6px; }
+  textarea { width: 100%; min-height: 76px; font-size: 16px; padding: 10px 12px; border: 1px solid var(--edge); border-radius: var(--radius-sm); color: var(--ink); background: var(--card); resize: vertical; }
+  fieldset { border: 0; padding: 0; margin: 0 0 10px; }
+  legend { font-weight: 700; font-size: 16px; margin-bottom: 6px; padding: 0; }
+  .radio-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radio-card { position: relative; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 16px; border: 1px solid var(--edge); border-radius: 999px; font-weight: 700; cursor: pointer; background: var(--card); }
+  .radio-card input { width: 20px; height: 20px; margin: 0; accent-color: var(--red-ink); }
+  .radio-card:has(input:checked) { border: 2px solid var(--ink); background: var(--pink-tint); }
+  .radio-card:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sample-text { margin: 0 0 10px; border: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas);
+    border-radius: var(--radius-sm); padding: 10px 14px 10px 18px; font-size: 15px; }
+  .disclosure { margin: 6px 0 10px; }
+  .link-btn { min-height: 44px; background: none; border: 0; padding: 8px 0; color: var(--red-ink); font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
+  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; list-style: none; margin: 0; padding: 0; }
+  .dot { width: 30px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--edge); background: var(--card); }
+  .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); }
+  .dot[aria-current="step"]::before { width: 26px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); }
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin: 6px 0 0; }
+
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .deck-head { padding: 14px 16px 18px; }
+    .deck-title { font-size: 21px; }
+    .slide { aspect-ratio: auto; padding: 20px 18px; }
+    .slide h2 { font-size: 21px; }
+    .slide p, .slide .plain { font-size: 16px; }
+    .slide .lead { font-size: 17px; }
+    .grid, .grid.two { grid-template-columns: 1fr; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; }
+    .nav-btn { flex: 1; }
+  }
+  @media (max-width: 420px) {
+    .tbl thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .tbl tr, .tbl th, .tbl td { display: block; width: auto; }
+    .tbl tbody th { padding-bottom: 0; border-bottom: 0; white-space: normal; }
+    .tbl tr { border-bottom: 1px solid var(--line); padding: 4px 0; }
+    .tbl td { border-bottom: 0; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+
+  .nav-btn[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+  .concept-tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink); background: #FFFFFF; border: 1px solid var(--ink); border-radius: 999px; padding: 1px 8px; }
+  .slide .sub { font-size: 16px; color: var(--ink-soft); margin: -4px 0 12px; }
+
+  .moves-glance { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; list-style: none; padding: 0; margin: 8px 0 0; }
+  .moves-glance li { background: var(--canvas); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 8px; text-align: center; font-size: 14px; font-weight: 700; line-height: 1.3; }
+  .moves-glance .e { display: block; font-size: 28px; margin-bottom: 4px; }
+  .strip { display: flex; justify-content: space-between; align-items: center; list-style: none; padding: 0; margin: 2px 0 14px; position: relative; max-width: 420px; }
+  .strip::before { content: ""; position: absolute; left: 14px; right: 14px; top: 50%; height: 3px; margin-top: -1.5px; background: var(--gradient); border-radius: 2px; }
+  .strip li { position: relative; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 800;
+    background: var(--card); color: var(--ink); border: 2px solid var(--edge); }
+  .strip li.done { border-color: var(--red-ink); background: var(--pink-tint); }
+  .strip li.now { width: 40px; height: 40px; font-size: 17px; background: var(--ink); color: #FFFFFF; border: 3px solid var(--card); box-shadow: 0 0 0 2px var(--ink); }
+  .move { display: grid; grid-template-columns: 130px 1fr; gap: 24px; align-items: start; }
+  .move .big-emoji { font-size: 88px; line-height: 1; text-align: center; padding-top: 6px; }
+  .move h2 { margin-top: 0; }
+  .kv { margin: 0; }
+  .kv div { margin-bottom: 12px; }
+  .kv dt { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 2px; }
+  .kv dd { margin: 0; font-size: 19px; }
+  .time-pill { display: inline-block; background: var(--pink-tint); color: var(--red-ink); font-weight: 700; border-radius: 999px; padding: 4px 14px; font-size: 16px; }
+  .lands { font-weight: 700; }
+  .rules { list-style: none; padding: 0; margin: 0 0 14px; }
+  .rules li { display: flex; gap: 12px; align-items: flex-start; font-size: 19px; margin-bottom: 10px; }
+  .rules .ic { flex: none; font-size: 22px; line-height: 1.3; }
+  .foot { margin-top: auto; border-top: 1px solid var(--line); padding-top: 12px; font-size: 15px; color: var(--ink-soft); }
+  .foot p { font-size: 15px; margin: 0 0 4px; }
+  .signoff { font-weight: 800; color: var(--ink); }
+  @media (max-width: 640px) {
+    .moves-glance { grid-template-columns: repeat(3, 1fr); }
+    .move { grid-template-columns: 1fr; gap: 6px; }
+    .move .big-emoji { font-size: 56px; text-align: left; }
+    .kv dd, .rules li { font-size: 16px; }
+  }
+
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <header class="deck-head">
+    <p class="eyebrow">Breaking Games × Project 3</p>
+    <h1 class="deck-title" id="deckTitle">Make it an <span class="grad-word">ad.</span></h1>
+  </header>
+
+  <div id="slides">
+    <section class="slide" aria-labelledby="h-0" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-0" tabindex="-1">Your two weeks, in six moves</h2>
+      <p class="lead">Breaking Games says social ads are its biggest gap. Over two weeks, you'll turn your best TikTok into an ad concept for Instagram and Facebook.</p>
+      <p>Six moves. Here they are.</p>
+      <ol class="moves-glance" aria-label="The six moves"><li><span class="e" aria-hidden="true">🎬</span>1. Pick your video</li><li><span class="e" aria-hidden="true">🔥</span>2. Roast real ads</li><li><span class="e" aria-hidden="true">🎯</span>3. Plan your ad</li><li><span class="e" aria-hidden="true">✂️</span>4. Make it and check it</li><li><span class="e" aria-hidden="true">📱</span>5. Place it</li><li><span class="e" aria-hidden="true">🎲</span>6. Lock your strategy</li></ol>
+    </section>
+    <section class="slide" aria-labelledby="h-1" hidden>
+      <p class="step-num">Move 1 of 6</p>
+      <ol class="strip" aria-hidden="true"><li class="now">1</li><li class="">2</li><li class="">3</li><li class="">4</li><li class="">5</li><li class="">6</li></ol>
+      <div class="move">
+        <div class="big-emoji" aria-hidden="true">🎬</div>
+        <div>
+          <h2 id="h-1" tabindex="-1">1. Pick your video</h2>
+          <dl class="kv">
+            <div><dt>You make</dt><dd>Read your mentor and peer comments. Choose Video 1 or Video 2 to turn into an ad.</dd></div>
+            <div><dt>About how long</dt><dd><span class="time-pill">10 min</span></dd></div>
+            <div><dt>Lands on, in your Week 6 deck</dt><dd class="lands">Slide 7, the ad</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-2" hidden>
+      <p class="step-num">Move 2 of 6</p>
+      <ol class="strip" aria-hidden="true"><li class="done">1</li><li class="now">2</li><li class="">3</li><li class="">4</li><li class="">5</li><li class="">6</li></ol>
+      <div class="move">
+        <div class="big-emoji" aria-hidden="true">🔥</div>
+        <div>
+          <h2 id="h-2" tabindex="-1">2. Roast real ads</h2>
+          <dl class="kv">
+            <div><dt>You make</dt><dd>Roast, Toast, Fix on 3 ad pairs. Name 3 ad patterns. Write the top one for Breaking Games.</dd></div>
+            <div><dt>About how long</dt><dd><span class="time-pill">45 min</span></dd></div>
+            <div><dt>Lands on, in your Week 6 deck</dt><dd class="lands">Slide 3, what works</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-3" hidden>
+      <p class="step-num">Move 3 of 6</p>
+      <ol class="strip" aria-hidden="true"><li class="done">1</li><li class="done">2</li><li class="now">3</li><li class="">4</li><li class="">5</li><li class="">6</li></ol>
+      <div class="move">
+        <div class="big-emoji" aria-hidden="true">🎯</div>
+        <div>
+          <h2 id="h-3" tabindex="-1">3. Plan your ad</h2>
+          <dl class="kv">
+            <div><dt>You make</dt><dd>One persona, one offer, one landing page, and 3 hooks: a question, a problem, a surprise. Log your bet in Experiment 3.</dd></div>
+            <div><dt>About how long</dt><dd><span class="time-pill">25 min</span></dd></div>
+            <div><dt>Lands on, in your Week 6 deck</dt><dd class="lands">Slide 7</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-4" hidden>
+      <p class="step-num">Move 4 of 6</p>
+      <ol class="strip" aria-hidden="true"><li class="done">1</li><li class="done">2</li><li class="done">3</li><li class="now">4</li><li class="">5</li><li class="">6</li></ol>
+      <div class="move">
+        <div class="big-emoji" aria-hidden="true">✂️</div>
+        <div>
+          <h2 id="h-4" tabindex="-1">4. Make it and check it</h2>
+          <dl class="kv">
+            <div><dt>You make</dt><dd>A 15 to 30 second ad in 3 hook versions. Run the Ad check. The cohort votes on your hooks in Slack.</dd></div>
+            <div><dt>About how long</dt><dd><span class="time-pill">95 min, plus editing</span></dd></div>
+            <div><dt>Lands on, in your Week 6 deck</dt><dd class="lands">Slide 7</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-5" hidden>
+      <p class="step-num">Move 5 of 6</p>
+      <ol class="strip" aria-hidden="true"><li class="done">1</li><li class="done">2</li><li class="done">3</li><li class="done">4</li><li class="now">5</li><li class="">6</li></ol>
+      <div class="move">
+        <div class="big-emoji" aria-hidden="true">📱</div>
+        <div>
+          <h2 id="h-5" tabindex="-1">5. Place it</h2>
+          <dl class="kv">
+            <div><dt>You make</dt><dd>A Reels ad and a carousel ad in Instagram or Facebook mock-ups. A test plan. Experiment 4.</dd></div>
+            <div><dt>About how long</dt><dd><span class="time-pill">85 min</span></dd></div>
+            <div><dt>Lands on, in your Week 6 deck</dt><dd class="lands">Slide 7</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-6" hidden>
+      <p class="step-num">Move 6 of 6</p>
+      <ol class="strip" aria-hidden="true"><li class="done">1</li><li class="done">2</li><li class="done">3</li><li class="done">4</li><li class="done">5</li><li class="now">6</li></ol>
+      <div class="move">
+        <div class="big-emoji" aria-hidden="true">🎲</div>
+        <div>
+          <h2 id="h-6" tabindex="-1">6. Lock your strategy</h2>
+          <dl class="kv">
+            <div><dt>You make</dt><dd>Final Brief with 3 insights, holiday calendar (6 to 8 moments), interview talking points, Playbook Checkpoint 2.</dd></div>
+            <div><dt>About how long</dt><dd><span class="time-pill">about 2 hours and 15 minutes</span></dd></div>
+            <div><dt>Lands on, in your Week 6 deck</dt><dd class="lands">Slides 3, 5 and 8</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-7" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-7" tabindex="-1">The rules</h2>
+      <ul class="rules">
+        <li><span class="ic" aria-hidden="true">✅</span><span>Everything is a concept, labeled "Concept."</span></li>
+        <li><span class="ic" aria-hidden="true">🚫</span><span>Never run, boost or pay for an ad.</span></li>
+        <li><span class="ic" aria-hidden="true">🚫</span><span>Never post anything, anywhere.</span></li>
+        <li><span class="ic" aria-hidden="true">✅</span><span>The PM shares your work with Breaking Games after Week 6, and Breaking Games may credit you.</span></li>
+      </ul>
+      <div class="foot">
+        <p>Week 4 is about 3 hours plus editing. Week 5 is about 4 hours. The Creator Seeding Kit is an optional 60-minute bonus at the end.</p>
+        <p class="signoff">Good game, folks.</p>
+      </div>
+    </section>
+  </div>
+
+  <nav class="slide-nav" aria-label="Slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <span class="sr-only" id="gateWhy"></span>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+<script>
+window.DECK = { id: "breaking-games-p3-quick-start" };
+</script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DECK = window.DECK;
+  const KEY = "bg-deck:" + DECK.id;
+  const slides = [...document.querySelectorAll(".slide")];
+  const total = slides.length;
+  const label = i => `Slide ${i + 1} of ${total}`;
+  slides.forEach((s, i) => { const p = s.querySelector(".step-num"); if (p && !p.textContent.trim()) p.textContent = `${i + 1} of ${total}`; });
+
+  const announce = msg => { const st = $("status"); st.textContent = ""; setTimeout(() => { st.textContent = msg; }, 40); };
+  window.deckAnnounce = announce;
+
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0;
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = Math.min(saved.step || 0, total - 1); seen = Math.min(saved.seen || 0, total - 1); } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    const why = (!last && typeof DECK.gate === "function") ? DECK.gate(step) : "";
+    $("gateWhy").textContent = why;
+    if (why) { $("nextBtn").setAttribute("aria-disabled", "true"); $("nextBtn").setAttribute("aria-describedby", "gateWhy"); }
+    else { $("nextBtn").removeAttribute("aria-disabled"); $("nextBtn").removeAttribute("aria-describedby"); }
+    $("nextBtn").innerHTML = last ? "Last slide" : 'Next<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (typeof DECK.onShow === "function") DECK.onShow(step, slides[step]);
+    if (moveFocus) { slides[step].querySelector("h2").focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+  window.deckGoTo = goTo;
+  window.deckRefresh = () => goTo(step, false);
+  function tryGo(i) {
+    if (i > step && typeof DECK.gate === "function") {
+      for (let k = step; k < i; k++) { const why = DECK.gate(k); if (why) { if (k !== step) goTo(k, true); else announce(why); return; } }
+    }
+    goTo(i, true);
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => tryGo(step + 1);
+  dots.forEach(d => d.onclick = () => tryGo(+d.dataset.step));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, input, textarea, select, [role=radiogroup]")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); tryGo(step + 1); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+
+  /* Reveal buttons: <button data-reveal="id" aria-expanded="false" aria-controls="id"> */
+  document.querySelectorAll("[data-reveal]").forEach(b => {
+    const target = $(b.dataset.reveal);
+    /* One label; aria-expanded carries the state. The revealed content sits right after the button, so it is not announced separately. */
+    b.addEventListener("click", () => {
+      const open = b.getAttribute("aria-expanded") !== "true";
+      b.setAttribute("aria-expanded", String(open));
+      target.hidden = !open;
+    });
+  });
+
+  if (typeof DECK.init === "function") DECK.init({ announce, goTo, KEY });
+  /* Deep link for previews and QA: #s=N opens slide N (1-based). */
+  const m = location.hash.match(/s=(\d+)/);
+  if (m) step = Math.min(total, Math.max(1, +m[1])) - 1;
+  goTo(step, false);
+  if (/open/.test(location.hash)) slides[step].querySelectorAll("[data-reveal], [data-q='" + (step) + "'], [data-pick]").forEach((b, i) => { if (b.dataset.reveal || i === 0) b.click(); });
+})();
+</script>
+</body>
+</html>

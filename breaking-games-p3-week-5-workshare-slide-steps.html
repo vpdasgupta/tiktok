@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+TASK STEPS SLIDES — Breaking Games skin (TikTok-program look, 2026-10-19)
+Forked from templates/interactive-formats/task-steps-slides-template.html.
+Only the CSS and the default TASK demo changed. Style guide:
+output/programs/socialmedia/breaking-games/09-assets/style/tiktok-style-guide.md
+================================================================================
+Design source: https://curious-tanuki-b3a260.netlify.app/ (Task view, the
+"one step per slide" slider). The side and bottom panels from that design (people
+panel, journey drawer, submission bar) are NOT here. Notion can't host them.
+
+WHAT IT IS
+  The steps of ONE task page, one step per slide. Each slide has:
+    - a short instruction (1–3 sentences)
+    - a sample (optional): what this step's output looks like, or code to copy
+    - "You're on track if…" (one line)
+    - "If you're stuck…" (1–2 bullets)
+  An optional last slide shows how the task is evaluated.
+
+HOW TO CUSTOMIZE
+  Edit ONLY the TASK object below. Everything under "DO NOT EDIT" is the engine.
+  - deckId: unique kebab-case slug (remembers the learner's place per task)
+  - steps[]: 3–6 steps. Strings may contain simple inline HTML (<b>, <code>, <a>).
+  - sample: { label, kind: "text" | "code", body }   (omit if the step has none)
+  - evaluation: omit it entirely if the task isn't graded.
+
+DEPLOY
+  github-pages-deployer → vpdasgupta/tiktok as breaking-games-p3-week-5-workshare-slide-steps.html,
+  then on the Notion task page:
+  <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-p3-week-5-workshare-slide-steps.html"></embed>
+  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  page (see task-page-v2-template.md).
+
+ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
+  - Inactive slides use `hidden` (removed from the accessibility tree and tab order).
+  - On Back/Next/dot navigation, focus moves to the new slide's heading.
+  - A polite live region announces "Step K of N".
+  - Progress dots are real buttons with aria-label and aria-current="step"; state is
+    shown by shape and fill (not color alone) and the text counter.
+  - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
+  - Arrow keys change step except inside links and scrollable samples.
+  - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+================================================================================
+-->
+<title>Task Steps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* ============================ EDIT THIS ============================ */
+const TASK = {
+  "deckId": "bg-p3-week-5-workshare-slide",
+  "title": "Build Your Week 5 Workshare Slide",
+  "exampleUrl": "https://vpdasgupta.github.io/tiktok/breaking-games-p3-week-5-workshare-example.png",
+  "steps": [
+    {
+      "title": "Answer the four questions",
+      "instruction": "Open Experiment 4, your ad test plan, the 3 strategy insights in your Brief, and your holiday calendar. Write one short line for each question below. Everything comes from work you've already done, so there's nothing new to make.",
+      "items": [
+        "<b>My focus:</b> Your placement call: the Reels ad or the carousel ad first, and for which player.",
+        "<b>Why this matters to Breaking Games:</b> The one number in your test plan, and what would count as “it worked.”",
+        "<b>What I've made so far:</b> One of your 3 strategy insights (Toast → Evidence → Recommendation), and how many moments your calendar has.",
+        "<b>My question for the team:</b> The feedback you need most before your final pitch."
+      ],
+      "sample": {
+        "label": "Sample student work (made-up scores and votes)",
+        "kind": "text",
+        "body": "My focus: Run the Reels ad first for Rachel, because it shows the game being played. 3 of 4 peers picked the carousel, so it goes second.\nWhy this matters to Breaking Games: Hook rate. It worked if Hook B keeps more people past 3 seconds than Hooks A and C.\nWhat I've made so far: The rainy-Saturday hook won the cohort vote, 9 of 14, so we recommend opening Rachel's ads on a family moment. Calendar: 7 moments, all after the handoff.\nMy question for the team: Before I build my deck: is the ad or the holiday calendar the stronger way to end my pitch?"
+      },
+      "onTrack": "each answer fits on one line and points to something you made, scored or wrote this week.",
+      "stuck": [
+        "An answer is running long? Keep the number or the name and cut the rest. You'll say the details out loud.",
+        "Anything about a post Breaking Games made? Use the client version: Toast → Evidence → Recommendation. Raw roast lines stay in your notes."
+      ]
+    },
+    {
+      "title": "Sharpen your question",
+      "instruction": "Your question is the most useful line on the slide. Make it one that [PM NAME], your mentor or Breaking Games can answer in a sentence or two, and tie it to the next thing you'll make.",
+      "sample": {
+        "label": "Before and after",
+        "kind": "text",
+        "body": "Before: “Is my strategy OK?”\nAfter: “Before I build my deck: is the ad or the holiday calendar the stronger way to end my pitch?”"
+      },
+      "onTrack": "the answer would change what you make next.",
+      "stuck": [
+        "Stuck between two questions? Pick the one about the guess you're least sure of.",
+        "“What do you think?” gets “Looks good!” A question about one choice, one moment or one player gets a real answer."
+      ]
+    },
+    {
+      "title": "Build the slide",
+      "instruction": "Open your <code>BG-Workshare-[YourName]</code> deck. Duplicate last week's slide, move the copy to the end and rewrite all four answers. Give it a new <b>action title</b>: a full sentence that states your point. Swap in your Reels ad mock-up, with its “Concept” tag showing. (No deck yet? Copy the <a href=\"{WORKSHARE SLIDE TEMPLATE LINK}\" target=\"_blank\" rel=\"noopener\">workshare slide template</a> first.)",
+      "sample": {
+        "label": "Slide checklist",
+        "kind": "text",
+        "body": "Action title: “Lead Rachel's ads with the Reels version, and judge it by hook rate.”\nRule of three: at most 3 points in any box. One short line per question is often enough.\nMinimal text: short phrases, not paragraphs. The slide backs up what you say.\nOne idea per slide: one takeaway, nothing else competing.\nShow the work: your Reels ad mock-up, with its “Concept” tag showing.\nOn brand: fun and warm, not edgy. Your temporary palette is fine until the brand guide arrives.\nConcept: any ad image keeps its “Concept” tag."
+      },
+      "onTrack": "someone who reads only your title knows your point.",
+      "stuck": [
+        "It's a draft, not a masterpiece. Get the idea down clearly instead of fussing over the design.",
+        "Template won't copy? Your school account may block it. Build one slide in Canva with the four headings instead."
+      ]
+    },
+    {
+      "title": "Prep for your live session",
+      "instruction": "You may be asked to share your slide in your next live session with [PM NAME]. Jot 3 notes to bring, so you can talk for about a minute without reading the slide.",
+      "items": [
+        "<b>Your work in one sentence:</b> what you made and the point it proves.",
+        "<b>The moment to show:</b> the one frame, pair or slide you'd put on screen.",
+        "<b>Your question, out loud:</b> practice saying it in under 15 seconds."
+      ],
+      "sample": {
+        "label": "Sample notes",
+        "kind": "text",
+        "body": "One sentence: “Run the Reels ad first for Rachel, judge it by hook rate, and use carousels for gift moments.”\nShow: your Reels ad and carousel ad side by side.\nAsk: “Before I build my deck: is the ad or the holiday calendar the stronger way to end my pitch?”"
+      },
+      "onTrack": "you could share your slide in about a minute if [PM NAME] called on you.",
+      "stuck": [
+        "Nervous about sharing live? Read your action title, then your question. That alone is a strong workshare."
+      ]
+    },
+    {
+      "title": "Share and submit",
+      "instruction": "Click <b>Share</b>, set General access to <b>Anyone with the link</b> as <b>Viewer</b>, and copy the link. Open it in a private browser window to make sure it opens without asking you to sign in. It's the same link as last week, so your PM sees every week's slide in one place.",
+      "sample": {
+        "label": "Sample",
+        "kind": "text",
+        "body": "docs.google.com/presentation/d/… (Anyone with the link can view)"
+      },
+      "onTrack": "the link opens in a private window and your Week 5 slide is the last one.",
+      "stuck": [
+        "Your school account blocks link sharing? Download the slide as a PDF and upload that instead.",
+        "Built it in Canva? Click <b>Share</b>, set access to <b>Anyone with the link</b> and <b>Can view</b>, and copy that link."
+      ]
+    }
+  ],
+  "evaluation": {
+    "title": "How it will be evaluated",
+    "intro": "Checked for completion, not polish.",
+    "criteria": [
+      {
+        "name": "Four answers",
+        "lookFor": "One short line for each question, all from this week's work."
+      },
+      {
+        "name": "A real question",
+        "lookFor": "Specific, answerable in a sentence or two, and tied to what you'll make next."
+      },
+      {
+        "name": "A clear slide",
+        "lookFor": "An action title, one image of your work, and at most 3 points in any box. Anything about a Breaking Games post uses the client version."
+      },
+      {
+        "name": "Shared",
+        "lookFor": "The link opens for anyone with it."
+      }
+    ],
+    "finish": "Done? Submit your link on the page below, and bring your question to your live session."
+  }
+};
+/* ======================= DO NOT EDIT BELOW ======================== */
+</script>
+<style>
+  /* Skin: Breaking Games on the TikTok-program look.
+     Tokens and ratios: ../style/tiktok-style-guide.md */
+  :root {
+    --canvas: #F8FAFC;      /* page background */
+    --card: #FFFFFF;
+    --ink: #0F172A;         /* 17.9:1 on white, 17.1:1 on canvas */
+    --ink-soft: #5A6478;    /* 5.9:1 on white, 5.7:1 on canvas, 5.1:1 on pink tint */
+    --line: #E9E9E7;        /* decorative only */
+    --edge: #64748B;        /* UI borders, 4.8:1 on white, 4.6:1 on canvas */
+    --tt-cyan: #25F4EE;     /* FILL ONLY on light (1.4:1 on white) */
+    --tt-red: #FE2C55;      /* FILL/accent only on light (3.7:1 on white) */
+    --red-ink: #CC0F3A;     /* AA text/button variant of --tt-red: 5.7:1 on white */
+    --red-dark: #A80C30;    /* hover, 7.6:1 */
+    --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86;    /* AA text variant of --tt-cyan: 5.0:1 on white */
+    --cyan-tint: #E6FDFC;
+    --amber-ink: #9A5B00;   /* 5.4:1 on white, 5.0:1 on amber tint */
+    --amber-tint: #FFF4E5;
+    --night: #0C0B10;       /* hero / code background */
+    --night-ink: #E2E8F0;   /* 15.9:1 on night */
+    --night-soft: #A89FA2;  /* 7.6:1 on night, 5.1:1 at the brightest glow */
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck { max-width: 880px; margin: 0 auto; }
+
+  /* Hero band: the dark TikTok header with red and teal glows and a gradient rule */
+  .deck-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 14px; padding: 20px 24px 24px; border-radius: var(--radius);
+    color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .deck-title { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .deck-head :focus-visible { outline-color: var(--tt-cyan); }
+  .btn-example {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
+    border: 2px solid var(--tt-cyan); color: #FFFFFF; background: transparent;
+    border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 700; text-decoration: none;
+  }
+  .btn-example:hover { background: var(--tt-cyan); color: var(--night); }
+
+  .slide {
+    overflow-wrap: anywhere;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 32px 24px;
+  }
+  .step-num {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
+  }
+  .slide h2 { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 10px 0 10px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 16px; margin: 0 0 16px; }
+  .step-items { font-size: 16px; margin: -8px 0 16px; padding-left: 24px; }
+  .step-items li { margin-bottom: 6px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--pink-tint); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+
+  .sample { margin: 0 0 16px; }
+  .sample-label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 6px; }
+  .sample-text {
+    margin: 0; border: 1px solid var(--line);
+    /* decorative cyan-to-red bar on the left edge (same gradient as the step graphics) */
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas);
+    border-radius: var(--radius-sm); padding: 12px 16px 12px 18px; font-size: 15px; white-space: pre-wrap;
+  }
+  .sample pre {
+    margin: 0; background: var(--night); color: var(--night-ink); border-radius: var(--radius-sm); padding: 14px 16px;
+    font-size: 14px; overflow-x: auto; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  .sample pre code { background: none; padding: 0; color: inherit; }
+  .copy-btn {
+    margin-top: 8px; min-height: 44px; border: 1px solid var(--edge); background: var(--card); color: var(--ink);
+    border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .copy-btn:hover { border-color: var(--red-ink); color: var(--red-ink); }
+
+  .check { font-size: 15px; padding: 10px 14px; border-left: 4px solid; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 8px; }
+  .check b { display: block; font-size: 13px; letter-spacing: .02em; margin-bottom: 2px; }
+  .check.ok { border-color: var(--teal-ink); background: var(--cyan-tint); }
+  .check.ok b { color: var(--teal-ink); }
+  .check.stuck { border-color: var(--amber-ink); background: var(--amber-tint); }
+  .check.stuck b { color: var(--amber-ink); }
+  .check ul { margin: 4px 0 0; padding-left: 18px; }
+
+  .eval-table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 15px; }
+  .eval-table caption { text-align: left; }
+  .eval-table th, .eval-table td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .eval-table thead th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .eval-table tbody th { width: 30%; }
+  .finish { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 0; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
+  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .dot {
+    /* 44px hit area around a small visual dot */
+    width: 32px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer;
+    display: grid; place-items: center;
+  }
+  .dot::before {
+    content: ""; width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--edge); background: var(--card);
+  }
+  .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); } /* filled = visited, outline = not yet */
+  .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); } /* wide pill = current */
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+
+  @media (max-width: 420px) {
+    .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .eval-table tr, .eval-table th, .eval-table td { display: block; width: auto; }
+    .eval-table tbody th { padding-bottom: 0; border-bottom: 0; }
+  }
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .deck-head { padding: 16px 18px 20px; }
+    .deck-title { font-size: 21px; }
+    .slide { padding: 20px 18px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; justify-content: center; }
+    .nav-btn { flex: 1; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <div class="deck-head">
+    <h1 class="deck-title" id="deckTitle"></h1>
+    <a class="btn-example" id="exampleLink" target="_blank" rel="noopener" hidden>See the example<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+  </div>
+
+  <div id="slides"></div>
+
+  <nav class="slide-nav" aria-label="Task steps">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next step<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const steps = TASK.steps, ev = TASK.evaluation;
+  const total = steps.length + (ev ? 1 : 0);
+  const KEY = "task-steps:" + TASK.deckId;
+
+  $("deckTitle").textContent = TASK.title;
+  document.title = TASK.title + " · Steps";
+  if (TASK.exampleUrl) { $("exampleLink").href = TASK.exampleUrl; $("exampleLink").hidden = false; }
+
+  const label = i => (ev && i === total - 1) ? "How it's evaluated" : `Step ${i + 1} of ${steps.length}`;
+
+  function sampleHtml(s, i) {
+    if (!s) return "";
+    const lbl = `<p class="sample-label" id="sl-${i}">${s.label || "Sample"}</p>`;
+    if (s.kind === "code") {
+      const esc = s.body.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      return `<div class="sample">${lbl}<pre role="region" tabindex="0" aria-labelledby="sl-${i}"><code>${esc}</code></pre>
+        <button type="button" class="copy-btn" data-copy="${i}">Copy code</button></div>`;
+    }
+    return `<div class="sample">${lbl}<p class="sample-text">${s.body}</p></div>`;
+  }
+
+  const html = steps.map((s, i) => `
+    <section class="slide" aria-labelledby="h-${i}" hidden>
+      <p class="step-num">${label(i)}</p>
+      <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
+      <p>${s.instruction}</p>
+      ${s.items && s.items.length ? `<ol class="step-items">${s.items.map(x => `<li>${x}</li>`).join("")}</ol>` : ""}
+      ${sampleHtml(s.sample, i)}
+      ${s.onTrack ? `<div class="check ok"><b>You're on track if…</b>${s.onTrack}</div>` : ""}
+      ${s.stuck && s.stuck.length ? `<div class="check stuck"><b>If you're stuck…</b><ul>${s.stuck.map(x => `<li>${x}</li>`).join("")}</ul></div>` : ""}
+    </section>`);
+
+  if (ev) {
+    const i = total - 1;
+    html.push(`
+    <section class="slide" aria-labelledby="h-${i}" hidden>
+      <p class="step-num">${label(i)}</p>
+      <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
+      ${ev.intro ? `<p>${ev.intro}</p>` : ""}
+      <table class="eval-table">
+        <caption class="sr-only">Evaluation criteria</caption>
+        <thead><tr><th scope="col">Criterion</th><th scope="col">What reviewers look for</th></tr></thead>
+        <tbody>${ev.criteria.map(c => `<tr><th scope="row">${c.name}</th><td>${c.lookFor}</td></tr>`).join("")}</tbody>
+      </table>
+      ${ev.finish ? `<p class="finish">${ev.finish}</p>` : ""}
+    </section>`);
+  }
+  $("slides").innerHTML = html.join("");
+
+  const slides = [...document.querySelectorAll(".slide")];
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0, announceTimer;
+  // Clear the live region, then set it after 40ms, so a repeated message is announced again.
+  function announce(msg) {
+    clearTimeout(announceTimer);
+    $("status").textContent = "";
+    announceTimer = setTimeout(() => { $("status").textContent = msg; }, 40);
+  }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = saved.step || 0; seen = saved.seen || 0; } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    $("nextBtn").innerHTML = last ? "Last step" : 'Next step<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (moveFocus) { $("h-" + step).focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => goTo(step + 1, true);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.step, true));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, pre, input, textarea")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+  document.addEventListener("click", async e => {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    try { await navigator.clipboard.writeText(steps[+b.dataset.copy].sample.body); b.textContent = "Copied"; }
+    catch (err) { b.textContent = "Select the code and copy it"; }
+    announce(b.textContent);
+    setTimeout(() => b.textContent = "Copy code", 2500);
+  });
+
+  goTo(step, false);
+})();
+</script>
+</body>
+</html>

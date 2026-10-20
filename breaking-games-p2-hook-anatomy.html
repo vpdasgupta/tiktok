@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Breaking Games x TikTok, Project 2 concept deck: Hook anatomy
+  Built 2026-10-19 from _asset-specs.md in this folder. 10 slides, concept-decoder style (Visual / Text / Promise). Checklist is a self-check; nothing is saved.
+  Style: ../../09-assets/style/tiktok-style-guide.md. Chrome, CSS and slide engine copied from the
+  Project 1 decks (../project-01-read-the-feed-picture-the-brand/breaking-games-p1-*.html).
+  The slide text mirrors the page's "Text version of the interactive" toggle. Edit both together.
+  WCAG 2.2 AA: one H1; inactive slides hidden; focus moves to each slide's h2; polite live region;
+  44px targets; reveals use real buttons with aria-expanded; state shown in words, not color alone;
+  reflows to one column at 640px; prefers-reduced-motion respected. No external data calls. No dates.
+  Deploy: https://vpdasgupta.github.io/tiktok/breaking-games-p2-hook-anatomy.html
+-->
+<title>Hook anatomy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #F8FAFC; --card: #FFFFFF; --ink: #0F172A; --ink-soft: #5A6478;
+    --line: #E9E9E7; --edge: #64748B; --tt-cyan: #25F4EE; --tt-red: #FE2C55;
+    --red-ink: #CC0F3A; --red-dark: #A80C30; --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86; --cyan-tint: #E6FDFC; --amber-ink: #9A5B00; --amber-tint: #FFF4E5;
+    --night: #0C0B10; --night-ink: #E2E8F0; --night-soft: #A89FA2;
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px; --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.5; padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a, input, textarea { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  a { color: var(--red-ink); }
+
+  .deck { max-width: 920px; margin: 0 auto; }
+  .deck-head {
+    margin-bottom: 14px; padding: 18px 24px 22px; border-radius: var(--radius); color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .deck-head :focus-visible { outline-color: var(--tt-cyan); }
+  .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); }
+  .deck-title { font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .grad-word { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @media (forced-colors: active) { .grad-word { color: CanvasText; background: none; } }
+
+  .slide {
+    overflow-wrap: anywhere;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 26px 32px 24px;
+    aspect-ratio: 16 / 9; display: flex; flex-direction: column;
+  }
+  .step-num {
+    align-self: flex-start; display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
+  }
+  .slide h2 { font-size: 28px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 10px 0 12px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 18px; margin: 0 0 12px; }
+  .slide .lead { font-size: 21px; line-height: 1.45; }
+  .slide .plain { margin: 0 0 12px; padding-left: 22px; font-size: 18px; }
+  .slide .plain li { margin-bottom: 6px; }
+  .icon { font-size: 40px; line-height: 1; margin: 4px 0 8px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--pink-tint); color: var(--ink); padding: 1px 5px; border-radius: 4px; }
+
+  .chip { display: inline-block; align-self: flex-start; background: var(--pink-tint); color: var(--ink); font-weight: 700; border-radius: 999px; padding: 6px 14px; font-size: 15px; margin: 4px 0 12px; }
+  .chip.cta { background: var(--night); color: #FFFFFF; }
+  .callout { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 4px 0 12px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 4px 0 14px; }
+  .grid.two { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .box { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background: var(--canvas); }
+  .box h3 { font-size: 17px; margin: 0 0 6px; line-height: 1.3; }
+  .box p { font-size: 15px; margin: 0 0 8px; }
+  .box p:last-child { margin-bottom: 0; }
+  .box .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+  .stat { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background:
+      linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas); }
+  .stat .big { display: block; font-size: 24px; font-weight: 800; line-height: 1.2; }
+  .stat .small { display: block; font-size: 14px; color: var(--ink-soft); }
+  .caption { font-size: 14px; color: var(--ink-soft); margin-top: -6px; }
+
+  .person { display: flex; gap: 12px; align-items: flex-start; }
+  .avatar { flex: none; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--ink); background: var(--cyan-tint); border: 2px solid var(--teal-ink); }
+
+  .status-pill { display: inline-block; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 3px 10px; margin-bottom: 6px; border: 1px solid currentColor; }
+  .status-pill.use { color: var(--teal-ink); background: var(--cyan-tint); }
+  .status-pill.check { color: var(--amber-ink); background: var(--amber-tint); }
+  .status-pill.no { color: var(--red-ink); background: var(--pink-tint); }
+
+  .tbl { width: 100%; border-collapse: collapse; margin: 0 0 12px; font-size: 15px; }
+  .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  .tbl thead th { white-space: nowrap; overflow-wrap: normal; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .tbl tbody th { white-space: nowrap; }
+
+  .btn {
+    min-height: 44px; min-width: 44px; border-radius: 999px; padding: 10px 18px; font-size: 15px; font-weight: 700; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--edge); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { border-color: var(--ink); }
+  .btn.primary { background: var(--red-ink); border-color: var(--red-ink); color: #FFFFFF; }
+  .btn.primary:hover { background: var(--red-dark); border-color: var(--red-dark); }
+  .btn[aria-pressed="true"] { background: var(--ink); color: #FFFFFF; border-color: var(--ink); }
+  .btn[aria-pressed="true"]::after { content: " (your pick)" / ""; font-weight: 600; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 12px; align-items: center; }
+
+  .qa { border-top: 1px solid var(--line); padding: 10px 0; }
+  .qa p { margin: 0 0 6px; font-weight: 600; }
+  .answer { margin-top: 8px; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--cyan-tint); border-left: 4px solid var(--teal-ink); font-size: 16px; }
+  .answer b.lbl { color: var(--teal-ink); }
+  .feedback { margin-top: 4px; padding: 12px 16px; border-radius: var(--radius-sm); border-left: 4px solid var(--ink); background: var(--canvas); font-size: 16px; }
+  .feedback.right { background: var(--cyan-tint); border-color: var(--teal-ink); }
+  .feedback.wrong { background: var(--amber-tint); border-color: var(--amber-ink); }
+  .feedback .verdict { font-weight: 800; }
+
+  .roast-note { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 17px; margin: 0 0 12px; }
+  .roast-note b { color: var(--red-ink); }
+  .prompt { font-size: 15px; color: var(--ink-soft); }
+  .tagged { margin: 0; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--ink); border-radius: 999px; padding: 1px 8px; margin-right: 6px; vertical-align: 2px; background: var(--card); }
+
+  label.field { display: block; font-weight: 700; font-size: 16px; margin: 4px 0 6px; }
+  textarea { width: 100%; min-height: 76px; font-size: 16px; padding: 10px 12px; border: 1px solid var(--edge); border-radius: var(--radius-sm); color: var(--ink); background: var(--card); resize: vertical; }
+  fieldset { border: 0; padding: 0; margin: 0 0 10px; }
+  legend { font-weight: 700; font-size: 16px; margin-bottom: 6px; padding: 0; }
+  .radio-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radio-card { position: relative; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 16px; border: 1px solid var(--edge); border-radius: 999px; font-weight: 700; cursor: pointer; background: var(--card); }
+  .radio-card input { width: 20px; height: 20px; margin: 0; accent-color: var(--red-ink); }
+  .radio-card:has(input:checked) { border: 2px solid var(--ink); background: var(--pink-tint); }
+  .radio-card:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sample-text { margin: 0 0 10px; border: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas);
+    border-radius: var(--radius-sm); padding: 10px 14px 10px 18px; font-size: 15px; }
+  .disclosure { margin: 6px 0 10px; }
+  .link-btn { min-height: 44px; background: none; border: 0; padding: 8px 0; color: var(--red-ink); font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
+  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; list-style: none; margin: 0; padding: 0; }
+  .dot { width: 30px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--edge); background: var(--card); }
+  .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); }
+  .dot[aria-current="step"]::before { width: 26px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); }
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin: 6px 0 0; }
+
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .deck-head { padding: 14px 16px 18px; }
+    .deck-title { font-size: 21px; }
+    .slide { aspect-ratio: auto; padding: 20px 18px; }
+    .slide h2 { font-size: 21px; }
+    .slide p, .slide .plain { font-size: 16px; }
+    .slide .lead { font-size: 17px; }
+    .grid, .grid.two { grid-template-columns: 1fr; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; }
+    .nav-btn { flex: 1; }
+  }
+  @media (max-width: 420px) {
+    .dot { width: 26px; }
+    .tbl thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .tbl tr, .tbl th, .tbl td { display: block; width: auto; }
+    .tbl tbody th { padding-bottom: 0; border-bottom: 0; white-space: normal; }
+    .tbl tr { border-bottom: 1px solid var(--line); padding: 4px 0; }
+    .tbl td { border-bottom: 0; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+
+  /* ---- P2 additions (same tokens) ---- */
+  .rows { display: grid; grid-template-columns: max-content 1fr; gap: 7px 16px; margin: 0 0 6px; font-size: 15px; line-height: 1.45; }
+  .rows dt { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--red-ink); padding-top: 2px; }
+  .rows dd { margin: 0; }
+  .who-head { display: flex; gap: 12px; align-items: center; margin: 0 0 10px; }
+  .who-head h2 { margin: 0; }
+  .avatar.lg { width: 52px; height: 52px; font-size: 20px; }
+  .avatar.dani { background: var(--pink-tint); border-color: var(--red-ink); }
+  .sorter { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 8px; }
+  .sorter .box { display: flex; flex-direction: column; gap: 4px; }
+  .sorter .box p.idea { font-size: 15px; font-weight: 600; margin: 0; }
+  .sorter .btn-row { margin: 2px 0 0; gap: 8px; }
+  .sorter .btn { padding: 8px 14px; font-size: 14px; }
+  .sorter .feedback, .cards3 .feedback { font-size: 14px; padding: 8px 12px; margin: 0; }
+  .cards3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0 0 8px; }
+  .cards3 .box { display: flex; flex-direction: column; gap: 6px; }
+  .cards3 .box h3 { margin: 0; }
+  .cards3 .btn-row { margin: 2px 0 0; gap: 8px; }
+  .tagline { font-size: 15px; margin: 0 0 8px; }
+  .verdict-lbl { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 2px 10px; margin-bottom: 4px; border: 1px solid currentColor; }
+  .verdict-lbl.weak { color: var(--amber-ink); background: var(--amber-tint); }
+  .verdict-lbl.strong { color: var(--teal-ink); background: var(--cyan-tint); }
+
+  /* benchmark bar */
+  .bench { margin: 6px 0 14px; }
+  .bench-track { position: relative; height: 22px; border-radius: 999px; background: var(--canvas); border: 1px solid var(--edge); overflow: visible; }
+  .bench-fill { position: absolute; inset: 0 30% 0 0; border-radius: 999px 0 0 999px; background: var(--gradient); }
+  .bench-mark { position: absolute; left: 70%; top: -8px; bottom: -8px; width: 4px; margin-left: -2px; background: var(--ink); border-radius: 2px; }
+  .bench-lbl { display: flex; justify-content: flex-end; margin-top: 8px; padding-right: calc(30% - 2px); }
+  .bench-lbl span { font-weight: 800; font-size: 15px; transform: translateX(50%); white-space: nowrap; }
+
+  /* 3-stage flow */
+  .flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 8px; margin: 4px 0 12px; }
+  .flow .box { display: flex; flex-direction: column; }
+  .flow .box h3 { font-size: 16px; }
+  .flow .box p { font-size: 14px; }
+  .flow .arrow { display: flex; flex-direction: column; justify-content: center; align-items: center; max-width: 118px; text-align: center; font-size: 12px; font-weight: 700; color: var(--teal-ink); line-height: 1.3; }
+  .flow .arrow .glyph { font-size: 26px; color: var(--ink); line-height: 1; }
+  .flow .ring { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-weight: 800; font-size: 14px; margin-bottom: 6px; border: 2px solid var(--ink); }
+  .flow .ring.r1 { background: var(--tt-cyan); } .flow .ring.r2 { background: #E7C9E7; } .flow .ring.r3 { background: var(--pink-tint); }
+
+  /* hook parts */
+  .parts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 4px 0 12px; }
+  .part-lbl { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--red-ink); margin-bottom: 4px; }
+  .part-lbl .pi { font-size: 22px; letter-spacing: 0; }
+  .hookline { font-size: 24px; font-weight: 800; line-height: 1.3; margin: 0 0 10px; padding: 14px 18px 14px 22px; border-radius: var(--radius-sm);
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 6px 100% no-repeat, var(--night); color: #FFFFFF; }
+  .hookline small { display: block; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--night-soft); margin-bottom: 4px; }
+  .ask { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
+  .map { margin-top: 4px; }
+  select, input[type="text"] { font-family: inherit; font-size: 16px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--edge); border-radius: var(--radius-sm); color: var(--ink); background: var(--card); }
+  select { min-width: 260px; max-width: 100%; }
+  .fw-out { margin: 10px 0 0; padding: 16px 18px; border-radius: var(--radius-sm); background: var(--pink-tint); }
+  .fw-out .fw-name { display: block; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--red-ink); margin-bottom: 4px; }
+  .fw-out .fw-goal { display: block; font-size: 22px; font-weight: 800; line-height: 1.3; }
+  .mistakes { columns: 2; column-gap: 28px; }
+  .mistakes li { break-inside: avoid; }
+  .checks { list-style: none; margin: 0 0 8px; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px; }
+  .checks label { display: flex; gap: 10px; align-items: flex-start; min-height: 44px; padding: 6px 4px; font-size: 14px; line-height: 1.4; cursor: pointer; border-radius: 8px; }
+  .checks input { flex: none; width: 22px; height: 22px; margin: 0; accent-color: var(--red-ink); }
+  .checks label:has(input:checked) { background: var(--cyan-tint); }
+  .checks label:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 1px; }
+  .count { font-size: 14px; font-weight: 700; color: var(--ink-soft); margin: 0; }
+  .fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 4px 0 10px; }
+  .fields label { display: block; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .fields input { width: 100%; }
+
+  /* timeline */
+  .timeline { margin: 8px 0 14px; padding: 0 6px; }
+  .tl-track { position: relative; height: 14px; border-radius: 999px; background: var(--gradient); margin: 0 10px; }
+  .tl-pin { position: absolute; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: var(--card); border: 4px solid var(--ink); }
+  .tl-pin.start { left: 0; } .tl-pin.end { left: 100%; }
+  .tl-labels { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; }
+  .tl-labels div { font-size: 15px; } .tl-labels div:last-child { text-align: right; }
+  .tl-labels b { display: block; font-size: 17px; }
+  .tl-mid { text-align: center; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 6px; }
+  .seasons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .seasons .box { padding: 10px 12px; }
+  .seasons .box h3 { font-size: 15px; margin: 0 0 2px; }
+  .seasons .box p { font-size: 13px; line-height: 1.4; }
+  .tool-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 4px 0 8px; }
+  .tool-grid .box { padding: 12px; font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .tool-grid .box span.sub { display: block; font-weight: 500; font-size: 13px; color: var(--ink-soft); }
+  .path { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 12px; padding: 0; list-style: none; }
+  .path li { background: var(--pink-tint); border-radius: 999px; padding: 5px 12px; font-size: 14px; font-weight: 700; }
+  .path li.go { background: var(--night); color: #FFFFFF; }
+
+  @media (max-width: 760px) {
+    .cards3, .parts, .fields, .seasons { grid-template-columns: 1fr 1fr; }
+    .tool-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .rows { grid-template-columns: 1fr; gap: 2px; }
+    .rows dd { margin-bottom: 8px; }
+    .sorter, .cards3, .parts, .fields, .seasons, .checks { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .flow .arrow { max-width: none; flex-direction: row; gap: 8px; }
+    .flow .arrow .glyph { transform: rotate(90deg); }
+    .mistakes { columns: 1; }
+    .hookline { font-size: 19px; }
+    .fw-out .fw-goal { font-size: 18px; }
+    select { min-width: 0; width: 100%; }
+    .bench-lbl { padding-right: 0; } .bench-lbl span { transform: none; white-space: normal; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  @media (forced-colors: active) { .bench-fill, .tl-track { background: CanvasText; } .bench-mark { background: Highlight; } }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <header class="deck-head">
+    <p class="eyebrow">Breaking Games × TikTok · Project 2</p>
+    <h1 class="deck-title" id="deckTitle">Hook <span class="grad-word">anatomy</span></h1>
+  </header>
+
+  <div id="slides">
+    <section class="slide" aria-labelledby="h-0" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-0" tabindex="-1">The 3-second rule</h2>
+      <div class="grid">
+        <div class="stat"><span class="big">Second 1</span><span class="small">Is this worth looking at? (the image)</span></div>
+        <div class="stat"><span class="big">Second 2</span><span class="small">What is this about? (the words, spoken or on screen)</span></div>
+        <div class="stat"><span class="big">Second 3</span><span class="small">Will this be worth my time? (the promise)</span></div>
+      </div>
+      <p class="callout">A hook answers all three before the thumb moves.</p>
+    </section>
+    <section class="slide" aria-labelledby="h-1" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-1" tabindex="-1">Every hook has three parts</h2>
+      <div class="parts">
+        <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">👁️</span>Visual</span><p>What's on screen in second 1.</p></div>
+        <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">💬</span>Text or audio</span><p>What it's about, on screen and said out loud.</p></div>
+        <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">➡️</span>Promise</span><p>The reason to keep watching.</p></div>
+      </div>
+      <p class="callout">When all three point the same way, the hook feels obvious.</p>
+    </section>
+    <section class="slide" aria-labelledby="h-2" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-2" tabindex="-1">Take one apart: Play-Along</h2>
+      <p class="hookline"><small>The hook</small>"Guess this game from one move?"</p>
+      <p class="ask">What's the promise?</p>
+      <div><button type="button" class="btn primary" data-reveal="map2" aria-expanded="false" aria-controls="map2" data-show="Show the three parts">Show the three parts</button></div>
+      <div class="map" id="map2" hidden>
+        <div class="parts">
+          <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">👁️</span>Visual</span><p>Adult hands hold one card face down over a table.</p></div>
+          <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">💬</span>Text</span><p>"Guess this game from one move?"</p></div>
+          <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">➡️</span>Promise</span><p>The answer comes at the end.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-3" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-3" tabindex="-1">Take one apart: Day-in-the-Life</h2>
+      <p class="hookline"><small>The hook</small>"Friday game night, 8 people, half strangers."</p>
+      <p class="ask">What's the promise?</p>
+      <div><button type="button" class="btn primary" data-reveal="map3" aria-expanded="false" aria-controls="map3" data-show="Show the three parts">Show the three parts</button></div>
+      <div class="map" id="map3" hidden>
+        <div class="parts">
+          <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">👁️</span>Visual</span><p>A stack of game boxes on a coffee table, a door buzzer sounds.</p></div>
+          <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">💬</span>Text</span><p>"Friday game night, 8 people, half strangers."</p></div>
+          <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">➡️</span>Promise</span><p>Will the game actually break the ice?</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-4" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-4" tabindex="-1">Take one apart: Tutorial</h2>
+      <p class="hookline"><small>The hook</small>"Learn this game in 20 seconds."</p>
+      <p class="ask">What's the promise?</p>
+      <div><button type="button" class="btn primary" data-reveal="map4" aria-expanded="false" aria-controls="map4" data-show="Show the three parts">Show the three parts</button></div>
+      <div class="map" id="map4" hidden>
+        <div class="parts">
+          <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">👁️</span>Visual</span><p>A game box opening, cards fanned out.</p></div>
+          <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">💬</span>Text</span><p>"Learn this game in 20 seconds."</p></div>
+          <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">➡️</span>Promise</span><p>You'll be ready to play by the end.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-5" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-5" tabindex="-1">Hooks by framework</h2>
+      <p>Each of the 7 frameworks gives the hook a different job.</p>
+      <label class="field" for="fwSel">Pick a framework</label>
+      <select id="fwSel"><option value="0">Tutorial</option><option value="1">Day-in-the-Life</option><option value="2">Transformation</option><option value="3">Trend-Based (family-safe only)</option><option value="4">Storytelling (published stories, credited)</option><option value="5" selected>Play-Along</option><option value="6">Educational</option></select>
+      <div class="fw-out" id="fwOut"><span class="fw-name">Play-Along</span><span class="fw-goal">Ask a question viewers can answer in the comments.</span></div>
+    </section>
+    <section class="slide" aria-labelledby="h-6" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-6" tabindex="-1">Common mistakes</h2>
+      <ul class="plain mistakes">
+        <li>Starting with the brand name ("Breaking Games presents...").</li>
+        <li>Too much setup.</li>
+        <li>Too generic ("Check out this game!").</li>
+        <li>Hype ("The BEST game EVER").</li>
+        <li>A spec sheet first: players, ages and play time before any fun.</li>
+        <li>A logo, price or promo code in the first 3 seconds.</li>
+        <li>No visual hook, so sound-off viewers miss it.</li>
+      </ul>
+    </section>
+    <section class="slide" aria-labelledby="h-7" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-7" tabindex="-1">Bold, not edgy</h2>
+      <p class="lead">Breaking Games is fun and warm, not edgy.</p>
+      <div class="grid two">
+        <div class="box"><span class="status-pill use"><span aria-hidden="true">✅ </span>Bold</span><p>"This game ended our group chat argument."</p></div>
+        <div class="box"><span class="status-pill no"><span aria-hidden="true">🚫 </span>Edgy (out)</span><p>Any joke at a person's or a group's expense.</p></div>
+      </div>
+    </section>
+    <section class="slide" aria-labelledby="h-8" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-8" tabindex="-1">The Op case: real play beats polish</h2>
+      <p class="lead">The Op, another game publisher, got about 8 million TikTok views in one month. Most viewers didn't follow the account.</p>
+      <ul class="plain">
+        <li>Low-polish phone footage of real play, not studio ads.</li>
+        <li>About 80% entertaining posts to 20% promoting.</li>
+        <li>For you: film real hands at a real table, and entertain first. Promote rarely.</li>
+      </ul>
+      <!-- VERIFY before launch: The Op figures (about 8M views in a month, mostly non-followers, 80/20 mix). Restored 2026-10-20 from the retired How TikTok Works interactive, slide 5. -->
+    </section>
+    <section class="slide" aria-labelledby="h-9" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-9" tabindex="-1">Filming without customers</h2>
+      <ul class="checks" aria-describedby="chkCount">
+        <li><label><input type="checkbox" class="chk"> <span>Adult hands only, on your own table.</span></label></li>
+        <li><label><input type="checkbox" class="chk"> <span>No one under 18 on camera, hands included.</span></label></li>
+        <li><label><input type="checkbox" class="chk"> <span>Friends appear as hands or voices only, with their OK.</span></label></li>
+        <li><label><input type="checkbox" class="chk"> <span>Never film or name real customers.</span></label></li>
+        <li><label><input type="checkbox" class="chk"> <span>No AI-made people shown as real.</span></label></li>
+        <li><label><input type="checkbox" class="chk"> <span>Family and all-ages games only: no adult titles, and no new Hypothetically Fun content.</span></label></li>
+        <li><label><input type="checkbox" class="chk"> <span>Check the game is in stock, and that price, ages and player count match the product page, with the date you checked.</span></label></li>
+        <li><label><input type="checkbox" class="chk"> <span>No game at home? Use the Breaking Games product image deck with your voiceover.</span></label></li>
+      </ul>
+      <p class="count" id="chkCount">0 of 8 checked</p>
+    </section>
+    <section class="slide" aria-labelledby="h-10" hidden>
+      <p class="step-num"></p>
+      <h2 id="h-10" tabindex="-1">Quick practice</h2>
+      <p>Pick one hook and fill in its three parts. If one part is blank, that's where the hook is weak.</p>
+      <div class="fields">
+        <div><label for="fVis"><span aria-hidden="true">👁️ </span>Visual</label><input type="text" id="fVis" autocomplete="off"></div>
+        <div><label for="fTxt"><span aria-hidden="true">💬 </span>Text or audio</label><input type="text" id="fTxt" autocomplete="off"></div>
+        <div><label for="fPro"><span aria-hidden="true">➡️ </span>Promise</label><input type="text" id="fPro" autocomplete="off"></div>
+      </div>
+      <div class="btn-row"><button type="button" class="btn primary" id="copyBtn">Copy for your plan</button></div>
+      <div class="feedback" id="copyFb" hidden></div>
+    </section>
+  </div>
+
+  <nav class="slide-nav" aria-label="Slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+<script>
+window.DECK = { id: "breaking-games-p2-hook-anatomy" };
+const FW = [["Tutorial", "Promise something useful."], ["Day-in-the-Life", "Feel close and real."], ["Transformation", "Set up the \"before.\""], ["Trend-Based (family-safe only)", "Use the format, then twist it toward the game."], ["Storytelling (published stories, credited)", "Open on the stakes."], ["Play-Along", "Ask a question viewers can answer in the comments."], ["Educational", "Challenge an assumption."]];
+DECK.init = ({ announce }) => {
+  const sel = document.getElementById("fwSel"), out = document.getElementById("fwOut");
+  sel.addEventListener("change", () => {
+    const [name, goal] = FW[+sel.value];
+    out.querySelector(".fw-name").textContent = name;
+    out.querySelector(".fw-goal").textContent = goal;
+    announce(name + ": " + goal);
+  });
+  const boxes = [...document.querySelectorAll(".chk")], count = document.getElementById("chkCount");
+  boxes.forEach(b => b.addEventListener("change", () => {
+    const n = boxes.filter(x => x.checked).length;
+    count.textContent = n + " of " + boxes.length + " checked" + (n === boxes.length ? ". All set to film." : "");
+    announce(count.textContent);
+  }));
+  const f = { Visual: "fVis", Text: "fTxt", Promise: "fPro" };
+  const fb = document.getElementById("copyFb"), copyBtn = document.getElementById("copyBtn");
+  /* Hide the copy result once any field changes, so it never shows stale text. */
+  Object.values(f).forEach(id => document.getElementById(id).addEventListener("input", () => { fb.hidden = true; fb.textContent = ""; }));
+  copyBtn.addEventListener("click", async () => {
+    const vals = Object.entries(f).map(([k, id]) => [k, document.getElementById(id).value.trim()]);
+    const text = vals.map(([k, v]) => k + ": " + (v || "...")).join(" / ");
+    const blank = vals.filter(([, v]) => !v).map(([k]) => k);
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+      try { const t = document.createElement("textarea"); t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+        document.body.appendChild(t); t.select(); ok = document.execCommand("copy"); t.remove(); copyBtn.focus(); } catch (e2) { copyBtn.focus(); }
+    }
+    let msg = ok ? "Copied: " + text : "Copy didn't work here. Select and copy this: " + text;
+    if (blank.length) msg += " Blank: " + blank.join(", ") + ". That's where the hook is weak.";
+    fb.textContent = msg; fb.className = "feedback " + (blank.length ? "wrong" : "right"); fb.hidden = false;
+    announce(msg);
+  });
+};
+</script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DECK = window.DECK;
+  const KEY = "bg-deck:" + DECK.id;
+  const slides = [...document.querySelectorAll(".slide")];
+  const total = slides.length;
+  const label = i => `Slide ${i + 1} of ${total}`;
+  slides.forEach((s, i) => { const p = s.querySelector(".step-num"); if (p && !p.textContent.trim()) p.textContent = `${i + 1} of ${total}`; });
+
+  const announce = msg => { const st = $("status"); st.textContent = ""; setTimeout(() => { st.textContent = msg; }, 40); };
+  window.deckAnnounce = announce;
+
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0;
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = Math.min(saved.step || 0, total - 1); seen = Math.min(saved.seen || 0, total - 1); } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    $("nextBtn").innerHTML = last ? "Last slide" : 'Next<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (typeof DECK.onShow === "function") DECK.onShow(step, slides[step]);
+    if (moveFocus) { slides[step].querySelector("h2").focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+  window.deckGoTo = goTo;
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => goTo(step + 1, true);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.step, true));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, input, textarea, select, [role=radiogroup]")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+
+  /* Reveal buttons: <button data-reveal="id" aria-expanded="false" aria-controls="id"> */
+  document.querySelectorAll("[data-reveal]").forEach(b => {
+    const target = $(b.dataset.reveal);
+    /* One label; aria-expanded carries the state. The revealed content sits right after the button, so it is not announced separately. */
+    b.addEventListener("click", () => {
+      const open = b.getAttribute("aria-expanded") !== "true";
+      b.setAttribute("aria-expanded", String(open));
+      target.hidden = !open;
+    });
+  });
+
+  if (typeof DECK.init === "function") DECK.init({ announce, goTo, KEY });
+  /* Deep link for previews and QA: #s=N opens slide N (1-based). */
+  const m = location.hash.match(/s=(\d+)/);
+  if (m) step = Math.min(total, Math.max(1, +m[1])) - 1;
+  goTo(step, false);
+  if (/open/.test(location.hash)) slides[step].querySelectorAll("[data-reveal], [data-q='" + (step) + "'], [data-pick]").forEach((b, i) => { if (b.dataset.reveal || i === 0) b.click(); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+ROAST DECK — Breaking Games social media externship (built 2026-10-19)
+Used in: P1 "Roast Session" (Posts tab) and P3 "Roast the Ads" (Ads tab).
+Spec: 03-overview/breaking-games-social-overview.md (The Roast Set, Roast rules,
+From roast to recommendation) and 02-scope/breaking-games-social-scope-v3.md
+(The P1 roast set, Beat the Benchmark, Roast Deck Ads tab).
+Style: ../style/tiktok-style-guide.md. Chrome/a11y patterns:
+../templates/breaking-games-steps-slides-template.html
+
+DATA RULE
+  Every number and URL below comes from:
+    01-research/breaking-games-account-lookup-2026-10.md  (lookup 2026-10-13)
+    01-research/breaking-games-redesign-research-2026-10.md (lookup 2026-10-13)
+  TikTok post dates are derived from the video ID and are accurate to about a day.
+  Never add a number without its date and source. Refresh each cohort.
+
+HOW TO EDIT
+  Edit only the DATA object. ADS pairs are placeholders ({PM: add ad pair}) until
+  the PM picks 3 pairs: Breaking Games' own Meta ads with one result (only if
+  Michael approves) or Meta Ad Library pairs (ran for months vs. stopped within
+  days, "a clue, not proof"). At least 1 pair features Breaking Games. Fill an ad
+  card's fields and set placeholder:false to show it as real.
+
+DEPLOY (not done yet): vpdasgupta/tiktok GitHub Pages, then on Notion:
+  <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-roast-deck.html"></embed>
+  Set the embed height to about 700px. No external data calls; notes stay in the
+  learner's browser (localStorage) and leave only via Copy or Download.
+
+ACCESSIBILITY (WCAG 2.2 AA): ARIA tabs with arrow/Home/End keys and roving
+tabindex; one H1; H2 per section, H3 per post; every field has a visible label;
+a polite status region announces "Saved" / "Copied"; hit/flop and ran/stopped are
+text badges, not color; new-tab links say so; 44px targets; 3px focus ring;
+reduced motion; reflows to one column under 700px and works at 320px.
+================================================================================
+-->
+<title>Roast Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #F8FAFC;
+    --card: #FFFFFF;
+    --ink: #0F172A;
+    --ink-soft: #5A6478;
+    --line: #E9E9E7;        /* decorative only */
+    --edge: #64748B;        /* control borders */
+    --tt-cyan: #25F4EE;     /* fill only on light */
+    --tt-red: #FE2C55;      /* fill/accent only on light */
+    --red-ink: #CC0F3A;
+    --red-dark: #A80C30;
+    --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86;
+    --cyan-tint: #E6FDFC;
+    --amber-ink: #9A5B00;
+    --amber-tint: #FFF4E5;
+    --night: #0C0B10;
+    --night-ink: #E2E8F0;
+    --night-soft: #A89FA2;
+    --gradient: linear-gradient(90deg, #25F4EE, #A665A7 50%, #FE2C55);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    padding: 16px;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a, input, textarea { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  p { margin: 0 0 12px; }
+  a { color: var(--red-ink); font-weight: 600; }
+  a:hover { color: var(--red-dark); }
+
+  /* Hero band */
+  .hero {
+    color: #fff; border-radius: var(--radius); padding: 20px 24px 24px; margin-bottom: 14px;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .hero :focus-visible { outline-color: var(--tt-cyan); }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); margin: 0 0 6px; }
+  .hero h1 { font-size: 30px; line-height: 1.15; font-weight: 800; letter-spacing: -.01em; margin: 0 0 6px; }
+  .grad { background: linear-gradient(90deg, #25F4EE, #FE2C55); -webkit-background-clip: text; background-clip: text; color: #25F4EE; -webkit-text-fill-color: transparent; }
+  @media (forced-colors: active) { .grad { color: CanvasText; -webkit-text-fill-color: CanvasText; background: none; } }
+  .hero .sub { color: var(--night-ink); margin: 0; font-size: 15px; }
+
+  /* Notes bar */
+  .notesbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 12px 16px; margin-bottom: 14px;
+  }
+  .notesbar p { margin: 0; font-size: 14px; color: var(--ink-soft); flex: 1 1 220px; }
+  .btn {
+    min-height: 44px; border-radius: 999px; padding: 10px 18px; font-size: 14px; font-weight: 700; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--edge);
+  }
+  .btn:hover { border-color: var(--ink); }
+  .btn.primary { background: var(--red-ink); border-color: var(--red-ink); color: #fff; }
+  .btn.primary:hover { background: var(--red-dark); border-color: var(--red-dark); }
+  .status { font-size: 14px; font-weight: 600; color: var(--teal-ink); min-height: 1.5em; flex-basis: 100%; margin: 0; }
+  .status:empty { min-height: 0; height: 0; margin: 0; } /* stays rendered so the live region keeps working */
+
+  /* Tabs */
+  .tablist { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .tab {
+    min-height: 44px; border-radius: 999px; padding: 10px 18px; font-size: 15px; font-weight: 700; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--edge);
+  }
+  .tab:hover { border-color: var(--ink); }
+  .tab[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); box-shadow: inset 0 -4px 0 0 var(--tt-red); }
+  .tab .tab-note { font-weight: 500; }
+
+  /* Cards and sections */
+  .panel > section, .callout { margin-bottom: 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 24px; }
+  h2 { font-size: 22px; line-height: 1.25; font-weight: 800; letter-spacing: -.01em; margin: 0 0 8px; }
+  h3 { font-size: 17px; line-height: 1.3; font-weight: 700; margin: 8px 0 8px; }
+  h4 { font-size: 15px; font-weight: 700; margin: 12px 0 6px; }
+  /* Keep the look when a heading moves down a level (Bonus Pair E). */
+  .as-h2 { font-size: 22px; line-height: 1.25; font-weight: 800; letter-spacing: -.01em; margin: 0 0 8px; }
+  .as-h3 { font-size: 17px; line-height: 1.3; font-weight: 700; margin: 8px 0 8px; }
+  .lede { color: var(--ink-soft); font-size: 15px; }
+  .badge { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 4px 12px; color: var(--red-ink); background: var(--pink-tint); }
+  .badge.hit { color: var(--teal-ink); background: var(--cyan-tint); border: 1px solid var(--teal-ink); }
+  .badge.flop { color: var(--red-ink); background: var(--pink-tint); border: 1px solid var(--red-ink); }
+  .badge.pm { color: var(--amber-ink); background: var(--amber-tint); border: 1px solid var(--amber-ink); }
+  .badge.tag { color: var(--ink); background: var(--canvas); border: 1px solid var(--edge); }
+
+  .callout { border-left: 4px solid; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 14px 16px; font-size: 15px; }
+  .callout.bench { border-color: var(--red-ink); background: var(--pink-tint); }
+  .callout.rules { border-color: var(--teal-ink); background: var(--cyan-tint); }
+  .callout.pmnote { border-color: var(--amber-ink); background: var(--amber-tint); }
+  .callout p:last-child { margin-bottom: 0; }
+  .bignum { font-size: 34px; font-weight: 800; line-height: 1.1; color: var(--red-ink); margin: 4px 0 2px; }
+  .callout h2 { font-size: 19px; }
+
+  .pair-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0 14px; }
+  .pair-grid > * { min-width: 0; }
+  .post { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background: var(--card); overflow-wrap: anywhere; }
+  .post.is-hit { border-top: 4px solid var(--teal-ink); }
+  .post.is-flop { border-top: 4px solid var(--red-ink); }
+  .post.is-pm { border-top: 4px dashed var(--amber-ink); background: #FFFDF8; }
+  .post .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .facts { display: grid; grid-template-columns: max-content 1fr; gap: 2px 10px; margin: 0 0 10px; font-size: 14px; }
+  .facts dt { color: var(--ink-soft); font-weight: 600; }
+  .facts dd { margin: 0; min-width: 0; }
+  .num { font-size: 22px; font-weight: 800; line-height: 1.2; }
+  .asof { font-size: 13px; color: var(--ink-soft); margin: 0 0 10px; }
+  .caveat { font-size: 14px; background: var(--amber-tint); border-radius: 8px; padding: 6px 10px; margin: 0 0 10px; }
+  .linkout { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 0; }
+
+  .field { margin: 0 0 10px; }
+  .field label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .field .hint { font-weight: 500; color: var(--ink-soft); }
+  textarea {
+    display: block; width: 100%; min-height: 64px; resize: vertical; font-size: 15px; line-height: 1.4;
+    border: 1px solid var(--edge); border-radius: 8px; padding: 10px 12px; color: var(--ink); background: var(--card);
+  }
+  textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; border-color: var(--ink); }
+  textarea.big { min-height: 96px; }
+
+  .client { border-top: 1px solid var(--line); padding-top: 12px; }
+  .formula { margin: 0 0 10px; padding-left: 22px; font-size: 15px; }
+  details { margin: 0 0 12px; }
+  summary { cursor: pointer; font-weight: 700; min-height: 44px; padding: 10px 0; display: list-item; color: var(--ink); }
+  summary:hover { color: var(--red-ink); }
+  .example { background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas);
+    border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px 12px 18px; font-size: 15px; }
+  .example ul { margin: 4px 0 0; padding-left: 20px; }
+  .bonus-list > .card { margin-bottom: 14px; }
+
+  @media (max-width: 700px) {
+    body { padding: 12px; }
+    .pair-grid { grid-template-columns: 1fr; }
+    .card { padding: 18px 16px; }
+    .hero { padding: 16px 18px 20px; }
+    .hero h1 { font-size: 24px; }
+    h2, .as-h2 { font-size: 19px; }
+  }
+  @media (max-width: 360px) {
+    .facts { grid-template-columns: 1fr; }
+    .facts dd { margin-bottom: 4px; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Breaking Games × TikTok · Roast Deck</p>
+    <h1>Hit vs. flop. Roast the post, not the <span class="grad">person.</span></h1>
+    <p class="sub">For each pair: one Roast, one Toast, one Fix per post. Then write the client version.</p>
+  </header>
+
+  <main>
+    <div class="notesbar" role="group" aria-labelledby="notesHead">
+      <h2 id="notesHead" class="sr-only">Your notes</h2>
+      <p>Your notes save in this browser as you type. Copy them into your roast notes doc or Experiment Journal.</p>
+      <button type="button" class="btn primary" id="copyBtn">Copy my notes</button>
+      <button type="button" class="btn" id="dlBtn">Download .txt</button>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="tablist" role="tablist" aria-label="Roast Deck sections">
+      <button type="button" role="tab" class="tab" id="tab-posts" aria-controls="panel-posts" aria-selected="true">Posts <span class="tab-note">(Project 1)</span></button>
+      <button type="button" role="tab" class="tab" id="tab-ads" aria-controls="panel-ads" aria-selected="false" tabindex="-1">Ads <span class="tab-note">(Project 3)</span></button>
+    </div>
+
+    <div class="panel" role="tabpanel" id="panel-posts" aria-labelledby="tab-posts"></div>
+    <div class="panel" role="tabpanel" id="panel-ads" aria-labelledby="tab-ads" hidden></div>
+  </main>
+</div>
+
+<script>
+/* ============================ DATA ============================ */
+/* Numbers and URLs only from 01-research (lookup 2026-10-13). */
+const ASOF = "Oct 13, 2026";
+const BG = "@breakinggamesllc";
+const BG_FOLLOWERS = "1,301 (as of Oct 13, 2026)";
+const TJ_IG = "1,654 on Instagram (as of Oct 13, 2026)";
+const TJ_TT = "4,123 on TikTok (as of Oct 13, 2026)";
+
+const PAIRS = [
+  { id: "A", title: "Breaking Games archive (TikTok)",
+    note: "Same account, so the audience is the same. What changed?",
+    hit: { id: "A-hit", name: "Mixtape: \"What song plays when…\" hook", platform: "TikTok", account: BG, followers: BG_FOLLOWERS,
+      date: "about May 8, 2024", num: "135.8K", metric: "views",
+      caveat: "Likely boosted (paid reach unconfirmed). Ask: what would still work without paid reach?",
+      url: "https://www.tiktok.com/@breakinggamesllc/video/7366696610862058795" },
+    flop: { id: "A-flop", name: "Shadow Kitty explainer (players, ages, play time)", platform: "TikTok", account: BG, followers: BG_FOLLOWERS,
+      date: "about Oct 7, 2024", num: "651", metric: "views",
+      url: "https://www.tiktok.com/@breakinggamesllc/video/7423046793404894495" } },
+  { id: "B", title: "Breaking Games archive (TikTok)",
+    note: "The hit here is the benchmark: the post you'll try to beat.",
+    hit: { id: "B-hit", name: "Keep Calm: \"Keep Calm or Panic?\"", platform: "TikTok", account: BG, followers: BG_FOLLOWERS,
+      date: "about Jul 17, 2024", num: "1,049", metric: "views", tag: "The benchmark",
+      caveat: "Boost status unconfirmed (we've asked Breaking Games).",
+      url: "https://www.tiktok.com/@breakinggamesllc/video/7392656477829238062" },
+    flop: { id: "B-flop", name: "Keep Calm \"Version 2\" promo (Game of the Month, free shipping)", platform: "TikTok", account: BG, followers: BG_FOLLOWERS,
+      date: "about Jul 3, 2024", num: "595", metric: "views",
+      url: "https://www.tiktok.com/@breakinggamesllc/video/7387489227983883563" } },
+  { id: "C", title: "Creator, same account (Instagram)",
+    note: "Both posts are about Breaking Games titles, from the same creator, in the same month.",
+    hit: { id: "C-hit", name: "Stripes Reel", platform: "Instagram", account: "@truejoyboardgaming", followers: TJ_IG,
+      date: "Mar 13, 2026", num: "72", metric: "likes, 1 comment", tag: "The Reels benchmark (about 4.4 likes per 100 followers)",
+      url: "https://www.instagram.com/truejoyboardgaming/reel/DV01PzDj_wi/" },
+    flop: { id: "C-flop", name: "The Game of 49 how-to-play Reel", platform: "Instagram", account: "@truejoyboardgaming", followers: TJ_IG,
+      date: "Mar 5, 2026", num: "17", metric: "likes, 0 comments",
+      url: "https://www.instagram.com/truejoyboardgaming/reel/DVgeEIjka-Q/" } },
+  { id: "D", title: "Creator, same account (TikTok)",
+    note: "Peer games, not Breaking Games titles. Same creator, about two weeks apart.",
+    hit: { id: "D-hit", name: "Rocking Raft: \"tilt the raft to send gems sliding…\"", platform: "TikTok", account: "@truejoyboardgaming", followers: TJ_TT,
+      date: "about Oct 8, 2026", num: "1,706", metric: "views",
+      url: "https://www.tiktok.com/@truejoyboardgaming/video/7694337445122379038" },
+    flop: { id: "D-flop", name: "Horse-stable card game: \"Build your dream stable…\"", platform: "TikTok", account: "@truejoyboardgaming", followers: TJ_TT,
+      date: "about Sep 23, 2026", num: "92", metric: "views",
+      url: "https://www.tiktok.com/@truejoyboardgaming/video/7688656684213865759" } }
+];
+
+/* Bonus cards: the rest of the 14-item research set. #7 (@sharishowtime, the CEO) is not roasted. */
+const BONUS = [
+  { id: "X-hf", name: "Hypothetically Fun: \"Don't just meet people, get to know them\"", platform: "TikTok", account: BG, followers: BG_FOLLOWERS,
+    date: "about Dec 20, 2023", num: "207.4K", metric: "views", tag: "The ceiling, not the target",
+    caveat: "Likely paid reach. Never graded against. Roast only: Hypothetically Fun is not used in new content.",
+    url: "https://www.tiktok.com/@breakinggamesllc/video/7314752274457234719" },
+  { id: "X-poop", name: "POOP: The Game Reel (pun hook)", platform: "Instagram", account: "@truejoyboardgaming", followers: TJ_IG,
+    date: "Mar 23, 2026", num: "About 20", metric: "likes (label unclear), 1 comment",
+    url: "https://www.instagram.com/truejoyboardgaming/reel/DWOv8FLj-Cv/" },
+  { id: "X-sk", name: "Sparkle*Kitty carousel (\"builds on Uno\")", platform: "Instagram", account: "@60minutegamer", followers: "6,240 (as of Oct 13, 2026)",
+    date: "May 6, 2026", num: "46", metric: "likes, 0 comments",
+    url: "https://www.instagram.com/60minutegamer/p/DX_tbfuEc5h/" },
+  { id: "X-her", name: "Retail \"new arrivals\" roundup (POOP is 1 of 6 games)", platform: "Instagram", account: "@hergames2026 (game shop)", followers: "Not recorded",
+    date: "Apr 9, 2026", num: "20", metric: "likes, 2 comments",
+    url: "https://www.instagram.com/hergames2026/p/DW7w18XESwA/" },
+  { id: "X-cafe", name: "Café Chaos and TheOdd1sOut: a creator partnership that never reached TikTok", platform: "TikTok", account: "@theodd1sout", followers: "323 (as of Oct 13, 2026)",
+    date: "5 videos, about Nov 2019", num: "1.6K–2.8K", metric: "views per video",
+    caveat: "No Café Chaos TikToks found. The game's promotion ran on YouTube and Kickstarter (9,687 backers, $894,316). Handle authenticity unconfirmed.",
+    url: "https://www.tiktok.com/embed/@theodd1sout" },
+  { id: "X-op", name: "Hues & Cues with @SMOSH at Gen Con: \"What color do YOU think math is?\"", platform: "TikTok", account: "@theopgames", followers: "72.3K (as of Oct 13, 2026)",
+    date: "about Aug 9, 2024", num: "3M", metric: "views", tag: "Pinned",
+    url: "https://www.tiktok.com/@theopgames/video/7401201360424815914" },
+  { id: "X-qork", name: "Qork: \"EVERYTHING you want in a bar game… fast, simple, and LOUD\"", platform: "TikTok", account: "@theopgames", followers: "72.3K (as of Oct 13, 2026)",
+    date: "about Oct 13, 2026", num: "650", metric: "views",
+    caveat: "Only hours old when counted. Too new to judge: measure at 7 days.",
+    url: "https://www.tiktok.com/@theopgames/video/7696183619416640782" },
+  { id: "X-cvg", name: "Cards vs Gravity: \"chaos guaranteed\"", platform: "TikTok", account: "@bigpotatogames", followers: "430.8K (as of Oct 13, 2026)",
+    date: "about Jul 14, 2026", num: "3M", metric: "views", tag: "Pinned",
+    url: "https://www.tiktok.com/@bigpotatogames/video/7662346332744453398" }
+];
+/* Bonus pair: #12 (hit) vs #11 (flop). Different accounts, same week. */
+const BONUS_PAIR = { id: "E", title: "Peer brands, same week (TikTok, bonus)",
+  note: "Different accounts, so audience size differs. Compare the hooks, not just the numbers.",
+  hit: { id: "E-hit", name: "Exploding Kittens: \"JUST DON'T BUST\"", platform: "TikTok", account: "@explodingkittens", followers: "328.6K (as of Oct 13, 2026)",
+    date: "about Oct 7, 2026", num: "59.6K", metric: "views",
+    caveat: "Same week, same account: other posts got 1.4K–13K.",
+    url: "https://www.tiktok.com/@explodingkittens/video/7694014062434307342" },
+  flop: { id: "E-flop", name: "Big Potato: \"if you love The Traitors… this digital party game\"", platform: "TikTok", account: "@bigpotatogames", followers: "430.8K (as of Oct 13, 2026)",
+    date: "about Oct 8, 2026", num: "564", metric: "views",
+    url: "https://www.tiktok.com/@bigpotatogames/video/7694334669168397600" } };
+
+/* Ads tab: placeholders until the PM adds real pairs. */
+const ADS = [1, 2, 3].map(n => ({
+  id: "Ad" + n, title: n === 1 ? "{PM: add ad pair featuring Breaking Games}" : "{PM: add ad pair}",
+  hit:  { id: "Ad" + n + "-long",  placeholder: true, status: "Ran for months" },
+  flop: { id: "Ad" + n + "-short", placeholder: true, status: "Stopped within days" }
+}));
+/* ======================= END DATA ======================== */
+
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const KEY = "bg-roast-deck:v1";
+  let notes = {};
+  try { notes = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { notes = {}; }
+
+  /* desc: id of the heading this field belongs to, so repeated labels (Roast, Toast, Fix) say which post they are for. */
+  const field = (id, label, hint, big, desc) => `
+    <div class="field"><label for="f-${id}">${label}${hint ? ` <span class="hint">${hint}</span>` : ""}</label>
+    <textarea id="f-${id}" data-key="${id}" class="${big ? "big" : ""}" rows="${big ? 4 : 2}"${desc ? ` aria-describedby="${desc}"` : ""}>${esc(notes[id] || "")}</textarea></div>`;
+  const rtf = id => field(id + ":roast", "Roast", "(what didn't work?)", false, "h-" + id) + field(id + ":toast", "Toast", "(what worked?)", false, "h-" + id) + field(id + ":fix", "Fix", "(one change)", false, "h-" + id);
+
+  function postCard(p, kind, lvl = 3) {
+    const cls = kind === "hit" ? "is-hit" : kind === "flop" ? "is-flop" : "";
+    const label = kind === "hit" ? "Hit" : kind === "flop" ? "Flop" : "Bonus";
+    return `<article class="post ${cls}" aria-labelledby="h-${p.id}">
+      <div class="tags"><span class="badge ${kind === "bonus" ? "tag" : kind}">${label}</span>${p.tag ? `<span class="badge tag">${esc(p.tag)}</span>` : ""}</div>
+      <h${lvl} id="h-${p.id}"${lvl !== 3 ? ` class="as-h3"` : ""}><span class="sr-only">${label}: </span>${esc(p.name)}</h${lvl}>
+      <p class="num">${esc(p.num)} <span style="font-size:15px;font-weight:600">${esc(p.metric)}</span></p>
+      <p class="asof">Visible number as of ${ASOF}, pulled by the program team.</p>
+      <dl class="facts">
+        <dt>Platform</dt><dd>${esc(p.platform)}</dd>
+        <dt>Account</dt><dd>${esc(p.account)}</dd>
+        <dt>Posted</dt><dd>${esc(p.date)}</dd>
+        <dt>Followers</dt><dd>${esc(p.followers)}</dd>
+      </dl>
+      ${p.caveat ? `<p class="caveat"><b>Note:</b> ${esc(p.caveat)}</p>` : ""}
+      <a class="linkout" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Open on ${esc(p.platform)}<span class="sr-only">: ${esc(p.name)}</span>&nbsp;(opens in a new tab)</a>
+      ${rtf(p.id)}
+    </article>`;
+  }
+
+  function adCard(a, kind, lvl = 3) {
+    const cls = "is-pm";
+    return `<article class="post ${cls}" aria-labelledby="h-${a.id}">
+      <div class="tags"><span class="badge ${kind}">${a.status}</span><span class="badge pm">Placeholder</span></div>
+      <h${lvl} id="h-${a.id}"${lvl !== 3 ? ` class="as-h3"` : ""}><span class="sr-only">${a.status}: </span>{PM: add ad}</h${lvl}>
+      <dl class="facts">
+        <dt>Advertiser</dt><dd>{PM: add}</dd>
+        <dt>Placement</dt><dd>{PM: add, e.g. Instagram or Facebook Reels}</dd>
+        <dt>Active</dt><dd>{PM: add start and end dates, from the Meta Ad Library}</dd>
+        <dt>Result</dt><dd>{PM: add one result, only if Michael approves; otherwise "Not shown in the Ad Library"}</dd>
+      </dl>
+      <p class="asof">{PM: add "as of" date and source}</p>
+      <p class="caveat"><b>A clue, not proof:</b> an ad that keeps running is usually working, but the Ad Library doesn't show results.</p>
+      ${rtf(a.id)}
+    </article>`;
+  }
+
+  const example = `<details><summary>See the worked example and word swaps</summary>
+    <div class="example">
+      <p><b>Roast note:</b> "Version 2 is just a promo. Snooze."</p>
+      <p><b>Client version:</b> "On the same account, the question-led 'Keep Calm or Panic?' post earned 1,049 views, about 75% more than the promo version (595). We recommend leading with a question and saving the offer for the caption."</p>
+      <p style="margin-bottom:0"><b>Word swaps:</b></p>
+      <ul>
+        <li>"flopped," "mid," "boring" or "cringe" → "underperformed," "earned fewer views," or "held attention less"</li>
+        <li>"they should have" → "an opportunity is" or "we recommend"</li>
+        <li>"only got 595 views" → "earned 595 views"</li>
+        <li>Cut "obviously," "clearly" and "just."</li>
+      </ul>
+    </div></details>`;
+
+  const clientBlock = (id, label, lvl = 3, desc) => `<div class="client">
+      <h${lvl} id="ch-${id}"${lvl !== 3 ? ` class="as-h3"` : ""}>Write the client version${label ? `: ${label}` : ""}</h${lvl}>
+      <ol class="formula">
+        <li><b>Toast:</b> lead with what works.</li>
+        <li><b>Evidence:</b> name the gap with a number, a date or a same-account comparison, not an adjective.</li>
+        <li><b>Recommendation:</b> tie the fix to the goal: new eyes on the brand.</li>
+      </ol>
+      ${example}
+      ${field(id + ":client", "Client version", "(Toast → Evidence → Recommendation)", true, desc)}
+    </div>`;
+
+  /* lvl: heading level of the pair title; its cards and client block sit one level below. */
+  function pairSection(p, isAd, lvl = 2) {
+    const card = isAd ? adCard : postCard;
+    return `<section class="card">
+      <h${lvl} id="ph-${p.id}"${lvl !== 2 ? ` class="as-h2"` : ""}>${isAd ? "Ad pair " + p.id.slice(2) + ": " : "Pair " + p.id + ": "}${esc(p.title)}</h${lvl}>
+      ${p.note ? `<p class="lede">${esc(p.note)}</p>` : ""}
+      <div class="pair-grid">${card(p.hit, "hit", lvl + 1)}${card(p.flop, "flop", lvl + 1)}</div>
+      ${clientBlock("pair" + p.id, "", lvl + 1, "ph-" + p.id)}
+    </section>`;
+  }
+
+  /* ---------- Posts panel ---------- */
+  $("panel-posts").innerHTML = `
+    <section class="callout bench">
+      <h2 id="benchHead">Keep Calm or Panic? The number to beat</h2>
+      <p class="bignum">1,049 views</p>
+      <p>${BG} on TikTok, posted about Jul 17, 2024. Views as of ${ASOF}. Same account and follower base you'll post to, and about 3× the 350-view average for 1–5K-follower accounts (Socialinsider, 2025). Boost status unconfirmed. It's the hit in Pair B.</p>
+      <p><a class="linkout" href="https://www.tiktok.com/@breakinggamesllc/video/7392656477829238062" target="_blank" rel="noopener noreferrer">Open the benchmark post on TikTok&nbsp;(opens in a new tab)</a></p>
+    </section>
+    <section class="callout rules">
+      <h2 id="rulesHead">Roast rules</h2>
+      <p>Roast the post, not the person. Raw roast notes stay in the program. Never comment on, tag or message the creators you review. Anything Breaking Games may see uses the client version.</p>
+    </section>
+    ${PAIRS.map(p => pairSection(p, false)).join("")}
+    <section class="card">
+      <h2 id="patHead">My 3 patterns for Gen Z</h2>
+      <p class="lede">Look across all 4 pairs. What do the hits share?</p>
+      ${field("patterns:1", "Pattern 1")}${field("patterns:2", "Pattern 2")}${field("patterns:3", "Pattern 3")}
+      ${clientBlock("strongest", "your strongest pattern")}
+    </section>
+    <section>
+      <div class="card" style="margin-bottom:14px">
+        <h2 id="bonusHead">Bonus cards (optional)</h2>
+        <p class="lede" style="margin:0">The rest of the research set. Roast any you like. The CEO's personal account (@sharishowtime) is not roasted.</p>
+      </div>
+      <div class="bonus-list">
+        ${pairSection(BONUS_PAIR, false, 3)}
+        ${BONUS.map(b => `<div class="card">${postCard(b, "bonus")}</div>`).join("")}
+      </div>
+    </section>`;
+
+  /* ---------- Ads panel ---------- */
+  $("panel-ads").innerHTML = `
+    <section class="callout pmnote">
+      <h2 id="adsHead">Roast the ads: 3 pairs</h2>
+      <p>Same Roast, Toast, Fix as Project 1. Each pair compares an ad that <b>ran for months</b> with one that <b>stopped within days</b>. That's <b>a clue, not proof</b>: an ad that keeps running is usually working. Ads are paid reach, so they aren't compared with the benchmark.</p>
+      <p><b>{PM: add ad pairs.}</b> Use Breaking Games' own Meta ads with one result each (no spend) only if Michael approves. Otherwise use public Meta Ad Library pairs. At least 1 pair features Breaking Games. Refresh each cohort.</p>
+    </section>
+    ${ADS.map(a => pairSection(a, true, 2)).join("")}
+    <section class="card">
+      <h2 id="adPatHead">My 3 ad patterns</h2>
+      ${field("adpatterns:1", "Ad pattern 1")}${field("adpatterns:2", "Ad pattern 2")}${field("adpatterns:3", "Ad pattern 3")}
+      ${clientBlock("topad", "your top ad pattern")}
+    </section>`;
+
+  /* ---------- Tabs (ARIA tabs pattern, automatic activation) ---------- */
+  const tabs = [$("tab-posts"), $("tab-ads")];
+  function select(tab, focus) {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute("aria-selected", on);
+      t.tabIndex = on ? 0 : -1;
+      $(t.getAttribute("aria-controls")).hidden = !on;
+    });
+    if (focus) tab.focus();
+    try { localStorage.setItem(KEY + ":tab", tab.id); } catch (e) {}
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => select(t, false));
+    t.addEventListener("keydown", e => {
+      let n = null;
+      if (e.key === "ArrowRight") n = (i + 1) % tabs.length;
+      else if (e.key === "ArrowLeft") n = (i - 1 + tabs.length) % tabs.length;
+      else if (e.key === "Home") n = 0;
+      else if (e.key === "End") n = tabs.length - 1;
+      if (n !== null) { e.preventDefault(); select(tabs[n], true); }
+    });
+  });
+  /* #ads in the URL opens the Ads tab (for the P3 embed); otherwise restore the last tab. */
+  if (location.hash === "#ads") select($("tab-ads"), false);
+  else { try { const t = localStorage.getItem(KEY + ":tab"); if (t && $(t)) select($(t), false); } catch (e) {} }
+
+  /* ---------- Save ---------- */
+  const status = msg => { $("status").textContent = ""; setTimeout(() => { $("status").textContent = msg; }, 50); };
+  let timer, savedOnce = false;
+  function persist() {
+    try { localStorage.setItem(KEY, JSON.stringify(notes)); return true; } catch (e) { return false; }
+  }
+  document.addEventListener("input", e => {
+    const k = e.target.dataset && e.target.dataset.key;
+    if (!k) return;
+    notes[k] = e.target.value;
+    clearTimeout(timer); timer = setTimeout(persist, 400);
+  });
+  document.addEventListener("change", e => {
+    if (!(e.target.dataset && e.target.dataset.key)) return;
+    clearTimeout(timer);
+    if (persist()) {
+      /* Say "Saved" once per session; after that the visible line already says it, so stay quiet unless it showed an error. */
+      let said = savedOnce;
+      try { said = said || sessionStorage.getItem(KEY + ":saidSaved") === "1"; } catch (e) {}
+      if (!said || $("status").textContent.startsWith("Couldn't")) status("Saved in this browser.");
+      savedOnce = true; try { sessionStorage.setItem(KEY + ":saidSaved", "1"); } catch (e) {}
+    } else status("Couldn't save in this browser. Copy or download your notes before you leave.");
+  });
+
+  /* ---------- Plain-text export ---------- */
+  const v = k => (notes[k] || "").trim();
+  const line = (lbl, k) => `  ${lbl}: ${v(k) || "-"}`;
+  const postTxt = (p, lbl) => [`${lbl}: ${p.name} (${p.platform}, ${p.account}, posted ${p.date}; ${p.num} ${p.metric} as of ${ASOF})`, `  Link: ${p.url}`,
+    line("Roast", p.id + ":roast"), line("Toast", p.id + ":toast"), line("Fix", p.id + ":fix")].join("\n");
+  const adTxt = (a) => [`${a.status.toUpperCase()}: {PM: add ad}`, line("Roast", a.id + ":roast"), line("Toast", a.id + ":toast"), line("Fix", a.id + ":fix")].join("\n");
+  const any = prefixes => Object.keys(notes).some(k => prefixes.some(p => k.startsWith(p)) && v(k));
+
+  function buildText() {
+    const out = ["ROAST NOTES · Breaking Games Roast Deck", `Copied ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}. Raw roast notes stay in the program; share only client versions.`, ""];
+    out.push("BENCHMARK: \"Keep Calm or Panic?\" (@breakinggamesllc, TikTok, posted about Jul 17, 2024): 1,049 views as of " + ASOF + ".", "");
+    PAIRS.forEach(p => {
+      out.push(`== Pair ${p.id}: ${p.title} ==`, postTxt(p.hit, "HIT"), postTxt(p.flop, "FLOP"), `CLIENT VERSION: ${v("pair" + p.id + ":client") || "-"}`, "");
+    });
+    out.push("== My 3 patterns for Gen Z ==", ...[1, 2, 3].map(n => `${n}. ${v("patterns:" + n) || "-"}`), `CLIENT VERSION (strongest pattern): ${v("strongest:client") || "-"}`, "");
+    if (any(["E-", "pairE"])) out.push(`== Bonus pair: ${BONUS_PAIR.title} ==`, postTxt(BONUS_PAIR.hit, "HIT"), postTxt(BONUS_PAIR.flop, "FLOP"), `CLIENT VERSION: ${v("pairE:client") || "-"}`, "");
+    BONUS.filter(b => any([b.id + ":"])).forEach(b => out.push("== Bonus card ==", postTxt(b, "BONUS"), ""));
+    if (any(["Ad", "pairAd", "adpatterns", "topad"])) {
+      out.push("== ADS (Project 3) ==");
+      ADS.forEach(a => out.push(`-- Ad pair ${a.id.slice(2)} --`, adTxt(a.hit), adTxt(a.flop), `CLIENT VERSION: ${v("pair" + a.id + ":client") || "-"}`, ""));
+      out.push("My 3 ad patterns:", ...[1, 2, 3].map(n => `${n}. ${v("adpatterns:" + n) || "-"}`), `CLIENT VERSION (top ad pattern): ${v("topad:client") || "-"}`, "");
+    }
+    return out.join("\n");
+  }
+
+  $("copyBtn").addEventListener("click", async () => {
+    const text = buildText();
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select(); ok = document.execCommand("copy"); ta.remove();
+        $("copyBtn").focus();
+      } catch (e2) { ok = false; }
+    }
+    status(ok ? "Copied. Paste your notes into your roast notes doc." : "Copy was blocked here. Use Download .txt instead.");
+  });
+
+  $("dlBtn").addEventListener("click", () => {
+    try {
+      const blob = new Blob([buildText()], { type: "text/plain;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = "breaking-games-roast-notes.txt";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      status("Downloaded breaking-games-roast-notes.txt.");
+    } catch (e) { status("Download was blocked here. Use Copy my notes instead."); }
+  });
+})();
+</script>
+</body>
+</html>
