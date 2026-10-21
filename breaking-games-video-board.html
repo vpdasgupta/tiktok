@@ -632,7 +632,7 @@
     $("#uploading").textContent="Uploading "+typeLabel(payload.submission_type)+" ("+fmtMB(f.size)+"). This can take up to a minute. Keep this tab open.";
     readBase64(f).then(function(b64){ payload.data_b64=b64; return apiPost(payload,f); })
     .then(function(r){
-      if(!r||!r.ok){ showResult("warn","Upload didn't go through: "+((r&&r.error)||"unknown error")+". Try again, or post the file in Slack and tell your PM."); return; }
+      if(!r||!r.ok){ showResult("warn","Upload didn't go through: "+((r&&r.error)||"unknown error")+". Try again, or post the file in Slack and tell your program manager."); return; }
       store("bg-video-board:name",payload.student_name);
       store("bg-video-board:share",share);
       if(share==="credit") store("bg-video-board:credit",payload.credit_name);
@@ -643,7 +643,7 @@
       Array.prototype.forEach.call(document.getElementsByName("persona"),function(el){ el.checked=false; });
       refresh(true);
     })
-    .catch(function(){ showResult("warn","Upload didn't go through. Check your connection and try again, or post the file in Slack and tell your PM."); })
+    .catch(function(){ showResult("warn","Upload didn't go through. Check your connection and try again, or post the file in Slack and tell your program manager."); })
     .then(function(){ uploading=false; $("#submitBtn").disabled=false; $("#uploading").textContent=""; });
   });
 
