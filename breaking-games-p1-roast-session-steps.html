@@ -121,18 +121,29 @@ const TASK = {
         "Still sounds like a roast, or has no number? Cut “flopped,” “obviously,” “clearly” and “just,” start with what works, and borrow a number from the pair that proves your pattern.",
         "Want a second check? Paste it into Claude or ChatGPT and ask: “Point out anything that sounds like a dig at a person, has no number, or uses flopped, obviously, clearly or just. Don't rewrite it.” You decide what to change."
       ]
+    },
+    {
+      title: "Check, share and submit your roast notes",
+      instruction: "Go through your roast notes once and fix anything that misses. Then click <b>Share</b> → <b>Anyone with the link</b> → <b>Viewer</b>, and open the link in a private browser window to check it.",
+      sample: { label: "The checklist", kind: "text",
+        body: "All 4 pairs have Roast, Toast, Fix and Pattern. 3 patterns, each with a pair and a number. A benchmark line. One client version. No names of people, and no creator tagged or messaged." },
+      onTrack: "you can tick every line and your link opens in a private window.",
+      stuck: [
+        "Missing a whole pair? Do it now. The Roast Deck is still open in its tab.",
+        "Your school account blocks link sharing? Download the doc as a .docx and upload that file instead."
+      ]
     }
   ],
   evaluation: {
     title: "How it will be evaluated",
-    intro: "Your program manager reviews your roast notes when you submit them with your mood board at the end of the week.",
+    intro: "Your program manager reviews your roast notes when you submit them at the end of this step.",
     criteria: [
       { name: "Roast, Toast, Fix", lookFor: "All 4 pairs, each with a roast, toast, fix and pattern, about the post, never the person." },
       { name: "3 patterns", lookFor: "Each one backed by a pair and a number." },
       { name: "Benchmark", lookFor: "Says why “Keep Calm or Panic?” is a fair target, and that 207.4K is the ceiling, not the target." },
       { name: "Client version", lookFor: "Toast, Evidence, Recommendation, with no roast words." }
     ],
-    finish: "Done? Keep your doc open. Your mood board borrows from it next. Good game, folks."
+    finish: "Done? Submit your link on the page below, and keep your doc open. Your mood board borrows from it next. Good game, folks."
   }
 };
 /* ======================= DO NOT EDIT BELOW ======================== */
