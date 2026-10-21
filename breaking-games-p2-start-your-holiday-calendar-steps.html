@@ -60,11 +60,11 @@ const TASK = {
   steps: [
     {
       title: "Copy the template and open This Cohort",
-      instruction: "<a href=\"{HOLIDAY CALENDAR TEMPLATE LINK}\" target=\"_blank\" rel=\"noopener\">Make a copy of the Holiday Content Calendar template<span class=\"sr-only\"> (opens in a new tab)</span></a> and name it <code>BG-Holiday-Calendar-[YourName]</code>. Open the <b>This Cohort</b> tab: your PM has filled in the window (the weeks after your handoff), this year's dates for moments in that window, and the push list.",
+      instruction: "<a href=\"{HOLIDAY CALENDAR TEMPLATE LINK}\" target=\"_blank\" rel=\"noopener\">Make a copy of the Holiday Content Calendar template<span class=\"sr-only\"> (opens in a new tab)</span></a> and name it <code>BG-Holiday-Calendar-[YourName]</code>. Open the <b>This Cohort</b> tab: your program manager has filled in the window (the weeks after your handoff), this year's dates for moments in that window, and the push list.",
       sample: { label: "Sample", kind: "text",
-        body: "This Cohort tab\nWindow: handoff to about 12 weeks later\nMoments in window: 9, each with this year's date\nPush list: Caminito + [games your PM lists]" },
+        body: "This Cohort tab\nWindow: handoff to about 12 weeks later\nMoments in window: 9, each with this year's date\nPush list: Caminito + [games your program manager lists]" },
       onTrack: "you can say when your window starts and ends, and which games are on the push list.",
-      stuck: ["This Cohort tab is empty? Your PM fills it before Week 3. Ask in Slack, and start the next step from the Moments Library tab meanwhile."]
+      stuck: ["This Cohort tab is empty? Your program manager fills it before Week 3. Ask in Slack, and start the next step from the Moments Library tab meanwhile."]
     },
     {
       title: "Pick 3 moments in the window",
@@ -96,7 +96,7 @@ const TASK = {
   ],
   evaluation: {
     title: "How it will be evaluated",
-    intro: "Your PM checks your calendar draft for these three things.",
+    intro: "Your program manager checks your calendar draft for these three things.",
     criteria: [
       { name: "In the window", lookFor: "3 moments whose go-live dates fall after the Week 6 handoff." },
       { name: "Go-live rules", lookFor: "Gift moments 2 to 3 weeks early; other moments 3 to 7 days early." },
