@@ -103,41 +103,40 @@ const TASK = {
       ]
     },
     {
-      title: "Check both pieces",
-      instruction: "Go through your mood board and your roast notes once. Fix anything that misses.",
+      title: "Check your mood board",
+      instruction: "Go through your mood board once. Fix anything that misses.",
       sample: { label: "The checklist", kind: "text",
-        body: "Mood board: could someone tell this is a warm game-night brand without reading the labels? Nothing dark, snarky or edgy. Palette marked “temporary” with hex codes. Every AI image labeled. Every spotted hook credited to its account.\n\nRoast notes: all 4 pairs have Roast, Toast, Fix and Pattern. 3 patterns, each with a pair and a number. A benchmark line. One client version. No names of people, and no creator tagged or messaged." },
+        body: "Mood board: could someone tell this is a warm game-night brand without reading the labels? Nothing dark, snarky or edgy. Palette marked “temporary” with hex codes. Every AI image labeled. Every spotted hook credited to its account." },
       onTrack: "you can tick every line without opening anything new.",
       stuck: [
         "Images look like an ad? Add “candid phone photo, real kitchen table, hands only, no models posing” to the prompt.",
-        "Missing a whole pair? Do it now. The Roast Deck is still open in its tab."
+        "Hook missing its account name? Find it again in the Roast Deck and add it."
       ]
     },
     {
       title: "Add a short recap and submit",
-      instruction: "At the bottom of your roast notes doc, add the heading <b>Week 1 recap</b> and answer 2 questions in 2 to 3 sentences each. Then share both pieces: in Canva, <b>Share</b> → <b>Anyone with the link</b> → <b>Can view</b>; in your Google Doc, <b>Share</b> → <b>Anyone with the link</b> → <b>Viewer</b>. Open each link in a private browser window to check it.",
+      instruction: "At the bottom of your roast notes doc, add the heading <b>Week 1 recap</b> and answer 2 questions in 2 to 3 sentences each. Your roast notes link from Step 1 stays live, so your program manager will see the recap there. Then share your mood board: in Canva, <b>Share</b> → <b>Anyone with the link</b> → <b>Can view</b>. Open the link in a private browser window to check it.",
       items: [
         "Which rule changed your work the most: “fun and warm, not edgy,” “roast the post, not the person,” or “real tables, no AI people”? Name one idea you changed or dropped because of it.",
         "Look at your Look slide. What's one thing you'd need to film or find for a first video that you don't have yet?"
       ],
       sample: { label: "Sample (question 1)", kind: "text",
         body: "“Fun and warm, not edgy. My first Feel slide had black and neon, which looked like a bar. I swapped it for wood tones and daylight.”" },
-      onTrack: "both answers are honest and specific, and both links open in a private window.",
+      onTrack: "both answers are honest and specific, and your Canva link opens in a private window.",
       stuck: [
-        "Your school account blocks link sharing? Download the Canva design as a PDF and the doc as a .docx, and upload those files instead."
+        "Your school account blocks link sharing? Download the Canva design as a PDF and upload that file instead."
       ]
     }
   ],
   evaluation: {
     title: "How it will be evaluated",
-    intro: "Your program manager reviews your roast notes and mood board together.",
+    intro: "Your program manager reviews your mood board and your Week 1 recap.",
     criteria: [
-      { name: "Roast notes", lookFor: "4 pairs, 3 patterns with proof, a benchmark line and one client version, about the post, never the person." },
       { name: "Feel and Hooks", lookFor: "3 voice words that are fun and warm, not edgy, 3 labeled roast screenshots, and 3 credited hooks rewritten in 7 words or fewer." },
       { name: "Look", lookFor: "A palette marked “temporary” with hex codes, one type pairing, and real photos or labeled, hands-only AI images of people playing." },
-      { name: "Complete", lookFor: "Both links open, and the roast notes doc ends with your 2-question Week 1 recap." }
+      { name: "Complete", lookFor: "Your Canva link opens, and your roast notes doc ends with your 2-question Week 1 recap." }
     ],
-    finish: "Done? Submit both links on the page below. One short step left this week: your workshare slide."
+    finish: "Done? Submit your Canva link on the page below. One short step left this week: your workshare slide."
   }
 };
 /* ======================= DO NOT EDIT BELOW ======================== */
