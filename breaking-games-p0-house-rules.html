@@ -4,243 +4,307 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--
-Orientation > Quick Launch: Extern house rules as two scrolling slides (Do, Don't).
-Deploy as breaking-games-p0-house-rules.html (vpdasgupta/tiktok). Notion embed height about 820px.
-Keep the "Text version of the house rules" toggle on 01-task-quick-launch.md in sync with RULES below.
-Skin: 09-assets/style/tiktok-style-guide.md (same tokens as the step decks).
+Orientation > Quick Launch: "Do or Don't?", a 16:9 house-rules game.
+5 situation cards, one per thing students make in the program (roast notes, mood board, first clip, ad,
+Relaunch Playbook), each showing a thumbnail of that sample work. The learner calls each one Do or Don't
+and sees the rule behind it. The full rule list stays in the "Text version of the house rules" toggle on
+01-task-quick-launch.md. Thumbnails: images/breaking-games-p0-game-*.png (900px copies of the project
+example PNGs); deploy them flat next to this file.
+Deploy as breaking-games-p0-house-rules.html (vpdasgupta/tiktok). Notion embed: 16:9, so set the
+embed height to about 0.5625 × the column width (about 420px in a standard-width Notion page).
+Skin: 09-assets/style/tiktok-style-guide.md.
 
 ACCESSIBILITY (WCAG 2.2 AA)
-  - Both slides stay in the accessibility tree, so a screen reader reads Do, then Don't, in order.
-    The scroll track has no focusable content, so off-screen slides never take keyboard focus.
-  - Back/Next and the dots are real buttons (44px targets). Focus stays on the control you used,
-    and a polite live region announces "Slide K of 2: Do".
-  - The track scrolls by swipe, trackpad or the arrow keys. Dots show state by shape (wide pill = current),
-    the counter text and aria-current, not color alone.
-  - Do/Don't is carried by the heading text and the check/X shape, not color alone. Icons are aria-hidden.
-  - Text ≥ 4.5:1, UI borders ≥ 3:1, visible focus ring. Smooth scrolling only without prefers-reduced-motion.
-  - Reflows to one column per slide at ≤ 640px.
+  - Real buttons for every action (44px+ targets), visible focus ring (cyan on the dark stage).
+  - Focus moves to the new heading on every screen change (card, feedback, results), so screen readers
+    read the situation, then the verdict and the rule.
+  - Right/wrong is shown with words ("Correct" / "Not quite") and icons, not color alone; Do and Don't
+    buttons carry text labels and check/X shapes. Wrong answers use amber, not the Don't red.
+  - Progress is text ("Card 3 of 12"); the bar is decorative. No timers, no time pressure.
+  - Text ≥ 4.5:1: white on #0C0B10 19.6, #A89FA2 on night 7.6, ink on white 17.9, white on #0E7C86 5.0,
+    white on #CC0F3A 5.7, #0E7C86 on #E6FDFC 4.6, #9A5B00 on #FFF4E5 5.0.
+  - The stage is 16:9 and scales its type with the frame (container query units). Below 520px wide it
+    drops the fixed ratio so text never clips. Animations only without prefers-reduced-motion.
 -->
-<title>House Rules</title>
+<title>Do or Don't?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --canvas: #F8FAFC;
-    --card: #FFFFFF;
-    --ink: #0F172A;         /* 17.9:1 on white */
-    --ink-soft: #5A6478;    /* 5.9:1 on white, 5.1:1 on pink tint */
-    --line: #E9E9E7;        /* decorative only */
-    --edge: #64748B;        /* UI borders, 4.8:1 on white */
+    --ink: #0F172A;
+    --ink-soft: #5A6478;
+    --line: #E9E9E7;
     --tt-cyan: #25F4EE;
     --tt-red: #FE2C55;
-    --red-ink: #CC0F3A;     /* 5.7:1 on white, 5.0:1 on pink tint */
+    --red-ink: #CC0F3A;
     --red-dark: #A80C30;
-    --pink-tint: #FFE9EF;
-    --teal-ink: #0E7C86;    /* 5.0:1 on white, 4.6:1 on cyan tint */
+    --teal-ink: #0E7C86;
+    --teal-dark: #0A5F67;
     --cyan-tint: #E6FDFC;
+    --amber-ink: #9A5B00;
+    --amber-tint: #FFF4E5;
     --night: #0C0B10;
-    --night-soft: #A89FA2;  /* 7.6:1 on night */
+    --night-ink: #E2E8F0;
+    --night-soft: #A89FA2;
     --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
-    --radius: 16px;
-    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
-    --focus: #0F172A;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body {
-    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-    background: var(--canvas); color: var(--ink); line-height: 1.5;
-    padding: 16px; -webkit-font-smoothing: antialiased;
-  }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; background: var(--night); }
+  body { font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; color: #FFFFFF; -webkit-font-smoothing: antialiased; }
   button { font-family: inherit; }
-  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  :focus-visible { outline: 3px solid var(--tt-cyan); outline-offset: 3px; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-  .deck { max-width: 880px; margin: 0 auto; }
-  .deck-head {
-    margin-bottom: 14px; padding: 18px 24px 22px; border-radius: var(--radius); color: #FFFFFF;
+  /* 16:9 stage; all type in cqw so it scales with the frame */
+  .stage {
+    position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; container-type: inline-size;
     background:
-      var(--gradient) bottom / 100% 4px no-repeat,
-      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
-      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--gradient) bottom / 100% 5px no-repeat,
+      radial-gradient(55% 90% at 0% 100%, rgba(254,44,85,.30), transparent 70%),
+      radial-gradient(50% 80% at 100% 0%, rgba(37,244,238,.20), transparent 70%),
       var(--night);
   }
-  .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); }
-  .deck-title { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; }
-  .deck-sub { margin: 4px 0 0; font-size: 15px; color: #E2E8F0; }
+  .screen { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 3.2cqw 4cqw 3.6cqw; }
+  .eyebrow { margin: 0; font-size: max(11px, 1.15cqw); font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--night-soft); }
+  h1, h2 { margin: 0; letter-spacing: -.01em; }
+  h1:focus, h2:focus { outline: none; }
+  h1:focus-visible, h2:focus-visible { outline: 3px solid var(--tt-cyan); outline-offset: 4px; border-radius: 4px; }
 
-  .track {
-    display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
-    padding: 2px 2px 12px; scrollbar-width: thin;
+  .btn {
+    min-height: 44px; border-radius: 999px; border: 2px solid transparent; cursor: pointer;
+    font-weight: 800; font-size: max(14px, 1.6cqw); padding: .7em 1.6em;
+    display: inline-flex; align-items: center; justify-content: center; gap: .5em;
   }
-  @media (prefers-reduced-motion: no-preference) { .track { scroll-behavior: smooth; } }
-  .slide {
-    flex: 0 0 100%; min-width: 0; scroll-snap-align: start;
-    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-    box-shadow: var(--shadow); padding: 24px 28px 26px; overflow-wrap: anywhere;
+  .btn-primary { background: var(--red-ink); color: #FFFFFF; }
+  .btn-primary:hover { background: var(--red-dark); }
+  .btn-ghost { background: transparent; color: #FFFFFF; border-color: var(--tt-cyan); }
+  .btn-ghost:hover { background: var(--tt-cyan); color: var(--night); }
+  .ico { width: 1.15em; height: 1.15em; flex: none; }
+
+  /* Start */
+  #start { justify-content: center; gap: 1.6cqw; }
+  #start h1 { font-size: 7.4cqw; line-height: 1; font-weight: 800; }
+  #start h1 .grad { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #start p { margin: 0; font-size: max(14px, 2cqw); color: var(--night-ink); max-width: 62ch; }
+  #start .actions { margin-top: 1.2cqw; }
+
+  /* Play */
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 2cqw; }
+  .stats { display: flex; gap: 2.4cqw; font-size: max(12px, 1.4cqw); font-weight: 700; color: var(--night-ink); }
+  .bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,.14); margin: 1.4cqw 0 2cqw; overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--gradient); border-radius: 3px; }
+  @media (prefers-reduced-motion: no-preference) { .bar > span { transition: width .3s ease; } }
+
+  .card {
+    flex: 1; min-height: 0; display: grid; grid-template-columns: 34% minmax(0, 1fr); gap: 3cqw; align-items: center;
+    background: #FFFFFF; color: var(--ink); border-radius: 2cqw; padding: 2.6cqw 3.4cqw;
+    box-shadow: 0 1.4cqw 3.6cqw -1.6cqw rgba(0,0,0,.6);
   }
-  .slide-head {
-    display: inline-flex; align-items: center; gap: 10px; margin: 0 0 18px;
-    padding: 6px 18px 6px 8px; border-radius: 999px; font-size: 28px; line-height: 1.2; font-weight: 800;
+  .card-body { min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+  .sample { margin: 0; align-self: stretch; display: flex; flex-direction: column; gap: .6cqw; min-height: 0; }
+  .sample img { flex: 1; min-height: 0; width: 100%; object-fit: cover; object-position: top center; border-radius: 1.2cqw; border: 1px solid var(--line); background: #F8FAFC; }
+  .sample figcaption { font-size: max(11px, 1.1cqw); font-weight: 600; color: var(--ink-soft); text-align: center; }
+  .card-label { margin: 0 0 .8cqw; font-size: max(11px, 1.15cqw); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); }
+  .card h2 { font-size: max(17px, 3.1cqw); line-height: 1.25; font-weight: 800; }
+  .answers { display: flex; gap: 2cqw; margin-top: 2.2cqw; }
+  .answers .btn { flex: 1; font-size: max(15px, 2.1cqw); padding: .75em 1em; }
+  .btn-do { background: var(--teal-ink); color: #FFFFFF; --ico-mark: var(--teal-ink); }
+  .btn-do:hover { --ico-mark: var(--teal-dark); }
+  .btn-do:hover { background: var(--teal-dark); }
+  .btn-dont { background: var(--red-ink); color: #FFFFFF; --ico-mark: var(--red-ink); }
+  .btn-dont:hover { --ico-mark: var(--red-dark); }
+  .btn-dont:hover { background: var(--red-dark); }
+
+  .verdict { display: flex; align-items: center; gap: .5em; font-size: max(16px, 2.6cqw); font-weight: 800; border-radius: 999px; padding: .25em .8em .25em .4em; align-self: flex-start; margin-bottom: 1cqw; }
+  .verdict.right { background: var(--cyan-tint); color: var(--teal-ink); }
+  .verdict.wrong { background: var(--amber-tint); color: var(--amber-ink); }
+  .verdict .ico { width: 1.3em; height: 1.3em; }
+  .rule { margin: 0 0 .6cqw; font-size: max(15px, 2.1cqw); font-weight: 700; line-height: 1.3; }
+  .why { margin: 0; font-size: max(14px, 1.75cqw); line-height: 1.45; color: #334155; }
+  .next-row { display: flex; justify-content: flex-end; margin-top: 2cqw; }
+
+  /* Results */
+  #results { gap: 1.2cqw; }
+  #results h2 { font-size: 5cqw; line-height: 1.05; font-weight: 800; }
+  #results .msg { margin: 0; font-size: max(14px, 2cqw); color: var(--night-ink); }
+  .review { flex: 1; min-height: 0; overflow: auto; background: #FFFFFF; color: var(--ink); border-radius: 1.6cqw; padding: 1.6cqw 2.4cqw; }
+  .review h3 { margin: 0 0 .6cqw; font-size: max(12px, 1.3cqw); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
+  .review ul { margin: 0; padding: 0; list-style: none; }
+  .review li { display: flex; gap: .6em; align-items: flex-start; font-size: max(14px, 1.7cqw); padding: .45em 0; border-bottom: 1px solid var(--line); }
+  .review li:last-child { border-bottom: 0; }
+  .review .ico { margin-top: .15em; }
+  .results-actions { display: flex; gap: 1.6cqw; flex-wrap: wrap; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pop { animation: pop .28s ease; }
+    @keyframes pop { from { opacity: 0; transform: translateY(1.2cqw) scale(.98); } to { opacity: 1; transform: none; } }
   }
-  .do .slide-head { background: var(--cyan-tint); color: var(--teal-ink); }
-  .dont .slide-head { background: var(--pink-tint); color: var(--red-ink); }
-  .ico { flex: none; width: 1em; height: 1em; }
-  .slide-head .ico { width: 36px; height: 36px; }
-
-  .rules { list-style: none; margin: 0; padding: 0; }
-  .rules li { display: flex; gap: 12px; align-items: flex-start; font-size: 17px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-  .rules li:last-child { border-bottom: 0; }
-  .rules .ico { width: 24px; height: 24px; margin-top: 1px; }
-  .do .rules li { font-size: 18px; padding: 14px 0; }
-
-  .cols { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; }
-  .group-title { margin: 0 0 4px; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
-  .cols .rules li { font-size: 16px; padding: 8px 0; }
-  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--pink-tint); padding: 1px 5px; border-radius: 4px; }
-
-  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
-  .nav-btn {
-    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
-    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
-  }
-  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
-  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
-  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
-  .nav-btn:disabled { opacity: .45; cursor: default; }
-  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
-  .dot { width: 40px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
-  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--edge); background: var(--card); }
-  .dot[aria-current="true"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); }
-  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin: 6px 0 0; }
-
-  @media (max-width: 640px) {
-    body { padding: 12px; }
-    .deck-head { padding: 16px 18px 20px; }
-    .deck-title { font-size: 21px; }
-    .slide { padding: 18px; }
-    .slide-head { font-size: 24px; }
-    .cols { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-    .do .rules li, .rules li { font-size: 16px; }
+  /* Phones: keep the look, drop the fixed ratio so nothing clips */
+  @media (max-width: 519px) {
+    .stage { aspect-ratio: auto; min-height: 100vh; }
+    .screen { position: relative; min-height: 100vh; padding: 18px 16px 22px; }
+    .answers { flex-direction: column; }
+    #start h1 { font-size: 40px; }
+    #results h2 { font-size: 30px; }
+    .card { border-radius: 14px; padding: 16px 18px; grid-template-columns: 1fr; }
+    .sample img { max-height: 180px; }
+    .review { flex: none; }
+    .card { align-content: start; }
   }
 </style>
 </head>
 <body>
-<main class="deck" aria-labelledby="deckTitle">
-  <div class="deck-head">
-    <p class="eyebrow">Breaking Games × Extern</p>
-    <h1 class="deck-title" id="deckTitle">Extern house rules</h1>
-    <p class="deck-sub">Scroll or swipe across: Do, then Don’t.</p>
-  </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-do" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M6.8 12.3l3.4 3.4 7-7.2" fill="none" style="stroke:var(--ico-mark,#FFF)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-dont" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M7.7 7.7l8.6 8.6M16.3 7.7l-8.6 8.6" style="stroke:var(--ico-mark,#FFF)" stroke-width="2.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-oops" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M12 6.5v7" stroke="#FFF" stroke-width="2.8" stroke-linecap="round"/><circle cx="12" cy="17.6" r="1.7" fill="#FFF"/></symbol>
+</svg>
 
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <symbol id="i-do" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#0E7C86"/><path d="M6.8 12.3l3.4 3.4 7-7.2" fill="none" stroke="#FFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-dont" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#CC0F3A"/><path d="M7.7 7.7l8.6 8.6M16.3 7.7l-8.6 8.6" stroke="#FFF" stroke-width="2.6" stroke-linecap="round"/></symbol>
-  </svg>
+<main class="stage" aria-label="Do or Don't? A house rules game">
 
-  <div class="track" id="track">
-    <section class="slide do" id="s-0" role="group" aria-roledescription="slide" aria-labelledby="h-0">
-      <h2 class="slide-head" id="h-0"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg>Do</h2>
-      <ul class="rules">
-        <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Follow the suggested pacing to stay on track and meet deadlines.</span></li>
-        <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Join company meetings and program manager check-ins.</span></li>
-        <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Use Slack or your program manager for all questions and updates.</span></li>
-        <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Submit work that meets the quality standards in the training pages.</span></li>
-        <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Follow the official guidance when posting about or showcasing your externship.</span></li>
-      </ul>
-    </section>
+  <section class="screen" id="start" aria-labelledby="startTitle">
+    <p class="eyebrow">Breaking Games × Extern · House rules</p>
+    <h1 id="startTitle" tabindex="-1">Do or <span class="grad">Don’t?</span></h1>
+    <p>5 moments with the work you’ll make: roast notes, a mood board, a first clip, an ad and your Relaunch Playbook. Call each one <b>Do</b> or <b>Don’t</b>, see the rule behind it, and go for a perfect 5.</p>
+    <div class="actions"><button type="button" class="btn btn-primary" id="startBtn">Start the game<span aria-hidden="true"> →</span></button></div>
+  </section>
 
-    <section class="slide dont" id="s-1" role="group" aria-roledescription="slide" aria-labelledby="h-1">
-      <h2 class="slide-head" id="h-1"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg>Don’t</h2>
-      <div class="cols">
-        <div>
-          <h3 class="group-title" id="g-all">Every Extern program</h3>
-          <ul class="rules" aria-labelledby="g-all">
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Contact company executives, managers or other employees directly unless invited through official channels.</span></li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Ask company representatives for jobs, internships or referrals.</span></li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Send unsolicited emails, messages or connection requests to anyone at the host company.</span></li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Misrepresent your role. You’re an extern hosted by Extern, Inc. in partnership with Breaking Games, not an intern or employee.</span></li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>List Breaking Games as your employer on LinkedIn or your résumé.</span></li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Share confidential project information, data or deliverables outside approved channels.</span></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="group-title" id="g-bg">Just for this program</h3>
-          <ul class="rules" aria-labelledby="g-bg">
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Post program work anywhere: not Breaking Games’ accounts, and not your own. Upload it to the Video Board instead.</span></li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Contact creators, retailers or customers.</span></li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Use or tag <code>@breakinggames</code> on Instagram. It’s an unrelated person. The official accounts are TikTok <code>@breakinggamesllc</code> and Instagram <code>@breaking_games</code>.</span></li>
-            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Roast the person. Roast the post instead, and keep raw roast notes inside the program.</span></li>
-          </ul>
+  <section class="screen" id="play" aria-labelledby="cardText" hidden>
+    <div class="topbar">
+      <p class="eyebrow" id="cardCount"></p>
+      <p class="stats" style="margin:0"><span id="scoreText"></span><span id="streakText"></span></p>
+    </div>
+    <div class="bar" aria-hidden="true"><span id="barFill"></span></div>
+
+    <div class="card" id="card">
+      <figure class="sample">
+        <img id="cardImg" alt="">
+        <figcaption>Sample student work</figcaption>
+      </figure>
+      <div class="card-body">
+      <div id="ask">
+        <p class="card-label" id="cardTag"></p>
+        <h2 id="cardText" tabindex="-1"></h2>
+        <div class="answers">
+          <button type="button" class="btn btn-do" data-answer="do"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg>Do</button>
+          <button type="button" class="btn btn-dont" data-answer="dont"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg>Don’t</button>
         </div>
       </div>
-    </section>
-  </div>
+      <div id="feedback" hidden>
+        <h2 class="verdict" id="verdict" tabindex="-1"></h2>
+        <p class="rule" id="ruleText"></p>
+        <p class="why" id="whyText"></p>
+        <div class="next-row"><button type="button" class="btn btn-primary" id="nextBtn"></button></div>
+      </div>
+      </div>
+    </div>
+  </section>
 
-  <nav class="slide-nav" aria-label="House rules slides">
-    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
-    <ul class="dots">
-      <li><button type="button" class="dot" data-i="0" aria-label="Slide 1 of 2: Do"></button></li>
-      <li><button type="button" class="dot" data-i="1" aria-label="Slide 2 of 2: Don’t"></button></li>
-    </ul>
-    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
-  </nav>
-  <p class="counter" id="counter" aria-hidden="true"></p>
-  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+  <section class="screen" id="results" aria-labelledby="resultTitle" hidden>
+    <p class="eyebrow">Game over · Good game, folks.</p>
+    <h2 id="resultTitle" tabindex="-1"></h2>
+    <p class="msg" id="resultMsg"></p>
+    <div class="review" id="review" role="region" aria-labelledby="reviewTitle" tabindex="0">
+      <h3 id="reviewTitle"></h3>
+      <ul id="reviewList"></ul>
+    </div>
+    <div class="results-actions"><button type="button" class="btn btn-ghost" id="againBtn">Play again</button></div>
+  </section>
 </main>
 
 <script>
+/* Each card: situation, the right call, the rule (as it reads in the house rules), and why. */
+// Sample images: local files sit in images/; on GitHub Pages every file is flat at the repo root.
+const IMG = location.hostname.endsWith("github.io") ? "" : "images/";
+const CARDS = [
+  { tag: "Project 1 · Roast notes", img: "breaking-games-p0-game-roast-notes.png", alt: "Sample roast notes",
+    s: "Your roast notes say a creator’s post flopped, so you comment “we roasted this” under it.",
+    a: "dont", rule: "Don’t roast the person, and don’t contact creators, retailers or customers.",
+    why: "Roast the post, and keep raw roast notes inside the program." },
+  { tag: "Project 1 · Mood board", img: "breaking-games-p0-game-mood-board.png", alt: "Sample 3-slide mood board",
+    s: "Before you submit your mood board, you check it against the “You’re on track if…” line on each step.",
+    a: "do", rule: "Do submit work that meets the quality standards in the training pages.",
+    why: "Those lines are the standard your program manager checks against." },
+  { tag: "Project 1 · First clip", img: "breaking-games-p0-game-first-clip.png", alt: "Four frames from a sample first clip",
+    s: "Your first clip turned out great, so you post it on your own TikTok for friends to see.",
+    a: "dont", rule: "Don’t post program work anywhere: not Breaking Games’ accounts, and not your own.",
+    why: "Upload it to the Video Board instead. Your program manager shares picks with Breaking Games." },
+  { tag: "Project 3 · Ad", img: "breaking-games-p0-game-ad-storyboard.png", alt: "Sample five-frame ad storyboard",
+    s: "For your Instagram ad mock-up, you tag @breakinggames in the caption.",
+    a: "dont", rule: "Don’t use or tag @breakinggames on Instagram. It’s an unrelated person.",
+    why: "The official accounts are TikTok @breakinggamesllc and Instagram @breaking_games." },
+  { tag: "Project 4 · Relaunch Playbook", img: "breaking-games-p0-game-playbook.png", alt: "Sample 8-slide Relaunch Playbook deck",
+    s: "Your Relaunch Playbook is done. You submit it in the program, and your program manager shares it with Breaking Games.",
+    a: "do", rule: "Do share your work only through approved channels: your program manager hands it to Breaking Games.",
+    why: "Never email or message it to anyone at Breaking Games yourself. All contact goes through your program manager." }
+];
+
 (() => {
   const $ = id => document.getElementById(id);
-  const track = $("track");
-  const slides = [...track.querySelectorAll(".slide")];
-  const dots = [...document.querySelectorAll(".dot")];
-  const names = ["Do", "Don’t"];
-  const label = i => `Slide ${i + 1} of ${slides.length}: ${names[i]}`;
-  let cur = 0, timer;
+  const screens = { start: $("start"), play: $("play"), results: $("results") };
+  let i = 0, score = 0, streak = 0, best = 0, misses = [];
 
-  function render(i) {
-    cur = i;
-    dots.forEach((d, n) => n === i ? d.setAttribute("aria-current", "true") : d.removeAttribute("aria-current"));
-    $("prevBtn").disabled = i === 0;
-    $("nextBtn").disabled = i === slides.length - 1;
-    $("counter").textContent = label(i);
+  const icon = id => `<svg class="ico" aria-hidden="true" focusable="false"><use href="#${id}"/></svg>`;
+  function show(name, focusId) {
+    Object.entries(screens).forEach(([k, el]) => el.hidden = k !== name);
+    const el = screens[name];
+    el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+    if (focusId) $(focusId).focus();
   }
-  function announce(msg) {
-    clearTimeout(timer);
-    $("status").textContent = "";
-    timer = setTimeout(() => { $("status").textContent = msg; }, 40);
+  function stats() {
+    $("cardCount").textContent = `Card ${i + 1} of ${CARDS.length}`;
+    $("scoreText").textContent = `Score ${score}`;
+    $("streakText").textContent = `Streak ${streak}`;
+    $("barFill").style.width = `${(i / CARDS.length) * 100}%`;
   }
-  function goTo(i) {
-    i = Math.max(0, Math.min(slides.length - 1, i));
-    track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft - 2 });
-    const had = document.activeElement;
-    render(i);
-    // A button that just became disabled drops focus to the page; hand it to the other button.
-    if (had && had.disabled) (had === $("nextBtn") ? $("prevBtn") : $("nextBtn")).focus();
-    announce(label(i));
+  function deal() {
+    const c = CARDS[i];
+    $("cardText").textContent = c.s;
+    $("cardTag").textContent = c.tag;
+    $("cardImg").src = IMG + c.img;
+    $("cardImg").alt = c.alt;
+    $("ask").hidden = false; $("feedback").hidden = true;
+    stats();
+    $("card").classList.remove("pop"); void $("card").offsetWidth; $("card").classList.add("pop");
+    $("cardText").focus();
+  }
+  function answer(pick) {
+    const c = CARDS[i], right = pick === c.a;
+    if (right) { score++; streak++; best = Math.max(best, streak); } else { streak = 0; misses.push(c); }
+    const v = $("verdict");
+    v.className = "verdict " + (right ? "right" : "wrong");
+    v.innerHTML = right ? `${icon("i-do")}Correct!` : `${icon("i-oops")}Not quite. It’s a ${c.a === "do" ? "Do" : "Don’t"}.`;
+    $("ruleText").textContent = c.rule;
+    $("whyText").textContent = c.why;
+    const last = i === CARDS.length - 1;
+    $("nextBtn").innerHTML = last ? 'See my score<span aria-hidden="true"> →</span>' : 'Next card<span aria-hidden="true"> →</span>';
+    $("ask").hidden = true; $("feedback").hidden = false;
+    $("scoreText").textContent = `Score ${score}`;
+    $("streakText").textContent = `Streak ${streak}`;
+    $("barFill").style.width = `${((i + 1) / CARDS.length) * 100}%`;
+    v.focus();
+  }
+  function results() {
+    const n = CARDS.length;
+    $("resultTitle").textContent = `You scored ${score} of ${n}`;
+    $("resultMsg").textContent = score === n
+      ? `A perfect game, with a best streak of ${best}. You know the house rules. Confirm them in the task box below the game.`
+      : score >= n - 1
+        ? `So close. Best streak: ${best}. Here’s what to remember, then confirm the house rules in the task box below the game.`
+        : `Best streak: ${best}. Read these once more, play again if you like, then confirm the house rules in the task box below the game.`;
+    $("reviewTitle").textContent = misses.length ? "Rules to remember" : "Every rule you nailed";
+    const list = misses.length ? misses : CARDS;
+    $("reviewList").innerHTML = list.map(c =>
+      `<li><span style="color:${c.a === "do" ? "var(--teal-ink)" : "var(--red-ink)"}">${icon(c.a === "do" ? "i-do" : "i-dont")}</span><span>${c.rule}</span></li>`).join("");
+    show("results", "resultTitle");
   }
 
-  // Keep dots and buttons in step with swipe or trackpad scrolling.
-  let raf;
-  track.addEventListener("scroll", () => {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
-      const i = Math.round(track.scrollLeft / track.clientWidth);
-      if (i !== cur) render(Math.max(0, Math.min(slides.length - 1, i)));
-    });
-  }, { passive: true });
-
-  $("prevBtn").onclick = () => goTo(cur - 1);
-  $("nextBtn").onclick = () => goTo(cur + 1);
-  dots.forEach(d => d.onclick = () => goTo(+d.dataset.i));
-  document.addEventListener("keydown", e => {
-    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
-    if (e.key === "ArrowRight" && cur < slides.length - 1) { e.preventDefault(); goTo(cur + 1); }
-    if (e.key === "ArrowLeft" && cur > 0) { e.preventDefault(); goTo(cur - 1); }
-  });
-  render(0);
+  $("startBtn").onclick = () => { i = 0; score = 0; streak = 0; best = 0; misses = []; show("play"); deal(); };
+  document.querySelectorAll("[data-answer]").forEach(b => b.onclick = () => answer(b.dataset.answer));
+  $("nextBtn").onclick = () => { if (i === CARDS.length - 1) results(); else { i++; deal(); } };
+  $("againBtn").onclick = () => $("startBtn").onclick();
 })();
 </script>
 </body>
