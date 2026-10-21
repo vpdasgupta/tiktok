@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--
-Orientation > Quick Launch: "Do or Don't?", a 16:9 house-rules game.
+Orientation > Quick Launch: the house rules in one 16:9 frame. Two slides first (Do, then Don't, in short
+wording; the full wording is in the page toggle), then "Do or Don't?", a 5-card game.
 5 situation cards, one per thing students make in the program (roast notes, mood board, first clip, ad,
 Relaunch Playbook), each showing a thumbnail of that sample work. The learner calls each one Do or Don't
 and sees the rule behind it. The full rule list stays in the "Text version of the house rules" toggle on
@@ -83,6 +84,31 @@ ACCESSIBILITY (WCAG 2.2 AA)
   .btn-ghost:hover { background: var(--tt-cyan); color: var(--night); }
   .ico { width: 1.15em; height: 1.15em; flex: none; }
 
+
+  /* House rules slides (shown before the game) */
+  .rules-screen { gap: 1.4cqw; }
+  .rules-card { flex: 1; min-height: 0; overflow: auto; background: #FFFFFF; color: var(--ink); border-radius: 2cqw; padding: 1.6cqw 2.6cqw; box-shadow: 0 1.4cqw 3.6cqw -1.6cqw rgba(0,0,0,.6); }
+  .rules-head { display: inline-flex; align-items: center; gap: .4em; font-size: max(17px, 2.8cqw); font-weight: 800; border-radius: 999px; padding: .15em .7em .15em .25em; margin-bottom: 1.2cqw; }
+  .rules-head .ico { width: 1.2em; height: 1.2em; }
+  .do .rules-head { background: var(--cyan-tint); color: var(--teal-ink); }
+  .dont .rules-head { background: var(--pink-tint, #FFE9EF); color: var(--red-ink); }
+  .rules { list-style: none; margin: 0; padding: 0; }
+  .rules li { display: flex; gap: .6em; align-items: flex-start; font-size: max(13px, 1.65cqw); line-height: 1.35; padding: .5em 0; border-bottom: 1px solid var(--line); }
+  .rules li:last-child { border-bottom: 0; }
+  .rules .ico { margin-top: .1em; }
+  .do .rules .ico { color: var(--teal-ink); }
+  .dont .rules .ico { color: var(--red-ink); }
+  .do .rules li { font-size: max(14px, 2.05cqw); padding: .62em 0; }
+  .rules-cols { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2.6cqw; }
+  .rules-cols .rules li { padding: .26em 0; }
+  .dont .rules-head { margin-bottom: .6cqw; }
+  .group-title { margin: 0 0 .2em; font-size: max(11px, 1.15cqw); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
+  .rules-card code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9em; background: #FFE9EF; padding: 0 .3em; border-radius: 4px; }
+  .rules-nav { display: flex; align-items: center; justify-content: space-between; gap: 2cqw; }
+  .rules-nav .btn { padding: .5em 1.3em; }
+  .rules-count { margin: 0; font-size: max(12px, 1.3cqw); font-weight: 700; color: var(--night-soft); }
+  #start .actions, .results-actions { display: flex; gap: 1.6cqw; flex-wrap: wrap; }
+
   /* Start */
   #start { justify-content: center; gap: 1.6cqw; }
   #start h1 { font-size: 7.4cqw; line-height: 1; font-weight: 800; }
@@ -151,6 +177,8 @@ ACCESSIBILITY (WCAG 2.2 AA)
     .card { border-radius: 14px; padding: 16px 18px; grid-template-columns: 1fr; }
     .sample img { max-height: 180px; }
     .review { flex: none; }
+    .rules-cols { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .rules-card { flex: none; overflow: visible; border-radius: 14px; padding: 16px 18px; }
     .card { align-content: start; }
   }
 </style>
@@ -162,13 +190,66 @@ ACCESSIBILITY (WCAG 2.2 AA)
   <symbol id="i-oops" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M12 6.5v7" stroke="#FFF" stroke-width="2.8" stroke-linecap="round"/><circle cx="12" cy="17.6" r="1.7" fill="#FFF"/></symbol>
 </svg>
 
-<main class="stage" aria-label="Do or Don't? A house rules game">
+<main class="stage" aria-label="House rules: two slides, then the Do or Don't? game">
 
-  <section class="screen" id="start" aria-labelledby="startTitle">
-    <p class="eyebrow">Breaking Games × Extern · House rules</p>
+  <section class="screen rules-screen" id="rulesDo" aria-labelledby="doTitle">
+    <p class="eyebrow">Breaking Games × Extern · House rules · 1 of 2</p>
+    <div class="rules-card do" role="region" aria-labelledby="doTitle" tabindex="0">
+      <h2 class="rules-head" id="doTitle" tabindex="-1"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg>Do</h2>
+      <ul class="rules">
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Follow the suggested pacing to stay on track and meet deadlines.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Join company meetings and program manager check-ins.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Use Slack or your program manager for all questions and updates.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Submit work that meets the quality standards in the training pages.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Follow the official guidance when you post about your externship.</span></li>
+      </ul>
+    </div>
+    <div class="rules-nav">
+      <button type="button" class="btn btn-ghost" data-go="start" style="visibility:hidden"><span aria-hidden="true">← </span>Back</button>
+      <p class="rules-count" aria-hidden="true">1 of 2</p>
+      <button type="button" class="btn btn-primary" data-go="rulesDont">Next: Don’t<span aria-hidden="true"> →</span></button>
+    </div>
+  </section>
+
+  <section class="screen rules-screen" id="rulesDont" aria-labelledby="dontTitle" hidden>
+    <p class="eyebrow">Breaking Games × Extern · House rules · 2 of 2</p>
+    <div class="rules-card dont" role="region" aria-labelledby="dontTitle" tabindex="0">
+      <h2 class="rules-head" id="dontTitle" tabindex="-1"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg>Don’t</h2>
+      <div class="rules-cols">
+        <div>
+          <h3 class="group-title" id="gAll">Every Extern program</h3>
+          <ul class="rules" aria-labelledby="gAll">
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Contact company staff directly unless invited.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Ask the company for jobs, internships or referrals.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Send unsolicited messages or connection requests.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Call yourself an intern. You’re an extern.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>List Breaking Games as your employer.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Share program work outside approved channels.</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="group-title" id="gBg">Just for this program</h3>
+          <ul class="rules" aria-labelledby="gBg">
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Post program work anywhere, even your own accounts.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Contact creators, retailers or customers.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Tag <code>@breakinggames</code>. It’s an unrelated account.</span></li>
+          <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Roast the person. Roast the post.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="rules-nav">
+      <button type="button" class="btn btn-ghost" data-go="rulesDo" ><span aria-hidden="true">← </span>Back</button>
+      <p class="rules-count" aria-hidden="true">2 of 2</p>
+      <button type="button" class="btn btn-primary" data-go="start">Play the game<span aria-hidden="true"> →</span></button>
+    </div>
+  </section>
+
+  <section class="screen" id="start" aria-labelledby="startTitle" hidden>
+    <p class="eyebrow">Breaking Games × Extern · Your turn</p>
     <h1 id="startTitle" tabindex="-1">Do or <span class="grad">Don’t?</span></h1>
     <p>5 moments with the work you’ll make: roast notes, a mood board, a first clip, an ad and your Relaunch Playbook. Call each one <b>Do</b> or <b>Don’t</b>, see the rule behind it, and go for a perfect 5.</p>
-    <div class="actions"><button type="button" class="btn btn-primary" id="startBtn">Start the game<span aria-hidden="true"> →</span></button></div>
+    <div class="actions"><button type="button" class="btn btn-ghost" data-go="rulesDont"><span aria-hidden="true">← </span>Back to the rules</button><button type="button" class="btn btn-primary" id="startBtn">Start the game<span aria-hidden="true"> →</span></button></div>
   </section>
 
   <section class="screen" id="play" aria-labelledby="cardText" hidden>
@@ -210,7 +291,7 @@ ACCESSIBILITY (WCAG 2.2 AA)
       <h3 id="reviewTitle"></h3>
       <ul id="reviewList"></ul>
     </div>
-    <div class="results-actions"><button type="button" class="btn btn-ghost" id="againBtn">Play again</button></div>
+    <div class="results-actions"><button type="button" class="btn btn-ghost" data-go="rulesDo">Review the rules</button><button type="button" class="btn btn-primary" id="againBtn">Play again</button></div>
   </section>
 </main>
 
@@ -301,6 +382,10 @@ const CARDS = [
     show("results", "resultTitle");
   }
 
+  // Screen-to-screen buttons (rules slides, back to rules, review the rules)
+  const headings = { rulesDo: "doTitle", rulesDont: "dontTitle", start: "startTitle" };
+  screens.rulesDo = $("rulesDo"); screens.rulesDont = $("rulesDont");
+  document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => show(b.dataset.go, headings[b.dataset.go]));
   $("startBtn").onclick = () => { i = 0; score = 0; streak = 0; best = 0; misses = []; show("play"); deal(); };
   document.querySelectorAll("[data-answer]").forEach(b => b.onclick = () => answer(b.dataset.answer));
   $("nextBtn").onclick = () => { if (i === CARDS.length - 1) results(); else { i++; deal(); } };
