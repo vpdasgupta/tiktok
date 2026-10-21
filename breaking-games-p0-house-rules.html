@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+Orientation > Quick Launch: Extern house rules as two scrolling slides (Do, Don't).
+Deploy as breaking-games-p0-house-rules.html (vpdasgupta/tiktok). Notion embed height about 820px.
+Keep the "Text version of the house rules" toggle on 01-task-quick-launch.md in sync with RULES below.
+Skin: 09-assets/style/tiktok-style-guide.md (same tokens as the step decks).
+
+ACCESSIBILITY (WCAG 2.2 AA)
+  - Both slides stay in the accessibility tree, so a screen reader reads Do, then Don't, in order.
+    The scroll track has no focusable content, so off-screen slides never take keyboard focus.
+  - Back/Next and the dots are real buttons (44px targets). Focus stays on the control you used,
+    and a polite live region announces "Slide K of 2: Do".
+  - The track scrolls by swipe, trackpad or the arrow keys. Dots show state by shape (wide pill = current),
+    the counter text and aria-current, not color alone.
+  - Do/Don't is carried by the heading text and the check/X shape, not color alone. Icons are aria-hidden.
+  - Text ≥ 4.5:1, UI borders ≥ 3:1, visible focus ring. Smooth scrolling only without prefers-reduced-motion.
+  - Reflows to one column per slide at ≤ 640px.
+-->
+<title>House Rules</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #F8FAFC;
+    --card: #FFFFFF;
+    --ink: #0F172A;         /* 17.9:1 on white */
+    --ink-soft: #5A6478;    /* 5.9:1 on white, 5.1:1 on pink tint */
+    --line: #E9E9E7;        /* decorative only */
+    --edge: #64748B;        /* UI borders, 4.8:1 on white */
+    --tt-cyan: #25F4EE;
+    --tt-red: #FE2C55;
+    --red-ink: #CC0F3A;     /* 5.7:1 on white, 5.0:1 on pink tint */
+    --red-dark: #A80C30;
+    --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86;    /* 5.0:1 on white, 4.6:1 on cyan tint */
+    --cyan-tint: #E6FDFC;
+    --night: #0C0B10;
+    --night-soft: #A89FA2;  /* 7.6:1 on night */
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.5;
+    padding: 16px; -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck { max-width: 880px; margin: 0 auto; }
+  .deck-head {
+    margin-bottom: 14px; padding: 18px 24px 22px; border-radius: var(--radius); color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); }
+  .deck-title { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; }
+  .deck-sub { margin: 4px 0 0; font-size: 15px; color: #E2E8F0; }
+
+  .track {
+    display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 2px 2px 12px; scrollbar-width: thin;
+  }
+  @media (prefers-reduced-motion: no-preference) { .track { scroll-behavior: smooth; } }
+  .slide {
+    flex: 0 0 100%; min-width: 0; scroll-snap-align: start;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 24px 28px 26px; overflow-wrap: anywhere;
+  }
+  .slide-head {
+    display: inline-flex; align-items: center; gap: 10px; margin: 0 0 18px;
+    padding: 6px 18px 6px 8px; border-radius: 999px; font-size: 28px; line-height: 1.2; font-weight: 800;
+  }
+  .do .slide-head { background: var(--cyan-tint); color: var(--teal-ink); }
+  .dont .slide-head { background: var(--pink-tint); color: var(--red-ink); }
+  .ico { flex: none; width: 1em; height: 1em; }
+  .slide-head .ico { width: 36px; height: 36px; }
+
+  .rules { list-style: none; margin: 0; padding: 0; }
+  .rules li { display: flex; gap: 12px; align-items: flex-start; font-size: 17px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .rules li:last-child { border-bottom: 0; }
+  .rules .ico { width: 24px; height: 24px; margin-top: 1px; }
+  .do .rules li { font-size: 18px; padding: 14px 0; }
+
+  .cols { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; }
+  .group-title { margin: 0 0 4px; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .cols .rules li { font-size: 16px; padding: 8px 0; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--pink-tint); padding: 1px 5px; border-radius: 4px; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
+  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .dot { width: 40px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--edge); background: var(--card); }
+  .dot[aria-current="true"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); }
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin: 6px 0 0; }
+
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .deck-head { padding: 16px 18px 20px; }
+    .deck-title { font-size: 21px; }
+    .slide { padding: 18px; }
+    .slide-head { font-size: 24px; }
+    .cols { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    .do .rules li, .rules li { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <div class="deck-head">
+    <p class="eyebrow">Breaking Games × Extern</p>
+    <h1 class="deck-title" id="deckTitle">Extern house rules</h1>
+    <p class="deck-sub">Scroll or swipe across: Do, then Don’t.</p>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-do" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#0E7C86"/><path d="M6.8 12.3l3.4 3.4 7-7.2" fill="none" stroke="#FFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-dont" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#CC0F3A"/><path d="M7.7 7.7l8.6 8.6M16.3 7.7l-8.6 8.6" stroke="#FFF" stroke-width="2.6" stroke-linecap="round"/></symbol>
+  </svg>
+
+  <div class="track" id="track">
+    <section class="slide do" id="s-0" role="group" aria-roledescription="slide" aria-labelledby="h-0">
+      <h2 class="slide-head" id="h-0"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg>Do</h2>
+      <ul class="rules">
+        <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Follow the suggested pacing to stay on track and meet deadlines.</span></li>
+        <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Join company meetings and program manager check-ins.</span></li>
+        <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Use Slack or your program manager for all questions and updates.</span></li>
+        <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Submit work that meets the quality standards in the training pages.</span></li>
+        <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-do"/></svg><span>Follow the official guidance when posting about or showcasing your externship.</span></li>
+      </ul>
+    </section>
+
+    <section class="slide dont" id="s-1" role="group" aria-roledescription="slide" aria-labelledby="h-1">
+      <h2 class="slide-head" id="h-1"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg>Don’t</h2>
+      <div class="cols">
+        <div>
+          <h3 class="group-title" id="g-all">Every Extern program</h3>
+          <ul class="rules" aria-labelledby="g-all">
+            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Contact company executives, managers or other employees directly unless invited through official channels.</span></li>
+            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Ask company representatives for jobs, internships or referrals.</span></li>
+            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Send unsolicited emails, messages or connection requests to anyone at the host company.</span></li>
+            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Misrepresent your role. You’re an extern hosted by Extern, Inc. in partnership with Breaking Games, not an intern or employee.</span></li>
+            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>List Breaking Games as your employer on LinkedIn or your résumé.</span></li>
+            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Share confidential project information, data or deliverables outside approved channels.</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="group-title" id="g-bg">Just for this program</h3>
+          <ul class="rules" aria-labelledby="g-bg">
+            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Post program work anywhere: not Breaking Games’ accounts, and not your own. Upload it to the Video Board instead.</span></li>
+            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Contact creators, retailers or customers.</span></li>
+            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Use or tag <code>@breakinggames</code> on Instagram. It’s an unrelated person. The official accounts are TikTok <code>@breakinggamesllc</code> and Instagram <code>@breaking_games</code>.</span></li>
+            <li><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-dont"/></svg><span>Roast the person. Roast the post instead, and keep raw roast notes inside the program.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="slide-nav" aria-label="House rules slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots">
+      <li><button type="button" class="dot" data-i="0" aria-label="Slide 1 of 2: Do"></button></li>
+      <li><button type="button" class="dot" data-i="1" aria-label="Slide 2 of 2: Don’t"></button></li>
+    </ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const track = $("track");
+  const slides = [...track.querySelectorAll(".slide")];
+  const dots = [...document.querySelectorAll(".dot")];
+  const names = ["Do", "Don’t"];
+  const label = i => `Slide ${i + 1} of ${slides.length}: ${names[i]}`;
+  let cur = 0, timer;
+
+  function render(i) {
+    cur = i;
+    dots.forEach((d, n) => n === i ? d.setAttribute("aria-current", "true") : d.removeAttribute("aria-current"));
+    $("prevBtn").disabled = i === 0;
+    $("nextBtn").disabled = i === slides.length - 1;
+    $("counter").textContent = label(i);
+  }
+  function announce(msg) {
+    clearTimeout(timer);
+    $("status").textContent = "";
+    timer = setTimeout(() => { $("status").textContent = msg; }, 40);
+  }
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft - 2 });
+    const had = document.activeElement;
+    render(i);
+    // A button that just became disabled drops focus to the page; hand it to the other button.
+    if (had && had.disabled) (had === $("nextBtn") ? $("prevBtn") : $("nextBtn")).focus();
+    announce(label(i));
+  }
+
+  // Keep dots and buttons in step with swipe or trackpad scrolling.
+  let raf;
+  track.addEventListener("scroll", () => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const i = Math.round(track.scrollLeft / track.clientWidth);
+      if (i !== cur) render(Math.max(0, Math.min(slides.length - 1, i)));
+    });
+  }, { passive: true });
+
+  $("prevBtn").onclick = () => goTo(cur - 1);
+  $("nextBtn").onclick = () => goTo(cur + 1);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.i));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.key === "ArrowRight" && cur < slides.length - 1) { e.preventDefault(); goTo(cur + 1); }
+    if (e.key === "ArrowLeft" && cur > 0) { e.preventDefault(); goTo(cur - 1); }
+  });
+  render(0);
+})();
+</script>
+</body>
+</html>
