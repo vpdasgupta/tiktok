@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Breaking Games P1 Quick Start: "Here's what a finished week looks like"
+  Built 2026-10-23. Two tabs (roast notes, mood board), each showing the annotated example PNG with
+  real buttons over its baked-in 1-3 markers. Clicking a number reveals that point next to it.
+  Marker positions are % of each PNG (roast notes: images/breaking-games-p1-roast-notes-example.png,
+  rendered from scripts/p1-roast-notes-example.html; mood board: images/breaking-games-p1-mood-board-example.png).
+  If either PNG is re-rendered, re-check the --x/--y values below.
+  Point text mirrors the Quick Start page (roast notes) and the Mood Board Briefing page (mood board). Edit together.
+  WCAG 2.2 AA: one H1; ARIA tabs with arrow keys; markers are buttons with aria-expanded/aria-controls,
+  the note follows its button in reading order; Escape closes and returns focus; 44px targets;
+  focus visible; full text version below; reduced motion respected.
+  Deploy: https://vpdasgupta.github.io/tiktok/breaking-games-p1-finished-week.html
+-->
+<title>A Finished Week</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #F8FAFC; --card: #FFFFFF; --ink: #0F172A; --ink-soft: #5A6478;
+    --line: #E9E9E7; --edge: #64748B; --tt-cyan: #25F4EE; --tt-red: #FE2C55;
+    --red-ink: #CC0F3A; --mark: #F9D33A; --night: #0C0B10; --night-soft: #A89FA2;
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px; --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.5; padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .wrap { max-width: 920px; margin: 0 auto; }
+  .head {
+    margin-bottom: 14px; padding: 18px 24px 22px; border-radius: var(--radius); color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); }
+  h1 { font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -.01em; margin: 0; }
+  .head p.sub { margin: 6px 0 0; color: #E2E8F0; font-size: 15px; }
+
+  .tabs { display: flex; gap: 8px; margin: 0 0 12px; flex-wrap: wrap; }
+  .tab {
+    min-height: 44px; padding: 8px 16px; border-radius: 999px; border: 2px solid var(--edge);
+    background: var(--card); color: var(--ink); font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: #FFFFFF; }
+  .tab[aria-selected="true"]::before { content: "✓ "; }
+
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
+  .panel h2 { font-size: 20px; margin: 0 0 4px; }
+  .panel .hint { margin: 0 0 14px; color: var(--ink-soft); font-size: 15px; }
+
+  .figure { position: relative; margin: 0; }
+  .figure img { display: block; width: 100%; height: auto; border-radius: var(--radius-sm); border: 1px solid var(--line); }
+  .spot { position: absolute; left: var(--x); top: var(--y); }
+  .marker {
+    position: absolute; left: 0; top: 0; transform: translate(-50%, -50%);
+    width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--ink);
+    background: var(--mark); color: var(--ink); font-size: 18px; font-weight: 800; cursor: pointer;
+    box-shadow: 0 0 0 0 rgba(249,211,58,.7); animation: pulse 2.2s ease-out 3;
+  }
+  .marker[aria-expanded="true"] { background: var(--ink); color: var(--mark); animation: none; }
+  .marker:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(249,211,58,.8); } 100% { box-shadow: 0 0 0 14px rgba(249,211,58,0); } }
+  @media (prefers-reduced-motion: reduce) { .marker { animation: none; } }
+
+  .note {
+    position: absolute; left: 30px; top: 26px; z-index: 2; width: min(460px, calc(100vw - 80px));
+    background: var(--card); border: 2px solid var(--ink); border-radius: var(--radius-sm);
+    box-shadow: 0 12px 30px -10px rgba(15,23,42,.45); padding: 12px 14px 12px 16px; font-size: 16px;
+  }
+  .note p { margin: 0; }
+  .note b { display: block; margin-bottom: 2px; }
+  .note .close {
+    float: right; margin: -6px -8px 4px 8px; width: 36px; height: 36px; min-width: 24px;
+    border: 0; background: transparent; font-size: 22px; line-height: 1; cursor: pointer; color: var(--ink-soft); border-radius: 8px;
+  }
+  .note .close:hover { color: var(--ink); background: #EEF1F5; }
+
+  details { margin-top: 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--card); }
+  summary { min-height: 44px; padding: 10px 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; }
+  details .body { padding: 0 16px 12px; }
+  details h3 { font-size: 16px; margin: 10px 0 4px; }
+  details ol { margin: 0 0 8px; padding-left: 22px; }
+  details li { margin-bottom: 6px; }
+
+  @media (max-width: 640px) {
+    body { padding: 10px; }
+    h1 { font-size: 22px; }
+    .panel { padding: 12px; }
+    .marker { width: 36px; height: 36px; font-size: 16px; }
+  }
+  @media (forced-colors: active) {
+    .marker, .note { border-color: CanvasText; }
+    .tab[aria-selected="true"] { outline: 3px solid Highlight; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="head">
+    <p class="eyebrow">Project 1 · Sample student work</p>
+    <h1>What a finished week looks like</h1>
+    <p class="sub">Two links to submit: roast notes, then a 3-slide mood board. Click each number to see what makes it strong.</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Finished week examples">
+    <button class="tab" role="tab" id="tab-roast" aria-controls="panel-roast" aria-selected="true">1. Roast notes</button>
+    <button class="tab" role="tab" id="tab-mood" aria-controls="panel-mood" aria-selected="false" tabindex="-1">2. Mood board</button>
+  </div>
+
+  <section class="panel" role="tabpanel" id="panel-roast" aria-labelledby="tab-roast">
+    <h2>Roast notes (Google Doc)</h2>
+    <p class="hint">Submitted at the end of Roast, Toast, Fix.</p>
+    <div class="figure">
+      <img src="https://vpdasgupta.github.io/tiktok/breaking-games-p1-roast-notes-example.png" width="2912" height="2426"
+        alt="Sample roast notes in a Google Doc titled BG Roast Notes, Jordan Lee. Pair B is open: Hit, Keep Calm or Panic? on @breakinggamesllc, 1,049 views. Flop, the Keep Calm Version 2 promo on the same account, 595 views. Roast: Version 2 is just a promo. Snooze. Toast: The hit asks me a question in the first second, so I want to answer it. Fix: Lead with the question and put free shipping in the caption. Pattern: Ask a question up front. Pairs A, C and D are collapsed. My 3 patterns for new players: 1, Ask a question up front, proof Pair B, 1,049 views vs. 595. Summary for Breaking Games ends: We recommend opening every relaunch post with a question or a tense game moment, and saving offers for the caption.">
+      <div class="spot" style="--x:18.95%; --y:34.45%">
+        <button class="marker" aria-expanded="false" aria-controls="rn1" aria-label="Point 1: Every pair gets all four lines">1</button>
+        <div class="note" id="rn1" hidden><button class="close" aria-label="Close point 1">×</button><p><b>Every pair gets all four lines.</b>Roast, Toast, Fix and a pattern, each about what's on screen, never the person.</p></div>
+      </div>
+      <div class="spot" style="--x:18.95%; --y:57.86%">
+        <button class="marker" aria-expanded="false" aria-controls="rn2" aria-label="Point 2: Every pattern has its proof">2</button>
+        <div class="note" id="rn2" hidden><button class="close" aria-label="Close point 2">×</button><p><b>Every pattern has its proof.</b>A pair and a number, so anyone can see why it works.</p></div>
+      </div>
+      <div class="spot" style="--x:18.95%; --y:86.8%">
+        <button class="marker" aria-expanded="false" aria-controls="rn3" aria-label="Point 3: The summary ends with one recommendation">3</button>
+        <div class="note" id="rn3" hidden style="top:auto; bottom:26px"><button class="close" aria-label="Close point 3">×</button><p><b>The summary ends with one recommendation.</b>It's written for Breaking Games: what's working, your 3 patterns, and what to do next.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" role="tabpanel" id="panel-mood" aria-labelledby="tab-mood" hidden>
+    <h2>Mood board (Canva, 3 slides)</h2>
+    <p class="hint">Submitted at the end of Mood Board.</p>
+    <div class="figure">
+      <img src="https://vpdasgupta.github.io/tiktok/breaking-games-p1-mood-board-example.png" width="2200" height="3740"
+        alt="Sample 3-slide mood board. Slide 1, Feel: voice words Witty / Warm / Nostalgic, energy Laid-back, and 3 screenshot frames labeled @breakinggamesllc Keep Calm or Panic?, @truejoyboardgaming Rocking Raft, and @explodingkittens JUST DON'T BUST. Slide 2, Look: a blue-to-lilac gradient title bar; palette swatches Arcade #4D4DFF, Nebula #C486FF, Splash #0AD5AA and Shadow #211F20; text pairs checked, Reset on Arcade 4.9:1 and Shadow on Reset 14.6:1; type Century Gothic Bold for headlines and Trebuchet MS for body, the brand's backups; images of hands laying cards next to a blue mug and teal dice, a POOP game box from the product deck, and hands with snacks. Slide 3, Hooks to Steal: spotted What song plays when… (Mixtape, @breakinggamesllc), ours Which game wins family night?; spotted Keep Calm or Panic? (@breakinggamesllc), ours Laugh or groan? Watch the last card.; spotted JUST DON'T BUST (@explodingkittens), ours One card left. Don't blink.">
+      <div class="spot" style="--x:3.57%; --y:13.65%">
+        <button class="marker" aria-expanded="false" aria-controls="mb1" aria-label="Point 1: The voice words come from the brand guide">1</button>
+        <div class="note" id="mb1" hidden><button class="close" aria-label="Close point 1">×</button><p><b>The voice words come from the brand guide,</b>not from thin air. Witty, warm and nostalgic are all in Breaking Games' own voice traits.</p></div>
+      </div>
+      <div class="spot" style="--x:3.57%; --y:43%">
+        <button class="marker" aria-expanded="false" aria-controls="mb2" aria-label="Point 2: The Look slide checks its own text">2</button>
+        <div class="note" id="mb2" hidden><button class="close" aria-label="Close point 2">×</button><p><b>The Look slide checks its own text.</b>Each text pair has a contrast ratio next to it.</p></div>
+      </div>
+      <div class="spot" style="--x:3.57%; --y:76.85%">
+        <button class="marker" aria-expanded="false" aria-controls="mb3" aria-label="Point 3: Every hook keeps the shape and swaps the moment">3</button>
+        <div class="note" id="mb3" hidden><button class="close" aria-label="Close point 3">×</button><p><b>Every hook keeps the shape and swaps the moment.</b>"JUST DON'T BUST" becomes "One card left. Don't blink.": same tension, now about a Breaking Games game.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <details>
+    <summary>Text version: all 6 points</summary>
+    <div class="body">
+      <h3>Roast notes</h3>
+      <ol>
+        <li><b>Every pair gets all four lines.</b> Roast, Toast, Fix and a pattern, each about what's on screen, never the person.</li>
+        <li><b>Every pattern has its proof.</b> A pair and a number, so anyone can see why it works.</li>
+        <li><b>The summary ends with one recommendation.</b> It's written for Breaking Games: what's working, your 3 patterns, and what to do next.</li>
+      </ol>
+      <h3>Mood board</h3>
+      <ol>
+        <li><b>The voice words come from the brand guide,</b> not from thin air. Witty, warm and nostalgic are all in Breaking Games' own voice traits.</li>
+        <li><b>The Look slide checks its own text.</b> Each text pair has a contrast ratio next to it.</li>
+        <li><b>Every hook keeps the shape and swaps the moment.</b> "JUST DON'T BUST" becomes "One card left. Don't blink.": same tension, now about a Breaking Games game.</li>
+      </ol>
+    </div>
+  </details>
+</main>
+<script>
+  /* Tabs: arrow keys, Home/End move between tabs (automatic activation). */
+  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  function select(tab) {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    closeAll();
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', e => {
+      const n = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (n === undefined) return;
+      e.preventDefault();
+      const next = tabs[(n + tabs.length) % tabs.length];
+      next.focus(); select(next);
+    });
+  });
+
+  /* Markers: one note open at a time; Escape or × closes and returns focus to the number. */
+  const markers = [...document.querySelectorAll('.marker')];
+  function setOpen(m, open) {
+    m.setAttribute('aria-expanded', open);
+    document.getElementById(m.getAttribute('aria-controls')).hidden = !open;
+  }
+  function closeAll() { markers.forEach(m => setOpen(m, false)); }
+  markers.forEach(m => {
+    m.addEventListener('click', () => {
+      const open = m.getAttribute('aria-expanded') !== 'true';
+      closeAll(); setOpen(m, open);
+    });
+    const note = document.getElementById(m.getAttribute('aria-controls'));
+    note.querySelector('.close').addEventListener('click', () => { setOpen(m, false); m.focus(); });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const open = markers.find(m => m.getAttribute('aria-expanded') === 'true');
+    if (open) { setOpen(open, false); open.focus(); }
+  });
+  /* Click outside a note closes it. */
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.spot')) closeAll();
+  });
+</script>
+</body>
+</html>
