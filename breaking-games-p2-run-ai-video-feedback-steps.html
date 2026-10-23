@@ -89,7 +89,7 @@ const TASK = {
       title: "Sort your peers' comments",
       instruction: "Read every Slack reply and sort each one: <b>Signal</b> (same point from more than one source: act on it), <b>Noise</b> (personal taste: thank them, change nothing) or <b>Outlier</b> (one person's point that might be right: check it against your Brief). Client filter: if a comment would make the video edgier, more hyped, or put a price or logo in the first 3 seconds, it's noise for Breaking Games.",
       sample: { label: "Sample", kind: "text",
-        body: "Signal: \"Almost swiped at the start\" (2 peers + AI score of 3)\nNoise: \"Maybe different music?\" (1 peer, no detail)\nOutlier: \"Make the joke meaner\" (1 peer; breaks fun and warm, not edgy, so I won't use it)" },
+        body: "Signal: \"Almost swiped at the start\" (2 peers + AI score of 3)\nNoise: \"Maybe different music?\" (1 peer, no detail)\nOutlier: \"Make the joke meaner\" (1 peer; a joke at someone's expense isn't the brand's voice, so I won't use it)" },
       onTrack: "your top signal came from at least two sources.",
       stuck: ["Only one reply? Use it and the AI review as your two sources, and ask one more peer to watch."]
     },
@@ -97,7 +97,7 @@ const TASK = {
       title: "Write your fix and log the peer line",
       instruction: "Write one fix for Video 2 with its evidence. Then open your Experiment Journal and fill in the <b>Peer reactions</b> row of Experiment 1 in one line.",
       sample: { label: "Sample", kind: "text",
-        body: "Fix for Video 2: hook text from frame 1, and the game name in the caption.\nEvidence: 2 peers almost swiped at 0:02; AI Content Quality 3; the simulator's top fix.\nPeer reactions (Experiment 1): 3 of 4 peers would comment a guess; 2 almost swiped before 0:02.\nNot acting on: \"make the joke meaner\" (breaks fun and warm, not edgy)." },
+        body: "Fix for Video 2: hook text from frame 1, and the game name in the caption.\nEvidence: 2 peers almost swiped at 0:02; AI Content Quality 3; the simulator's top fix.\nPeer reactions (Experiment 1): 3 of 4 peers would comment a guess; 2 almost swiped before 0:02.\nNot acting on: \"make the joke meaner\" (not the brand's voice)." },
       onTrack: "your fix says exactly where and what to change, not \"make it better.\"",
       stuck: ["Two fixes feel equal? Pick the one with more sources behind it. Park the other in your plan doc for your ad in Project 3."]
     }
