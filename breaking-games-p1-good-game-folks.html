@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Breaking Games: "Good Game, Folks." tagline explainer (P1 training "Good Game, Folks!")
+  Built 2026-10-23 from the brand guide's Tagline / The Why spread. The tagline stays on the
+  left; each of the guide's 4 "why" paragraphs gets its own slide on the right. Paragraph text
+  is verbatim from the brand guide; slide headings are ours. The Notion page's "Text version"
+  toggle mirrors this text. Edit both together.
+  Palette: Arcade #4D4DFF background, white text (5.5:1). Tagline uses a light tint of Splash
+  (#6CEFC9, 3.9:1 at display size) because Splash itself (#0AD5AA) is 2.9:1 on Arcade.
+  WCAG 2.2 AA: one H1 (the tagline); inactive slides hidden; focus moves to each slide's h2;
+  polite live region; 44px targets; arrow keys; reflows to one column at 680px;
+  prefers-reduced-motion respected. No external data calls.
+  Deploy: https://vpdasgupta.github.io/tiktok/breaking-games-p1-good-game-folks.html
+-->
+<title>Good Game, Folks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --arcade: #4D4DFF; --arcade-deep: #3D3DE0; --mint: #6CEFC9; --white: #FFFFFF;
+    --soft: #E4E4FF; --focus: #F2F300; --radius: 20px;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Outfit", "Trebuchet MS", system-ui, sans-serif;
+    background: var(--arcade); color: var(--white); line-height: 1.5; padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck {
+    max-width: 1000px; margin: 0 auto; background: var(--arcade);
+    border: 2px solid rgba(255,255,255,.35); border-radius: var(--radius);
+    padding: 40px 48px 24px; aspect-ratio: 16 / 9; display: flex; flex-direction: column;
+  }
+  .stage { flex: 1; display: grid; grid-template-columns: 1fr 1.15fr; gap: 48px; align-items: start; }
+  .stage > * { min-width: 0; overflow-wrap: break-word; }
+  .label { margin: 0 0 18px; font-size: 15px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--white); }
+  h1.tagline { margin: 0; font-size: clamp(48px, 7.4vw, 84px); line-height: .98; font-weight: 800; letter-spacing: -.02em; color: var(--mint); }
+
+  .slide h2 { font-size: 26px; line-height: 1.2; font-weight: 800; margin: 0 0 14px; color: var(--white); }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 20px; line-height: 1.5; margin: 0; color: var(--white); }
+  .slide b { font-weight: 800; }
+  .count { font-weight: 500; color: var(--soft); letter-spacing: .04em; margin-left: 6px; text-transform: none; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; border-radius: 999px; padding: 10px 22px; font-size: 16px; font-weight: 700; cursor: pointer;
+    background: transparent; color: var(--white); border: 2px solid var(--white);
+  }
+  .nav-btn.primary { background: var(--white); color: var(--arcade); }
+  .nav-btn:hover:not(:disabled) { background: var(--arcade-deep); color: var(--white); }
+  .nav-btn:disabled { opacity: .5; cursor: default; }
+  .dots { display: flex; justify-content: center; list-style: none; margin: 0; padding: 0; }
+  .dot { width: 34px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--white); background: transparent; }
+  .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--mint); background: var(--mint); }
+
+  @media (max-width: 680px) {
+    body { padding: 12px; }
+    .deck { aspect-ratio: auto; padding: 24px 20px 16px; }
+    .stage { grid-template-columns: 1fr; gap: 24px; }
+    .label { margin-bottom: 10px; font-size: 13px; }
+    h1.tagline { font-size: 44px; }
+    .slide h2 { font-size: 21px; }
+    .slide p { font-size: 17px; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; }
+    .nav-btn { flex: 1; }
+  }
+  @media (forced-colors: active) { .dot[aria-current="step"]::before { background: CanvasText; } }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="tagline">
+  <div class="stage">
+    <div>
+      <p class="label">Tagline</p>
+      <h1 class="tagline" id="tagline">Good Game, Folks.</h1>
+    </div>
+
+    <div id="slides">
+      <section class="slide" aria-labelledby="h-0">
+        <p class="label">The why <span class="count"></span></p>
+        <h2 id="h-0" tabindex="-1">“Good game” is the true north</h2>
+        <p><b>“Good game”</b> is our true north. Not only do we produce good quality games, but we want to create games that make people feel good. We also champion moments of light-hearted fun, connection, and good sportsmanship that the phrase “good game” implies.</p>
+      </section>
+      <section class="slide" aria-labelledby="h-1" hidden>
+        <p class="label">The why <span class="count"></span></p>
+        <h2 id="h-1" tabindex="-1">A nod to sports and simpler times</h2>
+        <p>The phrase “Good game” also has ties to sports and Americana. It’s a reminder of simpler times, team sports, and greeting people with mutual respect. It creates instant nostalgia.</p>
+      </section>
+      <section class="slide" aria-labelledby="h-2" hidden>
+        <p class="label">The why <span class="count"></span></p>
+        <h2 id="h-2" tabindex="-1">“Folks” makes it warm</h2>
+        <p>Ending with <b>“folks,”</b> drives home the nostalgia that “good game” starts. It’s something straight out of a 90’s broadcast or the host of a game show. It’s also immediately warm. “Folks” are neighbors, friends, and people who you have things in common with.</p>
+      </section>
+      <section class="slide" aria-labelledby="h-3" hidden>
+        <p class="label">The why <span class="count"></span></p>
+        <h2 id="h-3" tabindex="-1">A sneaky way to say who they are</h2>
+        <p><b>“Good game folks”</b> is also a sneaky self-identifier for Breaking Games. When you need a good game, we’re the folks you come to. It reminds the reader that there are many hands involved in game production – an entire community and support system that aspiring game designers can be a part of.</p>
+      </section>
+    </div>
+  </div>
+
+  <nav class="slide-nav" aria-label="Slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const slides = [...document.querySelectorAll(".slide")];
+  const total = slides.length;
+  const label = i => `Slide ${i + 1} of ${total}`;
+  slides.forEach((s, i) => { s.querySelector(".count").textContent = `· ${i + 1} of ${total}`; });
+
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+  const announce = msg => { const st = $("status"); st.textContent = ""; setTimeout(() => { st.textContent = msg; }, 40); };
+
+  let step = 0;
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => { if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current"); });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    $("nextBtn").innerHTML = last ? "Last slide" : 'Next<span aria-hidden="true"> →</span>';
+    if (moveFocus) { slides[step].querySelector("h2").focus(); announce(label(step)); }
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => goTo(step + 1, true);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.step, true));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+  /* Deep link for previews and QA: #s=N opens slide N (1-based). */
+  const m = location.hash.match(/s=(\d+)/);
+  goTo(m ? +m[1] - 1 : 0, false);
+})();
+</script>
+</body>
+</html>
