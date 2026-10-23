@@ -6,10 +6,11 @@
 <!--
 ================================================================================
 ROAST DECK — Breaking Games social media externship (built 2026-10-19)
-Used in: P1 "Roast Session" (Posts tab) and P3 "Roast the Ads" (Ads tab).
+Used in: P1 "Roast Session". The P3 Ads tab was removed 2026-10-23 (Priya: "for
+now"); the version with it is _archive/breaking-games-roast-deck-with-ads-tab-2026-10-23.html.
 Spec: 03-overview/breaking-games-social-overview.md (The Roast Set, Roast rules,
 From roast to recommendation) and 02-scope/breaking-games-social-scope-v3.md
-(The P1 roast set, Beat the Benchmark, Roast Deck Ads tab).
+(The P1 roast set, Beat the Benchmark).
 Style: ../style/tiktok-style-guide.md. Chrome/a11y patterns:
 ../templates/breaking-games-steps-slides-template.html
 
@@ -21,20 +22,21 @@ DATA RULE
   Never add a number without its date and source. Refresh each cohort.
 
 HOW TO EDIT
-  Edit only the DATA object. ADS pairs are placeholders ({PM: add ad pair}) until
-  the PM picks 3 pairs: Breaking Games' own Meta ads with one result (only if
-  Michael approves) or Meta Ad Library pairs (ran for months vs. stopped within
-  days, "a clue, not proof"). At least 1 pair features Breaking Games. Fill an ad
-  card's fields and set placeholder:false to show it as real.
+  Edit only the DATA object.
 
-DEPLOY (not done yet): vpdasgupta/tiktok GitHub Pages, then on Notion:
+VIDEOS (2026-10-23): the deck embeds each post (TikTok player v1, Instagram
+  /embed/) so learners watch without an account. embedOf() builds the embed URL
+  from the post url; a url it can't parse shows the link only. Notes
+  are one Roast/Toast/Fix/Pattern set per pair (keys pairX:roast etc.).
+
+DEPLOY: vpdasgupta/tiktok GitHub Pages, then on Notion:
   <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-roast-deck.html"></embed>
   Set the embed height to about 700px. No external data calls; notes stay in the
   learner's browser (localStorage) and leave only via Copy or Download.
 
-ACCESSIBILITY (WCAG 2.2 AA): ARIA tabs with arrow/Home/End keys and roving
-tabindex; one H1; H2 per section, H3 per post; every field has a visible label;
-a polite status region announces "Saved" / "Copied"; hit/flop and ran/stopped are
+ACCESSIBILITY (WCAG 2.2 AA): step nav buttons with aria-current; focus moves to
+the new step's H2; one H1; H2 per section, H3 per post; every field has a visible label;
+a polite status region announces "Saved" / "Copied"; hit/flop are
 text badges, not color; new-tab links say so; 44px targets; 3px focus ring;
 reduced motion; reflows to one column under 700px and works at 320px.
 ================================================================================
@@ -119,15 +121,6 @@ reduced motion; reflows to one column under 700px and works at 320px.
   .status { font-size: 14px; font-weight: 600; color: var(--teal-ink); min-height: 1.5em; flex-basis: 100%; margin: 0; }
   .status:empty { min-height: 0; height: 0; margin: 0; } /* stays rendered so the live region keeps working */
 
-  /* Tabs */
-  .tablist { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-  .tab {
-    min-height: 44px; border-radius: 999px; padding: 10px 18px; font-size: 15px; font-weight: 700; cursor: pointer;
-    background: var(--card); color: var(--ink); border: 1px solid var(--edge);
-  }
-  .tab:hover { border-color: var(--ink); }
-  .tab[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); box-shadow: inset 0 -4px 0 0 var(--tt-red); }
-  .tab .tab-note { font-weight: 500; }
 
   /* Cards and sections */
   .panel > section, .callout { margin-bottom: 18px; }
@@ -167,6 +160,44 @@ reduced motion; reflows to one column under 700px and works at 320px.
   .asof { font-size: 13px; color: var(--ink-soft); margin: 0 0 10px; }
   .caveat { font-size: 14px; background: var(--amber-tint); border-radius: 8px; padding: 6px 10px; margin: 0 0 10px; }
   .linkout { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 0; }
+  .fallback { font-size: 14px; color: var(--ink-soft); margin: 0 0 4px; }
+
+  /* Embedded players (TikTok player v1, Instagram /embed/). No autoplay. */
+  .player { margin: 4px 0 8px; border-radius: var(--radius-sm); overflow: hidden; background: var(--night); max-width: 340px; }
+  .player iframe { display: block; width: 100%; border: 0; }
+  .player.tt iframe { aspect-ratio: 9 / 16; }
+  .player.ig { background: var(--card); border: 1px solid var(--line); }
+  .player.ig iframe { height: 640px; }
+  .pair-notes { border-top: 1px solid var(--line); padding-top: 12px; }
+  .how { margin: 0; padding-left: 20px; }
+  .how li { margin-bottom: 6px; }
+  .bonus-wrap > summary { font-size: 16px; }
+  .ex-notes { font-size: 15px; gap: 6px 14px; }
+
+  /* Steps: one step on screen at a time */
+  .stepnav ol { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .stepbtn {
+    min-height: 44px; border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--edge);
+  }
+  .stepbtn:hover { border-color: var(--ink); }
+  .stepbtn[aria-current="step"] { background: var(--ink); color: #fff; border-color: var(--ink); font-weight: 700; }
+  .progress { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px; }
+  .step h2[tabindex="-1"]:focus { outline: none; }
+  .step h2[tabindex="-1"]:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .stepfoot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 4px 0 18px; }
+  .stepfoot .primary { margin-left: auto; }
+
+  table.nums { width: 100%; border-collapse: collapse; font-size: 15px; margin: 0 0 14px; }
+  table.nums caption { text-align: left; font-weight: 700; margin-bottom: 6px; }
+  table.nums th, table.nums td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.nums thead th { font-size: 13px; color: var(--ink-soft); border-bottom: 2px solid var(--edge); }
+  .tablewrap { overflow-x: auto; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 14px; }
+  .tile { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; background: var(--card); }
+  .tile .bignum { font-size: 28px; }
+  .tile p { margin: 0; font-size: 14px; }
+  @media (max-width: 560px) { .tiles { grid-template-columns: 1fr; } }
 
   .field { margin: 0 0 10px; }
   .field label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
@@ -208,31 +239,28 @@ reduced motion; reflows to one column under 700px and works at 320px.
   <header class="hero">
     <p class="eyebrow">Breaking Games × Social Media · Roast Deck</p>
     <h1>Hit vs. flop. Roast the post, not the <span class="grad">person.</span></h1>
-    <p class="sub">For each pair: one Roast, one Toast, one Fix per post. Then write the client version.</p>
+    <p class="sub">Watch each pair right here, then write a Roast, a Toast, a Fix and a pattern. No TikTok or Instagram account needed.</p>
   </header>
 
   <main>
     <div class="notesbar" role="group" aria-labelledby="notesHead">
       <h2 id="notesHead" class="sr-only">Your notes</h2>
-      <p>Your notes save in this browser as you type. Copy them into your roast notes doc or Experiment Journal.</p>
+      <p>Your notes save in this browser as you type. When you finish, click Copy my notes and paste them into a Google Doc to submit.</p>
       <button type="button" class="btn primary" id="copyBtn">Copy my notes</button>
-      <button type="button" class="btn" id="dlBtn">Download .txt</button>
+      <button type="button" class="btn" id="dlBtn">Download summary</button>
       <p class="status" id="status" role="status" aria-live="polite"></p>
     </div>
 
-    <div class="tablist" role="tablist" aria-label="Roast Deck sections">
-      <button type="button" role="tab" class="tab" id="tab-posts" aria-controls="panel-posts" aria-selected="true">Posts <span class="tab-note">(Project 1)</span></button>
-      <button type="button" role="tab" class="tab" id="tab-ads" aria-controls="panel-ads" aria-selected="false" tabindex="-1">Ads <span class="tab-note">(Project 3)</span></button>
-    </div>
 
-    <div class="panel" role="tabpanel" id="panel-posts" aria-labelledby="tab-posts"></div>
-    <div class="panel" role="tabpanel" id="panel-ads" aria-labelledby="tab-ads" hidden></div>
+    <div class="panel" id="panel-posts"></div>
   </main>
 </div>
 
 <script>
 /* ============================ DATA ============================ */
-/* Numbers and URLs only from 01-research (lookup 2026-10-13). */
+/* Numbers and URLs only from 01-research (lookup 2026-10-13). TikTok counts re-checked
+   2026-10-23 on the public post pages: changed ones carry asof. Instagram likes
+   can't be checked logged out, so they stay as of Oct 13. */
 const ASOF = "Oct 13, 2026";
 const BG = "@breakinggamesllc";
 const BG_FOLLOWERS = "1,301 (as of Oct 13, 2026)";
@@ -247,10 +275,10 @@ const PAIRS = [
       caveat: "Likely boosted (paid reach unconfirmed). Ask: what would still work without paid reach?",
       url: "https://www.tiktok.com/@breakinggamesllc/video/7366696610862058795" },
     flop: { id: "A-flop", name: "Shadow Kitty explainer (players, ages, play time)", platform: "TikTok", account: BG, followers: BG_FOLLOWERS,
-      date: "about Oct 7, 2024", num: "651", metric: "views",
+      date: "about Oct 7, 2024", num: "655", metric: "views", asof: "Oct 23, 2026",
       url: "https://www.tiktok.com/@breakinggamesllc/video/7423046793404894495" } },
   { id: "B", title: "Breaking Games archive (TikTok)",
-    note: "The hit here is the benchmark: the post you'll try to beat.",
+    note: "", benchmark: true,
     hit: { id: "B-hit", name: "Keep Calm: \"Keep Calm or Panic?\"", platform: "TikTok", account: BG, followers: BG_FOLLOWERS,
       date: "about Jul 17, 2024", num: "1,049", metric: "views", tag: "The benchmark",
       caveat: "Boost status unconfirmed (we've asked Breaking Games).",
@@ -261,7 +289,7 @@ const PAIRS = [
   { id: "C", title: "Creator, same account (Instagram)",
     note: "Both posts are about Breaking Games titles, from the same creator, in the same month.",
     hit: { id: "C-hit", name: "Stripes Reel", platform: "Instagram", account: "@truejoyboardgaming", followers: TJ_IG,
-      date: "Mar 13, 2026", num: "72", metric: "likes, 1 comment", tag: "The Reels benchmark (about 4.4 likes per 100 followers)",
+      date: "Mar 13, 2026", num: "72", metric: "likes, 1 comment",
       url: "https://www.instagram.com/truejoyboardgaming/reel/DV01PzDj_wi/" },
     flop: { id: "C-flop", name: "The Game of 49 how-to-play Reel", platform: "Instagram", account: "@truejoyboardgaming", followers: TJ_IG,
       date: "Mar 5, 2026", num: "17", metric: "likes, 0 comments",
@@ -269,10 +297,10 @@ const PAIRS = [
   { id: "D", title: "Creator, same account (TikTok)",
     note: "Peer games, not Breaking Games titles. Same creator, about two weeks apart.",
     hit: { id: "D-hit", name: "Rocking Raft: \"tilt the raft to send gems sliding…\"", platform: "TikTok", account: "@truejoyboardgaming", followers: TJ_TT,
-      date: "about Oct 8, 2026", num: "1,706", metric: "views",
+      date: "about Oct 8, 2026", num: "2,263", metric: "views", asof: "Oct 23, 2026",
       url: "https://www.tiktok.com/@truejoyboardgaming/video/7694337445122379038" },
     flop: { id: "D-flop", name: "Horse-stable card game: \"Build your dream stable…\"", platform: "TikTok", account: "@truejoyboardgaming", followers: TJ_TT,
-      date: "about Sep 23, 2026", num: "92", metric: "views",
+      date: "about Sep 23, 2026", num: "99", metric: "views", asof: "Oct 23, 2026",
       url: "https://www.tiktok.com/@truejoyboardgaming/video/7688656684213865759" } }
 ];
 
@@ -317,12 +345,6 @@ const BONUS_PAIR = { id: "E", title: "Peer brands, same week (TikTok, bonus)",
     date: "about Oct 8, 2026", num: "564", metric: "views",
     url: "https://www.tiktok.com/@bigpotatogames/video/7694334669168397600" } };
 
-/* Ads tab: placeholders until the PM adds real pairs. */
-const ADS = [1, 2, 3].map(n => ({
-  id: "Ad" + n, title: n === 1 ? "{PM: add ad pair featuring Breaking Games}" : "{PM: add ad pair}",
-  hit:  { id: "Ad" + n + "-long",  placeholder: true, status: "Ran for months" },
-  flop: { id: "Ad" + n + "-short", placeholder: true, status: "Stopped within days" }
-}));
 /* ======================= END DATA ======================== */
 
 (() => {
@@ -336,150 +358,217 @@ const ADS = [1, 2, 3].map(n => ({
   const field = (id, label, hint, big, desc) => `
     <div class="field"><label for="f-${id}">${label}${hint ? ` <span class="hint">${hint}</span>` : ""}</label>
     <textarea id="f-${id}" data-key="${id}" class="${big ? "big" : ""}" rows="${big ? 4 : 2}"${desc ? ` aria-describedby="${desc}"` : ""}>${esc(notes[id] || "")}</textarea></div>`;
-  const rtf = id => field(id + ":roast", "Roast", "(what didn't work?)", false, "h-" + id) + field(id + ":toast", "Toast", "(what worked?)", false, "h-" + id) + field(id + ":fix", "Fix", "(one change)", false, "h-" + id);
 
-  function postCard(p, kind, lvl = 3) {
+  /* Embed URL from the post URL: TikTok player v1 or Instagram /embed/. Null (link only) for anything else. */
+  function embedOf(url) {
+    let m = url.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
+    if (m) return { kind: "tt", src: `https://www.tiktok.com/player/v1/${m[1]}?music_info=1&description=1&rel=0` };
+    m = url.match(/instagram\.com\/[^/]+\/(reel|p)\/([^/?#]+)/);
+    if (m) return { kind: "ig", src: `https://www.instagram.com/${m[1]}/${m[2]}/embed/` };
+    return null;
+  }
+
+  /* extra: html appended inside the card (bonus cards get a notes field). Pair cards have no fields; the pair's notes sit below both videos. */
+  function postCard(p, kind, lvl = 3, extra = "") {
     const cls = kind === "hit" ? "is-hit" : kind === "flop" ? "is-flop" : "";
     const label = kind === "hit" ? "Hit" : kind === "flop" ? "Flop" : "Bonus";
+    const e = embedOf(p.url);
     return `<article class="post ${cls}" aria-labelledby="h-${p.id}">
       <div class="tags"><span class="badge ${kind === "bonus" ? "tag" : kind}">${label}</span>${p.tag ? `<span class="badge tag">${esc(p.tag)}</span>` : ""}</div>
       <h${lvl} id="h-${p.id}"${lvl !== 3 ? ` class="as-h3"` : ""}><span class="sr-only">${label}: </span>${esc(p.name)}</h${lvl}>
       <p class="num">${esc(p.num)} <span style="font-size:15px;font-weight:600">${esc(p.metric)}</span></p>
-      <p class="asof">Visible number as of ${ASOF}, pulled by the program team.</p>
+      ${e ? `<div class="player ${e.kind}"><iframe src="${esc(e.src)}" title="${esc(label + ": " + p.name + " (" + p.platform + " video)")}" loading="lazy" allow="encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe></div>` : ""}
+      <p class="fallback">${e ? "Video not showing? " : ""}<a class="linkout" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Watch on ${esc(p.platform)}<span class="sr-only">: ${esc(p.name)}</span>&nbsp;(opens in a new tab)</a></p>
       <dl class="facts">
-        <dt>Platform</dt><dd>${esc(p.platform)}</dd>
         <dt>Account</dt><dd>${esc(p.account)}</dd>
         <dt>Posted</dt><dd>${esc(p.date)}</dd>
         <dt>Followers</dt><dd>${esc(p.followers)}</dd>
       </dl>
+      <p class="asof">Visible number as of ${p.asof || ASOF}, pulled by the program team.</p>
       ${p.caveat ? `<p class="caveat"><b>Note:</b> ${esc(p.caveat)}</p>` : ""}
-      <a class="linkout" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Open on ${esc(p.platform)}<span class="sr-only">: ${esc(p.name)}</span>&nbsp;(opens in a new tab)</a>
-      ${rtf(p.id)}
+      ${extra}
     </article>`;
   }
 
-  function adCard(a, kind, lvl = 3) {
-    const cls = "is-pm";
-    return `<article class="post ${cls}" aria-labelledby="h-${a.id}">
-      <div class="tags"><span class="badge ${kind}">${a.status}</span><span class="badge pm">Placeholder</span></div>
-      <h${lvl} id="h-${a.id}"${lvl !== 3 ? ` class="as-h3"` : ""}><span class="sr-only">${a.status}: </span>{PM: add ad}</h${lvl}>
-      <dl class="facts">
-        <dt>Advertiser</dt><dd>{PM: add}</dd>
-        <dt>Placement</dt><dd>{PM: add, e.g. Instagram or Facebook Reels}</dd>
-        <dt>Active</dt><dd>{PM: add start and end dates, from the Meta Ad Library}</dd>
-        <dt>Result</dt><dd>{PM: add one result, only if Michael approves; otherwise "Not shown in the Ad Library"}</dd>
-      </dl>
-      <p class="asof">{PM: add "as of" date and source}</p>
-      <p class="caveat"><b>A clue, not proof:</b> an ad that keeps running is usually working, but the Ad Library doesn't show results.</p>
-      ${rtf(a.id)}
-    </article>`;
-  }
-
-  const example = `<details><summary>See the worked example and word swaps</summary>
-    <div class="example">
-      <p><b>Roast note:</b> "Version 2 is just a promo. Snooze."</p>
-      <p><b>Client version:</b> "On the same account, the question-led 'Keep Calm or Panic?' post earned 1,049 views, about 75% more than the promo version (595). We recommend leading with a question and saving the offer for the caption."</p>
-      <p style="margin-bottom:0"><b>Word swaps:</b></p>
-      <ul>
-        <li>"flopped," "mid," "boring" or "cringe" → "underperformed," "earned fewer views," or "held attention less"</li>
-        <li>"they should have" → "an opportunity is" or "we recommend"</li>
-        <li>"only got 595 views" → "earned 595 views"</li>
-        <li>Cut "obviously," "clearly" and "just."</li>
-      </ul>
-    </div></details>`;
-
-  const clientBlock = (id, label, lvl = 3, desc) => `<div class="client">
-      <h${lvl} id="ch-${id}"${lvl !== 3 ? ` class="as-h3"` : ""}>Write the client version${label ? `: ${label}` : ""}</h${lvl}>
+  /* Wrap-up: a short summary of all 3 patterns, written for Breaking Games (client voice). */
+  const summaryBlock = `<div class="client">
+      <h3 id="sumHead">Summarize your findings for Breaking Games</h3>
+      <p>Michael and the Breaking Games team may read this, so write it in client voice: lead with what works, back every claim with a number, and end with what to do next. In 3 to 5 sentences:</p>
       <ol class="formula">
-        <li><b>Toast:</b> lead with what works.</li>
-        <li><b>Evidence:</b> name the gap with a number, a date or a same-account comparison, not an adjective.</li>
-        <li><b>Recommendation:</b> tie the fix to the goal: new eyes on the brand.</li>
+        <li><b>What's working:</b> one line on what the strongest posts have in common.</li>
+        <li><b>Your 3 patterns:</b> each one with its proof, a pair and a number.</li>
+        <li><b>One recommendation:</b> what the relaunched Breaking Games TikTok should do first.</li>
       </ol>
-      ${example}
-      ${field(id + ":client", "Client version", "(Toast → Evidence → Recommendation)", true, desc)}
+      <details><summary>See an example and word swaps</summary>
+        <div class="example">
+          <p><b>Example summary</b> (shortened to 2 patterns, so yours will have one more):</p>
+          <p>"Breaking Games' strongest posts pull people in within the first few seconds. Two patterns stand out. First, ask a question up front: on the same account, 'Keep Calm or Panic?' earned 1,049 views, about 75% more than the promo version (595). Second, show what's at stake: the same week, Exploding Kittens' 'JUST DON'T BUST' earned 59.6K views, while a Big Potato post that leaned on a TV show earned 564. We recommend opening every relaunch post with a question or a tense game moment, and saving offers for the caption."</p>
+          <p style="margin-bottom:0"><b>Word swaps:</b></p>
+          <ul>
+            <li>"flopped," "mid," "boring" or "cringe" → "underperformed," "earned fewer views," or "held attention less"</li>
+            <li>"they should have" → "an opportunity is" or "we recommend"</li>
+            <li>"only got 595 views" → "earned 595 views"</li>
+            <li>Cut "obviously," "clearly" and "just."</li>
+          </ul>
+        </div>
+      </details>
+      ${field("summary", "Your summary", "(3 to 5 sentences: what's working, your 3 patterns with proof, one recommendation)", true, "sumHead")}
     </div>`;
 
-  /* lvl: heading level of the pair title; its cards and client block sit one level below. */
-  function pairSection(p, isAd, lvl = 2) {
-    const card = isAd ? adCard : postCard;
+  /* One set of notes per pair: Roast (the flop), Toast (the hit), Fix, Pattern. desc ties the repeated labels to the pair heading. */
+  const pairFields = (id, desc) =>
+    field("pair" + id + ":roast", "Roast", "(what held the flop back?)", false, desc) +
+    field("pair" + id + ":toast", "Toast", "(what made the hit work?)", false, desc) +
+    field("pair" + id + ":fix", "Fix", "(one change you'd make to the flop)", false, desc) +
+    field("pair" + id + ":pattern", "Pattern", "(the lesson you'd reuse on a new post, like \"Ask a question up front\")", false, desc);
+
+  /* lvl: heading level of the pair title; its cards and notes heading sit one level below. */
+  /* Shown at the top of Pair B: why its hit is the number to beat. */
+  const BENCH = `<div class="callout bench" style="margin:0 0 12px">
+      <p><b>The hit in this pair is the benchmark: the number your videos will try to beat.</b> "Keep Calm or Panic?" earned 1,049 views.</p>
+      <p>Why so small, when the biggest post on this account, Hypothetically Fun, has 207.4K? The biggest posts were likely boosted: paid to reach more people. Your videos won't be, so those are the ceiling, not the target. "Keep Calm or Panic?" reached the same followers you'll post to, and it's about 3× the 350-view average for accounts with 1–5K followers (Socialinsider, 2025): hard to beat, but realistic.</p>
+    </div>`;
+
+  function postPairSection(p, lvl = 2) {
+    const sub = lvl + 1, subCls = sub !== 3 ? ` class="as-h3"` : "";
     return `<section class="card">
-      <h${lvl} id="ph-${p.id}"${lvl !== 2 ? ` class="as-h2"` : ""}>${isAd ? "Ad pair " + p.id.slice(2) + ": " : "Pair " + p.id + ": "}${esc(p.title)}</h${lvl}>
+      <h${lvl} id="ph-${p.id}"${lvl !== 2 ? ` class="as-h2"` : ""}>Pair ${p.id}: ${esc(p.title)}</h${lvl}>
       ${p.note ? `<p class="lede">${esc(p.note)}</p>` : ""}
-      <div class="pair-grid">${card(p.hit, "hit", lvl + 1)}${card(p.flop, "flop", lvl + 1)}</div>
-      ${clientBlock("pair" + p.id, "", lvl + 1, "ph-" + p.id)}
+      ${p.benchmark ? BENCH : ""}
+      <div class="pair-grid">${postCard(p.hit, "hit", sub)}${postCard(p.flop, "flop", sub)}</div>
+      <div class="pair-notes">
+        <h${sub}${subCls}>Your notes on Pair ${p.id}</h${sub}>
+        ${pairFields(p.id, "ph-" + p.id)}
+      </div>
     </section>`;
   }
 
-  /* ---------- Posts panel ---------- */
-  $("panel-posts").innerHTML = `
-    <section class="callout bench">
-      <h2 id="benchHead">Keep Calm or Panic? The number to beat</h2>
-      <p class="bignum">1,049 views</p>
-      <p>${BG} on TikTok, posted about Jul 17, 2024. Views as of ${ASOF}. Same account and follower base you'll post to, and about 3× the 350-view average for 1–5K-follower accounts (Socialinsider, 2025). Boost status unconfirmed. It's the hit in Pair B.</p>
-      <p><a class="linkout" href="https://www.tiktok.com/@breakinggamesllc/video/7392656477829238062" target="_blank" rel="noopener noreferrer">Open the benchmark post on TikTok&nbsp;(opens in a new tab)</a></p>
-    </section>
-    <section class="callout rules">
-      <h2 id="rulesHead">Roast rules</h2>
-      <p>Roast the post, not the person. Raw roast notes stay in the program. Never comment on, tag or message the creators you review. Anything Breaking Games may see uses the client version.</p>
-    </section>
-    ${PAIRS.map(p => pairSection(p, false)).join("")}
-    <section class="card">
+  /* ---------- Steps ---------- */
+  /* Gap = hit ÷ flop, from the DATA numbers. */
+  const n = s => parseFloat(String(s).replace(/,/g, "")) * (/K$/.test(s) ? 1000 : 1);
+  const gap = p => { const g = n(p.hit.num) / n(p.flop.num); return "about " + (g < 10 ? g.toFixed(1) : Math.round(g)) + "×"; };
+  const metricWord = m => m.split(",")[0];
+
+  const STEPS = [
+    { nav: "How it works", html: `<section class="callout rules">
+      <h2 id="howHead">How it works</h2>
+      <ul class="how">
+        <li><b>Watch.</b> Each pair is a hit and a flop from the same account. What's different?</li>
+        <li><b>Write.</b> Under each pair: a Roast, a Toast, a Fix and a pattern.</li>
+        <li><b>Wrap up.</b> Pick your 3 best patterns and summarize them.</li>
+        <li><b>No account needed.</b> The videos play here. Close any sign-up pop-ups.</li>
+        <li><b>Roast the post, not the person.</b> Don't like, comment on or follow any account you review.</li>
+      </ul>
+    </section>` },
+    { nav: "Worked example", html: `<section class="card">
+      <h2 id="exHead">A worked example</h2>
+      <p class="lede">Here's one pair done start to finish, so you can see what to aim for. It's a practice pair from two other game brands. Watch both videos, then read the notes below.</p>
+      <div class="pair-grid">${postCard(BONUS_PAIR.hit, "hit")}${postCard(BONUS_PAIR.flop, "flop")}</div>
+      <div class="pair-notes">
+        <h3>Example notes</h3>
+        <dl class="facts ex-notes">
+          <dt>Roast</dt><dd>"The Traitors post leans on a TV show and never shows why the game is fun."</dd>
+          <dt>Toast</dt><dd>"JUST DON'T BUST gives me the stakes in 3 words."</dd>
+          <dt>Fix</dt><dd>"Open on the tense moment, then name the game."</dd>
+          <dt>Pattern</dt><dd>"Show what's at stake, not a TV show it's like."</dd>
+        </dl>
+        <h3>Why these notes work</h3>
+        <ul class="how">
+          <li>The roast is about the flop and the toast is about the hit, so together they show what changed.</li>
+          <li>Every line is about what's on screen (the hook, the words, the action), never about who made it.</li>
+          <li>The pattern is a lesson you could reuse on your own post, not a verdict on this one.</li>
+        </ul>
+        <p class="caveat" style="margin-top:12px"><b>Note:</b> these two posts come from different accounts, so the gap is partly audience size. Your 4 pairs each come from one account, which makes them a fairer test.</p>
+      </div>
+    </section>` },
+    ...PAIRS.map(p => ({ nav: "Pair " + p.id, html: postPairSection(p) })),
+    { nav: "Patterns and summary", html: `<section class="card">
       <h2 id="patHead">My 3 patterns for new players</h2>
-      <p class="lede">Look across all 4 pairs. What do the hits share?</p>
-      ${field("patterns:1", "Pattern 1")}${field("patterns:2", "Pattern 2")}${field("patterns:3", "Pattern 3")}
-      ${clientBlock("strongest", "your strongest pattern")}
-    </section>
-    <section>
-      <div class="card" style="margin-bottom:14px">
-        <h2 id="bonusHead">Bonus cards (optional)</h2>
-        <p class="lede" style="margin:0">The rest of the research set. Roast any you like. The CEO's personal account (@sharishowtime) is not roasted.</p>
+      <p class="lede">Look across your 4 pattern lines. Pick the 3 that would help most on a new Breaking Games TikTok, and name the pair and number that prove each one.</p>
+      <div class="example" style="margin-bottom:14px">
+        <h3 id="patWhat" style="margin-top:0">What's a pattern?</h3>
+        <p>A pattern is a short lesson you could use on your own next post. It says what the hit <b>did</b>, not what the flop got wrong. Here are two, written the way your 3 should look:</p>
+        <ul>
+          <li><b>Ask a question up front.</b> Proof: Pair B, "Keep Calm or Panic?" earned 1,049 views vs. 595 for the promo version on the same account.</li>
+          <li><b>Show what's at stake, not a TV show it's like.</b> Proof: the worked example, "JUST DON'T BUST" earned 59.6K views vs. 564 for "if you love The Traitors…".</li>
+        </ul>
+        <p style="margin:10px 0 0"><b>Too vague or too negative? Sharpen it:</b></p>
+        <ul>
+          <li>"Make it engaging" → "Show the game's tensest moment in the first 3 seconds."</li>
+          <li>"Don't be boring" → "Open on players reacting, not on the rules."</li>
+          <li>"The flop had no hook" → that's a roast. Flip it into what the hit did: "Open with something moving on screen in the first second."</li>
+        </ul>
       </div>
-      <div class="bonus-list">
-        ${pairSection(BONUS_PAIR, false, 3)}
-        ${BONUS.map(b => `<div class="card">${postCard(b, "bonus")}</div>`).join("")}
-      </div>
-    </section>`;
-
-  /* ---------- Ads panel ---------- */
-  $("panel-ads").innerHTML = `
-    <section class="callout pmnote">
-      <h2 id="adsHead">Roast the ads: 3 pairs</h2>
-      <p>Same Roast, Toast, Fix as Project 1. Each pair compares an ad that <b>ran for months</b> with one that <b>stopped within days</b>. That's <b>a clue, not proof</b>: an ad that keeps running is usually working. Ads are paid reach, so they aren't compared with the benchmark.</p>
-      <p><b>{PM: add ad pairs.}</b> Use Breaking Games' own Meta ads with one result each (no spend) only if Michael approves. Otherwise use public Meta Ad Library pairs. At least 1 pair features Breaking Games. Refresh each cohort.</p>
+      <details><summary>Stuck? Compare with the program team's list</summary>
+        <div class="example">
+          <p>The program team spotted these 6. Yours can match, or be something new, as long as it has a pair and a number.</p>
+          <ul>
+            <li>Hook them by 3 seconds.</li>
+            <li>Make the game clear in 10 seconds.</li>
+            <li>Ask a question or invite a guess.</li>
+            <li>Show real hands, faces or voices.</li>
+            <li>Name the game on screen and in the caption.</li>
+            <li>One game, one moment.</li>
+          </ul>
+        </div>
+      </details>
+      <div class="tablewrap"><table class="nums">
+        <caption>Numbers to use: the 4 pairs, as pulled by the program team</caption>
+        <thead><tr><th scope="col">Pair</th><th scope="col">Hit</th><th scope="col">Flop</th><th scope="col">Gap (hit ÷ flop)</th></tr></thead>
+        <tbody>${PAIRS.map(p => `<tr><th scope="row">${p.id} (${esc(p.hit.platform)})</th><td>${esc(p.hit.num)} ${esc(metricWord(p.hit.metric))}</td><td>${esc(p.flop.num)} ${esc(metricWord(p.flop.metric))}</td><td>${gap(p)}</td></tr>`).join("")}</tbody>
+      </table></div>
+      ${field("patterns:1", "Pattern 1", "(the pattern, then the pair and number that prove it)", false, "patWhat")}${field("patterns:2", "Pattern 2", "(the pattern, then the pair and number that prove it)", false, "patWhat")}${field("patterns:3", "Pattern 3", "(the pattern, then the pair and number that prove it)", false, "patWhat")}
+      ${summaryBlock}
+      <p class="callout rules" style="margin:12px 0 0"><b>Done?</b> Click <b>Copy my notes</b> at the top, paste them into a Google Doc and submit the link. Want more practice first? The <b>Bonus practice</b> step is optional.</p>
+    </section>` },
+    { nav: "Bonus practice", html: `<section class="card">
+      <h2 id="bonusHead">Bonus practice (optional)</h2>
+      <p class="lede">More posts from the research set, one at a time, for extra practice. Any notes you write here are added when you click Copy my notes. The CEO's personal account (@sharishowtime) is not roasted.</p>
     </section>
-    ${ADS.map(a => pairSection(a, true, 2)).join("")}
-    <section class="card">
-      <h2 id="adPatHead">My 3 ad patterns</h2>
-      ${field("adpatterns:1", "Ad pattern 1")}${field("adpatterns:2", "Ad pattern 2")}${field("adpatterns:3", "Ad pattern 3")}
-      ${clientBlock("topad", "your top ad pattern")}
-    </section>`;
+    <div class="bonus-list">
+      ${BONUS.map(b => `<div class="card">${postCard(b, "bonus", 3, field(b.id + ":notes", "Notes", "(roast, toast, fix)", false, "h-" + b.id))}</div>`).join("")}
+    </div>` }
+  ];
 
-  /* ---------- Tabs (ARIA tabs pattern, automatic activation) ---------- */
-  const tabs = [$("tab-posts"), $("tab-ads")];
-  function select(tab, focus) {
-    tabs.forEach(t => {
-      const on = t === tab;
-      t.setAttribute("aria-selected", on);
-      t.tabIndex = on ? 0 : -1;
-      $(t.getAttribute("aria-controls")).hidden = !on;
+  $("panel-posts").innerHTML = `
+    <nav class="stepnav" aria-label="Roast Deck steps"><ol>
+      ${STEPS.map((s, i) => `<li><button type="button" class="stepbtn" data-go="${i}">${s.nav}</button></li>`).join("")}
+    </ol></nav>
+    ${STEPS.map((s, i) => `<div class="step" id="step-${i}" hidden><p class="progress">Step ${i + 1} of ${STEPS.length}</p>${s.html}</div>`).join("")}
+    <div class="stepfoot">
+      <button type="button" class="btn" id="prevBtn">Back</button>
+      <button type="button" class="btn primary" id="nextBtn">Next</button>
+    </div>`;
+
+  /* ---------- Step navigation ---------- */
+  let cur = 0;
+  function goStep(i, focus) {
+    i = Math.max(0, Math.min(STEPS.length - 1, i));
+    /* Reloading a leaving step's players stops any video that's still playing. */
+    if (i !== cur) $("step-" + cur).querySelectorAll("iframe").forEach(f => { f.src = f.src; });
+    cur = i;
+    STEPS.forEach((_, k) => { $("step-" + k).hidden = k !== cur; });
+    document.querySelectorAll(".stepbtn").forEach(b => {
+      if (+b.dataset.go === cur) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current");
     });
-    if (focus) tab.focus();
-    try { localStorage.setItem(KEY + ":tab", tab.id); } catch (e) {}
+    $("prevBtn").hidden = cur === 0;
+    $("nextBtn").hidden = cur === STEPS.length - 1;
+    if (cur > 0) $("prevBtn").textContent = "Back: " + STEPS[cur - 1].nav;
+    if (cur < STEPS.length - 1) $("nextBtn").textContent = "Next: " + STEPS[cur + 1].nav;
+    try { localStorage.setItem(KEY + ":step", cur); } catch (e) {}
+    if (focus) {
+      const h = $("step-" + cur).querySelector("h2");
+      h.tabIndex = -1;
+      $("panel-posts").scrollIntoView({ block: "start" });
+      h.focus({ preventScroll: true });
+    }
   }
-  tabs.forEach((t, i) => {
-    t.addEventListener("click", () => select(t, false));
-    t.addEventListener("keydown", e => {
-      let n = null;
-      if (e.key === "ArrowRight") n = (i + 1) % tabs.length;
-      else if (e.key === "ArrowLeft") n = (i - 1 + tabs.length) % tabs.length;
-      else if (e.key === "Home") n = 0;
-      else if (e.key === "End") n = tabs.length - 1;
-      if (n !== null) { e.preventDefault(); select(tabs[n], true); }
-    });
-  });
-  /* #ads in the URL opens the Ads tab (for the P3 embed); otherwise restore the last tab. */
-  if (location.hash === "#ads") select($("tab-ads"), false);
-  else { try { const t = localStorage.getItem(KEY + ":tab"); if (t && $(t)) select($(t), false); } catch (e) {} }
+  document.querySelectorAll(".stepbtn").forEach(b => b.addEventListener("click", () => goStep(+b.dataset.go, true)));
+  $("prevBtn").addEventListener("click", () => goStep(cur - 1, true));
+  $("nextBtn").addEventListener("click", () => goStep(cur + 1, true));
+  let startStep = 0;
+  try { startStep = parseInt(localStorage.getItem(KEY + ":step"), 10) || 0; } catch (e) {}
+  goStep(startStep, false);
 
   /* ---------- Save ---------- */
   const status = msg => { $("status").textContent = ""; setTimeout(() => { $("status").textContent = msg; }, 50); };
@@ -508,25 +597,16 @@ const ADS = [1, 2, 3].map(n => ({
   /* ---------- Plain-text export ---------- */
   const v = k => (notes[k] || "").trim();
   const line = (lbl, k) => `  ${lbl}: ${v(k) || "-"}`;
-  const postTxt = (p, lbl) => [`${lbl}: ${p.name} (${p.platform}, ${p.account}, posted ${p.date}; ${p.num} ${p.metric} as of ${ASOF})`, `  Link: ${p.url}`,
-    line("Roast", p.id + ":roast"), line("Toast", p.id + ":toast"), line("Fix", p.id + ":fix")].join("\n");
-  const adTxt = (a) => [`${a.status.toUpperCase()}: {PM: add ad}`, line("Roast", a.id + ":roast"), line("Toast", a.id + ":toast"), line("Fix", a.id + ":fix")].join("\n");
+  const postTxt = (p, lbl) => [`${lbl}: ${p.name} (${p.platform}, ${p.account}, posted ${p.date}; ${p.num} ${p.metric} as of ${p.asof || ASOF})`, `  Link: ${p.url}`].join("\n");
+  const pairTxt = (p, head) => [head, postTxt(p.hit, "HIT"), postTxt(p.flop, "FLOP"),
+    line("Roast", "pair" + p.id + ":roast"), line("Toast", "pair" + p.id + ":toast"), line("Fix", "pair" + p.id + ":fix"), line("Pattern", "pair" + p.id + ":pattern"), ""].join("\n");
   const any = prefixes => Object.keys(notes).some(k => prefixes.some(p => k.startsWith(p)) && v(k));
 
   function buildText() {
     const out = ["ROAST NOTES · Breaking Games Roast Deck", `Copied ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}. Raw roast notes stay in the program; share only client versions.`, ""];
-    out.push("BENCHMARK: \"Keep Calm or Panic?\" (@breakinggamesllc, TikTok, posted about Jul 17, 2024): 1,049 views as of " + ASOF + ".", "");
-    PAIRS.forEach(p => {
-      out.push(`== Pair ${p.id}: ${p.title} ==`, postTxt(p.hit, "HIT"), postTxt(p.flop, "FLOP"), `CLIENT VERSION: ${v("pair" + p.id + ":client") || "-"}`, "");
-    });
-    out.push("== My 3 patterns for new players ==", ...[1, 2, 3].map(n => `${n}. ${v("patterns:" + n) || "-"}`), `CLIENT VERSION (strongest pattern): ${v("strongest:client") || "-"}`, "");
-    if (any(["E-", "pairE"])) out.push(`== Bonus pair: ${BONUS_PAIR.title} ==`, postTxt(BONUS_PAIR.hit, "HIT"), postTxt(BONUS_PAIR.flop, "FLOP"), `CLIENT VERSION: ${v("pairE:client") || "-"}`, "");
-    BONUS.filter(b => any([b.id + ":"])).forEach(b => out.push("== Bonus card ==", postTxt(b, "BONUS"), ""));
-    if (any(["Ad", "pairAd", "adpatterns", "topad"])) {
-      out.push("== ADS (Project 3) ==");
-      ADS.forEach(a => out.push(`-- Ad pair ${a.id.slice(2)} --`, adTxt(a.hit), adTxt(a.flop), `CLIENT VERSION: ${v("pair" + a.id + ":client") || "-"}`, ""));
-      out.push("My 3 ad patterns:", ...[1, 2, 3].map(n => `${n}. ${v("adpatterns:" + n) || "-"}`), `CLIENT VERSION (top ad pattern): ${v("topad:client") || "-"}`, "");
-    }
+    PAIRS.forEach(p => out.push(pairTxt(p, `== Pair ${p.id}: ${p.title} ==`)));
+    out.push("== My 3 patterns for new players ==", ...[1, 2, 3].map(n => `${n}. ${v("patterns:" + n) || "-"}`), "", "== Summary for Breaking Games ==", v("summary") || "-", "");
+    BONUS.filter(b => any([b.id + ":"])).forEach(b => out.push("== Bonus post ==", postTxt(b, "BONUS"), line("Notes", b.id + ":notes"), ""));
     return out.join("\n");
   }
 
@@ -541,7 +621,7 @@ const ADS = [1, 2, 3].map(n => ({
         $("copyBtn").focus();
       } catch (e2) { ok = false; }
     }
-    status(ok ? "Copied. Paste your notes into your roast notes doc." : "Copy was blocked here. Use Download .txt instead.");
+    status(ok ? "Copied. Paste your notes into your roast notes doc." : "Copy was blocked here. Use Download summary instead.");
   });
 
   $("dlBtn").addEventListener("click", () => {
