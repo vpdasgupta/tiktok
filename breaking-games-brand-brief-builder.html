@@ -311,7 +311,7 @@ Deploy (not yet): vpdasgupta/tiktok as breaking-games-brand-brief-builder.html
 <a class="skip" id="skip" href="#main">Skip to current screen</a>
 <header>
   <div class="hero">
-    <p class="eyebrow">Breaking Games × TikTok</p>
+    <p class="eyebrow">Breaking Games × Social Media</p>
     <h1>Brand Brief <span class="grad">Builder</span></h1>
     <p class="sub">Two parts, one tool. Part 1 builds Brief v1 in Project 2. Part 2 finishes your 1-page Brand Strategy Brief in Project 3.</p>
     <p class="line">Good game, folks.</p>
@@ -450,12 +450,12 @@ var FWS = [
 /* Games: approved facts, checked 2026-10-13 unless noted. */
 var GAMES = [
   {id:'caminito', t:'Caminito', facts:CAMINITO, note:'Hero game. Suggested for Video 1.', hero:true},
-  {id:'poop', t:'POOP: The Game', facts:'$10, ages 6+', note:'Checked Oct 13, 2026.'},
-  {id:'g49', t:'The Game of 49', facts:'$20', note:'Checked Oct 13, 2026.'},
-  {id:'play2read', t:'Play2Read early-reader card games', facts:'$13 each', note:'Line added May 2025.'},
-  {id:'sparkle', t:'Sparkle*Kitty', facts:'$24.99, ages 9+, 3 to 8 players', note:'Showed sold out on Oct 13, 2026.', sold:true},
-  {id:'doomed', t:'We\'re Doomed!', facts:'$35, 4 to 12 players', note:'Showed sold out on Oct 13, 2026.', sold:true},
-  {id:'eldervale', t:'Dwellings of Eldervale 2nd Edition', facts:'$99.99; expansions published Aug 2026', note:'Standard showed sold out on Oct 13, 2026.', sold:true},
+  {id:'poop', t:'POOP: The Game', facts:'$10, ages 6+, 2 to 10 players', note:'In stock on Oct 20, 2026.'},
+  {id:'g49', t:'The Game of 49', facts:'$20, ages 10+, 2 to 5 players', note:'In stock on Oct 20, 2026.'},
+  {id:'play2read', t:'Play2Read early-reader card games', facts:'$13 each', note:'A few titles showed sold out on Oct 20, 2026. Check yours.'},
+  {id:'sparkle', t:'Sparkle*Kitty', facts:'$24.99, ages 9+, 3 to 8 players', note:'In stock on Oct 20, 2026.'},
+  {id:'doomed', t:'We\'re Doomed!', facts:'$35, ages 14+, 4 to 10 players', note:'Showed sold out on Oct 20, 2026.', sold:true},
+  {id:'eldervale', t:'Dwellings of Eldervale 2nd Edition', facts:'$99.99, ages 14+, 1 to 5 players', note:'Standard in stock on Oct 20, 2026; new expansions showed sold out.'},
   {id:'push', t:'A game from the push list', facts:'{PM: push-list games for this cohort, with stock checked}', note:'Push-list games come first once the list arrives.'}
 ];
 var SOLD_NOTE = 'Check stock before you pick it. Guardrail 5: don\'t feature a sold-out game.';
@@ -672,12 +672,12 @@ var SECTIONS = [
   var R = {};
 
   R.start = function(b){
-    b.appendChild(h('p', {}, ['You\'ll use this Builder twice. Each part takes about 40 minutes or less, and your answers carry over. Pick the part your task page asks for.']));
+    b.appendChild(h('p', {}, ['You\'ll use this Builder twice. Each part takes about 30 minutes, and your answers carry over. Pick the part your task page asks for.']));
     b.appendChild(h('div', {class:'startgrid'}, [1, 2].map(function(p){
       var list = inputKeys(p).map(function(k){ return SEC[k].n + '. ' + SEC[k].t; });
       return h('div', {class:'startcard'}, [
         h('h3', {text:p === 1 ? 'Part 1: Project 2, Week 2' : 'Part 2: Project 3, Week 5'}),
-        h('p', {class:'hint', text:p === 1 ? 'About 35 minutes. Ends with Brief v1 (half a page).' : 'About 40 minutes. Ends with your final 1-page Brand Strategy Brief.'}),
+        h('p', {class:'hint', text:p === 1 ? 'About 30 minutes. Ends with Brief v1 (half a page).' : 'About 30 minutes. Ends with your final 1-page Brand Strategy Brief.'}),
         h('ul', {}, list.map(function(x){ return h('li', {text:x}); })),
         h('div', {class:'actions'}, [h('button', {type:'button', class:'primary', id:'start-' + p, onclick:function(){ setPart(p); }, text:'Start Part ' + p})])]);
     })));
@@ -782,7 +782,7 @@ var SECTIONS = [
     out.push(t(a.moment) || t(c.moment) ? 'One video is tied to a calendar moment.' : 'Suggested: tie one video to a calendar moment.');
     if (a.persona && c.persona) out.push(a.persona !== c.persona ? 'Each video targets a different persona.' : 'Suggested: Video 2 targets the persona Video 1 didn\'t.');
     if (a.fw && a.fw === c.fw) out.push('Both videos use the same framework. Pick 2 different ones.');
-    [a, c].forEach(function(v, i){ var g = byId(GAMES, v.game); if (g && g.sold) out.push('Video ' + (i + 1) + ': ' + g.t + ' showed sold out on Oct 13, 2026. Check stock before you film.'); });
+    [a, c].forEach(function(v, i){ var g = byId(GAMES, v.game); if (g && g.sold) out.push('Video ' + (i + 1) + ': ' + g.t + ' showed sold out on Oct 20, 2026. Check stock before you film.'); });
     return out;
   }
   var lastSuggest = null;

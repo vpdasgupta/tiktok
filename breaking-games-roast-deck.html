@@ -206,7 +206,7 @@ reduced motion; reflows to one column under 700px and works at 320px.
 <body>
 <div class="wrap">
   <header class="hero">
-    <p class="eyebrow">Breaking Games × TikTok · Roast Deck</p>
+    <p class="eyebrow">Breaking Games × Social Media · Roast Deck</p>
     <h1>Hit vs. flop. Roast the post, not the <span class="grad">person.</span></h1>
     <p class="sub">For each pair: one Roast, one Toast, one Fix per post. Then write the client version.</p>
   </header>
@@ -424,7 +424,7 @@ const ADS = [1, 2, 3].map(n => ({
     </section>
     ${PAIRS.map(p => pairSection(p, false)).join("")}
     <section class="card">
-      <h2 id="patHead">My 3 patterns for Gen Z</h2>
+      <h2 id="patHead">My 3 patterns for new players</h2>
       <p class="lede">Look across all 4 pairs. What do the hits share?</p>
       ${field("patterns:1", "Pattern 1")}${field("patterns:2", "Pattern 2")}${field("patterns:3", "Pattern 3")}
       ${clientBlock("strongest", "your strongest pattern")}
@@ -519,7 +519,7 @@ const ADS = [1, 2, 3].map(n => ({
     PAIRS.forEach(p => {
       out.push(`== Pair ${p.id}: ${p.title} ==`, postTxt(p.hit, "HIT"), postTxt(p.flop, "FLOP"), `CLIENT VERSION: ${v("pair" + p.id + ":client") || "-"}`, "");
     });
-    out.push("== My 3 patterns for Gen Z ==", ...[1, 2, 3].map(n => `${n}. ${v("patterns:" + n) || "-"}`), `CLIENT VERSION (strongest pattern): ${v("strongest:client") || "-"}`, "");
+    out.push("== My 3 patterns for new players ==", ...[1, 2, 3].map(n => `${n}. ${v("patterns:" + n) || "-"}`), `CLIENT VERSION (strongest pattern): ${v("strongest:client") || "-"}`, "");
     if (any(["E-", "pairE"])) out.push(`== Bonus pair: ${BONUS_PAIR.title} ==`, postTxt(BONUS_PAIR.hit, "HIT"), postTxt(BONUS_PAIR.flop, "FLOP"), `CLIENT VERSION: ${v("pairE:client") || "-"}`, "");
     BONUS.filter(b => any([b.id + ":"])).forEach(b => out.push("== Bonus card ==", postTxt(b, "BONUS"), ""));
     if (any(["Ad", "pairAd", "adpatterns", "topad"])) {
