@@ -11,6 +11,8 @@
   BUILT FILE, do not edit. Edit scripts/p1-meet-the-games.template.html, then run scripts/build-p1-meet-the-games.py,
   which inlines the images and writes 06-content/project-01-.../breaking-games-p1-meet-the-games.html.
   Facts are Approved Facts only (scope v3, checked 2026-10-13), not the sell-sheet numbers.
+  2026-10-23: Level 1 rebuilt on the official brand definition (Brand Guidelines, April 2026;
+  summary in 01-research/breaking-games-brand-guidelines-2026-10.md): 4 cards, voice question.
   The page's "Text version of the interactive" toggle mirrors every card. Edit both together.
   WCAG 2.2 AA: one H1; each screen has an h2 that takes focus; answer buttons stay focusable
   (aria-disabled after a pick); feedback takes focus and is also sent to a polite live region;
@@ -80,7 +82,7 @@
   .plain { margin: 0 0 12px; padding-left: 22px; font-size: 17px; }
   .plain li { margin-bottom: 6px; }
 
-  .brief { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 6px 0 16px; }
+  .brief { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 6px 0 16px; }
   .brief .box { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background: var(--canvas); }
   .brief h3 { font-size: 16px; margin: 0 0 6px; }
   .brief p { font-size: 15px; margin: 0 0 6px; }
@@ -179,7 +181,7 @@
     <h2 id="h-start" tabindex="-1">Know the games before you post about them</h2>
     <p class="lead">Plenty of people have played Sparkle*Kitty, POOP or Dwellings of Eldervale without ever noticing the name Breaking Games on the box. You're joining the social team, so you need to know which games you can use.</p>
     <ul class="plain">
-      <li><strong>Level 1:</strong> the briefing. Who Breaking Games is, plus one question.</li>
+      <li><strong>Level 1:</strong> the briefing. Who Breaking Games is and how it sounds, plus one question.</li>
       <li><strong>Level 2:</strong> sort the shelf. The 8 top games on breakinggames.com, 3 bins.</li>
       <li><strong>Level 3:</strong> pick for the post. 4 real calls you'll make this externship.</li>
     </ul>
@@ -190,19 +192,25 @@
   <!-- Level 1 -->
   <section class="screen" id="scr-brief" aria-labelledby="h-brief" hidden>
     <p class="level-tag">Level 1 of 3: The briefing</p>
-    <h2 id="h-brief" tabindex="-1">Breaking Games in 3 cards</h2>
+    <h2 id="h-brief" tabindex="-1">Breaking Games in 4 cards</h2>
     <div class="brief">
       <div class="box">
         <div class="icon" aria-hidden="true">🎲</div>
         <h3>Who they are</h3>
-        <p>An indie tabletop game publisher in Netcong, New Jersey. It makes party, family and strategy games, and helps independent designers get their games made and into players' hands.</p>
-        <p>It launched at Toy Fair in 2015, and its site calls it "an indie game publishing division of AdMagic."</p>
+        <p>Game producers in Netcong, New Jersey. In their words: "We're game producers who work with designers, making and marketing original games that rise to any occasion and leave everyone feeling like a winner."</p>
+        <p>Designers bring the idea. Breaking Games handles the rest, from refining the gameplay to making the pieces to getting the game on shelves.</p>
       </div>
       <div class="box">
         <div class="icon" aria-hidden="true">🤝</div>
         <h3>"Good game, folks."</h3>
-        <p>The new brand line. It's about connection, playing face to face, and making memories over a game. Fun and warm, not edgy.</p>
-        <p>Show people choosing the table; never mock phones or screens.</p>
+        <p>The new tagline. "Good game" is what you say when everyone showed up, played their part and had fun together. "Folks" is warm, like a 90s game-show host talking to neighbors.</p>
+        <p>The mission: bring people together over great games, good company and old-fashioned fun. Show people choosing the table; never mock phones or screens.</p>
+      </div>
+      <div class="box">
+        <div class="icon" aria-hidden="true">🎤</div>
+        <h3>How they sound</h3>
+        <p>A charismatic emcee, not a scene-stealing performer. Witty and warm, but the game is always the star.</p>
+        <p>Casual, not sloppy. Friendly, not salesy. Occasionally ridiculous, never unhinged. Periods over exclamation points, and PG.</p>
       </div>
       <div class="box">
         <div class="icon" aria-hidden="true">🧩</div>
@@ -255,7 +263,7 @@
     </table>
     <ul class="plain">
       <li>Check the price and stock on <a href="https://breakinggames.com" target="_blank" rel="noopener">breakinggames.com<span class="sr-only"> (opens in a new tab)</span></a> on the day you use a game. Never feature a sold-out game.</li>
-      <li>Say "games," never "toys." Never say Breaking Games made or owns Cards Against Humanity or Exploding Kittens.</li>
+      <li>Say "games," never "toys," and "game lovers," not "gamers." Never say Breaking Games made or owns Cards Against Humanity or Exploding Kittens.</li>
       <li>When your program manager shares the push list, those games come first.</li>
     </ul>
     <div class="row"><button type="button" class="btn" id="againBtn">Play again</button></div>
@@ -276,9 +284,10 @@
   const BINS = { use: "Use now", check: "Check stock first", no: "Don't feature" };
 
   const BRIEF = {
-    legend: "Quick check: what does Breaking Games make?",
-    options: ["Games", "Toys"], answer: "Games",
-    why: 'Say "games," never "toys." Breaking Games is a tabletop game publisher.'
+    legend: "Quick check: which line sounds like Breaking Games?",
+    options: ["This just in: game night is alive and awesome.", "Elevate your game night! Don't miss out!"],
+    answer: "This just in: game night is alive and awesome.",
+    why: 'It\'s straight from the brand guide: a laid-back newscast phrase that ends on a period. "Elevate your game night" and "Don\'t miss out" are on the brand\'s list of phrases to swap out, and the exclamation points are too loud.'
   };
 
   /* Level 2 cards: the 8 "Hottest Games and Best Sellers" on breakinggames.com, in site order.
@@ -301,7 +310,7 @@
     { name: "Dwellings of Eldervale 2nd Edition", facts: ["$99.99", "Ages 14+", "1 to 5 players", "60 to 150 minutes"], bin: "use",
       box: "elderBox", boxAlt: "Dwellings of Eldervale box: a fantasy landscape with dragons and beasts.",
       play: "elderPlay", playAlt: "Dwellings of Eldervale's hex-tile board covered in colorful worker pieces.",
-      why: "The base game is in stock. It's a big strategy game, so it fits posts for serious gamers. Its expansions sell out, so check before you name one." },
+      why: "The base game is in stock. It's a big strategy game, so it fits posts for game lovers who want depth. Its expansions sell out, so check before you name one." },
     { name: "Hypothetically Fun", facts: ["$19.99", "Ages 14+", "3 to 8 players"], bin: "no",
       box: "hypoBox", boxAlt: "Hypothetically Fun box: white with bold black letters and colorful doodles of faces and objects.",
       why: "You'll see it in the roast posts, but it's sold as an adult party game, so it never goes in new content." },
