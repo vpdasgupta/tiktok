@@ -388,7 +388,22 @@ var SITE = 'https://breakinggames.com';
 var CTA = 'Find your next game night: link in bio';
 var BRAND_LINE = 'Good game, folks.';
 var END_CARD = 'Every video ends with the same 1 to 2 second end card: the Breaking Games logo + "Good game, folks."';
-var RELAUNCH = 'Relaunch Breaking Games on TikTok, led by its new game, Caminito. Breaking Games makes party, family and strategy games, like Sparkle*Kitty, POOP and Dwellings of Eldervale. Many people know a Breaking Games game but not the company behind it. TikTok @breakinggamesllc has 1,301 followers and has been quiet since October 2024. Instagram @breaking_games (4,243 followers) and Facebook are where it is most active today. The new brand is "Good game, folks.": connection, face-to-face play and making memories by playing games. The goal is new customers: new players find Breaking Games, like it, and buy from it.';
+var RELAUNCH = 'Relaunch Breaking Games on TikTok, led by its new game, Caminito. Breaking Games is a game producer: it works with designers to make and market original party, family and strategy games, like Sparkle*Kitty, POOP and Dwellings of Eldervale. Many people know a Breaking Games game but not the company behind it. TikTok @breakinggamesllc has 1,301 followers and has been quiet since October 2024. Instagram @breaking_games (4,243 followers) and Facebook are where it is most active today. The brand line is "Good game, folks.": good games that make people feel good, and a mission "to bring people together over great games, good company, and old-fashioned fun." The goal is new customers: new players find Breaking Games, like it, and buy from it.';
+/* Brand givens: from the Breaking Games brand guide (April 2026), summarized in 01-research/breaking-games-brand-guidelines-2026-10.md.
+   Students apply these to TikTok. They don't invent a new voice. */
+var VOICE_LINE = 'A charismatic emcee, not a scene-stealing performer';
+var BRAND_MEANING = '"Good game" means good games that make people feel good: lighthearted fun, connection and good sportsmanship, with a little nostalgia. "Folks" is warm, like a 90s game-show host talking to the neighbors.';
+var MISSION = 'To bring people together over great games, good company, and old-fashioned fun.';
+var TRAITS = [
+  ['Clever, self-aware and witty', 'a knowing wink; happy to admit when a game is a little campy.'],
+  ['Casual, not sloppy', 'talks like a person, in short, well-built sentences.'],
+  ['Friendly, not salesy', 'talks to "you" like a friend. Calls to action are invitations, like "Right this way."'],
+  ['Occasionally ridiculous, not unhinged', 'puns are a flavor, not the main dish. Nothing just for shock.'],
+  ['Genuinely enthusiastic', 'calls out the art, the craft and the designers.'],
+  ['Nostalgic, not themed', 'newscast and game-show lines, like "This just in," in small doses.']
+];
+var STYLE = 'Periods over exclamation points. PG. Say "game lovers," not "gamers"; "analog," not "screen-free"; "host a legendary game night," not "elevate your game night."';
+function voiceSummary(){ return VOICE_LINE + ': show the game or the designer before the punchline. ' + TRAITS.map(function(x){ return x[0]; }).join('; ') + '. ' + STYLE; }
 var CAMINITO = '{PM: Caminito launch date, price, ages, player count and a one-line "how it plays"}';
 
 var PERSONAS = [
@@ -415,7 +430,7 @@ var GUARDS = [
   {id:'post', t:'Don\'t post', d:'Never post program work to any social account, Breaking Games\' or your own. Don\'t reach out to creators, retailers or customers.', kind:'dont'},
   {id:'people', t:'No real customers, no one under 18', d:'Don\'t film or name real customers or players. No one under 18 on camera. Friends may appear as hands or voices only, with their OK.', kind:'dont'},
   {id:'ai', t:'Nothing invented', d:'No AI-generated people presented as real. No invented reviews, quotes or reactions.', kind:'dont'},
-  {id:'family', t:'Family-safe games only', d:'Family and all-ages party games only. Hypothetically Fun appears only in the roast. No adult or edgy titles. Humor stays family-safe, and the voice stays fun and warm, not edgy.', kind:'want'},
+  {id:'family', t:'Family-safe games only', d:'Family and all-ages party games only. Hypothetically Fun appears only in the roast. No adult or edgy titles. Humor stays PG: occasionally ridiculous, never unhinged or edgy.', kind:'want'},
   {id:'facts', t:'Accurate product facts', d:'Price, ages and player count only from the approved facts, with the date checked. Don\'t feature a sold-out game.', kind:'want'},
   {id:'games', t:'Say "games," not "toys"', d:'Never say Breaking Games made or owns Cards Against Humanity or Exploding Kittens, or that it\'s "behind" them.', kind:'want'},
   {id:'disclose', t:'Disclose', d:'Creator or gifted-product content in any plan carries a clear FTC disclosure. Label your drafts as externship concepts.', kind:'want'},
@@ -471,18 +486,18 @@ var PEERS = [
    facts:[['TikTok', 'Rocking Raft clip, 1,706 views, vs. a horse-stable card game clip, 92 views. An 18× gap on the same account.'],
           ['Instagram', 'Stripes Reel, 72 likes (the Reels benchmark, Mar 13, 2026), vs. a The Game of 49 how-to-play Reel, 17 likes.']],
    lesson:'Physical action in frame and a concrete "when you\'d play it" beat explaining rules in the caption.'},
-  {id:'op', name:'The Op', role:'Game publisher (peer brand)', followers:'{PM: TikTok handle, followers and pull date}',
+  {id:'op', name:'The Op', role:'Game company (peer brand)', followers:'{PM: TikTok handle, followers and pull date}',
    facts:[['Reach', 'About 8M views in a month, mostly from non-followers, with lo-fi clips and an 80/20 content mix.'],
           ['Collab', 'A creator collab with Smosh reached 3M views. It is pinned.'],
           ['Qork', 'Its Qork post is the roast\'s reminder to measure at 7 days.']],
    flag:'The 3M post is pinned and a creator collab. Treat it as a ceiling, not a target.',
    lesson:'A dormant or small account can still reach new people, because followers aren\'t a direct factor on TikTok.'},
-  {id:'bigpotato', name:'Big Potato', role:'Party game publisher (peer brand)', followers:'{PM: TikTok handle, followers and pull date}',
+  {id:'bigpotato', name:'Big Potato', role:'Party game company (peer brand)', followers:'{PM: TikTok handle, followers and pull date}',
    facts:[['Hit', 'Cards vs Gravity, 3M views. It is pinned.'],
           ['Flop', 'A Traitors TV tie-in, 564 views.']],
    flag:'The 3M post is pinned. Treat it as a ceiling, not a target.',
    lesson:'A tie-in alone doesn\'t carry a post. The game still has to be clear and fun on screen.'},
-  {id:'ek', name:'Exploding Kittens', role:'Card game publisher (peer brand)', followers:'{PM: TikTok handle, followers and pull date}',
+  {id:'ek', name:'Exploding Kittens', role:'Card game company (peer brand)', followers:'{PM: TikTok handle, followers and pull date}',
    facts:[['Hit', '"JUST DON\'T BUST," 59.6K views. In the roast it sits next to Big Potato\'s 564-view tie-in.']],
    flag:'Learn from it only. Never say Breaking Games made it, owns it or is "behind" it.',
    lesson:'A short, loud catchphrase hook can carry a whole clip.'},
@@ -517,11 +532,11 @@ var SECTIONS = [
   {key:'start', part:0, t:'Choose your part'},
   {key:'personas', part:1, n:1, t:'Your two players', time:'8 min', g:'Read Rachel and Dani\'s cards. For each one, write the moment you saw from your own scroll and what would make her stop.'},
   {key:'guard', part:1, n:2, t:'Client guardrails', time:'4 min', g:'Read all 9 client guardrails and pick the 3 that will shape your brand the most. All 9 still apply to everything you make.'},
-  {key:'promise', part:1, n:3, t:'Brand promise', time:'5 min', g:'Finish one sentence: who Breaking Games helps, how they feel, and how it helps.'},
+  {key:'promise', part:1, n:3, t:'Brand promise', time:'5 min', g:'Read the brand\'s givens from its brand guide. Then finish one sentence in that voice: who Breaking Games helps, how they feel, and how it helps.'},
   {key:'pillars', part:1, n:4, t:'Content pillars', time:'4 min', g:'Keep or reword the 3 content pillars. Every video fits one of them. A 4th is optional.'},
   {key:'fw', part:1, n:5, t:'Videos 1 and 2', time:'12 min', g:'Pick a framework for each video, tag the persona it targets, and pick its game and pillar. Framework 1 = Video 1.'},
   {key:'out1', part:1, out:1, t:'Your Brief v1', time:'2 min', g:'Check your Brief v1, then copy it into a Google Doc. Export your answers too, so Part 2 can pick up where you left off.'},
-  {key:'voice', part:2, n:6, t:'Voice and visuals', time:'8 min', g:'Lock the voice ("Good game, folks." and fun and warm, not edgy), your 3 voice words, 3 tone sliders, your palette and your imagery words.'},
+  {key:'voice', part:2, n:6, t:'Voice and visuals', time:'8 min', g:'Start from the brand\'s voice and palette. Then write how 3 of its voice traits sound on TikTok, set 3 tone sliders, and pick your colors and imagery words.'},
   {key:'learn', part:2, n:7, t:'Who to learn from', time:'8 min', g:'Scan the ' + PEERS.length + ' peer cards, pick 2, and write what works and what Breaking Games would borrow.'},
   {key:'snap', part:2, n:8, t:'Game Snapshot', time:'8 min', g:'Run the 10-second test on 2 hero games. Then finish one sentence about what the games need from the Breaking Games brand.'},
   {key:'ins', part:2, n:9, t:'Strategy insights', time:'8 min', g:'Pick 3 "What I learned" lines from your Experiment Journal and write each one in the client version: one about Gen Z, one about the current buyer, one about ads.'},
@@ -721,8 +736,18 @@ var SECTIONS = [
     countLine('count-guard', S.guard.length, 3, 'guardrail');
   };
 
+  function givensCard(title, extra){
+    return h('div', {class:'card soft'}, [h('h3', {text:title}), h('ul', {style:'padding-left:1.2em;margin-top:4px'}, [
+      h('li', {}, [h('strong', {text:'"' + BRAND_LINE + '" '}), BRAND_MEANING]),
+      h('li', {}, [h('strong', {text:'Mission: '}), '"' + MISSION + '"']),
+      h('li', {}, [h('strong', {text:'Voice: '}), VOICE_LINE.toLowerCase() + '. Show the game or the designer before the punchline.',
+        h('ul', {style:'padding-left:1.2em;margin-top:4px'}, TRAITS.map(function(x){ return h('li', {}, [h('strong', {text:x[0] + ': '}), x[1]]); }))]),
+      h('li', {text:STYLE})].concat(extra || []))]);
+  }
+
   R.promise = function(b){
     function upd(){ $('promise-preview').textContent = promiseText() || 'Fill in all 3 parts to see your full sentence here.'; }
+    b.appendChild(givensCard('The brand\'s givens (from its brand guide)', [h('li', {text:'You don\'t invent a voice. Your promise, and every video, puts this one to work for Rachel or Dani.'})]));
     b.appendChild(h('p', {}, ['Pattern: ', h('strong', {}, ['Breaking Games helps ', blank(), ' feel ', blank(), ' by ', blank(), '.'])]));
     [['who', 'Breaking Games helps... (who)', 'Name a real group. Example: friends planning a game night where not everyone knows each other'],
      ['feel', '...feel... (what feeling)', 'Example: like the whole table is in on the fun'],
@@ -732,7 +757,7 @@ var SECTIONS = [
     b.appendChild(h('div', {}, [h('h3', {text:'Preview'}), h('p', {class:'hint', text:'Updates as you type.'}), h('p', {class:'preview', id:'promise-preview'})]));
     b.appendChild(ws([['weak', 'Breaking Games helps people feel happy by making fun games.'],
       ['strong', 'Breaking Games helps families with no patience for a long rulebook feel like everyone at the table is in on it by showing games you can learn in 10 seconds.']]));
-    b.appendChild(tips('Check yours', ['Could a bank or a phone brand say the same sentence? Then make it more about game night.', 'Does it fit "Good game, folks."? The brand is about connection and face-to-face play.']));
+    b.appendChild(tips('Check yours', ['Could a bank or a phone brand say the same sentence? Then make it more about game night.', 'Does it fit "Good game, folks." and the mission? Read it out loud: would a friendly emcee say it, or a salesperson?']));
     upd();
   };
   function promiseText(){ var p = S.promise; return (t(p.who) && t(p.feel) && t(p.by)) ? 'Breaking Games helps ' + t(p.who) + ' feel ' + t(p.feel) + ' by ' + t(p.by).replace(/\.$/, '') + '.' : ''; }
@@ -758,7 +783,7 @@ var SECTIONS = [
       'Be honest about filming. You\'ll make these videos in the next few days with adult hands, your voice and the product image deck.']));
     S.vids.forEach(function(v, i){
       var n = i + 1;
-      var trendNote = h('p', {class:'heads', id:'trend-' + n, hidden:v.fw !== 'trend'}, [h('strong', {text:'Heads up: '}), 'Trend-Based is family-safe only. Use a trend only if the sound and the joke fit "fun and warm, not edgy" and still show the game. If the idea only works because the sound is popular, pick a different framework.']);
+      var trendNote = h('p', {class:'heads', id:'trend-' + n, hidden:v.fw !== 'trend'}, [h('strong', {text:'Heads up: '}), 'Trend-Based is family-safe only. Use a trend only if the sound and the joke stay PG ("occasionally ridiculous, not unhinged") and still show the game. If the idea only works because the sound is popular, pick a different framework.']);
       var fs = h('fieldset', {class:'video-card', id:'vid-' + n}, [h('legend', {text:'Video ' + n}), h('div', {class:'inner'}, [
         selectField({id:'v' + n + '-fw', label:'Framework ' + n, value:v.fw, options:FWS.map(function(f){ return [f.id, f.t]; }), set:function(x){ v.fw = x; },
           after:function(){ trendNote.hidden = v.fw !== 'trend'; var f = byId(FWS, v.fw); updateSuggest(); announce(f ? 'Video ' + n + ' framework: ' + f.t + '.' + (v.fw === 'trend' ? ' A heads-up note was added below it.' : '') : 'Video ' + n + ' framework cleared.'); }}),
@@ -799,16 +824,15 @@ var SECTIONS = [
   R.out1 = function(b){ outScreen(b, 1); };
 
   R.voice = function(b){
-    b.appendChild(h('div', {class:'card soft'}, [h('h3', {text:'Fixed by the brand'}), h('ul', {style:'padding-left:1.2em;margin-top:4px'}, [
-      h('li', {}, ['Brand line: ', h('strong', {text:'"Good game, folks."'}), ' Write it exactly like that until the brand guide says otherwise.']),
-      h('li', {text:'Voice: fun and warm, not edgy. Friendly humor is welcome; the joke is never on a person or a group.'}),
+    b.appendChild(givensCard('Fixed by the brand guide', [
+      h('li', {text:'Write the brand line exactly as "Good game, folks.", with the comma and the period.'}),
       h('li', {text:'No anti-screens angle ("put down your phone"). Show people choosing the table, not rejecting their phones.'}),
-      h('li', {text:END_CARD})])]));
-    var wf = h('fieldset', {id:'fs-words', 'aria-describedby':'words-hint'}, [h('legend', {text:'3 voice words'}), h('p', {class:'hint', id:'words-hint', text:'Words that sit inside "fun and warm, not edgy." Pick ones only a game night could own.'})]);
-    S.words.forEach(function(w, i){ var f = field({id:'w-' + i, label:'Voice word ' + (i + 1), value:w, set:function(v){ S.words[i] = v; }}); f.style.marginTop = '8px'; wf.appendChild(f); });
+      h('li', {text:END_CARD})]));
+    var wf = h('fieldset', {id:'fs-words', 'aria-describedby':'words-hint'}, [h('legend', {text:'3 voice traits on TikTok'}), h('p', {class:'hint', id:'words-hint', text:'Pick 3 of the 6 traits above. For each, write how it sounds in a TikTok for Rachel or Dani. Don\'t invent a new voice.'})]);
+    S.words.forEach(function(w, i){ var f = field({id:'w-' + i, label:'Voice trait ' + (i + 1) + ' on TikTok', value:w, set:function(v){ S.words[i] = v; }}); f.style.marginTop = '8px'; wf.appendChild(f); });
     b.appendChild(wf);
-    b.appendChild(ws([['weak', 'savage, unhinged, chaotic (edgy, off-brand)'], ['weak', 'fun, good, nice (any brand could say these)'], ['strong', 'warm, quick, playful']], 'Weak vs. strong voice words'));
-    var sf = h('fieldset', {'aria-describedby':'sliders-hint'}, [h('legend', {text:'Tone sliders'}), h('p', {class:'hint', id:'sliders-hint', text:'5 steps each. Use the arrow keys to move a slider.'})]);
+    b.appendChild(ws([['weak', 'Witty (just the trait name, with no TikTok in it)'], ['weak', 'Savage and unhinged (not the brand)'], ['strong', 'Nostalgic, not themed: a "This just in" hook for Dani, then straight to the game.']], 'Weak vs. strong voice traits'));
+    var sf = h('fieldset', {'aria-describedby':'sliders-hint'}, [h('legend', {text:'Tone sliders'}), h('p', {class:'hint', id:'sliders-hint', text:'5 steps each. The brand guide leans casual and playful. Use the arrow keys to move a slider.'})]);
     SLIDERS.forEach(function(s){
       var out = h('span', {class:'val', id:'sv-' + s.k, text:s.w[S.sl[s.k] - 1]});
       var inp = h('input', {type:'range', id:'sl-' + s.k, min:'1', max:'5', step:'1', value:String(S.sl[s.k]), 'aria-valuetext':s.w[S.sl[s.k] - 1]});
@@ -819,10 +843,10 @@ var SECTIONS = [
     b.appendChild(sf);
 
     b.appendChild(radioGroup({id:'fs-palsrc', legend:'Where does your palette come from?', value:S.palSrc,
-      options:[['guide', 'The agency brand guide'], ['temp', 'Temporary palette from the current logo']], set:function(x){ S.palSrc = x; }}));
+      options:[['guide', 'The Breaking Games brand guide'], ['temp', 'Temporary palette from the current logo']], set:function(x){ S.palSrc = x; }}));
     var fs = h('fieldset', {id:'fs-colors', 'aria-describedby':'pal-hint pal-temp-hint'}, [h('legend', {}, ['Your palette: 3 to 5 colors ', h('span', {class:'req', text:'(required)'})]),
-      h('p', {class:'hint', id:'pal-hint'}, ['Type a hex code (like #CC0F3A) or use the picker. Brand guide colors: '].concat(rich('{PM: brand guide palette, owed by Michael from Kathy}')).concat(['.'])),
-      h('p', {class:'hint', id:'pal-temp-hint'}, rich('Temporary palette (until the brand guide arrives): {PM: hex codes sampled from the current Breaking Games logo}. Label it "temporary." Each color shows its contrast so you know if it can carry small text.')),
+      h('p', {class:'hint', id:'pal-hint'}, ['Type a hex code (like #CC0F3A) or use the picker. Brand guide colors: Arcade #4D4DFF (the lead color), Nebula #C486FF, Fireball #EA5347, Splash #0AD5AA, Spark #F2F300, Reset #F2F2F3 and Shadow #211F20.']),
+      h('p', {class:'hint', id:'pal-temp-hint'}, 'Used a temporary palette before the brand guide arrived? Switch to the brand guide colors now. Each color shows its contrast so you know if it can carry small text.'),
       h('div', {id:'color-rows'}), h('div', {class:'actions', style:'margin-top:10px'}, [h('button', {type:'button', id:'add-color', text:'Add a color', onclick:addColor})])]);
     b.appendChild(fs); renderColors();
     var im = h('fieldset', {id:'fs-img', 'aria-describedby':'img-hint'}, [h('legend', {text:'3 imagery words'}), h('p', {class:'hint', id:'img-hint', text:'How should every frame feel? The rule underneath: ' + IMG_RULE})]);
@@ -1029,7 +1053,7 @@ var SECTIONS = [
       if (!v.pillar || pillarOptions().indexOf(v.pillar) < 0) add('v' + n + '-pillar', 'Error: Choose a pillar for Video ' + n + '.');
       if (!t(v.why)) add('v' + n + '-why', 'Error: Say why you picked this framework for Video ' + n + '.'); });
     if (k === 'voice'){
-      S.words.forEach(function(w, i){ if (!t(w)) add('w-' + i, 'Error: Add voice word ' + (i + 1) + '.'); });
+      S.words.forEach(function(w, i){ if (!t(w)) add('w-' + i, 'Error: Write how voice trait ' + (i + 1) + ' sounds on TikTok.'); });
       if (!S.palSrc) add('fs-palsrc', 'Error: Choose where your palette comes from.', 'fs-palsrc-guide');
       if (S.colors.length < 3 || S.colors.length > 5) add('fs-colors', 'Error: Use 3 to 5 colors. You have ' + S.colors.length + '.', S.colors.length > 5 ? 'hex-0' : 'add-color');
       S.colors.forEach(function(c, i){ if (!HEX.test(t(c))) add('hex-' + i, 'Error: Enter color ' + (i + 1) + ' as a 6-digit hex code, like #CC0F3A.'); });
@@ -1209,9 +1233,10 @@ var SECTIONS = [
     function para(txt){ return txt ? h('p', {}, rich(txt)) : h('p', {class:'missing', text:MISSING}); }
     function list(items){ return items.length ? h('ul', {}, items.map(function(i){ return h('li', {}, typeof i === 'string' ? rich(i) : i); })) : para(''); }
     br.appendChild(h('p', {class:'brief-title', id:'brief-title-' + p, text:p === 1 ? 'Brand Strategy Brief v1: Breaking Games TikTok Relaunch' : 'Brand Strategy Brief: Breaking Games TikTok Relaunch'}));
-    br.appendChild(h('p', {class:'sig', text:'Brand line: "Good game, folks."  ·  Voice: fun and warm, not edgy'}));
+    br.appendChild(h('p', {class:'sig', text:'Brand line: "Good game, folks."  ·  Voice: ' + VOICE_LINE.toLowerCase()}));
     sec('Relaunch challenge', [para(RELAUNCH)]);
     sec('Call to action', [h('p', {}, ['"' + CTA + '" → ', h('a', {href:SITE, target:'_blank', rel:'noopener'}, ['breakinggames.com', sr(' (opens in a new tab)')]), ' (or a game page, such as Caminito\'s). ' + END_CARD])]);
+    sec('Brand voice (from the brand guide)', [para(voiceSummary())]);
     sec('Who we\'re for', [list(PERSONAS.map(function(pp){ var st = S.persona[pp.id];
       return [h('strong', {text:pp.name + ', ' + pp.age + ' (' + pp.label.toLowerCase() + '): '}), 'Moment: ' + (t(st.moment) || MISSING) + ' Stops for: ' + (t(st.stop) || MISSING)]; }))]);
     sec('Guardrails: our top 3 (all 9 apply)', [list(guardList().map(function(g){ return [h('strong', {text:g.t + ': '}), g.d]; }))]);
@@ -1228,8 +1253,8 @@ var SECTIONS = [
     if (p === 2){
       sec('Voice and visuals', [
         palette().length ? h('ul', {class:'chips', 'aria-label':'Palette'}, palette().map(function(c){ return h('li', {}, [h('span', {class:'swatch', 'aria-hidden':'true', style:'background:' + c}), h('span', {class:'hex', text:c})]); })) : para(''),
-        list(['Voice words: ' + (words().join(', ') || MISSING), 'Tone: ' + tone(), 'Palette' + palLabel() + ': ' + (palette().join(', ') || MISSING),
-          'Fonts and logo: from the brand guide {PM: fonts and logo lockup}', 'Imagery: ' + (S.imagery.map(t).filter(Boolean).join(', ') || MISSING) + '. ' + IMG_RULE])]);
+        list(['Voice on TikTok: ' + (words().join('; ') || MISSING), 'Tone: ' + tone(), 'Palette' + palLabel() + ': ' + (palette().join(', ') || MISSING),
+          'Fonts: Century Gothic for headlines and Trebuchet MS for body, the brand guide\'s stand-ins for Suncoast GROT and Mabry Pro. Logo: as provided, never stretched, recolored or rotated.', 'Imagery: ' + (S.imagery.map(t).filter(Boolean).join(', ') || MISSING) + '. ' + IMG_RULE])]);
       sec('Who we learn from', [list(S.learn.map(function(id){ var c = byId(PEERS, id), n = S.learnNotes[id] || {}; if (!c) return '';
         return [h('strong', {text:c.name + ': '}), 'What works: ' + (t(n.works) || MISSING) + ' What we\'d borrow: ' + (t(n.borrow) || MISSING)]; }).filter(Boolean))]);
       sec('Game Snapshot', [list(S.snap.map(function(id){ var g = byId(GAMES, id), n = S.snapNotes[id] || {}; if (!g) return '';
@@ -1248,9 +1273,10 @@ var SECTIONS = [
   function fullText(p){
     var L = [], line = function(s){ L.push(s == null ? '' : s); };
     line(p === 1 ? 'BRAND STRATEGY BRIEF v1: BREAKING GAMES TIKTOK RELAUNCH' : 'BRAND STRATEGY BRIEF: BREAKING GAMES TIKTOK RELAUNCH');
-    line('Brand line: "Good game, folks." | Voice: fun and warm, not edgy'); line('');
+    line('Brand line: "Good game, folks." | Voice: ' + VOICE_LINE.toLowerCase()); line('');
     line('RELAUNCH CHALLENGE'); line(RELAUNCH); line('');
     line('CALL TO ACTION'); line('"' + CTA + '" -> ' + SITE + ' (or a game page, such as Caminito\'s). ' + END_CARD); line('');
+    line('BRAND VOICE (FROM THE BRAND GUIDE)'); line(voiceSummary()); line('');
     line('WHO WE\'RE FOR'); PERSONAS.forEach(function(pp){ var st = S.persona[pp.id]; line('- ' + pp.name + ', ' + pp.age + ' (' + pp.label.toLowerCase() + '): Moment: ' + (t(st.moment) || MISSING) + ' Stops for: ' + (t(st.stop) || MISSING)); }); line('');
     line('GUARDRAILS: OUR TOP 3 (ALL 9 APPLY)'); guardList().forEach(function(g){ line('- ' + g.t + ': ' + g.d); }); if (!S.guard.length) line(MISSING); line('');
     line('BRAND PROMISE'); line(promiseText() || MISSING); line('');
@@ -1260,8 +1286,8 @@ var SECTIONS = [
     line('');
     if (p === 2){
       line('VOICE AND VISUALS');
-      line('- Voice words: ' + (words().join(', ') || MISSING)); line('- Tone: ' + tone());
-      line('- Palette' + palLabel() + ': ' + (palette().join(', ') || MISSING)); line('- Fonts and logo: from the brand guide {PM: fonts and logo lockup}');
+      line('- Voice on TikTok: ' + (words().join('; ') || MISSING)); line('- Tone: ' + tone());
+      line('- Palette' + palLabel() + ': ' + (palette().join(', ') || MISSING)); line('- Fonts: Century Gothic for headlines and Trebuchet MS for body, the brand guide\'s stand-ins for Suncoast GROT and Mabry Pro. Logo: as provided, never stretched, recolored or rotated.');
       line('- Imagery: ' + (S.imagery.map(t).filter(Boolean).join(', ') || MISSING) + '. ' + IMG_RULE); line('');
       line('WHO WE LEARN FROM'); S.learn.forEach(function(id){ var c = byId(PEERS, id), n = S.learnNotes[id] || {}; if (c) line('- ' + c.name + ': What works: ' + (t(n.works) || MISSING) + ' What we\'d borrow: ' + (t(n.borrow) || MISSING)); }); if (!S.learn.length) line(MISSING); line('');
       line('GAME SNAPSHOT'); S.snap.forEach(function(id){ var g = byId(GAMES, id), n = S.snapNotes[id] || {}; if (g) line('- ' + g.t + ': First 10 seconds: ' + (t(n.seen) || MISSING) + ' 10-second test: ' + (n.pass === 'yes' ? 'passes.' : n.pass === 'no' ? 'not yet. Fix: ' + (t(n.fix) || MISSING) : MISSING)); }); if (!S.snap.length) line(MISSING);
