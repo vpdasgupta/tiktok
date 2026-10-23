@@ -248,7 +248,7 @@
       <caption class="sr-only">The shelf: which games you can use</caption>
       <thead><tr><th scope="col">Bin</th><th scope="col">Games</th></tr></thead>
       <tbody>
-        <tr><th scope="row"><span class="status-pill use">Use now</span></th><td>POOP: The Game, The Game of 49, Sparkle*Kitty, Play2Read early-reader card games</td></tr>
+        <tr><th scope="row"><span class="status-pill use">Use now</span></th><td>The Game of 49, Sparkle*Kitty, POOP: The Game, Play2Read early-reader card games</td></tr>
         <tr><th scope="row"><span class="status-pill check">Check stock first</span></th><td>We're Doomed!, Dwellings of Eldervale 2nd Edition</td></tr>
         <tr><th scope="row"><span class="status-pill no">Don't feature</span></th><td>Hypothetically Fun (roast only), Suddenly Drunk, Sparkle*Kitty Nights, Coaster Park (until confirmed)</td></tr>
       </tbody>
@@ -282,16 +282,12 @@
 
   /* Level 2 cards. Facts are Approved Facts (checked 2026-10-13). Edit the page's text version too. */
   const SHELF = [
-    { name: "POOP: The Game", facts: ["$10", "Ages 6+", "2 to 10 players", "15 minutes"], bin: "use",
-      box: "poopBox", boxAlt: "POOP: The Game box: a red card box with POOP in a big white circle.",
-      play: "poopPlay", playAlt: "POOP cards laid out on a table as a numbered toilet track.",
-      why: "It's in stock, cheap and family-safe. POOP jokes are fine." },
-    { name: "Hypothetically Fun", facts: ["Shows up in the roast"], bin: "no",
-      why: "You'll see it in the roast posts, but it never goes in new content." },
     { name: "The Game of 49", facts: ["$20", "Ages 10+", "2 to 5 players", "30 to 45 minutes"], bin: "use",
       box: "g49Box", boxAlt: "The Game of 49 box: a red box with a giant silver 49 and colored chips.",
       play: "g49Play", playAlt: "Close-up of colored chips on The Game of 49's numbered board.",
       why: "It's ready to use. A strategy game that families and gamers both like." },
+    { name: "Hypothetically Fun", facts: ["Shows up in the roast"], bin: "no",
+      why: "You'll see it in the roast posts, but it never goes in new content." },
     { name: "We're Doomed!", facts: ["$35", "Ages 14+", "4 to 10 players"], bin: "check",
       why: "It showed sold out when the program team last checked. Check the product page on the day, and never feature it while it's sold out." },
     { name: "Sparkle*Kitty", facts: ["$24.99", "Ages 9+", "3 to 8 players"], bin: "use",
@@ -304,6 +300,10 @@
       box: "elderBox", boxAlt: "Dwellings of Eldervale box: a fantasy landscape with dragons and beasts.",
       play: "elderPlay", playAlt: "Dwellings of Eldervale's hex-tile board covered in colorful worker pieces.",
       why: "The game was in stock, but its new expansions showed sold out. Check stock on the day." },
+    { name: "POOP: The Game", facts: ["$10", "Ages 6+", "2 to 10 players", "15 minutes"], bin: "use",
+      box: "poopBox", boxAlt: "POOP: The Game box: a red card box with POOP in a big white circle.",
+      play: "poopPlay", playAlt: "POOP cards laid out on a table as a numbered toilet track.",
+      why: "It's in stock, cheap and family-safe. POOP jokes are fine." },
     { name: "Play2Read early-reader card games", facts: ["$13 each"], bin: "use",
       why: "You can use them. A few titles were sold out, so check the one you pick." },
     { name: "Coaster Park", facts: ["Not confirmed yet"], bin: "no",
@@ -313,15 +313,15 @@
   ];
 
   const PICKS = [
-    { title: "The family post", prompt: "You want one game for a family post. Which one?",
-      options: ["POOP: The Game", "Sparkle*Kitty Nights"], answer: "POOP: The Game",
-      why: "It's $10, ages 6+, and family-safe. Sparkle*Kitty Nights is an adult title, so it's out." },
     { title: "The push list", prompt: "Your program manager shares this month's push list, and it names The Game of 49. You'd planned a Sparkle*Kitty post. What goes first?",
       options: ["The Game of 49", "Sparkle*Kitty"], answer: "The Game of 49",
       why: "Breaking Games' marketing team picks games to push each month or season. When you get that list, those games come first." },
     { title: "The caption", prompt: 'Your draft caption says: "From the makers of Exploding Kittens…" Keep it or cut it?',
       options: ["Keep it", "Cut it"], answer: "Cut it",
       why: "Never say Breaking Games made or owns Cards Against Humanity or Exploding Kittens." },
+    { title: "The family post", prompt: "You want one game for a family post. Which one?",
+      options: ["POOP: The Game", "Sparkle*Kitty Nights"], answer: "POOP: The Game",
+      why: "It's $10, ages 6+, and family-safe. Sparkle*Kitty Nights is an adult title, so it's out." },
     { title: "The hero game", prompt: "You want Caminito's price in a caption, but you don't have it yet. What do you do?",
       options: ["Guess from similar games", "Wait for your program manager"], answer: "Wait for your program manager",
       why: "Caminito leads the relaunch, but its facts are coming from Breaking Games. Don't guess any Caminito facts." }
