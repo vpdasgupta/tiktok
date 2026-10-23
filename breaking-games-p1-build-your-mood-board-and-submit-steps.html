@@ -72,23 +72,23 @@ const TASK = {
     },
     {
       title: "Make your Feel slide",
-      instruction: "The Feel slide shows how Breaking Games should <b>feel</b> on TikTok: 3 voice words, the energy level, and 3 screenshots from your roast, each labeled with its account name. Pick your words and energy first (sample: <i>Warm, playful, welcoming · Energy: medium</i>), then paste this prompt into Canva AI for a first draft:",
+      instruction: "The Feel slide shows how Breaking Games should <b>feel</b> on TikTok: 3 voice words, the energy level, and 3 screenshots from your roast, each labeled with its account name. Breaking Games' brand guide already sets the voice: a charismatic emcee who's witty, warm, friendly (not salesy) and a little nostalgic. Pick the 3 words from it that matter most on TikTok, plus the energy (sample: <i>Witty, warm, nostalgic · Energy: laid-back</i>), then paste this prompt into Canva AI for a first draft:",
       sample: { label: "Copy this Canva AI prompt", kind: "code",
-        body: "Make a mood board slide titled \"Feel\" for Breaking Games, a tabletop game publisher.\nBrand line: \"Good game, folks.\" Tone: fun and warm, not edgy.\nShow 3 voice words: [YOUR 3 WORDS]\nEnergy: [CALM / MEDIUM / HIGH]\nLeave 3 empty frames for screenshots." },
-      onTrack: "a friend could read your 3 voice words and guess the brand is warm and playful, not snarky.",
+        body: "Make a mood board slide titled \"Feel\" for Breaking Games, a tabletop game producer.\nTagline: \"Good game, folks.\" Voice: a charismatic emcee, witty and warm, never edgy.\nShow 3 voice words: [YOUR 3 WORDS]\nEnergy: [LAID-BACK / MEDIUM / HIGH]\nColors: #4D4DFF blue, #C486FF lilac, #0AD5AA teal, #F2F300 yellow\nLeave 3 empty frames for screenshots." },
+      onTrack: "a friend could read your 3 voice words and guess the brand is witty and warm, not snarky or salesy.",
       stuck: [
-        "Voice words feel generic? Swap any word a bank could also use (like “trusted”) for one only a game night could use.",
+        "Voice words feel generic? Use the brand's own words: clever, casual, friendly, occasionally ridiculous, enthusiastic, nostalgic. Skip any word a bank could also use (like “trusted”).",
         "Canva gave you dark, moody art? Add “bright, daylight, friends at a table” to the prompt and regenerate."
       ]
     },
     {
       title: "Build your Look slide",
-      instruction: "Until Breaking Games' brand guide arrives, use a <b>temporary palette</b>: sample 4 colors from the <a href=\"https://extern-public.s3.us-east-2.amazonaws.com/admin/company_logos/Breakinggammes.png\" target=\"_blank\" rel=\"noopener\">current Breaking Games logo<span class=\"sr-only\"> (opens in a new tab)</span></a> with Canva's color picker, type each hex code under its swatch, and label the palette “temporary.” Add one headline font and one body font. Then add 3 to 4 images of real tables, adult hands and people playing together. Game boxes can be any game on <a href=\"https://breakinggames.com/\" target=\"_blank\" rel=\"noopener\">breakinggames.com<span class=\"sr-only\"> (opens in a new tab)</span></a>, not just the newest one; grab them from the <a href=\"https://smitabudhiaextern.github.io/extern-html-pages/bg-image-deck.html\" target=\"_blank\" rel=\"noopener\">product image deck<span class=\"sr-only\"> (opens in a new tab)</span></a>; for tables and hands, use this Magic Media prompt:",
-      sample: { label: "Sample palette and type, then the prompt to copy", kind: "code",
-        body: "Palette (temporary): #202864 navy, #3898C0 blue, #C8E8F8 light blue, #FFFFFF white\nType: Montserrat ExtraBold for headlines, Open Sans for body text\n\nCandid phone photo, warm evening light. Close-up of adult hands playing a card game\non a wooden kitchen table, snacks nearby, friends laughing off camera.\nHands only, no faces. No text, no logos. Not a studio shoot, no models posing." },
+      instruction: "Use Breaking Games' brand palette. It has 7 colors: <b>Arcade</b> #4D4DFF (blue, the lead color), <b>Nebula</b> #C486FF (lilac), <b>Fireball</b> #EA5347 (coral red), <b>Splash</b> #0AD5AA (teal), <b>Spark</b> #F2F300 (yellow), <b>Reset</b> #F2F2F3 (off-white) and <b>Shadow</b> #211F20 (near-black). Pick 4, always including Arcade, and type each name and hex code under its swatch. For type, the brand uses Suncoast GROT for headlines and Mabry Pro for body text; in Canva, use the brand's backups, Century Gothic and Trebuchet MS, or the closest match. Add one brand touch: a grainy gradient background, a thin-outline pill or oval frame, or sticker-style icons like dice and pawns. Then add 3 to 4 images of real tables, adult hands and people playing together, with brand colors in the props where you can. Game boxes can be any game on <a href=\"https://breakinggames.com/\" target=\"_blank\" rel=\"noopener\">breakinggames.com<span class=\"sr-only\"> (opens in a new tab)</span></a>, not just the newest one; grab them from the <a href=\"https://smitabudhiaextern.github.io/extern-html-pages/bg-image-deck.html\" target=\"_blank\" rel=\"noopener\">product image deck<span class=\"sr-only\"> (opens in a new tab)</span></a>; for tables and hands, use this Magic Media prompt:",
+      sample: { label: "Sample palette, type and brand touch, then the prompt to copy", kind: "code",
+        body: "Palette (Breaking Games brand): #4D4DFF Arcade, #C486FF Nebula, #0AD5AA Splash, #211F20 Shadow\nType: Century Gothic Bold for headlines, Trebuchet MS for body text (the brand's backups)\nBrand touch: blue-to-lilac grainy gradient behind the title\n\nCandid phone photo, bright daylight. Close-up of adult hands playing a card game\non a wooden kitchen table, a blue mug and teal dice nearby, friends laughing off camera.\nHands only, no faces. No text, no logos. Not a studio shoot, no models posing." },
       onTrack: "every text and background pair passes a contrast check (4.5:1 for small text, 3:1 for large), and every image could be a frame from a real game night.",
       stuck: [
-        "Check any color pair in the free <a href=\"https://webaim.org/resources/contrastchecker/\" target=\"_blank\" rel=\"noopener\">WebAIM contrast checker<span class=\"sr-only\"> (opens in a new tab)</span></a>. Bright yellow or orange text on white almost always fails, so use those colors for shapes.",
+        "Brand text pairs that pass: Arcade blue on Reset off-white, Arcade on Spark yellow, and any brand color on Shadow. Teal or lilac on blue looks great in the brand campaign but fails for text, so save it for shapes and backgrounds. Check any other pair in the free <a href=\"https://webaim.org/resources/contrastchecker/\" target=\"_blank\" rel=\"noopener\">WebAIM contrast checker<span class=\"sr-only\"> (opens in a new tab)</span></a>.",
         "Label every AI image “AI image.” Hands-only AI images are OK on your mood board with that label, because they only set the mood. Never AI faces or AI-made people, never AI footage in a video or ad, and never a made-up Breaking Games logo."
       ]
     },
@@ -107,7 +107,7 @@ const TASK = {
       title: "Check your mood board",
       instruction: "Go through your mood board once. Fix anything that misses.",
       sample: { label: "The checklist", kind: "text",
-        body: "Mood board: could someone tell this is a warm game-night brand without reading the labels? Nothing dark, snarky or edgy. Palette marked “temporary” with hex codes. Every AI image labeled. Every spotted hook credited to its account." },
+        body: "Mood board: could someone tell this is a warm game-night brand without reading the labels? Nothing dark, snarky or edgy. Brand palette with color names and hex codes, Arcade blue included, plus one brand touch. Every AI image labeled. Every spotted hook credited to its account." },
       onTrack: "you can tick every line without opening anything new.",
       stuck: [
         "Images look like an ad? Add “candid phone photo, real kitchen table, hands only, no models posing” to the prompt.",
@@ -134,7 +134,7 @@ const TASK = {
     intro: "Your program manager reviews your mood board and your Week 1 recap.",
     criteria: [
       { name: "Feel and Hooks", lookFor: "3 voice words that are fun and warm, not edgy, 3 labeled roast screenshots, and 3 credited hooks rewritten in 7 words or fewer." },
-      { name: "Look", lookFor: "A palette marked “temporary” with hex codes, one type pairing, and real photos or labeled, hands-only AI images of people playing." },
+      { name: "Look", lookFor: "The brand palette with names and hex codes (Arcade blue included), the brand's type or its backups, one brand touch, and real photos or labeled, hands-only AI images of people playing." },
       { name: "Complete", lookFor: "Your Canva link opens, and your roast notes doc ends with your 2-question Week 1 recap." }
     ],
     finish: "Done? Submit your Canva link on the page below. One short step left this week: your workshare slide."
