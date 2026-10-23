@@ -72,7 +72,7 @@ const TASK = {
     },
     {
       title: "Make your Feel slide",
-      instruction: "The Feel slide shows how Breaking Games should <b>feel</b> on TikTok: 3 voice words, the energy level, and 3 screenshots from your roast, each labeled with its account name. Breaking Games' brand guide already sets the voice: a charismatic emcee who's witty, warm, friendly (not salesy) and a little nostalgic. Pick the 3 words from it that matter most on TikTok, plus the energy (sample: <i>Witty, warm, nostalgic · Energy: laid-back</i>), then paste this prompt into Canva AI for a first draft:",
+      instruction: "The Feel slide shows how Breaking Games should <b>feel</b> on TikTok: 3 voice words, the energy level, and 3 screenshots from your roast, each labeled with its account name. Use the voice traits from your briefing: pick the 3 words that matter most on TikTok, plus the energy (sample: <i>Witty, warm, nostalgic · Energy: laid-back</i>), then paste this prompt into Canva AI for a first draft:",
       sample: { label: "Copy this Canva AI prompt", kind: "code",
         body: "Make a mood board slide titled \"Feel\" for Breaking Games, a tabletop game producer.\nTagline: \"Good game, folks.\" Voice: a charismatic emcee, witty and warm, never edgy.\nShow 3 voice words: [YOUR 3 WORDS]\nEnergy: [LAID-BACK / MEDIUM / HIGH]\nColors: #4D4DFF blue, #C486FF lilac, #0AD5AA teal, #F2F300 yellow\nLeave 3 empty frames for screenshots." },
       onTrack: "a friend could read your 3 voice words and guess the brand is witty and warm, not snarky or salesy.",
@@ -83,18 +83,18 @@ const TASK = {
     },
     {
       title: "Build your Look slide",
-      instruction: "Use Breaking Games' brand palette. It has 7 colors: <b>Arcade</b> #4D4DFF (blue, the lead color), <b>Nebula</b> #C486FF (lilac), <b>Fireball</b> #EA5347 (coral red), <b>Splash</b> #0AD5AA (teal), <b>Spark</b> #F2F300 (yellow), <b>Reset</b> #F2F2F3 (off-white) and <b>Shadow</b> #211F20 (near-black). Pick 4, always including Arcade, and type each name and hex code under its swatch. For type, the brand uses Suncoast GROT for headlines and Mabry Pro for body text; in Canva, use the brand's backups, Century Gothic and Trebuchet MS, or the closest match. Add one brand touch: a grainy gradient background, a thin-outline pill or oval frame, or sticker-style icons like dice and pawns. Then add 3 to 4 images of real tables, adult hands and people playing together, with brand colors in the props where you can. Game boxes can be any game on <a href=\"https://breakinggames.com/\" target=\"_blank\" rel=\"noopener\">breakinggames.com<span class=\"sr-only\"> (opens in a new tab)</span></a>, not just the newest one; grab them from the <a href=\"https://smitabudhiaextern.github.io/extern-html-pages/bg-image-deck.html\" target=\"_blank\" rel=\"noopener\">product image deck<span class=\"sr-only\"> (opens in a new tab)</span></a>; for tables and hands, use this Magic Media prompt:",
+      instruction: "Pick 4 of the 7 brand colors from your briefing, always including <b>Arcade</b> #4D4DFF, and type each name and hex code under its swatch. Use the brand's backup fonts, <b>Century Gothic</b> for headlines and <b>Trebuchet MS</b> for body text, and add one brand touch: a grainy gradient, a thin-outline frame or sticker-style icons. Then add 3 to 4 images of real tables, adult hands and people playing together, with brand colors in the props where you can. Game boxes can be any game on <a href=\"https://breakinggames.com/\" target=\"_blank\" rel=\"noopener\">breakinggames.com<span class=\"sr-only\"> (opens in a new tab)</span></a>, not just the newest one; grab them from the <a href=\"https://smitabudhiaextern.github.io/extern-html-pages/bg-image-deck.html\" target=\"_blank\" rel=\"noopener\">product image deck<span class=\"sr-only\"> (opens in a new tab)</span></a>; for tables and hands, use this Magic Media prompt:",
       sample: { label: "Sample palette, type and brand touch, then the prompt to copy", kind: "code",
         body: "Palette (Breaking Games brand): #4D4DFF Arcade, #C486FF Nebula, #0AD5AA Splash, #211F20 Shadow\nType: Century Gothic Bold for headlines, Trebuchet MS for body text (the brand's backups)\nBrand touch: blue-to-lilac grainy gradient behind the title\n\nCandid phone photo, bright daylight. Close-up of adult hands playing a card game\non a wooden kitchen table, a blue mug and teal dice nearby, friends laughing off camera.\nHands only, no faces. No text, no logos. Not a studio shoot, no models posing." },
       onTrack: "every text and background pair passes a contrast check (4.5:1 for small text, 3:1 for large), and every image could be a frame from a real game night.",
       stuck: [
-        "Brand text pairs that pass: Arcade blue on Reset off-white, Arcade on Spark yellow, and any brand color on Shadow. Teal or lilac on blue looks great in the brand campaign but fails for text, so save it for shapes and backgrounds. Check any other pair in the free <a href=\"https://webaim.org/resources/contrastchecker/\" target=\"_blank\" rel=\"noopener\">WebAIM contrast checker<span class=\"sr-only\"> (opens in a new tab)</span></a>.",
+        "Text pairs that pass: Arcade on Reset or Spark, and Reset, Spark, Splash or Nebula on Shadow. Arcade on Shadow, and teal or lilac on Arcade, fail for text, so save them for shapes and backgrounds. The chart in your briefing has the ratios. Check any other pair in the free <a href=\"https://webaim.org/resources/contrastchecker/\" target=\"_blank\" rel=\"noopener\">WebAIM contrast checker<span class=\"sr-only\"> (opens in a new tab)</span></a>.",
         "Label every AI image “AI image.” Hands-only AI images are OK on your mood board with that label, because they only set the mood. Never AI faces or AI-made people, never AI footage in a video or ad, and never a made-up Breaking Games logo. Want the logo on your board? Use the <a href=\"https://drive.google.com/drive/folders/1DPI4Vcr6dA3Ole06QQcLGB5-onjkfPXb?usp=sharing\" target=\"_blank\" rel=\"noopener\">Breaking Games logo files<span class=\"sr-only\"> (opens in a new tab)</span></a> as they are."
       ]
     },
     {
       title: "Make your Hooks to Steal slide",
-      instruction: "Pick 3 hook lines you spotted in your roast (your Toast lines are a good place to look). Write each one with the account it came from, then rewrite it for Breaking Games in 7 words or fewer.",
+      instruction: "Pick 3 hook lines you spotted in your roast (your Toast lines are a good place to look). Write each one with the account it came from, then rewrite it for Breaking Games: keep the shape, swap the moment, in 7 words or fewer.",
       sample: { label: "Sample", kind: "text",
         body: "Spotted: “What song plays when…” (Mixtape, @breakinggamesllc)\nOurs: “Which game wins family night?”" },
       onTrack: "each rewrite would make sense on screen with the sound off, in 7 words or fewer.",
@@ -105,11 +105,12 @@ const TASK = {
     },
     {
       title: "Check your mood board",
-      instruction: "Go through your mood board once. Fix anything that misses.",
+      instruction: "Start with a 30-second check: cover the slide labels and look at the whole board. Then go through the list once and fix anything that misses.",
       sample: { label: "The checklist", kind: "text",
-        body: "Mood board: could someone tell this is a warm game-night brand without reading the labels? Nothing dark, snarky or edgy. Brand palette with color names and hex codes, Arcade blue included, plus one brand touch. Every AI image labeled. Every spotted hook credited to its account." },
+        body: "Without labels, can someone tell Feel, Look and Hooks apart, and still see one warm game-night brand?\nNothing dark, snarky or edgy.\n4 brand colors with names and hex codes, Arcade included, plus one brand touch.\nEvery text pair passes the contrast chart in your briefing.\nEvery AI image is hands only and labeled \u201cAI image.\u201d\nEvery hook is credited to its account, in 7 words or fewer." },
       onTrack: "you can tick every line without opening anything new.",
       stuck: [
+        "Look slide could belong to any brand? Add your brand touch, and swap a stock-looking image for a real table.",
         "Images look like an ad? Add “candid phone photo, real kitchen table, hands only, no models posing” to the prompt.",
         "Hook missing its account name? Find it again in the Roast Deck and add it."
       ]
