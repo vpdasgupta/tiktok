@@ -59,74 +59,56 @@ const TASK = {
   exampleUrl: "https://vpdasgupta.github.io/tiktok/breaking-games-p1-mood-board-example.png",
   steps: [
     {
-      title: "Set up your Canva deck",
-      instruction: "Go to <a href=\"https://www.canva.com/\" target=\"_blank\" rel=\"noopener\">canva.com<span class=\"sr-only\"> (opens in a new tab)</span></a> and sign in (a free account works). Click <b>Create a design</b>, choose <b>Presentation (16:9)</b>, and name it <code>BG Mood Board - [Your Name]</code>. Add pages until you have 3, and type a label at the top of each.",
-      sample: { label: "Sample", kind: "text",
-        body: "Page 1: Feel\nPage 2: Look\nPage 3: Hooks to Use" },
-      onTrack: "you have one Canva design with 3 labeled pages.",
+      title: "Get set up in Canva",
+      instruction: "Go to <a href=\"https://www.canva.com/\" target=\"_blank\" rel=\"noopener\">canva.com<span class=\"sr-only\"> (opens in a new tab)</span></a> and sign in. No account yet? Click <b>Sign up</b> and use your Google account or an email address. The free plan has everything you need. Keep your roast notes and your briefing open in other tabs.",
+      onTrack: "you're signed in and can see the search bar at the top of the Canva home page.",
       stuck: [
-        "Canva moves its AI menus around. If a button looks different, search “Canva AI” or “Magic Media” in the <b>Apps</b> panel on the left.",
-        "<b>Canva AI</b> on the home page builds a whole slide from a prompt. <b>Magic Media</b>, inside your deck, makes single images you drag onto a slide.",
-        "New to Canva? This <a href=\"https://www.youtube.com/watch?v=3pQFu2U49ps\" target=\"_blank\" rel=\"noopener\">beginner-friendly Canva mood board tutorial<span class=\"sr-only\"> (opens in a new tab)</span></a> walks through setting up a board and adding images."
+        "Your school login won't work? Sign up with a personal email instead.",
+        "New to Canva? This <a href=\"https://www.youtube.com/watch?v=3pQFu2U49ps\" target=\"_blank\" rel=\"noopener\">beginner-friendly Canva mood board tutorial<span class=\"sr-only\"> (opens in a new tab)</span></a> walks through the basics."
       ]
     },
     {
-      title: "Make your Feel slide",
-      instruction: "The Feel slide shows how Breaking Games should <b>feel</b> on TikTok: 3 voice words, the energy level, and 3 screenshots from your roast, each labeled with its account name. Use the voice traits from your briefing: pick the 3 words that matter most on TikTok, plus the energy (sample: <i>Witty, warm, nostalgic · Energy: laid-back</i>), then paste this prompt into Canva AI for a first draft:",
-      sample: { label: "Copy this Canva AI prompt", kind: "code",
-        body: "Make a mood board slide titled \"Feel\" for Breaking Games, a tabletop game producer.\nTagline: \"Good game, folks.\" Voice: a charismatic emcee, witty and warm, never edgy.\nShow 3 voice words: [YOUR 3 WORDS]\nEnergy: [LAID-BACK / MEDIUM / HIGH]\nColors: #4D4DFF blue, #C486FF lilac, #0AD5AA teal, #F2F300 yellow\nLeave 3 empty frames for screenshots." },
-      onTrack: "a friend could read your 3 voice words and guess the brand is witty and warm, not snarky or salesy.",
+      title: "Pick a template you like",
+      instruction: "Search the Canva home page for a <b>presentation</b> template. Pick one with a clean layout and room for images. Don't worry about its colors or fonts; you'll switch them to the brand's. Open it, click <b>Customize this template</b>, and name it <code>BG Mood Board - [Your Name]</code>.",
+      sample: { label: "Searches to try", kind: "text",
+        body: "mood board presentation\nbrand board presentation\nretro presentation\ncolorful collage presentation\nY2K presentation\nplayful presentation" },
+      onTrack: "you have one template open in Canva, named with your name.",
       stuck: [
-        "Voice words feel generic? Use the brand's own words: clever, casual, friendly, occasionally ridiculous, enthusiastic, nostalgic. Skip any word a bank could also use (like “trusted”).",
-        "Canva gave you dark, moody art? Add “bright, daylight, friends at a table” to the prompt and regenerate."
+        "Templates marked with a crown are Pro (paid). Pick one without a crown.",
+        "Can't choose? Go with the one that has the most image frames."
       ]
     },
     {
-      title: "Build your Look slide",
-      instruction: "Pick 4 of the 7 brand colors from your briefing, always including <b>Arcade</b> #4D4DFF, and type each name and hex code under its swatch. Use the brand's backup fonts, <b>Century Gothic</b> for headlines and <b>Trebuchet MS</b> for body text, and add one brand touch: a grainy gradient, a thin-outline frame or sticker-style icons. Then add 3 to 4 images of real tables, adult hands and people playing together, with brand colors in the props where you can. Game boxes can be any game on <a href=\"https://breakinggames.com/\" target=\"_blank\" rel=\"noopener\">breakinggames.com<span class=\"sr-only\"> (opens in a new tab)</span></a>, not just the newest one; grab them from the <a href=\"https://smitabudhiaextern.github.io/extern-html-pages/bg-image-deck.html\" target=\"_blank\" rel=\"noopener\">product image deck<span class=\"sr-only\"> (opens in a new tab)</span></a>; for tables and hands, use this Magic Media prompt:",
-      sample: { label: "Sample palette, type and brand touch, then the prompt to copy", kind: "code",
-        body: "Palette (Breaking Games brand): #4D4DFF Arcade, #C486FF Nebula, #0AD5AA Splash, #211F20 Shadow\nType: Century Gothic Bold for headlines, Trebuchet MS for body text (the brand's backups)\nBrand touch: blue-to-lilac grainy gradient behind the title\n\nCandid phone photo, bright daylight. Close-up of adult hands playing a card game\non a wooden kitchen table, a blue mug and teal dice nearby, friends laughing off camera.\nHands only, no faces. No text, no logos. Not a studio shoot, no models posing." },
-      onTrack: "every text and background pair passes a contrast check (4.5:1 for small text, 3:1 for large), and every image could be a frame from a real game night.",
-      stuck: [
-        "Text pairs that pass: Arcade on Reset or Spark, and Reset, Spark, Splash or Nebula on Shadow. Arcade on Shadow, and teal or lilac on Arcade, fail for text, so save them for shapes and backgrounds. The chart in your briefing has the ratios. Check any other pair in the free <a href=\"https://webaim.org/resources/contrastchecker/\" target=\"_blank\" rel=\"noopener\">WebAIM contrast checker<span class=\"sr-only\"> (opens in a new tab)</span></a>.",
-        "Label every AI image “AI image.” Hands-only AI images are OK on your mood board with that label, because they only set the mood. Never AI faces or AI-made people, never AI footage in a video or ad, and never a made-up Breaking Games logo. Want the logo on your board? Use the <a href=\"https://drive.google.com/drive/folders/1DPI4Vcr6dA3Ole06QQcLGB5-onjkfPXb?usp=sharing\" target=\"_blank\" rel=\"noopener\">Breaking Games logo files<span class=\"sr-only\"> (opens in a new tab)</span></a> as they are."
-      ]
-    },
-    {
-      title: "Make your Hooks to Use slide",
-      instruction: "Pick 3 hook lines you spotted in your roast (your Toast lines are a good place to look). Write each one with the account it came from, then rewrite it for Breaking Games: keep the shape, swap the moment, in 7 words or fewer.",
-      sample: { label: "Sample", kind: "text",
-        body: "Spotted: “What song plays when…” (Mixtape, @breakinggamesllc)\nOurs: “Which game wins family night?”" },
-      onTrack: "each rewrite would make sense on screen with the sound off, in 7 words or fewer.",
-      stuck: [
-        "Only found 2 hooks? Scroll back through your Toast lines. They usually start with a strong hook.",
-        "Rewrite feels like an ad? Cut the brand name and lead with the moment instead."
-      ]
-    },
-    {
-      title: "Check your mood board",
-      instruction: "Start with a 30-second check: cover the slide labels and look at the whole board. Then go through the list once and fix anything that misses.",
-      sample: { label: "The checklist", kind: "text",
-        body: "Without labels, can someone tell Feel, Look and Hooks apart, and still see one warm game-night brand?\nNothing dark, snarky or edgy.\n4 brand colors with names and hex codes, Arcade included, plus one brand touch.\nEvery text pair passes the contrast chart in your briefing.\nEvery AI image is hands only and labeled \u201cAI image.\u201d\nEvery hook is credited to its account, in 7 words or fewer." },
-      onTrack: "you can tick every line without opening anything new.",
-      stuck: [
-        "Look slide could belong to any brand? Add your brand touch, and swap a stock-looking image for a real table.",
-        "Images look like an ad? Add “candid phone photo, real kitchen table, hands only, no models posing” to the prompt.",
-        "Hook missing its account name? Find it again in the Roast Deck and add it."
-      ]
-    },
-    {
-      title: "Add a short recap and submit",
-      instruction: "At the bottom of your roast notes doc, add the heading <b>Week 1 recap</b> and answer 2 questions in 2 to 3 sentences each. Your roast notes link from Step 1 stays live, so your program manager will see the recap there. Then share your mood board: in Canva, <b>Share</b> → <b>Anyone with the link</b> → <b>Can view</b>. Open the link in a private browser window to check it.",
+      title: "Set up your 3 slides and start building",
+      instruction: "Keep 3 pages and delete the rest. Title them <b>Feel</b>, <b>Look</b> and <b>Hooks to Use</b>. Your design doesn't need to match the example. Use the same 3 headings and make it your own. Then fill each slide from your roast notes and your briefing:",
       items: [
-        "Which rule changed your work the most: “fun and warm, not edgy,” “roast the post, not the person,” or “real tables, no AI people”? Name one idea you changed or dropped because of it.",
-        "Look at your Look slide. What's one thing you'd need to film or find for a first video that you don't have yet?"
+        "<b>Feel:</b> 3 voice words, an energy level and 3 roast screenshots, each labeled with its account.",
+        "<b>Look:</b> 4 brand colors with names and hex codes (always include Arcade #4D4DFF), Century Gothic and Trebuchet MS, one brand touch and 3 to 4 images of real game nights.",
+        "<b>Hooks to Use:</b> 3 hooks from your roast, each credited to its account, and your rewrite for Breaking Games in 7 words or fewer."
       ],
-      sample: { label: "Sample (question 1)", kind: "text",
-        body: "“Fun and warm, not edgy. My first Feel slide had black and neon, which looked like a bar. I swapped it for wood tones and daylight.”" },
-      onTrack: "both answers are honest and specific, and your Canva link opens in a private window.",
+      onTrack: "each slide has its heading and the pieces listed for it, and the 3 slides look like one set.",
       stuck: [
-        "Your school account blocks link sharing? Download the Canva design as a PDF and upload that file instead."
+        "To change a color, click the shape or text, click the color box in the top toolbar and type the hex code.",
+        "Putting text on a color? Use the contrast chart in your briefing to pick a pair that passes.",
+        "Need game boxes or the logo? Use the <a href=\"https://smitabudhiaextern.github.io/extern-html-pages/bg-image-deck.html\" target=\"_blank\" rel=\"noopener\">product image deck<span class=\"sr-only\"> (opens in a new tab)</span></a> and the <a href=\"https://drive.google.com/drive/folders/1DPI4Vcr6dA3Ole06QQcLGB5-onjkfPXb?usp=sharing\" target=\"_blank\" rel=\"noopener\">Breaking Games logo files<span class=\"sr-only\"> (opens in a new tab)</span></a> as they are."
+      ]
+    },
+    {
+      title: "Get ideas from Canva AI",
+      instruction: "Stuck on a slide? Canva's AI tools can give you a starting point. Use what helps, then make it yours:",
+      items: [
+        "<b>Canva AI</b> (home page): ask for ideas, like “Give me 10 words for a warm, witty board game brand.” Pick the 3 that fit best.",
+        "<b>Magic Media</b> (<b>Apps</b> panel, on the left of your design): turn a prompt into an image you drag onto a slide. Good for game-night tables and hands.",
+        "<b>Magic Write</b> (<b>Apps</b> panel): try 5 rewrites of a hook, then edit the best one down to 7 words or fewer."
+      ],
+      sample: { label: "Copy this Magic Media prompt", kind: "code",
+        body: "Candid phone photo, bright daylight. Close-up of adult hands playing a card game\non a wooden kitchen table, a blue mug and teal dice nearby.\nHands only, no faces. No text, no logos. Not a studio shoot." },
+      onTrack: "every AI image shows hands only and is labeled “AI image,” and the words on your slides are ones you chose.",
+      stuck: [
+        "Can't find a tool? Canva moves its menus around. Search its name in the <b>Apps</b> panel.",
+        "Out of free AI uses? Use real photos or the product image deck instead.",
+        "Image too dark or moody? Add “bright, daylight, friends at a table” to the prompt and try again.",
+        "No AI faces or AI-made people, and never a made-up Breaking Games logo."
       ]
     }
   ],
@@ -138,7 +120,7 @@ const TASK = {
       { name: "Look", lookFor: "The brand palette with names and hex codes (Arcade blue included), the brand's type or its backups, one brand touch, and real photos or labeled, hands-only AI images of people playing." },
       { name: "Complete", lookFor: "Your Canva link opens, and your roast notes doc ends with your 2-question Week 1 recap." }
     ],
-    finish: "Done? Submit your Canva link on the page below. One short step left this week: your workshare slide."
+    finish: "Done? Add your Week 1 recap and share your Canva link, using the Submission section below the steps."
   }
 };
 /* ======================= DO NOT EDIT BELOW ======================== */
