@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Breaking Games: Brand Glossary (P1 training "Good Game, Folks!")
+  Built 2026-10-25 from the brand guide's Communication Style slides, PDF pages 18-20
+  (01-research/partner-docs-2026-10-23/BG_BrandGuidelines.pdf): "Brand Glossary" (pp. 18-19,
+  INSTEAD OF SAYING... / WE SAY...) and "Branded Statements" (p. 20). Every glossary row and
+  statement is verbatim from the guide; slide headings are ours. Rows are regrouped by theme
+  (all 14 rows kept). The Notion page's "Text version of the slides" toggle mirrors this text.
+  Edit both together.
+  Engine and look copied from breaking-games-p1-good-game-folks.html.
+  Palette: Arcade #4D4DFF background, white text (5.5:1). H1 uses the Splash tint #6CEFC9
+  (3.9:1, large bold display text only) because Splash #0AD5AA is 2.9:1 on Arcade. All body,
+  label and table text is white. Columns are told apart by their header text and weight,
+  never by color alone. Focus ring #F2F300 (4.6:1).
+  WCAG 2.2 AA: one H1; inactive slides hidden; focus moves to each slide's h2; polite live
+  region; 44px targets; arrow keys; tables use th scope="col"; reflows to one column at 680px;
+  prefers-reduced-motion respected. No external data calls.
+  Deploy: https://vpdasgupta.github.io/tiktok/breaking-games-p1-brand-glossary.html
+  Notion iframe title: Brand Glossary slides
+-->
+<title>Brand Glossary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --arcade: #4D4DFF; --arcade-deep: #3D3DE0; --mint: #6CEFC9; --white: #FFFFFF;
+    --line: rgba(255,255,255,.55); --focus: #F2F300; --radius: 20px;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Outfit", "Trebuchet MS", system-ui, sans-serif;
+    background: var(--arcade); color: var(--white); line-height: 1.5; padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck {
+    max-width: 1000px; margin: 0 auto; background: var(--arcade);
+    border: 2px solid rgba(255,255,255,.35); border-radius: var(--radius);
+    padding: 32px 48px 24px; aspect-ratio: 16 / 9; display: flex; flex-direction: column;
+  }
+  .head { display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; }
+  .label { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--white); }
+  h1.title { margin: 0; font-size: clamp(36px, 5vw, 48px); line-height: 1; font-weight: 800; letter-spacing: -.01em; color: var(--mint); }
+  .stage { flex: 1; min-width: 0; }
+
+  .slide .label { margin-bottom: 6px; }
+  .slide h2 { font-size: 26px; line-height: 1.2; font-weight: 800; margin: 0 0 12px; color: var(--white); }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .count { font-weight: 500; letter-spacing: .04em; margin-left: 6px; text-transform: none; }
+
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 19px; line-height: 1.35; }
+  th { text-align: left; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 0 16px 8px 0; border-bottom: 2px solid var(--white); }
+  td { vertical-align: top; padding: 9px 16px 9px 0; border-bottom: 1px solid var(--line); overflow-wrap: break-word; }
+  tr:last-child td { border-bottom: 0; }
+  td.instead { font-weight: 400; }
+  td.say { font-weight: 700; }
+  td ul { list-style: none; margin: 0; padding: 0; }
+  td li + li { margin-top: 6px; }
+
+  .statements { list-style: none; margin: 0; padding: 0; font-size: 19px; line-height: 1.4; }
+  .statements li { position: relative; padding: 0 0 0 22px; margin: 0 0 10px; break-inside: avoid; }
+  .statements li::before { content: ""; position: absolute; left: 2px; top: .55em; width: 9px; height: 9px; border-radius: 50%; background: var(--white); }
+  .statements.two-col { columns: 2; column-gap: 36px; font-size: 17px; }
+  .note { margin: 2px 0 12px; font-size: 17px; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; border-radius: 999px; padding: 10px 22px; font-size: 16px; font-weight: 700; cursor: pointer;
+    background: transparent; color: var(--white); border: 2px solid var(--white);
+  }
+  .nav-btn.primary { background: var(--white); color: var(--arcade); }
+  .nav-btn:hover:not(:disabled) { background: var(--arcade-deep); color: var(--white); }
+  .nav-btn:disabled { opacity: .5; cursor: default; }
+  .dots { display: flex; justify-content: center; list-style: none; margin: 0; padding: 0; }
+  .dot { width: 30px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--white); background: transparent; }
+  .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--mint); background: var(--mint); }
+
+  @media (max-width: 680px) {
+    body { padding: 12px; }
+    .deck { aspect-ratio: auto; padding: 24px 20px 16px; }
+    .head { gap: 8px; margin-bottom: 14px; }
+    .label { font-size: 13px; }
+    h1.title { font-size: 34px; }
+    .slide h2 { font-size: 21px; }
+    table { font-size: 16px; }
+    th { font-size: 12px; padding-right: 10px; }
+    td { padding-right: 10px; }
+    .statements, .statements.two-col { columns: 1; font-size: 16px; }
+    .note { font-size: 16px; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; }
+    .nav-btn { flex: 1; }
+  }
+  @media (forced-colors: active) {
+    .dot[aria-current="step"]::before { background: CanvasText; }
+    .statements li::before { background: CanvasText; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="title">
+  <div class="head">
+    <p class="label">Communication style</p>
+    <h1 class="title" id="title">Brand Glossary</h1>
+  </div>
+
+  <div class="stage" id="slides">
+    <section class="slide" aria-labelledby="h-0">
+      <p class="label">Swap list <span class="count"></span></p>
+      <h2 id="h-0" tabindex="-1">Who we are and who we play for</h2>
+      <table>
+        <thead><tr><th scope="col">Instead of saying…</th><th scope="col">We say…</th></tr></thead>
+        <tbody>
+          <tr><td class="instead">We’re game publishers</td><td class="say">We’re game producers</td></tr>
+          <tr><td class="instead">Gamers</td><td class="say">Game lovers</td></tr>
+          <tr><td class="instead">Our mission is/We’re on a mission to</td><td class="say"><ul role="list"><li>Our sacred quest to…</li><li>What gets us out of bed every day is…</li><li>If we accomplish X, we’ve done our jobs right</li></ul></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="slide" aria-labelledby="h-1" hidden>
+      <p class="label">Swap list <span class="count"></span></p>
+      <h2 id="h-1" tabindex="-1">How we talk about the games</h2>
+      <table>
+        <thead><tr><th scope="col">Instead of saying…</th><th scope="col">We say…</th></tr></thead>
+        <tbody>
+          <tr><td class="instead">Highly replayable</td><td class="say">Play on repeat</td></tr>
+          <tr><td class="instead">Highly interactive gameplay</td><td class="say">Highly social gameplay</td></tr>
+          <tr><td class="instead">Thoughtfully designed</td><td class="say">Insanely detailed, obsessively crafted</td></tr>
+          <tr><td class="instead">Heirloom Quality</td><td class="say"><ul role="list"><li>Instant favorites</li><li>Hidden gems</li><li>Game night go-to’s</li></ul></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="slide" aria-labelledby="h-2" hidden>
+      <p class="label">Swap list <span class="count"></span></p>
+      <h2 id="h-2" tabindex="-1">How we talk about game night</h2>
+      <table>
+        <thead><tr><th scope="col">Instead of saying…</th><th scope="col">We say…</th></tr></thead>
+        <tbody>
+          <tr><td class="instead">Board games that “bring people together”</td><td class="say"><ul role="list"><li>Keep game night alive and awesome</li><li>Humans hanging out with other humans</li></ul></td></tr>
+          <tr><td class="instead"><ul role="list"><li>Elevate your game night</li><li>Take your game night to the next level</li></ul></td><td class="say"><ul role="list"><li>Host the perfect game night</li><li>Host a legendary game night</li></ul></td></tr>
+          <tr><td class="instead">Offline, screen-free</td><td class="say">Analog</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="slide" aria-labelledby="h-3" hidden>
+      <p class="label">Swap list <span class="count"></span></p>
+      <h2 id="h-3" tabindex="-1">Invitations, not pressure</h2>
+      <table>
+        <thead><tr><th scope="col">Instead of saying…</th><th scope="col">We say…</th></tr></thead>
+        <tbody>
+          <tr><td class="instead">Exclusive access</td><td class="say"><ul role="list"><li>Friends-only</li><li>Saved for our favorites</li><li>Warning: keep out (unless you’re cool.)</li></ul></td></tr>
+          <tr><td class="instead">Don’t miss out</td><td class="say">We wish it could last forever. But it won’t.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="slide" aria-labelledby="h-4" hidden>
+      <p class="label">Swap list <span class="count"></span></p>
+      <h2 id="h-4" tabindex="-1">Winning and memories</h2>
+      <table>
+        <thead><tr><th scope="col">Instead of saying…</th><th scope="col">We say…</th></tr></thead>
+        <tbody>
+          <tr><td class="instead">Dominate the competition</td><td class="say"><ul role="list"><li>Go home a winner</li><li>Enjoy well-earned bragging rights</li><li>Secure victory</li></ul></td></tr>
+          <tr><td class="instead"><ul role="list"><li>Unforgettable moments</li><li>Memorable moments</li></ul></td><td class="say"><ul role="list"><li>Your favorite memories</li><li>Nights we all need more of</li></ul></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="slide" aria-labelledby="h-5" hidden>
+      <p class="label">Branded statements <span class="count"></span></p>
+      <h2 id="h-5" tabindex="-1">Slogans</h2>
+      <ul class="statements" role="list">
+        <li>Get ready to be the coolest living room on the block.</li>
+        <li>Playing to win? Playing IS a win</li>
+        <li>It’s 7p.m. Do you know where your games are?</li>
+        <li>The best games you’ve never heard of</li>
+        <li>This just in: game night is alive and awesome</li>
+      </ul>
+    </section>
+
+    <section class="slide" aria-labelledby="h-6" hidden>
+      <p class="label">Branded statements <span class="count"></span></p>
+      <h2 id="h-6" tabindex="-1">Web, product, social or email copy</h2>
+      <ul class="statements two-col" role="list">
+        <li>Ugly-cry-laughing guaranteed</li>
+        <li>Fun for some ages (maybe find a sitter?)</li>
+        <li>“In a world….”</li>
+        <li>Has this ever happened to you? […] Introducing…</li>
+        <li>Batteries not included. Obviously. Because it’s a card game.</li>
+        <li>Board games that make other board games say: “Dang, that board game is awesome. I wish I was THAT board game.” (Also, in this scenario, board games can talk and have feelings.)</li>
+        <li>Games so fun, you’ll wonder “Do my friends really like me, or are they just using me to get to my amazing board games?” Kidding. We’re sure your friends like you. Probably.</li>
+      </ul>
+    </section>
+
+    <section class="slide" aria-labelledby="h-7" hidden>
+      <p class="label">Branded statements <span class="count"></span></p>
+      <h2 id="h-7" tabindex="-1">UX copy</h2>
+      <ul class="statements" role="list">
+        <li>Our top story tonight</li>
+        <li>Back to you in the studio</li>
+        <li>This just in</li>
+        <li>We’ll be right back after these messages.</li>
+      </ul>
+    </section>
+  </div>
+
+  <nav class="slide-nav" aria-label="Slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const slides = [...document.querySelectorAll(".slide")];
+  const total = slides.length;
+  const label = i => `Slide ${i + 1} of ${total}`;
+  slides.forEach((s, i) => { s.querySelector(".count").textContent = `· ${i + 1} of ${total}`; });
+
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+  const announce = msg => { const st = $("status"); st.textContent = ""; setTimeout(() => { st.textContent = msg; }, 40); };
+
+  let step = 0;
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => { if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current"); });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    $("nextBtn").innerHTML = last ? "Last slide" : 'Next<span aria-hidden="true"> →</span>';
+    if (moveFocus) { slides[step].querySelector("h2").focus(); announce(label(step)); }
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => goTo(step + 1, true);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.step, true));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+  /* Deep link for previews and QA: #s=N opens slide N (1-based). */
+  const m = location.hash.match(/s=(\d+)/);
+  goTo(m ? +m[1] - 1 : 0, false);
+})();
+</script>
+</body>
+</html>
