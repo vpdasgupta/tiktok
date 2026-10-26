@@ -859,7 +859,7 @@ var SECTIONS = [
         radioGroup({id:'v' + n + '-persona', legend:'Persona tag: who is Video ' + n + ' for?', value:v.persona, options:activePersonas().map(function(p){ return [p.id, personaLabel(p)]; }), set:function(x){ v.persona = x; }, after:updateSuggest}),
         selectField({id:'v' + n + '-game', label:'Game', value:v.game, hint:'Start with Caminito or another focus game from Project 1.', options:GAMES.map(function(g){ return [g.id, g.t]; }), set:function(x){ v.game = x; }, after:updateSuggest}),
         selectField({id:'v' + n + '-pillar', label:'Pillar', value:v.pillar, options:pillarOptions().map(function(p){ return [p, p]; }), placeholder:'Choose a pillar', set:function(x){ v.pillar = x; }}),
-        field({id:'v' + n + '-moment', label:'Calendar moment', opt:true, value:v.moment, hint:'For example: Friday game night, a birthday, a rainy day, or a gift moment.', set:function(x){ v.moment = x; }, onchange:updateSuggest}),
+        field({id:'v' + n + '-moment', label:'Player moment', opt:true, value:v.moment, hint:'When would this player watch it? For example: Friday game night, a birthday or a rainy Saturday.', set:function(x){ v.moment = x; }, onchange:updateSuggest}),
         field({id:'v' + n + '-why', label:'Why this framework', multi:true, rows:2, value:v.why, hint:'One line: why does it fit Breaking Games and the persona you tagged?', set:function(x){ v.why = x; }})
       ])]);
       b.appendChild(fs);
@@ -872,7 +872,7 @@ var SECTIONS = [
     var a = S.vids[0], c = S.vids[1], out = [];
     out.push(a.game === 'caminito' ? 'Video 1 features Caminito. Nice: it\'s the hero game.' : 'Suggested: feature Caminito in Video 1.');
     out.push(a.fw === 'play' || c.fw === 'play' ? 'One video is a Play-Along. Good: it invites comments.' : 'Suggested: make one of your 2 videos a Play-Along.');
-    out.push(t(a.moment) || t(c.moment) ? 'One video is tied to a calendar moment.' : 'Suggested: tie one video to a calendar moment.');
+    out.push(t(a.moment) || t(c.moment) ? 'One video is tied to a player moment.' : 'Suggested: tie one video to a player moment, like a rainy Saturday or Friday game night.');
     if (a.persona && c.persona) out.push(a.persona !== c.persona ? 'Each video targets a different persona.' : 'Suggested: Video 2 targets the persona Video 1 didn\'t.');
     if (a.fw && a.fw === c.fw) out.push('Both videos use the same framework. Pick 2 different ones.');
     return out;
