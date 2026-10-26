@@ -33,7 +33,9 @@ DEPLOY
   github-pages-deployer → vpdasgupta/tiktok as breaking-games-p2-score-log-and-upload-video-1-steps.html,
   then on the Notion task page:
   <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-p2-score-log-and-upload-video-1-steps.html"></embed>
-  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  Set the Notion embed to 16:9: about 400px tall at normal page width, about
+  540px at full width. The deck fills the frame; only the step content scrolls.
+  Keep the text fallback toggle on the
   page (see task-page-v2-template.md).
 
 ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
@@ -45,6 +47,8 @@ ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
   - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
   - Arrow keys change step except inside links and scrollable samples.
   - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+  - Each slide is a focusable scroll region (tabindex=0), so keyboard users can
+    scroll long steps with the arrow keys inside the 16:9 frame.
 ================================================================================
 -->
 <title>Task Steps</title>
@@ -60,11 +64,11 @@ const TASK = {
   "steps": [
     {
       "title": "Score Video 1 honestly",
-      "instruction": "Open the <a href=\"https://vpdasgupta.github.io/tiktok/breaking-games-post-simulator.html\" target=\"_blank\" rel=\"noopener\">Post Performance Simulator<span class=\"sr-only\"> (opens in a new tab)</span></a>. Choose <b>TikTok</b> (organic video) and leave both <b>About this post</b> boxes unticked. Then go block by block through the 20 items with your video playing beside you. Tick an item <b>only if you can point to the second it happens</b>.",
+      "instruction": "Open the <a href=\"https://vpdasgupta.github.io/tiktok/breaking-games-post-simulator.html\" target=\"_blank\" rel=\"noopener\">Post Performance Simulator<span class=\"sr-only\"> (opens in a new tab)</span></a>. Choose <b>TikTok</b> (organic video) and leave both <b>About this post</b> boxes unticked. Then go block by block through the 19 items with your video playing beside you. Tick an item <b>only if you can point to the second it happens</b>.",
       "sample": {
         "label": "Sample",
         "kind": "text",
-        "body": "Hook: Game or faces in frame by 1 second ✓ (hands and card at 0:00)\nHook: Text hook on screen by 2 seconds ✓ (0:00)\nParticipation: Play-along, guess or debate prompt ✓ (0:11 \"Comment your guess\")\nParticipation: Tag-a-friend or share trigger ✗"
+        "body": "Hook: Game or faces in frame by 1 second ✓ (hands and card at 0:00)\nHook: Text hook on screen by 2 seconds ✓ (0:00)\nParticipation: Play-along, guess or debate prompt ✓ (0:08 \"Comment your guess\")\nParticipation: Tag-a-friend or share trigger ✗"
       },
       "onTrack": "the result card says TikTok mode, and you could show a reviewer the timestamp for every box you ticked.",
       "stuck": [
@@ -100,7 +104,8 @@ const TASK = {
     },
     {
       "title": "Write the post copy",
-      "instruction": "Write the copy that would go out with Video 1 if Breaking Games posts it: a <b>caption</b> (1 or 2 lines, in the brand's voice), <b>3 to 5 hashtags</b>, and <b>2 draft replies</b> to comments a viewer might leave. Write it the way the brand talks: periods over exclamation points, PG, and calls to action that sound like invitations (\"Right this way\"), not sales pushes (\"Don't miss out\"). Use the brand's words: \"game lovers,\" not \"gamers\"; \"analog,\" not \"screen-free.\" A social media coordinator preps this for every post. Put it in the <b>Post copy</b> row of Experiment 1 in your journal. These are drafts only: never post them or reply on any real account.",
+      "instruction": "Write the copy that would go out with Video 1 if Breaking Games posts it: a <b>caption</b> (1 or 2 lines), <b>3 to 5 hashtags</b> and <b>2 draft replies</b> to comments a viewer might leave. Put it in the <b>Post copy</b> row of Experiment 1 in your journal. These are drafts only: never post them or reply on any real account. Write it the way the brand talks:",
+      "items": ["Periods, not exclamation points.", "PG humor.", "Calls to action that invite (\"Right this way\"), not push (\"Don't miss out\").", "The brand's words: \"game lovers,\" not \"gamers\"; \"analog,\" not \"screen-free.\""],
       "sample": {
         "label": "Sample student work",
         "kind": "text",
@@ -109,7 +114,8 @@ const TASK = {
       "onTrack": "the game is named in your caption or hashtags, nothing ends in an exclamation point or sounds like a sales push, and each reply answers its comment in a line or two.",
       "stuck": [
         "Not sure of a fact, like Caminito's price or player count? Don't guess. Draft a reply that says details are coming, and flag it for your program manager.",
-        "Stuck on hashtags? Use one for the game, one for the moment (like #gamenight) and one or two broad ones."
+        "Stuck on hashtags? Use one for the game, one for the moment (like #gamenight) and one or two broad ones.",
+        "No Post copy row in your journal? Add one at the end of Experiment 1."
       ]
     },
     {
@@ -122,7 +128,7 @@ const TASK = {
       },
       "onTrack": "your card appears on the board, and someone who can't see the video would know what happens from your description.",
       "stuck": [
-        "Not sure which sharing choice to pick? \"Credit me\" lets Breaking Games name you if it uses your work. \"Keep it inside my cohort\" means it's never shared.",
+        "Not sure which sharing choice to pick? \"Credit me\" lets Breaking Games name you if it uses your work. \"Don't share online\" means it stays on the board for your cohort and is never shared with Breaking Games.",
         "File too big or upload failed? Re-export at 1080p and 30 fps, or trim a few seconds. Still stuck? Message your program manager."
       ]
     },
@@ -145,7 +151,7 @@ const TASK = {
       "sample": {
         "label": "Sample reply",
         "kind": "text",
-        "body": "\"The box sliding in at 0:12 was so satisfying, right on the beat. To your first question: I kept watching, but I almost swiped at 0:02 because I didn't know it was a game yet. Maybe put 'Guess the game' on screen from the first frame?\""
+        "body": "\"The box sliding in at 0:12 was so satisfying, right on the beat. To your first question: yes, I guessed before the reveal, but I almost swiped at 0:02 because I didn't know it was a game yet. Maybe put 'Guess the game' on screen from the first frame?\""
       },
       "onTrack": "your reply names a timestamp and answers their question first.",
       "stuck": [
@@ -205,25 +211,28 @@ const TASK = {
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html, body { margin: 0; }
+  html, body { margin: 0; height: 100%; }
   body {
     font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     background: var(--canvas);
     color: var(--ink);
     line-height: 1.5;
-    padding: 16px;
+    padding: 12px;
     -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column; overflow: hidden;
   }
   button, a { font-family: inherit; }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-  .deck { max-width: 880px; margin: 0 auto; }
+  /* 16:9 frame: the deck fills the embed; header and nav stay put, the slide scrolls */
+  .deck { flex: 1; min-height: 0; width: 100%; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; }
+  #slides { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 
   /* Hero band: the dark TikTok header with red and teal glows and a gradient rule */
   .deck-head {
     display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-    margin-bottom: 14px; padding: 20px 24px 24px; border-radius: var(--radius);
+    flex: none; margin-bottom: 10px; padding: 12px 20px 14px; border-radius: var(--radius);
     color: #FFFFFF;
     background:
       var(--gradient) bottom / 100% 4px no-repeat,
@@ -231,7 +240,7 @@ const TASK = {
       radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
       var(--night);
   }
-  .deck-title { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .deck-title { font-size: 20px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
   .deck-head :focus-visible { outline-color: var(--tt-cyan); }
   .btn-example {
     display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
@@ -244,8 +253,10 @@ const TASK = {
     overflow-wrap: anywhere;
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 28px 32px 24px;
+    padding: 22px 28px 20px;
+    flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
   }
+  .slide:focus-visible { outline-offset: -3px; }
   .step-num {
     display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
     color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
@@ -293,7 +304,7 @@ const TASK = {
   .eval-table tbody th { width: 30%; }
   .finish { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 0; }
 
-  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .slide-nav { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
   .nav-btn {
     min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
     border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
@@ -314,7 +325,18 @@ const TASK = {
   }
   .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); } /* filled = visited, outline = not yet */
   .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); } /* wide pill = current */
-  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+  .counter { flex: none; font-size: 13px; color: var(--ink-soft); text-align: center; margin: 2px 0 0; }
+  /* Short frames (a 16:9 embed in a normal-width Notion page): tighten the chrome */
+  @media (max-height: 460px) {
+    body { padding: 8px; }
+    .deck-head { padding: 8px 16px 10px; margin-bottom: 8px; }
+    .deck-title { font-size: 17px; }
+    .btn-example { min-height: 36px; padding: 4px 12px; }
+    .slide { padding: 16px 20px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { margin-top: 8px; }
+    .counter { display: none; }
+  }
 
   @media (max-width: 420px) {
     .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -322,10 +344,10 @@ const TASK = {
     .eval-table tbody th { padding-bottom: 0; border-bottom: 0; }
   }
   @media (max-width: 640px) {
-    body { padding: 12px; }
-    .deck-head { padding: 16px 18px 20px; }
+    body { padding: 8px; }
+    .deck-head { padding: 10px 14px 12px; }
     .deck-title { font-size: 21px; }
-    .slide { padding: 20px 18px; }
+    .slide { padding: 16px 16px; }
     .slide h2 { font-size: 20px; }
     .slide-nav { flex-wrap: wrap; }
     .dots { order: -1; width: 100%; justify-content: center; }
@@ -380,7 +402,7 @@ const TASK = {
   }
 
   const html = steps.map((s, i) => `
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
       <p>${s.instruction}</p>
@@ -393,7 +415,7 @@ const TASK = {
   if (ev) {
     const i = total - 1;
     html.push(`
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
       ${ev.intro ? `<p>${ev.intro}</p>` : ""}
@@ -425,6 +447,7 @@ const TASK = {
     step = Math.max(0, Math.min(total - 1, i));
     seen = Math.max(seen, step);
     slides.forEach((s, n) => s.hidden = n !== step);
+    slides[step].scrollTop = 0;
     dots.forEach((d, n) => {
       d.classList.toggle("seen", n <= seen);
       d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
