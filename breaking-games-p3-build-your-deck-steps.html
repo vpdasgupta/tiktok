@@ -59,16 +59,19 @@ const TASK = {
   exampleUrl: "https://vpdasgupta.github.io/tiktok/breaking-games-p3-build-your-deck-example.png",
   steps: [
     {
-      title: "Finish your \"Playbook so far\" (Checkpoint 2)",
-      instruction: `Open your Experiment Journal and find <b>"Playbook so far."</b> Every one of the 8 rows needs a line (what you'd say now) and a proof (the experiment, roast or deliverable that backs it up). Fill in the rows you left blank at Checkpoint 1, using your ad, your Brief and your calendar. Then, under the table, write which of your 3 starting hunches (at the top of your journal, from your Project 1 roast) held up and which one surprised you.`,
-      sample: { label: "Sample rows", kind: "text",
-        body: `6. Best TikTok: Video 2, my Game of 49 tutorial for Rachel (score 71), came closest to the benchmark (an estimate). Proof: Experiment 2.
-7. The ad: lead with the problem hook for Rachel in Reels; watch hook rate (how many viewers stay past the first 3 seconds). Proof: Experiment 3 and the test plan in my Brief.
+      title: "Finish your \"Playbook so far\" and your 3 strategy insights (Checkpoint 2)",
+      instruction: `Open your Experiment Journal and find <b>"Playbook so far."</b> Every one of the 8 rows needs a line (what you'd say now) and a proof (the experiment, roast or deliverable that backs it up). Fill in the rows you left blank at Checkpoint 1, using your ad, your ad test plan and your calendar. Then fill in <b>"My 3 strategy insights,"</b> the section right after the table: one about <b>Gen Z</b>, one about the <b>current buyer</b> and one about <b>ads</b>. Write each one in the client version: <b>Toast</b> (what's already working), then <b>Evidence</b> (a number or comparison from your journal, with the experiment), then <b>Recommendation</b> (one thing to do). Call simulator numbers an "estimate." Last, under the table, write which of your 3 starting hunches (at the top of your journal, from your Project 1 roast) held up and which one surprised you.`,
+      sample: { label: "Sample rows and one insight (made-up vote)", kind: "text",
+        body: `3. What works: see My 3 strategy insights. Proof: Experiments 1 and 3.
+My 3 strategy insights, Ads (Experiment 3): Toast: The new "Good game, folks." line fits family moments well. Evidence: In our cohort's hook vote, the ad that opened on a rainy-Saturday problem won 9 of 14 votes. Recommendation: We recommend opening Rachel-facing ads on a family moment, with the game and the Breaking Games name on screen by second 3. (Write Gen Z and current buyer the same way.)
+6. Best TikTok: Video 2, my Game of 49 tutorial for Rachel (score 71), came closest to the benchmark (an estimate). Proof: Experiment 2.
+7. The ad: lead with the problem hook for Rachel in Reels; watch hook rate (how many viewers stay past the first 3 seconds). Proof: Experiment 3 and my ad test plan.
 8. Holiday calendar, measurement and first 30 days: 7 moments after the handoff, measured by saves, shares and link taps. Proof: holiday calendar.
 Hunches: Held up: a question hook beats a spec sheet (Experiment 1). Surprised me: the problem hook beat my question hook (Experiment 3).` },
-      onTrack: `all 8 rows have both a line and a proof, and you named one hunch that held and one that surprised you.`,
+      onTrack: `all 8 rows have both a line and a proof, each insight has a Toast, Evidence and Recommendation and names its experiment, and you named one hunch that held and one that surprised you.`,
       stuck: [
-        `A row with no proof? Point to the deliverable that comes closest, and note what you'd still want to test.`,
+        `Roast words sneaking in? "Flopped" becomes "underperformed," and "they should have" becomes "we recommend." Never write about a person, a team or a creator.`,
+        `A row or insight with no number? A peer count works too ("3 of 4 peers said they'd comment"), or point to the deliverable that comes closest.`,
         `Behind on a Week 5 piece? Tell your program manager in Slack today. Done and submitted beats perfect and late.`
       ]
     },
@@ -79,7 +82,7 @@ Hunches: Held up: a question hook beats a spec sheet (Experiment 1). Surprised m
         body: `SLIDE [#]: [slide name from Playbook so far]
 Action title: [one full sentence that states the point]
 Key points: [2 or 3 short bullets, each with its proof]
-Visual: [what the audience sees: a video still, a persona card, a chart]
+Visual: [what the audience sees: a video still, a player slide, a chart]
 Speaker note: [2 or 3 sentences you'll say out loud]
 Source: [where each fact or number came from, and the date you checked it]` },
       onTrack: `you have 8 blocks, in the same order as your "Playbook so far" rows.`,
@@ -90,7 +93,7 @@ Source: [where each fact or number came from, and the date you checked it]` },
     },
     {
       title: "Fill slides 1 to 5: the setup and the proof",
-      instruction: `Most of this is already written. Slide 1 is your answer in one line. Slide 2 is the challenge. Slide 3 uses the <b>3 strategy insights</b> in your Brief. Slide 4 uses both persona cards. Slide 5 uses your Brief's promise, pillars and voice. Your job is to cut, not add.`,
+      instruction: `Most of this is already written. Slide 1 is your answer in one line. Slide 2 is the challenge. Slide 3 uses your <b>3 strategy insights</b> from Step 1. Slide 4 uses your two player slides from your mood board. Slide 5 uses Breaking Games' own tagline, mission and voice from the brand guide (on the Project 1 page "Good Game, Folks!"), plus your mood board's Feel and Look. Your job is to cut, not add.`,
       sample: { label: "Sample student work: slide 3", kind: "text",
         body: `SLIDE 3: What works
 Action title: A question in the first 3 seconds beat a promo on the same account.
@@ -108,7 +111,7 @@ Source: Roast Deck, pair B` },
     },
     {
       title: "Fill slides 6 to 8, then read only your titles",
-      instruction: `Slide 6: your <b>best TikTok</b> (Video 1 or 2), its persona tag, and its simulator score and range against the 1,049-view benchmark. Slide 7: your <b>ad</b> with the hook you'd test first, the 3-line test plan from your Brief, and your Reels and carousel ad mock-ups labeled "concept" if you made the bonus. Slide 8: 6 to 8 calendar moments with go-live dates, the 3 metrics beyond views from your Brief, and the first 30 days. Then read only your 8 titles, top to bottom. Rewrite any that are topics ("The brand") instead of sentences.`,
+      instruction: `Slide 6: your <b>best TikTok</b> (Video 1 or 2), its player tag, and its simulator score and range against the 1,049-view benchmark. Slide 7: your <b>ad</b> with the hook you'd test first, the 3-line ad test plan from Experiment 3, and your Reels and carousel ad mock-ups labeled "concept" if you made the bonus. Slide 8: 6 to 8 calendar moments with go-live dates, 3 numbers beyond views you'd watch (like saves, shares and link taps), and the first 30 days. Then read only your 8 titles, top to bottom. Rewrite any that are topics ("The brand") instead of sentences.`,
       sample: { label: "Sample student work: slide 6 (score made up)", kind: "text",
         body: `SLIDE 6: Best TikTok
 Action title: Our tutorial beat the benchmark on paper.
@@ -161,9 +164,10 @@ The TikTok last posted in October 2024, and people know the games better than th
   ],
   evaluation: {
     title: "How it will be evaluated",
-    intro: "Checked for completion, not polish. Your program manager looks at your journal for these two things.",
+    intro: "Checked for completion, not polish. Your program manager looks at your journal for these three things.",
     criteria: [
       { name: "Playbook so far", lookFor: "All 8 rows have a line and a proof, plus one hunch that held up and one that surprised you." },
+      { name: "3 strategy insights", lookFor: "Gen Z, current buyer and ads, each as Toast, Evidence from an experiment, then a Recommendation, with no roast words." },
       { name: "Shared", lookFor: "The journal's view link opens for your program manager." }
     ],
     finish: "Done? Submit your journal's view link on the page below. Your deck goes in with your Relaunch Playbook. Good game, folks."

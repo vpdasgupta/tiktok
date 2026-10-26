@@ -89,6 +89,14 @@ const TASK = {
         body: "How it landed: Ad check 88. Top fix: landing page match. Hook vote winner: B, 9 of 14 votes.\nDid the vote agree with my bet? No. I bet on A, but B won. People said B felt like a real moment, not an ad.\nWhat I learned: I learned a problem hook works for Rachel because it shows her day before the product, so Breaking Games' ads should open on a family moment, not a logo.\nFeeds slide: 7" },
       onTrack: "your \"What I learned\" line follows the stem \"I learned ___, so Breaking Games' ads should ___.\"",
       stuck: ["Your bet lost? That's a great result. Write down why you think it lost. That's the most useful line in your journal."]
+    },
+    {
+      title: "Write your 3-line ad test plan",
+      instruction: "Under Experiment 3 in your Experiment Journal, add 3 lines and mark them \"Concept: Breaking Games decides whether to test it.\" (1) The hook you'd test first, for which player and where. (2) The one number to watch: <b>hook rate</b> (viewers who stay past the first 3 seconds, divided by all viewers). (3) What would count as \"it worked.\"",
+      sample: { label: "Sample (made-up vote)", kind: "text",
+        body: "Ad test plan (Concept: Breaking Games decides whether to test it)\n1. Hook B, the problem hook, first, for Rachel in Reels. It won the cohort vote, 9 of 14.\n2. Number to watch: hook rate.\n3. It worked if B keeps more people past 3 seconds than A and C." },
+      onTrack: "your plan names one hook, one player, one number and a clear \"it worked if.\"",
+      stuck: ["Your bet and the hook vote disagree? Pick one and say why. A test is the way to settle it."]
     }
   ],
   evaluation: {
@@ -98,9 +106,10 @@ const TASK = {
       { name: "Ad video", lookFor: "15 to 30 seconds, 9:16, brand and game on screen by 3 seconds, captions, one CTA, a \"Concept\" label, and 3 versions that differ only in the hook." },
       { name: "Ad check", lookFor: "Summary pasted, and the checklist honestly matches the video." },
       { name: "Experiment 3", lookFor: "Every row filled in, including whether the vote matched your bet." },
+      { name: "Ad test plan", lookFor: "One hook, one player, one number and a clear \"it worked if,\" marked \"Concept.\"" },
       { name: "Guardrails", lookFor: "Accurate facts with the date checked, no real customers or anyone under 18 on camera, no AI people, family-safe, fun and warm." }
     ],
-    finish: "Done? Paste your Ad check summary and your 3 upload titles on the page below. Don't post your ad anywhere. Good game, folks."
+    finish: "Done? Paste your Ad check summary, your 3 upload titles and your ad test plan on the page below. Don't post your ad anywhere. Good game, folks."
   }
 };
 /* ======================= DO NOT EDIT BELOW ======================== */
