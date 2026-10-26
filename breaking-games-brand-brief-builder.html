@@ -415,20 +415,20 @@ var PERSONAS = [
    games:'Caminito, The Game of 49, Play2Read, POOP',
    weak:'Rachel is on Facebook.',
    strong:'Sunday night after the kids are in bed, Rachel scrolls Instagram looking for a birthday gift her 11-year-old and the grandparents can both play.'},
-  {id:'dani', name:'Dani', age:21, label:'Stretch: new, younger players', where:'TikTok',
-   who:'College junior. Hosts game night most Fridays. Scrolls #gamenight and #boardgames on TikTok.',
-   moment:'Planning a game night for 8 people, half of whom don\'t know each other, and a play-along clip makes her laugh.',
-   pain:'Doesn\'t know which game works for a mixed group. Has never heard of Breaking Games. Skips anything that looks like an ad.',
-   win:'Comments her answer, saves, taps the link, and remembers "Breaking Games."',
-   games:'Caminito, quick party picks from the push list',
-   weak:'Dani likes games.',
-   strong:'Thursday night, the group chat is planning Friday\'s game night for 8, half of them strangers, and Dani is scrolling #gamenight for something everyone can learn fast.'}
+  {id:'danny', name:'Danny', age:21, label:'Stretch: new, younger players', where:'TikTok',
+   who:'College junior and a true game lover. Shares an apartment with three friends and hosts game night most Fridays: party games when new people come over, a big strategy game when it\'s just the regulars. Scrolls #gamenight and #boardgames on TikTok between classes.',
+   moment:'Planning a game night for 8 people, half of whom don\'t know each other, and a play-along clip makes him laugh. Or picking the next big strategy game for a night with his regulars.',
+   pain:'Doesn\'t know which game works for a mixed group, or which big game is worth the money. Has never heard of Breaking Games. Skips anything that looks like an ad.',
+   win:'Comments his answer, saves, taps the link, and remembers "Breaking Games."',
+   games:'Caminito, Hypothetically Fun, Mixtape, We\'re Doomed!, Dwellings of Eldervale',
+   weak:'Danny likes games.',
+   strong:'Thursday night, the group chat is planning Friday\'s game night for 8, half of them strangers, and Danny is scrolling #gamenight for something everyone can learn fast.'}
 ];
 
 /* Optional: students may build their own player. It must fit one of the partner's two groups and replaces the card in that group. */
 var GROUPS = [
   {id:'buyer', t:'The current buyer: 35 or older', short:'the current buyer, 35+', swap:'rachel', min:35, max:99},
-  {id:'young', t:'Younger adults and Gen Z: 18 to 29', short:'younger adults and Gen Z', swap:'dani', min:18, max:29}
+  {id:'young', t:'Younger adults and Gen Z: 18 to 29', short:'younger adults and Gen Z', swap:'danny', min:18, max:29}
 ];
 var OWN_EX = {name:'Marcus', age:41, group:'the current buyer, 35+',
   who:'Single. Moved to a new city for work last year. Hosts a monthly poker night with coworkers that\'s starting to feel stale. Scrolls Instagram and YouTube Shorts after the gym.',
@@ -529,7 +529,7 @@ var IMG_RULE = 'Real games on a real table, adult hands only, warm light, people
 var METRICS = [
   {id:'saves', t:'Saves', d:'Rachel saves gift ideas. A save says "I want this later."'},
   {id:'shares', t:'Shares', d:'Someone sent it to their group chat or game-night crew.'},
-  {id:'comments', t:'Comments', d:'Dani\'s win is commenting her answer. Great for Play-Along.'},
+  {id:'comments', t:'Comments', d:'Danny\'s win is commenting his answer. Great for Play-Along.'},
   {id:'taps', t:'Profile visits and link taps', d:'The step before a sale on the new site.'},
   {id:'follows', t:'New followers', d:'People who want more from Breaking Games, not just one game.'},
   {id:'per100', t:'Likes per 100 followers (Reels)', d:'Fair across account sizes. The Reels benchmark is 4.4.'}
@@ -543,7 +543,7 @@ var INS_TAGS = [{id:'genz', t:'Younger adults and Gen Z'}, {id:'buyer', t:'The c
 
 var SECTIONS = [
   {key:'start', part:0, t:'Choose your part'},
-  {key:'personas', part:1, n:1, t:'Your two players', time:'8 min', g:'Read Rachel and Dani\'s cards. For each one, write the moment you saw from your own scroll and what would make her stop. Optional: build your own player to replace one of them.'},
+  {key:'personas', part:1, n:1, t:'Your two players', time:'8 min', g:'Read Rachel and Danny\'s cards. For each one, write the moment you saw from your own scroll and what would make them stop. Optional: build your own player to replace one of them.'},
   {key:'guard', part:1, n:2, t:'Client guardrails', time:'4 min', g:'Read all 9 client guardrails and pick the 3 that will shape your brand the most. All 9 still apply to everything you make.'},
   {key:'promise', part:1, n:3, t:'Brand promise', time:'5 min', g:'Read the brand\'s givens from its brand guide. Then finish one sentence in that voice: who Breaking Games helps, how they feel, and how it helps.'},
   {key:'pillars', part:1, n:4, t:'Content pillars', time:'4 min', g:'Keep or reword the 3 content pillars. Every video fits one of them. A 4th is optional.'},
@@ -570,7 +570,7 @@ var SECTIONS = [
   function blankOwn(){ return {on:false, group:'', name:'', age:'', who:'', moment:'', pain:'', win:'', games:'', stop:''}; }
   function defaults(){
     return {part:0, cur:'start', last:{'1':'personas', '2':'voice'}, seen:{},
-      persona:{rachel:{moment:'', stop:''}, dani:{moment:'', stop:''}}, own:blankOwn(),
+      persona:{rachel:{moment:'', stop:''}, danny:{moment:'', stop:''}}, own:blankOwn(),
       guard:[], promise:{who:'', feel:'', by:''},
       pillars:DEFAULT_PILLARS.slice(), p4on:false, p4:'Behind the Box',
       vids:[blankVid(), blankVid()],
@@ -614,7 +614,7 @@ var SECTIONS = [
   function addDesc(el, id){ var d = (el.getAttribute('aria-describedby') || '').split(' ').filter(Boolean); if (d.indexOf(id) < 0) d.push(id); el.setAttribute('aria-describedby', d.join(' ')); }
   function rmDesc(el, id){ var d = (el.getAttribute('aria-describedby') || '').split(' ').filter(function(x){ return x && x !== id; }); if (d.length) el.setAttribute('aria-describedby', d.join(' ')); else el.removeAttribute('aria-describedby'); }
   function byId(list, id){ return list.filter(function(x){ return x.id === id; })[0]; }
-  /* the two players this student makes videos for: Rachel and Dani, or their own player in place of one */
+  /* the two players this student makes videos for: Rachel and Danny, or their own player in place of one */
   function ownPersona(){
     var g = S.own.on ? byId(GROUPS, S.own.group) : null; if (!g) return null;
     return {id:'own', own:true, name:t(S.own.name) || 'Your player', age:t(S.own.age), label:'your own player: ' + g.short, swap:g.swap};
@@ -653,7 +653,10 @@ var SECTIONS = [
     Object.keys(base).forEach(function(k){ if (d && d[k] != null && typeof d[k] === typeof base[k] && Array.isArray(d[k]) === Array.isArray(base[k])) base[k] = d[k]; });
     while (base.vids.length < 2) base.vids.push(blankVid()); base.vids = base.vids.slice(0, 2);
     while (base.ins.length < 3) base.ins.push(blankIns()); base.ins = base.ins.slice(0, 3);
-    ['rachel','dani'].forEach(function(p){ if (!base.persona[p]) base.persona[p] = {moment:'', stop:''}; });
+    // 2026-10-25: Dani was renamed Danny (id 'dani' -> 'danny'). Move answers saved under the old id.
+    if (base.persona.dani) { var nd = base.persona.danny; if (!nd || (!nd.moment && !nd.stop)) base.persona.danny = base.persona.dani; delete base.persona.dani; }
+    base.vids.forEach(function(v){ if (v && v.persona === 'dani') v.persona = 'danny'; });
+    ['rachel','danny'].forEach(function(p){ if (!base.persona[p]) base.persona[p] = {moment:'', stop:''}; });
     var ob = blankOwn(); Object.keys(ob).forEach(function(k){ if (typeof base.own[k] !== typeof ob[k]) base.own[k] = ob[k]; });
     if (!SEC[base.cur]) base.cur = 'start';
     if ([0,1,2].indexOf(base.part) < 0) base.part = 0;
@@ -728,7 +731,7 @@ var SECTIONS = [
   };
 
   R.personas = function(b){
-    b.appendChild(h('p', {}, ['Breaking Games\' audience today is mostly 35 and older, and it wants to reach younger adults and Gen Z too. Rachel stands for the current buyer and Dani for younger players. Every video, crossover and ad you make gets tagged with the player it targets, and you pitch why.']));
+    b.appendChild(h('p', {}, ['Breaking Games\' audience today is mostly 35 and older, and it wants to reach younger adults and Gen Z too. Rachel stands for the current buyer and Danny for younger players. Every video, crossover and ad you make gets tagged with the player it targets, and you pitch why.']));
     var own = ownPersona();
     PERSONAS.forEach(function(p){
       var st = S.persona[p.id], swapped = own && own.swap === p.id;
@@ -736,19 +739,19 @@ var SECTIONS = [
         h('h3', {text:p.name + ', ' + p.age + ' (' + p.label.toLowerCase() + ')'}),
         h('dl', {}, [h('dt', {text:'Who'}), h('dd', {text:p.who}), h('dt', {text:'Moment'}), h('dd', {text:p.moment}),
           h('dt', {text:'Pain point'}), h('dd', {text:p.pain}), h('dt', {text:'Win'}), h('dd', {text:p.win}), h('dt', {text:'Best-fit games'}), h('dd', {text:p.games})]),
-        swapped ? h('p', {class:'hint', text:'You\'re building your own player in ' + p.name + '\'s group, so skip ' + p.name + '\'s fields. Your player takes her place in your brief and your videos.'}) : null,
+        swapped ? h('p', {class:'hint', text:'You\'re building your own player in ' + p.name + '\'s group, so skip ' + p.name + '\'s fields. Your player takes their place in your brief and your videos.'}) : null,
         swapped ? null : h('div', {style:'margin-top:12px'}, [field({id:'pm-' + p.id + '-moment', label:p.name + '\'s moment, from your scroll', multi:true, rows:2, value:st.moment,
           hint:'One sentence: when and where would ' + p.name + ' see a Breaking Games post? Use what you saw scrolling as ' + p.name + ' on ' + p.where + '.', set:function(v){ st.moment = v; }})]),
         swapped ? null : h('div', {style:'margin-top:10px'}, [field({id:'pm-' + p.id + '-stop', label:'What would make ' + p.name + ' stop scrolling', multi:true, rows:2, value:st.stop,
-          hint:'One line. Think about her pain point.', set:function(v){ st.stop = v; }})]),
+          hint:'One line. Think about their pain point.', set:function(v){ st.stop = v; }})]),
         swapped ? null : h('div', {style:'margin-top:10px'}, [ws([['weak', p.weak], ['strong', p.strong]], 'Weak vs. strong moment')])
       ]));
     });
-    b.appendChild(tips('Tip', ['You\'re Gen Z, so you\'re the expert on Dani. Rachel is where you practice writing for a buyer unlike you.']));
+    b.appendChild(tips('Tip', ['You\'re Gen Z, so you\'re the expert on Danny. Rachel is where you practice writing for a buyer unlike you.']));
     b.appendChild(ownCard());
   };
 
-  /* Optional third card: the student's own player, in the same structure as Rachel and Dani */
+  /* Optional third card: the student's own player, in the same structure as Rachel and Danny */
   function ownCard(){
     var o = S.own, g = byId(GROUPS, o.group);
     function rebuildAndFocus(id, msg){ rebuild('personas'); var el = $(id); if (el) el.focus(); announce(msg); changed(); }
@@ -774,10 +777,10 @@ var SECTIONS = [
     ]);
     return h('div', {class:'card persona', id:'own-card', style:'margin-top:14px'}, [
       h('h3', {text:'Optional: Create your own player'}),
-      h('p', {}, ['Rachel and Dani aren\'t the only people who buy games. If you\'d rather make videos for someone else, like a single guy in his 40s who hosts poker night, build your own player. Your player must fit one of Breaking Games\' two groups and takes the place of the card in that group: 35 or older replaces Rachel, and 18 to 29 replaces Dani. You still make one video for each group.']),
+      h('p', {}, ['Rachel and Danny aren\'t the only people who buy games. If you\'d rather make videos for someone else, like a single guy in his 40s who hosts poker night, build your own player. Your player must fit one of Breaking Games\' two groups and takes the place of the card in that group: 35 or older replaces Rachel, and 18 to 29 replaces Danny. You still make one video for each group.']),
       h('label', {class:'pick', style:'max-width:62ch'}, [h('input', {type:'checkbox', id:'own-on', checked:o.on, 'aria-controls':'own-fields', onchange:function(e){
         o.on = e.target.checked;
-        rebuildAndFocus('own-on', o.on ? 'Your own player\'s fields were added below.' : 'Your own player was removed. Rachel and Dani are your two players.'); }}),
+        rebuildAndFocus('own-on', o.on ? 'Your own player\'s fields were added below.' : 'Your own player was removed. Rachel and Danny are your two players.'); }}),
         'Create my own player', h('span', {class:'tick', 'aria-hidden':'true', text:'✓'})]),
       body]);
   }
@@ -844,7 +847,7 @@ var SECTIONS = [
     b.appendChild(h('h3', {text:'The 7 frameworks'}));
     b.appendChild(h('ul', {class:'fwlist'}, FWS.map(function(f){ return h('li', {}, [h('strong', {text:f.t}), h('span', {text:'Structure: ' + f.s}), h('br'), h('span', {text:'Breaking Games example: ' + f.ex})]); })));
     b.appendChild(tips('How to narrow it down', ['Pick 2 different energies. Play-Along + Day-in-the-Life works. Tutorial + Educational doesn\'t, because both teach.',
-      'Match the persona. Dani comments her guess, so Play-Along fits her. Rachel wants one game the whole family can play. Built your own player? Match their moment and pain point the same way.',
+      'Match the persona. Danny comments his guess, so Play-Along fits him. Rachel wants one game the whole family can play. Built your own player? Match their moment and pain point the same way.',
       'Be honest about filming. You\'ll make these videos in the next few days with adult hands, your voice and the product image deck.']));
     S.vids.forEach(function(v, i){
       var n = i + 1;
@@ -862,7 +865,7 @@ var SECTIONS = [
       b.appendChild(fs);
     });
     b.appendChild(h('div', {class:'card soft', id:'suggest-box'}, [h('h3', {text:'Suggestions for this pair'}), h('ul', {id:'suggest', style:'padding-left:1.2em;margin-top:4px'})]));
-    b.appendChild(ws([['weak', 'Play-Along is popular.'], ['strong', 'Play-Along gets Dani to comment her guess, which is her win, and shows Caminito on the table by second 3.']], 'Weak vs. strong "why"'));
+    b.appendChild(ws([['weak', 'Play-Along is popular.'], ['strong', 'Play-Along gets Danny to comment his guess, which is his win, and shows Caminito on the table by second 3.']], 'Weak vs. strong "why"'));
     updateSuggest();
   };
   function suggestions(){
@@ -895,7 +898,7 @@ var SECTIONS = [
     var wf = h('fieldset', {id:'fs-words', 'aria-describedby':'words-hint'}, [h('legend', {text:'3 voice traits on TikTok'}), h('p', {class:'hint', id:'words-hint', text:'Pick 3 of the 6 traits above. For each, write how it sounds in a TikTok for one of your players. Don\'t invent a new voice.'})]);
     S.words.forEach(function(w, i){ var f = field({id:'w-' + i, label:'Voice trait ' + (i + 1) + ' on TikTok', value:w, set:function(v){ S.words[i] = v; }}); f.style.marginTop = '8px'; wf.appendChild(f); });
     b.appendChild(wf);
-    b.appendChild(ws([['weak', 'Witty (just the trait name, with no TikTok in it)'], ['weak', 'Savage and unhinged (not the brand)'], ['strong', 'Nostalgic, not themed: a "This just in" hook for Dani, then straight to the game.']], 'Weak vs. strong voice traits'));
+    b.appendChild(ws([['weak', 'Witty (just the trait name, with no TikTok in it)'], ['weak', 'Savage and unhinged (not the brand)'], ['strong', 'Nostalgic, not themed: a "This just in" hook for Danny, then straight to the game.']], 'Weak vs. strong voice traits'));
     var sf = h('fieldset', {'aria-describedby':'sliders-hint'}, [h('legend', {text:'Tone sliders'}), h('p', {class:'hint', id:'sliders-hint', text:'5 steps each. The brand guide leans casual and playful. Use the arrow keys to move a slider.'})]);
     SLIDERS.forEach(function(s){
       var out = h('span', {class:'val', id:'sv-' + s.k, text:s.w[S.sl[s.k] - 1]});
