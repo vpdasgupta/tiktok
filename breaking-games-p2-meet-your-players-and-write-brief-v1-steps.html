@@ -33,7 +33,9 @@ DEPLOY
   github-pages-deployer → vpdasgupta/tiktok as breaking-games-p2-meet-your-players-and-write-brief-v1-steps.html,
   then on the Notion task page:
   <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-p2-meet-your-players-and-write-brief-v1-steps.html"></embed>
-  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  Set the Notion embed to 16:9: about 400px tall at normal page width, about
+  540px at full width. The deck fills the frame; only the step content scrolls.
+  Keep the text fallback toggle on the
   page (see task-page-v2-template.md).
 
 ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
@@ -45,6 +47,8 @@ ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
   - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
   - Arrow keys change step except inside links and scrollable samples.
   - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+  - Each slide is a focusable scroll region (tabindex=0), so keyboard users can
+    scroll long steps with the arrow keys inside the 16:9 frame.
 ================================================================================
 -->
 <title>Task Steps</title>
@@ -59,8 +63,8 @@ const TASK = {
   "exampleUrl": "",
   "steps": [
     {
-      "title": "Meet Rachel and Dani (Screen 1)",
-      "instruction": "Open the <a href=\"https://vpdasgupta.github.io/tiktok/breaking-games-brand-brief-builder.html\" target=\"_blank\" rel=\"noopener\">Brand Brief Builder<span class=\"sr-only\"> (opens in a new tab)</span></a> and click <b>Start Part 1</b>. Screen 1, <b>Your two players</b>, shows both cards. Read each one: who she is, her moment, her pain point and her win. Rachel, 38, is the current buyer. Dani, 21, stands for new, younger players.",
+      "title": "Meet Rachel and Dani, or build your own (Screen 1)",
+      "instruction": "Open the <a href=\"https://vpdasgupta.github.io/tiktok/breaking-games-brand-brief-builder.html\" target=\"_blank\" rel=\"noopener\">Brand Brief Builder<span class=\"sr-only\"> (opens in a new tab)</span></a> and click <b>Start Part 1</b>. Screen 1, <b>Your two players</b>, shows both cards. Read each one: who she is, her moment, her pain point and her win. Rachel, 38, is the current buyer. Dani, 21, stands for new, younger players. They stand for the two groups Breaking Games wants to reach: its current buyers, most of them 35 or older, and younger adults and Gen Z.<br><br><b>Optional: Create your own player.</b> Want to make videos for someone else in one of those groups, like a single guy in his 40s who hosts poker night? At the bottom of Screen 1, tick <b>Create my own player</b>, pick the group, and fill in the same rows as the cards: who, moment, pain point, win and best-fit games. A player 35 or older replaces Rachel. A player 18 to 29 replaces Dani. You still make one video for each group.",
       "sample": {
         "label": "What to notice",
         "kind": "text",
@@ -68,12 +72,13 @@ const TASK = {
       },
       "onTrack": "you can say each player's moment and pain point in one line.",
       "stuck": [
+        "Not sure whether to build your own? Stay with Rachel and Dani; they work fine. Build your own only if you can already picture one specific person.",
         "Use the same browser from start to finish. The Builder saves your answers in that browser, and Part 2 in Project 3 picks them up from there."
       ]
     },
     {
       "title": "Scroll 10 minutes as each player",
-      "instruction": "As Dani, open TikTok and search <b>#gamenight</b> and <b>#boardgames</b>. As Rachel, open Instagram or Facebook and search <b>#familygamenight</b> or <b>game gift ideas</b>. Save 3 links each player would stop for in your notes, with one line on why. Then write: <b>\"Dani stops for ___. Rachel stops for ___.\"</b> <b>Watch only:</b> don't like, comment, follow or tag anyone.",
+      "instruction": "As Dani, open TikTok and search <b>#gamenight</b> and <b>#boardgames</b>. As Rachel, open Instagram or Facebook and search <b>#familygamenight</b> or <b>game gift ideas</b>. Save 3 links each player would stop for in your notes, with one line on why. Then write: <b>\"Dani stops for ___. Rachel stops for ___.\"</b> Built your own player? Scroll as them instead of the player they replace, on the apps they use. <b>Watch only:</b> don't like, comment, follow or tag anyone.",
       "sample": {
         "label": "Sample",
         "kind": "text",
@@ -87,7 +92,7 @@ const TASK = {
     },
     {
       "title": "Write each player's moment (Screen 1)",
-      "instruction": "Back on Screen 1, write each player's moment from your own scroll: where and when she is, and what she wants. Then write what would make her stop scrolling.",
+      "instruction": "Back on Screen 1, write each player's moment from your own scroll: where and when she is, and what she wants. Then write what would make her stop scrolling. Built your own player? Fill in their card instead, using what you saw when you scrolled as them.",
       "sample": {
         "label": "Sample",
         "kind": "text",
@@ -95,7 +100,8 @@ const TASK = {
       },
       "onTrack": "someone could picture each moment, and each \"stop\" line names something you could film.",
       "stuck": [
-        "Start from the moment on her card, then add one detail from a post you saved."
+        "Start from the moment on her card, then add one detail from a post you saved.",
+        "For your own player, start from one post they'd stop for and work backward to who they are."
       ]
     },
     {
@@ -104,7 +110,7 @@ const TASK = {
       "sample": {
         "label": "Sample",
         "kind": "text",
-        "body": "Guardrail 2. No real customers, no one under 18 → I'll film adult hands on my own table.\nGuardrail 4. Family-safe games only → my jokes stay on the game, never on a person.\nGuardrail 5. Accurate product facts → I'll check stock before I film.\nPromise: \"Breaking Games helps groups who just met feel like old friends by giving them games that get everyone laughing in the first round.\"\nPillars: Play It Out Loud · A Game for Every Table · Good Game Moments"
+        "body": "Guardrail 2. No real customers, no one under 18 → I'll film adult hands on my own table.\nGuardrail 4. Family-safe games only → my jokes stay on the game, never on a person.\nGuardrail 5. Accurate product facts → I'll take price and ages from the game's page.\nPromise: \"Breaking Games helps groups who just met feel like old friends by giving them games that get everyone laughing in the first round.\"\nPillars: Play It Out Loud · A Game for Every Table · Good Game Moments"
       },
       "onTrack": "each guardrail names something you'll do differently when you film, and your promise names a feeling, not a product feature.",
       "stuck": [
@@ -114,13 +120,13 @@ const TASK = {
     },
     {
       "title": "Set up and tag Videos 1 and 2 (Screen 5)",
-      "instruction": "For each video, pick one of the 7 frameworks (a <b>framework</b> is the shape a video follows), a game and a pillar. Then tag the player it's for, in this shape: <b>\"For [Rachel / Dani]: [her moment], and this video [what it does for her].\"</b> Use a different framework and a different player for each video, so you test both.",
+      "instruction": "For each video, pick one of the 7 frameworks (a <b>framework</b> is the shape a video follows), a game and a pillar. Then tag the player it's for, in this shape: <b>\"For [player]: [their moment], and this video [what it does for them].\"</b> Use a different framework and a different player for each video, so you test both.",
       "sample": {
         "label": "Sample (Video 1)",
         "kind": "text",
         "body": "Framework: Play-Along · For: Dani · Game: Caminito · Pillar: Play It Out Loud\nWeak tag: \"For Dani: she's 21 and on TikTok.\"\nStrong tag: \"For Dani: she's planning a Friday game night for 8 people who don't all know each other, and this play-along shows her a game that gets strangers talking.\"\nRepeat for Video 2: a different framework, for Rachel."
       },
-      "onTrack": "your two videos have different frameworks and players, and each tag names her moment, not her age.",
+      "onTrack": "your two videos have different frameworks and players, and each tag names the player's moment, not their age.",
       "stuck": [
         "Can't decide? Video 1 Play-Along with Caminito, Video 2 whatever fits your calendar moment. You'll pick that moment in Week 3.",
         "Picked Trend-Based? Keep it only if the trend is family-safe and still about the game."
@@ -146,7 +152,7 @@ const TASK = {
     "criteria": [
       {
         "name": "Players",
-        "lookFor": "Both moments come from your own scroll, and each video is tagged with one player and her moment."
+        "lookFor": "Both moments come from your own scroll (or your own player's card), and each video is tagged with one player and their moment."
       },
       {
         "name": "Promise",
@@ -192,25 +198,28 @@ const TASK = {
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html, body { margin: 0; }
+  html, body { margin: 0; height: 100%; }
   body {
     font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     background: var(--canvas);
     color: var(--ink);
     line-height: 1.5;
-    padding: 16px;
+    padding: 12px;
     -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column; overflow: hidden;
   }
   button, a { font-family: inherit; }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-  .deck { max-width: 880px; margin: 0 auto; }
+  /* 16:9 frame: the deck fills the embed; header and nav stay put, the slide scrolls */
+  .deck { flex: 1; min-height: 0; width: 100%; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; }
+  #slides { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 
   /* Hero band: the dark TikTok header with red and teal glows and a gradient rule */
   .deck-head {
     display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-    margin-bottom: 14px; padding: 20px 24px 24px; border-radius: var(--radius);
+    flex: none; margin-bottom: 10px; padding: 12px 20px 14px; border-radius: var(--radius);
     color: #FFFFFF;
     background:
       var(--gradient) bottom / 100% 4px no-repeat,
@@ -218,7 +227,7 @@ const TASK = {
       radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
       var(--night);
   }
-  .deck-title { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .deck-title { font-size: 20px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
   .deck-head :focus-visible { outline-color: var(--tt-cyan); }
   .btn-example {
     display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
@@ -231,8 +240,10 @@ const TASK = {
     overflow-wrap: anywhere;
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 28px 32px 24px;
+    padding: 22px 28px 20px;
+    flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
   }
+  .slide:focus-visible { outline-offset: -3px; }
   .step-num {
     display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
     color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
@@ -280,7 +291,7 @@ const TASK = {
   .eval-table tbody th { width: 30%; }
   .finish { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 0; }
 
-  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .slide-nav { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
   .nav-btn {
     min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
     border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
@@ -301,7 +312,18 @@ const TASK = {
   }
   .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); } /* filled = visited, outline = not yet */
   .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); } /* wide pill = current */
-  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+  .counter { flex: none; font-size: 13px; color: var(--ink-soft); text-align: center; margin: 2px 0 0; }
+  /* Short frames (a 16:9 embed in a normal-width Notion page): tighten the chrome */
+  @media (max-height: 460px) {
+    body { padding: 8px; }
+    .deck-head { padding: 8px 16px 10px; margin-bottom: 8px; }
+    .deck-title { font-size: 17px; }
+    .btn-example { min-height: 36px; padding: 4px 12px; }
+    .slide { padding: 16px 20px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { margin-top: 8px; }
+    .counter { display: none; }
+  }
 
   @media (max-width: 420px) {
     .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -309,10 +331,10 @@ const TASK = {
     .eval-table tbody th { padding-bottom: 0; border-bottom: 0; }
   }
   @media (max-width: 640px) {
-    body { padding: 12px; }
-    .deck-head { padding: 16px 18px 20px; }
+    body { padding: 8px; }
+    .deck-head { padding: 10px 14px 12px; }
     .deck-title { font-size: 21px; }
-    .slide { padding: 20px 18px; }
+    .slide { padding: 16px 16px; }
     .slide h2 { font-size: 20px; }
     .slide-nav { flex-wrap: wrap; }
     .dots { order: -1; width: 100%; justify-content: center; }
@@ -367,7 +389,7 @@ const TASK = {
   }
 
   const html = steps.map((s, i) => `
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
       <p>${s.instruction}</p>
@@ -380,7 +402,7 @@ const TASK = {
   if (ev) {
     const i = total - 1;
     html.push(`
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
       ${ev.intro ? `<p>${ev.intro}</p>` : ""}
@@ -412,6 +434,7 @@ const TASK = {
     step = Math.max(0, Math.min(total - 1, i));
     seen = Math.max(seen, step);
     slides.forEach((s, n) => s.hidden = n !== step);
+    slides[step].scrollTop = 0;
     dots.forEach((d, n) => {
       d.classList.toggle("seen", n <= seen);
       d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
