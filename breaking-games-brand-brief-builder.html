@@ -553,7 +553,7 @@ var SECTIONS = [
   {key:'learn', part:2, n:7, t:'Who to learn from', time:'8 min', g:'Scan the ' + PEERS.length + ' peer cards, pick 2, and write what works and what Breaking Games would borrow.'},
   {key:'snap', part:2, n:8, t:'Game Snapshot', time:'8 min', g:'Run the 10-second test on 2 hero games. Then finish one sentence about what the games need from the Breaking Games brand.'},
   {key:'ins', part:2, n:9, t:'Strategy insights', time:'8 min', g:'Pick 3 "What I learned" lines from your Experiment Journal and write each one in the client version: one about Gen Z, one about the current buyer, one about ads.'},
-  {key:'measure', part:2, n:10, t:'Measurement', time:'5 min', g:'Choose the numbers beyond views that show the brand is working, and the one ad number from your test plan.'},
+  {key:'measure', part:2, n:10, t:'Measurement', time:'5 min', g:'Choose the numbers beyond views that show the brand is working, and the one number to watch for your ad. It goes in your 3-line ad test plan.'},
   {key:'out2', part:2, out:2, t:'Your final brief', time:'3 min', g:'Check your 1-page Brand Strategy Brief, then copy it into your Google Doc.'}
 ];
 
@@ -1058,14 +1058,14 @@ var SECTIONS = [
     });
     fs.appendChild(g); b.appendChild(fs);
     b.appendChild(field({id:'metric-why', label:'Why these numbers', multi:true, rows:2, value:S.metricWhy, hint:'One line tying them to the goal: new players find Breaking Games, like it, and buy from it.', set:function(v){ S.metricWhy = v; }}));
-    var ad = h('fieldset', {id:'fs-ad'}, [h('legend', {}, ['Ad: the one number from your ad test plan ', h('span', {class:'req', text:'(required)'})])]);
+    var ad = h('fieldset', {id:'fs-ad'}, [h('legend', {}, ['Ad: the one number to watch for your ad ', h('span', {class:'req', text:'(required)'})])]);
     var ag = h('div', {class:'grid'});
     AD_METRICS.forEach(function(m){
       ag.appendChild(h('label', {class:'choice'}, [h('input', {type:'radio', name:'ad', id:'ad-' + m.id, 'aria-labelledby':'ad-' + m.id + '-t', 'aria-describedby':'ad-' + m.id + '-d', checked:S.ad === m.id, onchange:function(){ S.ad = m.id; changed(); }}),
         h('span', {}, [h('span', {class:'t', id:'ad-' + m.id + '-t', text:m.t}), h('span', {class:'d', id:'ad-' + m.id + '-d', text:m.d})]), h('span', {class:'tick', 'aria-hidden':'true', text:'✓'})]));
     });
     ad.appendChild(ag); b.appendChild(ad);
-    b.appendChild(field({id:'ad-why', label:'Why this ad number', multi:true, rows:2, value:S.adWhy, hint:'Use the same reason as your ad test plan. Ads are concepts: you never run or pay for one.', set:function(v){ S.adWhy = v; }}));
+    b.appendChild(field({id:'ad-why', label:'Why this ad number', multi:true, rows:2, value:S.adWhy, hint:'This number goes in your 3-line ad test plan. You add those 3 lines under Measurement after you copy your brief. Ads are concepts: you never run or pay for one.', set:function(v){ S.adWhy = v; }}));
     b.appendChild(ws([['weak', 'Get lots of views.'], ['strong', 'Saves and link taps at 7 days, because Rachel saves gift ideas and the goal is new customers.']]));
     metricCount();
   };
@@ -1079,7 +1079,7 @@ var SECTIONS = [
     b.appendChild(h('div', {class:'card out-tools'}, [h('h3', {text:'Save your brief'}),
       h('ol', {style:'padding-left:1.2em;margin-top:6px'}, [
         h('li', {text:p === 1 ? 'Select Copy as text, then paste it into a new Google Doc named "BG-Brief-v1-[YourName]".' : 'Select Copy as text, then paste it into a Google Doc named "BG-Brand-Brief-[YourName]".'}),
-        h('li', {text:p === 1 ? 'Open "Back up or restore your answers" at the top and save your backup text. Part 2 starts from it in Week 5.' : 'Fix any formatting so it reads cleanly on one page.'}),
+        h('li', {text:p === 1 ? 'Open "Back up or restore your answers" at the top and save your backup text. Part 2 starts from it in Week 5.' : 'Under Measurement, add your 3-line ad test plan, marked "Concept". Then fix any formatting so it reads cleanly on one page.'}),
         h('li', {text:'Set sharing to "Anyone with the link can view" before you submit the link.'})]),
       h('div', {class:'actions', style:'margin-top:10px'}, [
         h('button', {type:'button', class:'primary', id:'copy-' + p, onclick:function(){ copyText(fullText(p), $('copy-' + p), 'Brief copied as plain text.', 'copied-' + p, p); }}, ['Copy as text']),
@@ -1164,7 +1164,7 @@ var SECTIONS = [
     if (k === 'measure'){
       if (S.metrics.length < 2 || S.metrics.length > 3) add('fs-metrics', 'Error: Pick 2 or 3 organic numbers. You have ' + S.metrics.length + ' selected.', 'mt-' + METRICS[0].id);
       if (!t(S.metricWhy)) add('metric-why', 'Error: Write why these numbers matter.');
-      if (!S.ad) add('fs-ad', 'Error: Choose the one ad number from your test plan.', 'ad-' + AD_METRICS[0].id);
+      if (!S.ad) add('fs-ad', 'Error: Choose the one number to watch for your ad.', 'ad-' + AD_METRICS[0].id);
       if (!t(S.adWhy)) add('ad-why', 'Error: Write why this ad number matters.');
     }
     return e;
