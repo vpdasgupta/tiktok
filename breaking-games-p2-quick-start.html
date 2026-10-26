@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--
   Breaking Games x TikTok, Project 2 concept deck: Project 2 Quick Start
-  Built 2026-10-19 from _asset-specs.md in this folder. 8 slides; remembers place in localStorage (try/catch).
+  Built 2026-10-19 from _asset-specs.md in this folder. 7 slides (Your tools slide removed 2026-10-26); remembers place in localStorage (try/catch).
   Style: ../../09-assets/style/tiktok-style-guide.md. Chrome, CSS and slide engine copied from the
   Project 1 decks (../project-01-read-the-feed-picture-the-brand/breaking-games-p1-*.html).
   The slide text mirrors the page's "Text version of the interactive" toggle. Edit both together.
@@ -279,6 +279,19 @@
   .path li { background: var(--pink-tint); border-radius: 999px; padding: 5px 12px; font-size: 14px; font-weight: 700; }
   .path li.go { background: var(--night); color: #FFFFFF; }
 
+  /* player portraits (slide 2) */
+  .person .portrait { flex: none; width: 128px; height: 128px; border-radius: var(--radius-sm); border: 1px solid var(--line); object-fit: cover; }
+  /* page lists (slides 3-4) */
+  .pages { list-style: none; counter-reset: pg; margin: 0 0 8px; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; }
+  .pages li { counter-increment: pg; position: relative; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: start;
+    border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--canvas); padding: 8px 12px 8px 46px; }
+  .pages li::before { content: counter(pg); position: absolute; left: 10px; top: 9px; width: 26px; height: 26px; border-radius: 50%;
+    display: grid; place-items: center; font-weight: 800; font-size: 13px; color: #FFFFFF; background: var(--night); }
+  .pg-title { font-weight: 800; font-size: 15px; line-height: 1.3; }
+  .pg-type { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--ink); border-radius: 999px; padding: 1px 8px; background: var(--card); }
+  .pg-what { grid-column: 1 / -1; font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+  .pg-type::before { content: "Page type: " / ""; position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
   @media (max-width: 760px) {
     .cards3, .parts, .fields, .seasons { grid-template-columns: 1fr 1fr; }
     .tool-grid { grid-template-columns: 1fr 1fr; }
@@ -286,7 +299,8 @@
   @media (max-width: 640px) {
     .rows { grid-template-columns: 1fr; gap: 2px; }
     .rows dd { margin-bottom: 8px; }
-    .sorter, .cards3, .parts, .fields, .seasons, .checks { grid-template-columns: 1fr; }
+    .sorter, .cards3, .parts, .fields, .seasons, .checks, .pages { grid-template-columns: 1fr; }
+    .person { flex-direction: column; }
     .flow { grid-template-columns: 1fr; }
     .flow .arrow { max-width: none; flex-direction: row; gap: 8px; }
     .flow .arrow .glyph { transform: rotate(90deg); }
@@ -322,10 +336,9 @@
     <section class="slide" aria-labelledby="h-1" hidden>
       <p class="step-num"></p>
       <h2 id="h-1" tabindex="-1">Two players</h2>
-      <div class="icon" aria-hidden="true">🃏</div>
       <div class="grid two">
-        <div class="box person"><span class="avatar" aria-hidden="true">R</span><div><h3>Rachel, 38</h3><p>Rachel, 38, is the current buyer.</p></div></div>
-        <div class="box person"><span class="avatar danny" aria-hidden="true">D</span><div><h3>Danny, 21</h3><p>Danny, 21, is a game lover who hosts game nights and stands for new, younger players.</p></div></div>
+        <div class="box person"><img class="portrait" src="https://vpdasgupta.github.io/tiktok/breaking-games-player-rachel.png" alt="Cartoon of Rachel on her couch on a rainy day, phone in hand, with a stack of board games beside her." width="128" height="128"><div><h3>Rachel, 38</h3><p>Rachel, 38, is the current buyer.</p></div></div>
+        <div class="box person"><img class="portrait" src="https://vpdasgupta.github.io/tiktok/breaking-games-player-danny.png" alt="Cartoon of Danny in a hoodie at a game-night table with cards and dice, grinning at his phone." width="128" height="128"><div><h3>Danny, 21</h3><p>Danny, 21, is a game lover who hosts game nights and stands for new, younger players.</p></div></div>
       </div>
       <p>Optional: build your own player in one of those two groups to take the place of Rachel or Danny.</p>
       <p>Every video you make gets a player tag: <strong>"For Rachel,"</strong> <strong>"For Danny"</strong> or your own player, plus one line on why.</p>
@@ -333,21 +346,26 @@
     <section class="slide" aria-labelledby="h-2" hidden>
       <p class="step-num"></p>
       <h2 id="h-2" tabindex="-1">Week 2</h2>
-      <div class="icon" aria-hidden="true">🧩</div>
-      <p class="lead">Meet your players, scroll as them and add a slide for each to your mood board, check the new website, then plan, make, caption, score and upload Video 1.</p>
-      <ol class="path" aria-label="Week 2 in order">
-        <li>Meet your players</li><li>Scroll as them</li><li>Add player slides</li><li>Check the new website</li>
-        <li>Plan</li><li>Make</li><li>Caption</li><li>Score</li><li class="go">Upload Video 1</li>
+      <p class="lead">You meet your players, then make Video 1. This week's pages, in order:</p>
+      <ol class="pages" aria-label="Week 2 pages, in order">
+        <li><span class="pg-title">Meet Your Players and Adapt Your Mood Board</span><span class="pg-type">Task</span><span class="pg-what">Scroll as Rachel and Danny and add a slide for each.</span></li>
+        <li><span class="pg-title">Follow the Link</span><span class="pg-type">Task</span><span class="pg-what">Check the new breakinggames.com through their eyes.</span></li>
+        <li><span class="pg-title">Hook Anatomy and Filming Without Customers</span><span class="pg-type">Training</span><span class="pg-what">Learn how a hook works.</span></li>
+        <li><span class="pg-title">Plan Your Video 1</span><span class="pg-type">Training</span><span class="pg-what">Plan your first video.</span></li>
+        <li><span class="pg-title">Create Your Video 1 in CapCut</span><span class="pg-type">Training</span><span class="pg-what">Film, edit and caption it.</span></li>
+        <li><span class="pg-title">Score, Log and Upload Video 1</span><span class="pg-type">Task</span><span class="pg-what">Score it, log it and upload it.</span></li>
       </ol>
     </section>
     <section class="slide" aria-labelledby="h-3" hidden>
       <p class="step-num"></p>
       <h2 id="h-3" tabindex="-1">Week 3</h2>
-      <div class="icon" aria-hidden="true">🍿</div>
-      <p class="lead">Get AI and peer feedback, turn it into one fix, then plan, make, caption, score and upload Video 2 for the other player. Finish with a recap that doubles as your first results report.</p>
-      <ol class="path" aria-label="Week 3 in order">
-        <li>AI and peer feedback</li><li>One fix</li>
-        <li>Plan</li><li>Make</li><li>Caption</li><li>Score</li><li>Upload Video 2</li><li class="go">Recap and report</li>
+      <p class="lead">You turn feedback into Video 2 for your other player. This week's pages, in order:</p>
+      <ol class="pages" aria-label="Week 3 pages, in order">
+        <li><span class="pg-title">Run AI Video Feedback</span><span class="pg-type">Task</span><span class="pg-what">Get AI and peer feedback and pick one fix.</span></li>
+        <li><span class="pg-title">Plan and Create Your Video 2</span><span class="pg-type">Training</span><span class="pg-what">Plan, film and caption Video 2.</span></li>
+        <li><span class="pg-title">Score, Compare and Upload Video 2 for Review</span><span class="pg-type">Task</span><span class="pg-what">Score it against Video 1 and upload it.</span></li>
+        <li><span class="pg-title">Project 2 Recap and Playbook Checkpoint 1</span><span class="pg-type">Task</span><span class="pg-what">Write the recap that doubles as your first results report.</span></li>
+        <li><span class="pg-title">Pause and Reflect</span><span class="pg-type">Task</span><span class="pg-what">Look back on the project.</span></li>
       </ol>
     </section>
     <section class="slide" aria-labelledby="h-4" hidden>
@@ -385,20 +403,6 @@
         <li>Family-safe games only.</li>
         <li>Say "games," not "toys."</li>
       </ul>
-    </section>
-    <section class="slide" aria-labelledby="h-7" hidden>
-      <p class="step-num"></p>
-      <h2 id="h-7" tabindex="-1">Your tools</h2>
-      <ul class="tool-grid" style="list-style:none;padding:0">
-        <li class="box"><span aria-hidden="true">🎬 </span>CapCut<span class="sub">editing</span></li>
-        <li class="box"><span aria-hidden="true">🤖 </span>An AI chat assistant</li>
-        <li class="box"><span aria-hidden="true">📈 </span>The Post Performance Simulator</li>
-        <li class="box"><span aria-hidden="true">🎨 </span>Your mood board<span class="sub">Canva, from Project 1</span></li>
-        <li class="box"><span aria-hidden="true">📺 </span>The Video Board</li>
-        <li class="box"><span aria-hidden="true">📓 </span>Your Experiment Journal<span class="sub">Google Doc</span></li>
-        <li class="box"><span aria-hidden="true">💬 </span>Your cohort Slack channel</li>
-      </ul>
-      <p class="callout"><strong>Your game:</strong> you don't need to buy one. Before you film, your program manager sends you a game, or shares Caminito's print-and-play file and approved clips and photos. Still waiting? A slideshow of product photos with your voiceover works for any video.</p>
     </section>
   </div>
 
