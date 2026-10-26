@@ -33,7 +33,9 @@ DEPLOY
   github-pages-deployer → vpdasgupta/tiktok as breaking-games-p2-follow-the-link-steps.html,
   then on the Notion task page:
   <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-p2-follow-the-link-steps.html"></embed>
-  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  Set the Notion embed to 16:9: about 400px tall at normal page width, about
+  540px at full width. The deck fills the frame; only the step content scrolls.
+  Keep the text fallback toggle on the
   page (see task-page-v2-template.md).
 
 ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
@@ -45,6 +47,8 @@ ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
   - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
   - Arrow keys change step except inside links and scrollable samples.
   - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+  - Each slide is a focusable scroll region (tabindex=0), so keyboard users can
+    scroll long steps with the arrow keys inside the 16:9 frame.
 ================================================================================
 -->
 <title>Task Steps</title>
@@ -60,7 +64,7 @@ const TASK = {
   steps: [
     {
       title: "Set up your notes doc",
-      instruction: "Make a new Google Doc named <code>BG-Site-Notes-[YourName]</code>. Add two headings, <b>As Rachel</b> and <b>As Dani</b>, with the three test questions under each. Then open <a href=\"https://breakinggames.com\" target=\"_blank\" rel=\"noopener\">breakinggames.com<span class=\"sr-only\"> (opens in a new tab)</span></a> on your phone, because that's where both players would land from a TikTok or Instagram link.",
+      instruction: "Make a new Google Doc named <code>BG-Site-Notes-[YourName]</code>. Add two headings, <b>As Rachel</b> and <b>As Dani</b>, with the three test questions under each. Built your own player? Use their name for the heading instead of the player they replace. Then open <a href=\"https://breakinggames.com\" target=\"_blank\" rel=\"noopener\">breakinggames.com<span class=\"sr-only\"> (opens in a new tab)</span></a> on your phone, because that's where both players would land from a TikTok or Instagram link.",
       sample: { label: "Sample", kind: "text",
         body: "As Rachel\n1. 5-second test: Would she know what Breaking Games is?\n2. Feel test: Does it feel like \"Good game, folks.\"?\n3. 3-tap test: Could she find and buy Caminito in 3 taps?\nAs Dani: the same three questions" },
       onTrack: "your doc has two headings and three questions under each.",
@@ -95,7 +99,7 @@ const TASK = {
     title: "How it will be evaluated",
     intro: "Your program manager checks your notes against these three things before sharing them with Breaking Games.",
     criteria: [
-      { name: "Both players", lookFor: "3 notes as Rachel and 3 as Dani, one for each test." },
+      { name: "Both players", lookFor: "3 notes for each of your two players (Rachel and Dani, or your own player in place of one), one for each test." },
       { name: "Client version", lookFor: "Every note leads with what works, gives evidence and ends with one recommendation." },
       { name: "Specific", lookFor: "Notes name what you saw or counted (taps, words, photos), not adjectives." }
     ],
@@ -134,25 +138,28 @@ const TASK = {
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html, body { margin: 0; }
+  html, body { margin: 0; height: 100%; }
   body {
     font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     background: var(--canvas);
     color: var(--ink);
     line-height: 1.5;
-    padding: 16px;
+    padding: 12px;
     -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column; overflow: hidden;
   }
   button, a { font-family: inherit; }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-  .deck { max-width: 880px; margin: 0 auto; }
+  /* 16:9 frame: the deck fills the embed; header and nav stay put, the slide scrolls */
+  .deck { flex: 1; min-height: 0; width: 100%; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; }
+  #slides { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 
   /* Hero band: the dark TikTok header with red and teal glows and a gradient rule */
   .deck-head {
     display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-    margin-bottom: 14px; padding: 20px 24px 24px; border-radius: var(--radius);
+    flex: none; margin-bottom: 10px; padding: 12px 20px 14px; border-radius: var(--radius);
     color: #FFFFFF;
     background:
       var(--gradient) bottom / 100% 4px no-repeat,
@@ -160,7 +167,7 @@ const TASK = {
       radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
       var(--night);
   }
-  .deck-title { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .deck-title { font-size: 20px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
   .deck-head :focus-visible { outline-color: var(--tt-cyan); }
   .btn-example {
     display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
@@ -173,8 +180,10 @@ const TASK = {
     overflow-wrap: anywhere;
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 28px 32px 24px;
+    padding: 22px 28px 20px;
+    flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
   }
+  .slide:focus-visible { outline-offset: -3px; }
   .step-num {
     display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
     color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
@@ -222,7 +231,7 @@ const TASK = {
   .eval-table tbody th { width: 30%; }
   .finish { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 0; }
 
-  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .slide-nav { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
   .nav-btn {
     min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
     border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
@@ -243,7 +252,18 @@ const TASK = {
   }
   .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); } /* filled = visited, outline = not yet */
   .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); } /* wide pill = current */
-  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+  .counter { flex: none; font-size: 13px; color: var(--ink-soft); text-align: center; margin: 2px 0 0; }
+  /* Short frames (a 16:9 embed in a normal-width Notion page): tighten the chrome */
+  @media (max-height: 460px) {
+    body { padding: 8px; }
+    .deck-head { padding: 8px 16px 10px; margin-bottom: 8px; }
+    .deck-title { font-size: 17px; }
+    .btn-example { min-height: 36px; padding: 4px 12px; }
+    .slide { padding: 16px 20px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { margin-top: 8px; }
+    .counter { display: none; }
+  }
 
   @media (max-width: 420px) {
     .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -251,10 +271,10 @@ const TASK = {
     .eval-table tbody th { padding-bottom: 0; border-bottom: 0; }
   }
   @media (max-width: 640px) {
-    body { padding: 12px; }
-    .deck-head { padding: 16px 18px 20px; }
+    body { padding: 8px; }
+    .deck-head { padding: 10px 14px 12px; }
     .deck-title { font-size: 21px; }
-    .slide { padding: 20px 18px; }
+    .slide { padding: 16px 16px; }
     .slide h2 { font-size: 20px; }
     .slide-nav { flex-wrap: wrap; }
     .dots { order: -1; width: 100%; justify-content: center; }
@@ -309,7 +329,7 @@ const TASK = {
   }
 
   const html = steps.map((s, i) => `
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
       <p>${s.instruction}</p>
@@ -322,7 +342,7 @@ const TASK = {
   if (ev) {
     const i = total - 1;
     html.push(`
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
       ${ev.intro ? `<p>${ev.intro}</p>` : ""}
@@ -354,6 +374,7 @@ const TASK = {
     step = Math.max(0, Math.min(total - 1, i));
     seen = Math.max(seen, step);
     slides.forEach((s, n) => s.hidden = n !== step);
+    slides[step].scrollTop = 0;
     dots.forEach((d, n) => {
       d.classList.toggle("seen", n <= seen);
       d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
