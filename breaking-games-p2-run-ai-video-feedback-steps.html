@@ -33,7 +33,9 @@ DEPLOY
   github-pages-deployer → vpdasgupta/tiktok as breaking-games-p2-run-ai-video-feedback-steps.html,
   then on the Notion task page:
   <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-p2-run-ai-video-feedback-steps.html"></embed>
-  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  Set the Notion embed to 16:9: about 400px tall at normal page width, about
+  540px at full width. The deck fills the frame; only the step content scrolls.
+  Keep the text fallback toggle on the
   page (see task-page-v2-template.md).
 
 ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
@@ -45,6 +47,8 @@ ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
   - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
   - Arrow keys change step except inside links and scrollable samples.
   - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+  - Each slide is a focusable scroll region (tabindex=0), so keyboard users can
+    scroll long steps with the arrow keys inside the 16:9 frame.
 ================================================================================
 -->
 <title>Task Steps</title>
@@ -60,17 +64,17 @@ const TASK = {
   steps: [
     {
       title: "Upload or describe Video 1",
-      instruction: "If your AI tool takes video files, upload the MP4: feedback is better when AI can see it. If it only takes text, fill in the Video 1 breakdown from the <a href=\"{TEMPLATE LINK: AI video feedback prompts}\" target=\"_blank\" rel=\"noopener\">AI video feedback doc<span class=\"sr-only\"> (opens in a new tab)</span></a> first. It's also in the text version below these steps.",
-      sample: { label: "Sample student work (made-up breakdown)", kind: "text",
-        body: "0:00-0:03 Hook: hands hold a card face down; text \"Guess this game from one move?\"\n0:03-0:10: hands make one move; friend's voice: \"Wait, that's allowed?\"\n0:10 to end card: \"Comment your guess,\" then the Caminito box slides in\nEnd card: logo + \"Good game, folks.\" + \"Find your next game night: link in bio\"\nAudio: my voiceover + one sound · Length: 18 seconds\nCaption: \"Can you guess it before the table does? #gamenight #boardgames\"" },
+      instruction: "If your AI tool takes video files, upload the MP4: feedback is better when AI can see it. If it only takes text, fill in a Video 1 breakdown first. Click <b>Copy code</b> under the sample below, then replace each line with what happens in your video.",
+      sample: { label: "Sample student work (made-up breakdown): copy it, then rewrite each line", kind: "code",
+        body: "VIDEO 1 BREAKDOWN\n0:00-0:03 (Hook): hands hold a card face down; text \"Guess this game from one move?\"\n0:03-0:10: hands make one move; friend's voice: \"Wait, that's allowed?\"; text \"Comment your guess\" at 0:08\n0:10 to the end card: the Caminito box slides in\nEnd card: logo + \"Good game, folks.\" + \"Find your next game night: link in bio\"\nAudio: my voiceover + one sound\nOn-screen text: \"Guess this game from one move?\" · \"Comment your guess\" · \"It's Caminito.\"\nLength: 18 seconds\nCaption and hashtags: \"Can you guess it before the table does? #gamenight #boardgames\"" },
       onTrack: "someone could picture your video from the breakdown alone.",
       stuck: ["Not sure your tool takes video? Look for an upload or paperclip button. If there isn't one, use the breakdown."]
     },
     {
       title: "Paste the feedback prompt",
-      instruction: "Copy the <b>feedback prompt</b> from the same <a href=\"{TEMPLATE LINK: AI video feedback prompts}\" target=\"_blank\" rel=\"noopener\">doc<span class=\"sr-only\"> (opens in a new tab)</span></a>, paste it with your video or breakdown, and fill every bracket from your Brief. Area 4 is <b>Brand Fit</b>, and the prompt ends with a <b>guardrail check</b>.",
-      sample: { label: "The prompt starts like this", kind: "text",
-        body: "You're a senior TikTok content strategist reviewing a relaunch video for Breaking Games…\nBRAND INPUTS (from my Brief): framework, promise and pillars, persona, guardrails\nScore 1 to 5: Content Quality · Strategic Elements · Platform Optimization · Brand Fit\n…then a GUARDRAIL CHECK, plus KEEP, FIX and TRY NEXT, in under 250 words." },
+      instruction: "Click <b>Copy code</b> under the <b>feedback prompt</b> below, paste it with your video or breakdown, and fill every bracket from your Brief. Area 4 is <b>Brand Fit</b>, and the prompt ends with a <b>guardrail check</b>.",
+      sample: { label: "The feedback prompt", kind: "code",
+        body: "You're a senior TikTok content strategist reviewing a relaunch video for Breaking Games, a tabletop game producer that works with designers. Its TikTok, @breakinggamesllc, has been quiet since October 2024, and this is one of its first new videos. Brand line: \"Good game, folks.\" Voice: a charismatic emcee, not a scene-stealing performer. Clever, casual, friendly (not salesy), occasionally ridiculous but never unhinged, and PG.\n\nBRAND INPUTS (from my Brief)\n- Framework: [PASTE your Video 1 framework, why line and pillar from your Brief]\n- Promise and pillars: [PASTE your promise and pillars from your Brief]\n- Who it's for: [PASTE your Video 1 persona tag from your Brief]\n- Guardrails: [PASTE your 3 guardrails from your Brief]\n\nTHE VIDEO\n[UPLOAD the MP4, or PASTE your Video 1 breakdown]\n\nScore the video from 1 to 5 on each area:\n1. Content Quality: hook strength, pacing, audio clarity, visual quality\n2. Strategic Elements: feels native to TikTok, gives a reason to comment or share, one clear call to action\n3. Platform Optimization: 9:16, captions, length, text in safe zones, caption and hashtags\n4. Brand Fit: on-voice (shows the game before the punchline, periods over exclamation points), the \"Good game, folks.\" end card, fits a pillar, speaks to my player, and makes someone remember Breaking Games, not just the game\n\nThen run a GUARDRAIL CHECK. Answer yes or no for each, with a timestamp for any no:\n- No real customers, no one under 18, no AI-made people shown as real\n- Family-safe game and PG humor; nothing edgy or just for shock\n- No price, ages or player count unless they match the product page\n- Says \"games,\" not \"toys\"\n- Other creators' work is credited\n\nReturn:\n- A table: area, score, a one-sentence reason with a timestamp\n- KEEP: the 1 thing working best\n- FIX: the 1 most important change, with the timestamp and exactly what to do in CapCut\n- TRY NEXT: 1 idea to test in Video 2, which is for my other player\n\nRules: Only comment on what you can see or what I described. Don't suggest edgier humor, more hype or chasing a trend. Keep it under 250 words." },
       onTrack: "you get 4 scores, a guardrail check, and a KEEP, FIX and TRY NEXT.",
       stuck: ["Answer too long or vague? Reply: \"Make the FIX one concrete edit I can do in CapCut.\""]
     },
@@ -78,7 +82,7 @@ const TASK = {
       title: "Check the AI's work",
       instruction: "AI can sound sure and still be wrong. Check four things: Does each score point to a real moment? Is the FIX specific enough to do? Does any suggestion break a guardrail? Did it describe something that isn't in your video? Throw out anything that fails.",
       sample: { label: "Sample (after checking)", kind: "text",
-        body: "Content Quality 3: the first 2 seconds are just a table (hook text at 0:02).\nStrategic Elements 4: \"Comment your guess\" at 0:11 invites comments.\nPlatform Optimization 4: 9:16, captions, 18 seconds; the caption doesn't name the game.\nBrand Fit 4: warm, ends on \"Good game, folks.\"; the brand is only on the end card.\nGuardrail check: all yes.\nKEEP: box reveal at 0:13 · FIX: hook text from frame 1 · TRY NEXT: Rachel's rainy Saturday in shot 1" },
+        body: "Content Quality 3: the first 2 seconds are just a table (hook text at 0:02).\nStrategic Elements 4: \"Comment your guess\" at 0:08 invites comments.\nPlatform Optimization 4: 9:16, captions, 18 seconds; the caption doesn't name the game.\nBrand Fit 4: warm, ends on \"Good game, folks.\"; the brand is only on the end card.\nGuardrail check: all yes.\nKEEP: box reveal at 0:13 · FIX: hook text from frame 1 · TRY NEXT: Rachel's rainy Saturday in shot 1" },
       onTrack: "every reason you kept names a moment you can find in your video.",
       stuck: [
         "A reason is vague? Ask: \"Which timestamp is that based on?\"",
@@ -145,25 +149,28 @@ const TASK = {
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html, body { margin: 0; }
+  html, body { margin: 0; height: 100%; }
   body {
     font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     background: var(--canvas);
     color: var(--ink);
     line-height: 1.5;
-    padding: 16px;
+    padding: 12px;
     -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column; overflow: hidden;
   }
   button, a { font-family: inherit; }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-  .deck { max-width: 880px; margin: 0 auto; }
+  /* 16:9 frame: the deck fills the embed; header and nav stay put, the slide scrolls */
+  .deck { flex: 1; min-height: 0; width: 100%; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; }
+  #slides { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 
   /* Hero band: the dark TikTok header with red and teal glows and a gradient rule */
   .deck-head {
     display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-    margin-bottom: 14px; padding: 20px 24px 24px; border-radius: var(--radius);
+    flex: none; margin-bottom: 10px; padding: 12px 20px 14px; border-radius: var(--radius);
     color: #FFFFFF;
     background:
       var(--gradient) bottom / 100% 4px no-repeat,
@@ -171,7 +178,7 @@ const TASK = {
       radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
       var(--night);
   }
-  .deck-title { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .deck-title { font-size: 20px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
   .deck-head :focus-visible { outline-color: var(--tt-cyan); }
   .btn-example {
     display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
@@ -184,8 +191,10 @@ const TASK = {
     overflow-wrap: anywhere;
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 28px 32px 24px;
+    padding: 22px 28px 20px;
+    flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
   }
+  .slide:focus-visible { outline-offset: -3px; }
   .step-num {
     display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
     color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
@@ -233,7 +242,7 @@ const TASK = {
   .eval-table tbody th { width: 30%; }
   .finish { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 0; }
 
-  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .slide-nav { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
   .nav-btn {
     min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
     border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
@@ -254,7 +263,18 @@ const TASK = {
   }
   .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); } /* filled = visited, outline = not yet */
   .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); } /* wide pill = current */
-  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+  .counter { flex: none; font-size: 13px; color: var(--ink-soft); text-align: center; margin: 2px 0 0; }
+  /* Short frames (a 16:9 embed in a normal-width Notion page): tighten the chrome */
+  @media (max-height: 460px) {
+    body { padding: 8px; }
+    .deck-head { padding: 8px 16px 10px; margin-bottom: 8px; }
+    .deck-title { font-size: 17px; }
+    .btn-example { min-height: 36px; padding: 4px 12px; }
+    .slide { padding: 16px 20px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { margin-top: 8px; }
+    .counter { display: none; }
+  }
 
   @media (max-width: 420px) {
     .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -262,10 +282,10 @@ const TASK = {
     .eval-table tbody th { padding-bottom: 0; border-bottom: 0; }
   }
   @media (max-width: 640px) {
-    body { padding: 12px; }
-    .deck-head { padding: 16px 18px 20px; }
+    body { padding: 8px; }
+    .deck-head { padding: 10px 14px 12px; }
     .deck-title { font-size: 21px; }
-    .slide { padding: 20px 18px; }
+    .slide { padding: 16px 16px; }
     .slide h2 { font-size: 20px; }
     .slide-nav { flex-wrap: wrap; }
     .dots { order: -1; width: 100%; justify-content: center; }
@@ -320,7 +340,7 @@ const TASK = {
   }
 
   const html = steps.map((s, i) => `
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
       <p>${s.instruction}</p>
@@ -333,7 +353,7 @@ const TASK = {
   if (ev) {
     const i = total - 1;
     html.push(`
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
       ${ev.intro ? `<p>${ev.intro}</p>` : ""}
@@ -365,6 +385,7 @@ const TASK = {
     step = Math.max(0, Math.min(total - 1, i));
     seen = Math.max(seen, step);
     slides.forEach((s, n) => s.hidden = n !== step);
+    slides[step].scrollTop = 0;
     dots.forEach((d, n) => {
       d.classList.toggle("seen", n <= seen);
       d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
