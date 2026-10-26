@@ -33,7 +33,9 @@ DEPLOY
   github-pages-deployer → vpdasgupta/tiktok as breaking-games-p2-plan-your-video-1-steps.html,
   then on the Notion task page:
   <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-p2-plan-your-video-1-steps.html"></embed>
-  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  Set the Notion embed to 16:9: about 400px tall at normal page width, about
+  540px at full width. The deck fills the frame; only the step content scrolls.
+  Keep the text fallback toggle on the
   page (see task-page-v2-template.md).
 
 ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
@@ -45,6 +47,8 @@ ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
   - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
   - Arrow keys change step except inside links and scrollable samples.
   - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+  - Each slide is a focusable scroll region (tabindex=0), so keyboard users can
+    scroll long steps with the arrow keys inside the 16:9 frame.
 ================================================================================
 -->
 <title>Task Steps</title>
@@ -68,9 +72,9 @@ const TASK = {
     },
     {
       title: "Get 5 hook ideas from AI",
-      instruction: "Open the <a href=\"{TEMPLATE LINK: Video planning prompts}\" target=\"_blank\" rel=\"noopener\">Video planning prompts doc<span class=\"sr-only\"> (opens in a new tab)</span></a>, copy the <b>hook prompt</b> into your AI chat assistant, and fill every bracket from your Brief and mood board. The full prompt is also in the text version below these steps.",
-      sample: { label: "The hook prompt starts like this", kind: "text",
-        body: "I'm planning a TikTok for Breaking Games, a tabletop game producer that works with designers. It's relaunching its quiet TikTok (@breakinggamesllc)… Voice: a charismatic emcee, not a scene-stealing performer…\nFramework for this video: [PASTE your Video 1 framework, why line and pillar from your Brief]\nWho it's for: [PASTE your Video 1 persona tag and moment from your Brief]\n…then your game, voice words, a hook you liked, your test line, and the rules for each hook." },
+      instruction: "Click <b>Copy code</b> under the <b>hook prompt</b> below, paste it into your AI chat assistant, and fill every bracket from your Brief and mood board.",
+      sample: { label: "The hook prompt", kind: "code",
+        body: "I'm planning a TikTok for Breaking Games, a tabletop game producer that works with designers. It's relaunching its quiet TikTok (@breakinggamesllc). Brand line: \"Good game, folks.\" Voice: a charismatic emcee, not a scene-stealing performer. Clever, casual, friendly (not salesy), and occasionally ridiculous, never unhinged.\n\nFramework for this video: [PASTE your Video 1 framework, why line and pillar from your Brief]\nWho it's for: [PASTE your Video 1 persona tag and moment from your Brief]\nGame: [Caminito, or the game you're featuring]\nVoice words: [PASTE the 3 voice words from your mood board's Feel slide]\nA hook I liked: [PASTE 1 line from your mood board's Hooks to Use slide]\nWhat I'm testing: [PASTE your \"If I ___, then ___ will ___\" line]\n\nWrite 5 hook options. Each hook must:\n- Work in under 3 seconds, and work as on-screen text with the sound off\n- Show the game or hands in frame in second 1\n- Fit the hook style for my framework\n- Speak to my player in her moment, not to \"everyone\"\n- Not start with the brand name, a price, a logo or a promo code\n- Show the game before the punchline; no hype, no jokes at anyone's expense, nothing just for shock\n- Use a nostalgic newscast or game-show line (like \"This just in\") at most once, as the hook device\n- End on a period, not an exclamation point\n\nFor each hook, give: the line, what's on screen in second 1, and one sentence on why it works." },
       onTrack: "the AI gives you 5 hooks, each with what's on screen in second 1.",
       stuck: ["Left a bracket empty? The AI will guess. Fill every one before you send it."]
     },
@@ -84,7 +88,8 @@ const TASK = {
     },
     {
       title: "Choose your template and shot structure",
-      instruction: "Your framework sets the story. The <b>template</b> sets how you film it: talking head (you talk to the camera), voiceover with B-roll (you talk over extra footage, like hands and the box), POV (filmed from your eyes, as if the viewer is playing), split screen (two clips side by side), green screen (you in front of a photo or a post), slideshow with audio (photos with your voice or music), or montage (quick clips cut to music). Write one line: \"Template: ___, because ___.\" Then copy your framework's 5-shot structure from the <a href=\"{TEMPLATE LINK: Video planning prompts}\" target=\"_blank\" rel=\"noopener\">prompts doc<span class=\"sr-only\"> (opens in a new tab)</span></a>.",
+      instruction: "Your framework sets the story. The <b>template</b> sets how you film it: talking head (you talk to the camera), voiceover with B-roll (you talk over extra footage, like hands and the box), POV (filmed from your eyes, as if the viewer is playing), split screen (two clips side by side), green screen (you in front of a photo or a post), slideshow with audio (photos with your voice or music), or montage (quick clips cut to music). Write one line: \"Template: ___, because ___.\" Then copy your framework's 5-shot structure from the list below into your plan doc.",
+      items: ["Play-Along: 1 hook question, game in frame · 2 and 3 the play that holds the clue · 4 the reveal, box and name on screen · 5 end card", "Tutorial: 1 the problem · 2 to 4 one step per shot · 5 result, then end card", "Day-in-the-Life: 1 the moment · 2 and 3 key moments · 4 the \"good game\" moment · 5 end card", "Transformation: 1 set up the before · 2 before · 3 the change · 4 after · 5 end card", "Storytelling: 1 the situation · 2 the problem · 3 the turning point · 4 the payoff · 5 end card", "Educational: 1 myth or question · 2 explanation · 3 proof · 4 takeaway · 5 end card", "Trend-Based (family-safe only): 1 the format's opening · 2 and 3 your game twist · 4 pillar payoff · 5 end card"],
       sample: { label: "Sample", kind: "text",
         body: "Play-Along: 1 hook question, game in frame · 2-3 the play that holds the clue · 4 the reveal, box and name on screen · 5 end card\nTemplate: voiceover with B-roll of hands at my table, because no one needs to be on camera.\n\nNo game yet? Template: slideshow with audio, because my game hasn't arrived. Play-Along as a slideshow: 1 a tight crop of one piece from the product image deck, with \"Guess this game from one piece?\" · 2-3 zoom out a little more each shot, with a clue on screen · 4 the full box and the game's name · 5 end card. It's a full, equal path, not a backup." },
       onTrack: "you can say your template in one line, with a reason.",
@@ -92,9 +97,9 @@ const TASK = {
     },
     {
       title: "Build your storyboard with AI",
-      instruction: "Copy the <b>storyboard prompt</b> from the same <a href=\"{TEMPLATE LINK: Video planning prompts}\" target=\"_blank\" rel=\"noopener\">prompts doc<span class=\"sr-only\"> (opens in a new tab)</span></a> into the same chat and fill its brackets. A <b>storyboard</b> here is a simple shot list: what's on screen, for how long, and what's said or written.",
-      sample: { label: "The storyboard prompt starts like this", kind: "text",
-        body: "Build a 5-shot storyboard for this TikTok.\nFramework: [PASTE your Video 1 framework from your Brief]\nHook (use word for word in Shot 1): \"[PASTE your final hook]\"\n…then your template, shot structure, persona and guardrails, and the rules (15 to 30 seconds, end card last)." },
+      instruction: "Click <b>Copy code</b> under the <b>storyboard prompt</b> below, paste it into the same chat and fill its brackets. A <b>storyboard</b> here is a simple shot list: what's on screen, for how long, and what's said or written.",
+      sample: { label: "The storyboard prompt", kind: "code",
+        body: "Build a 5-shot storyboard for this TikTok.\n\nFramework: [PASTE your Video 1 framework from your Brief]\nHook (use word for word in Shot 1): \"[PASTE your final hook]\"\nTemplate: [PASTE your template]\nShot structure: [PASTE the shot structure for your framework]\nWho it's for: [PASTE your persona tag from your Brief]\nGuardrails: [PASTE your 3 guardrails from your Brief]\n\nGive me a table with: Shot #, Seconds, What happens, On screen, Audio/Text.\n\nRules:\n- Total 15 to 30 seconds, no shot longer than 5 seconds\n- On-screen text of 7 words or fewer per overlay\n- Name the game on screen at least once\n- Adult hands only; no one under 18, no real customers, no AI-made people\n- Shot 5 is a 1 to 2 second end card: the Breaking Games logo + \"Good game, folks.\" and the call to action \"Find your next game night: link in bio\"\n- Everything must be filmable with a phone on my own table\n- Don't state a price, ages or player count unless I give them to you" },
       onTrack: "the AI gives you 5 shots that add up to 15 to 30 seconds and end on the end card.",
       stuck: ["AI wrote a shot you can't film? Tell it: \"Shot 3 has to be filmable on my kitchen table with one deck of cards.\""]
     },
@@ -106,7 +111,7 @@ const TASK = {
       onTrack: "every shot uses only adult hands, voices with permission, the game or the product image deck.",
       stuck: [
         "Caminito's price, ages and player count aren't confirmed yet. Leave them off screen until your program manager shares them.",
-        "No copy of Caminito? Use the product image deck, or pick an in-stock backup game."
+        "No copy of Caminito? Use the product image deck, or pick another game from breakinggames.com."
       ]
     }
   ]
@@ -143,25 +148,28 @@ const TASK = {
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html, body { margin: 0; }
+  html, body { margin: 0; height: 100%; }
   body {
     font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     background: var(--canvas);
     color: var(--ink);
     line-height: 1.5;
-    padding: 16px;
+    padding: 12px;
     -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column; overflow: hidden;
   }
   button, a { font-family: inherit; }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-  .deck { max-width: 880px; margin: 0 auto; }
+  /* 16:9 frame: the deck fills the embed; header and nav stay put, the slide scrolls */
+  .deck { flex: 1; min-height: 0; width: 100%; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; }
+  #slides { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 
   /* Hero band: the dark TikTok header with red and teal glows and a gradient rule */
   .deck-head {
     display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-    margin-bottom: 14px; padding: 20px 24px 24px; border-radius: var(--radius);
+    flex: none; margin-bottom: 10px; padding: 12px 20px 14px; border-radius: var(--radius);
     color: #FFFFFF;
     background:
       var(--gradient) bottom / 100% 4px no-repeat,
@@ -169,7 +177,7 @@ const TASK = {
       radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
       var(--night);
   }
-  .deck-title { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .deck-title { font-size: 20px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
   .deck-head :focus-visible { outline-color: var(--tt-cyan); }
   .btn-example {
     display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
@@ -182,8 +190,10 @@ const TASK = {
     overflow-wrap: anywhere;
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 28px 32px 24px;
+    padding: 22px 28px 20px;
+    flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
   }
+  .slide:focus-visible { outline-offset: -3px; }
   .step-num {
     display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
     color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
@@ -231,7 +241,7 @@ const TASK = {
   .eval-table tbody th { width: 30%; }
   .finish { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 0; }
 
-  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .slide-nav { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
   .nav-btn {
     min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
     border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
@@ -252,7 +262,18 @@ const TASK = {
   }
   .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); } /* filled = visited, outline = not yet */
   .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); } /* wide pill = current */
-  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+  .counter { flex: none; font-size: 13px; color: var(--ink-soft); text-align: center; margin: 2px 0 0; }
+  /* Short frames (a 16:9 embed in a normal-width Notion page): tighten the chrome */
+  @media (max-height: 460px) {
+    body { padding: 8px; }
+    .deck-head { padding: 8px 16px 10px; margin-bottom: 8px; }
+    .deck-title { font-size: 17px; }
+    .btn-example { min-height: 36px; padding: 4px 12px; }
+    .slide { padding: 16px 20px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { margin-top: 8px; }
+    .counter { display: none; }
+  }
 
   @media (max-width: 420px) {
     .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -260,10 +281,10 @@ const TASK = {
     .eval-table tbody th { padding-bottom: 0; border-bottom: 0; }
   }
   @media (max-width: 640px) {
-    body { padding: 12px; }
-    .deck-head { padding: 16px 18px 20px; }
+    body { padding: 8px; }
+    .deck-head { padding: 10px 14px 12px; }
     .deck-title { font-size: 21px; }
-    .slide { padding: 20px 18px; }
+    .slide { padding: 16px 16px; }
     .slide h2 { font-size: 20px; }
     .slide-nav { flex-wrap: wrap; }
     .dots { order: -1; width: 100%; justify-content: center; }
@@ -318,7 +339,7 @@ const TASK = {
   }
 
   const html = steps.map((s, i) => `
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
       <p>${s.instruction}</p>
@@ -331,7 +352,7 @@ const TASK = {
   if (ev) {
     const i = total - 1;
     html.push(`
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
       ${ev.intro ? `<p>${ev.intro}</p>` : ""}
@@ -363,6 +384,7 @@ const TASK = {
     step = Math.max(0, Math.min(total - 1, i));
     seen = Math.max(seen, step);
     slides.forEach((s, n) => s.hidden = n !== step);
+    slides[step].scrollTop = 0;
     dots.forEach((d, n) => {
       d.classList.toggle("seen", n <= seen);
       d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
