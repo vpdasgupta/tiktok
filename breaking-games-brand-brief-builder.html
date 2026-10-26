@@ -425,13 +425,25 @@ var PERSONAS = [
    strong:'Thursday night, the group chat is planning Friday\'s game night for 8, half of them strangers, and Dani is scrolling #gamenight for something everyone can learn fast.'}
 ];
 
+/* Optional: students may build their own player. It must fit one of the partner's two groups and replaces the card in that group. */
+var GROUPS = [
+  {id:'buyer', t:'The current buyer: 35 or older', short:'the current buyer, 35+', swap:'rachel', min:35, max:99},
+  {id:'young', t:'Younger adults and Gen Z: 18 to 29', short:'younger adults and Gen Z', swap:'dani', min:18, max:29}
+];
+var OWN_EX = {name:'Marcus', age:41, group:'the current buyer, 35+',
+  who:'Single. Moved to a new city for work last year. Hosts a monthly poker night with coworkers that\'s starting to feel stale. Scrolls Instagram and YouTube Shorts after the gym.',
+  moment:'Five people are coming over Friday, and he wants something besides poker that nobody has to teach.',
+  pain:'Thinks board games are for kids or for hardcore hobbyists. Has never heard of Breaking Games.',
+  win:'Saves the post, buys a game for poker night, and the group asks to play it again next month.',
+  games:'Mixtape, Hypothetically Fun, Caminito'};
+
 /* Guardrails: proposed, pending Breaking Games confirmation. All 9 apply. */
 var GUARDS = [
   {id:'post', t:'Don\'t post', d:'Never post program work to any social account, Breaking Games\' or your own. Don\'t reach out to creators, retailers or customers.', kind:'dont'},
   {id:'people', t:'No real customers, no one under 18', d:'Don\'t film or name real customers or players. No one under 18 on camera. Friends may appear as hands or voices only, with their OK.', kind:'dont'},
   {id:'ai', t:'Nothing invented', d:'No AI-generated people presented as real. No invented reviews, quotes or reactions.', kind:'dont'},
-  {id:'family', t:'Family-safe games only', d:'Family and all-ages party games only. Hypothetically Fun appears only in the roast. No adult or edgy titles. Humor stays PG: occasionally ridiculous, never unhinged or edgy.', kind:'want'},
-  {id:'facts', t:'Accurate product facts', d:'Price, ages and player count only from the approved facts, with the date checked. Don\'t feature a sold-out game.', kind:'want'},
+  {id:'family', t:'Family-safe games only', d:'Family and all-ages party games, plus Hypothetically Fun (ages 14+) for teen and adult audiences, never pitched to kids. No adult or edgy titles. Humor stays PG: occasionally ridiculous, never unhinged or edgy.', kind:'want'},
+  {id:'facts', t:'Accurate product facts', d:'Price, ages and player count only from the game\'s page on breakinggames.com.', kind:'want'},
   {id:'games', t:'Say "games," not "toys"', d:'Never say Breaking Games made or owns Cards Against Humanity or Exploding Kittens, or that it\'s "behind" them.', kind:'want'},
   {id:'disclose', t:'Disclose', d:'Creator or gifted-product content in any plan carries a clear FTC disclosure. Label your drafts as externship concepts.', kind:'want'},
   {id:'credit', t:'Credit others', d:'Credit other creators and brands. Stitch or duet only public posts that allow it.', kind:'want'},
@@ -455,7 +467,7 @@ var FWS = [
   {id:'trend', t:'Trend-Based (family-safe only)', s:'Borrow a popular format or sound and give it a real game-night message.',
    ex:'A "POV:" clip from the player who just lost and wants a rematch. Only if the sound and joke are family-safe.', energy:'entertains'},
   {id:'story', t:'Storytelling (published stories, credited)', s:'Set up, build to a turning point, land the change.',
-   ex:'How Café Chaos was made with YouTuber The Odd1sOut (2021), retold with credit. Check stock before you feature it.', energy:'tells'},
+   ex:'How Café Chaos was made with YouTuber The Odd1sOut (2021), retold with credit.', energy:'tells'},
   {id:'play', t:'Play-Along', s:'Ask a "can you guess?" question, pause, then reveal.',
    ex:'"Can you answer before the table does?" A question hook, like the archive\'s "What song plays when…" post, with the answer at the end.', energy:'invites'},
   {id:'edu', t:'Educational', s:'Open with a surprising point, teach 3 quick tips, recap.',
@@ -465,15 +477,16 @@ var FWS = [
 /* Games: approved facts, checked 2026-10-13 unless noted. */
 var GAMES = [
   {id:'caminito', t:'Caminito', facts:CAMINITO, note:'Hero game. Suggested for Video 1.', hero:true},
-  {id:'poop', t:'POOP: The Game', facts:'$10, ages 6+, 2 to 10 players', note:'In stock on Oct 20, 2026.'},
-  {id:'g49', t:'The Game of 49', facts:'$20, ages 10+, 2 to 5 players', note:'In stock on Oct 20, 2026.'},
-  {id:'play2read', t:'Play2Read early-reader card games', facts:'$13 each', note:'A few titles showed sold out on Oct 20, 2026. Check yours.'},
-  {id:'sparkle', t:'Sparkle*Kitty', facts:'$24.99, ages 9+, 3 to 8 players', note:'In stock on Oct 20, 2026.'},
-  {id:'doomed', t:'We\'re Doomed!', facts:'$35, ages 14+, 4 to 10 players', note:'Showed sold out on Oct 20, 2026.', sold:true},
-  {id:'eldervale', t:'Dwellings of Eldervale 2nd Edition', facts:'$99.99, ages 14+, 1 to 5 players', note:'Standard in stock on Oct 20, 2026; new expansions showed sold out.'},
-  {id:'push', t:'A game from the push list', facts:'{PM: push-list games for this cohort, with stock checked}', note:'Push-list games come first once the list arrives.'}
+  {id:'poop', t:'POOP: The Game', facts:'$10, ages 6+, 2 to 10 players', note:'A family game: kids and grandparents can play.'},
+  {id:'g49', t:'The Game of 49', facts:'$20, ages 10+, 2 to 5 players', note:'A family strategy game.'},
+  {id:'play2read', t:'Play2Read early-reader card games', facts:'$13 each', note:'Card games for early readers, parents and teachers.'},
+  {id:'sparkle', t:'Sparkle*Kitty', facts:'$24.99, ages 9+, 3 to 8 players', note:'A family party game.'},
+  {id:'doomed', t:'We\'re Doomed!', facts:'$35, ages 14+, 4 to 10 players', note:'Focus game. Big groups, and the friend who "doesn\'t play games."'},
+  {id:'eldervale', t:'Dwellings of Eldervale 2nd Edition', facts:'$99.99, ages 14+, 1 to 5 players', note:'Focus game. A big strategy night.'},
+  {id:'mixtape', t:'Mixtape', facts:'$20, ages 12+, 3+ players', note:'Focus game. Music fans and party crowds.'},
+  {id:'hypo', t:'Hypothetically Fun', facts:'$19.99, ages 14+, 3 to 8 players', note:'Focus game. Teens and adults; never pitch it to kids.'},
+  {id:'push', t:'A game from the push list', facts:'{PM: push-list games for this cohort}', note:'Push-list games come first once the list arrives.'}
 ];
-var SOLD_NOTE = 'Check stock before you pick it. Guardrail 5: don\'t feature a sold-out game.';
 
 /* Who to learn from: peer cards from the P1 roast set (scope v3). */
 var BASELINE = [
@@ -526,11 +539,11 @@ var AD_METRICS = [
   {id:'ctr', t:'Click-through rate', d:'How many people who saw the ad tapped through to the site.'},
   {id:'cps', t:'Cost per sale', d:'What the ad spent for each sale it brought in.'}
 ];
-var INS_TAGS = [{id:'genz', t:'Gen Z (Dani)'}, {id:'buyer', t:'The current buyer (Rachel)'}, {id:'ads', t:'Ads'}];
+var INS_TAGS = [{id:'genz', t:'Younger adults and Gen Z'}, {id:'buyer', t:'The current buyer, 35+'}, {id:'ads', t:'Ads'}];
 
 var SECTIONS = [
   {key:'start', part:0, t:'Choose your part'},
-  {key:'personas', part:1, n:1, t:'Your two players', time:'8 min', g:'Read Rachel and Dani\'s cards. For each one, write the moment you saw from your own scroll and what would make her stop.'},
+  {key:'personas', part:1, n:1, t:'Your two players', time:'8 min', g:'Read Rachel and Dani\'s cards. For each one, write the moment you saw from your own scroll and what would make her stop. Optional: build your own player to replace one of them.'},
   {key:'guard', part:1, n:2, t:'Client guardrails', time:'4 min', g:'Read all 9 client guardrails and pick the 3 that will shape your brand the most. All 9 still apply to everything you make.'},
   {key:'promise', part:1, n:3, t:'Brand promise', time:'5 min', g:'Read the brand\'s givens from its brand guide. Then finish one sentence in that voice: who Breaking Games helps, how they feel, and how it helps.'},
   {key:'pillars', part:1, n:4, t:'Content pillars', time:'4 min', g:'Keep or reword the 3 content pillars. Every video fits one of them. A 4th is optional.'},
@@ -554,9 +567,10 @@ var SECTIONS = [
 
   function blankVid(){ return {fw:'', persona:'', game:'', pillar:'', moment:'', why:''}; }
   function blankIns(){ return {learned:'', should:'', evidence:'', tag:''}; }
+  function blankOwn(){ return {on:false, group:'', name:'', age:'', who:'', moment:'', pain:'', win:'', games:'', stop:''}; }
   function defaults(){
     return {part:0, cur:'start', last:{'1':'personas', '2':'voice'}, seen:{},
-      persona:{rachel:{moment:'', stop:''}, dani:{moment:'', stop:''}},
+      persona:{rachel:{moment:'', stop:''}, dani:{moment:'', stop:''}}, own:blankOwn(),
       guard:[], promise:{who:'', feel:'', by:''},
       pillars:DEFAULT_PILLARS.slice(), p4on:false, p4:'Behind the Box',
       vids:[blankVid(), blankVid()],
@@ -600,7 +614,20 @@ var SECTIONS = [
   function addDesc(el, id){ var d = (el.getAttribute('aria-describedby') || '').split(' ').filter(Boolean); if (d.indexOf(id) < 0) d.push(id); el.setAttribute('aria-describedby', d.join(' ')); }
   function rmDesc(el, id){ var d = (el.getAttribute('aria-describedby') || '').split(' ').filter(function(x){ return x && x !== id; }); if (d.length) el.setAttribute('aria-describedby', d.join(' ')); else el.removeAttribute('aria-describedby'); }
   function byId(list, id){ return list.filter(function(x){ return x.id === id; })[0]; }
-  function personaName(id){ var p = byId(PERSONAS, id); return p ? p.name + ', ' + p.age : ''; }
+  /* the two players this student makes videos for: Rachel and Dani, or their own player in place of one */
+  function ownPersona(){
+    var g = S.own.on ? byId(GROUPS, S.own.group) : null; if (!g) return null;
+    return {id:'own', own:true, name:t(S.own.name) || 'Your player', age:t(S.own.age), label:'your own player: ' + g.short, swap:g.swap};
+  }
+  function activePersonas(){ var o = ownPersona(); return PERSONAS.map(function(p){ return o && o.swap === p.id ? o : p; }); }
+  function personaLabel(p){ return p.name + (p.age ? ', ' + p.age : ''); }
+  function playerLine(pp){
+    if (pp.own){ var o = S.own;
+      return 'Who: ' + (t(o.who) || MISSING) + ' Moment: ' + (t(o.moment) || MISSING) + ' Pain point: ' + (t(o.pain) || MISSING) + ' Win: ' + (t(o.win) || MISSING) +
+        ' Best-fit games: ' + (t(o.games) || MISSING) + ' Stops for: ' + (t(o.stop) || MISSING); }
+    var st = S.persona[pp.id]; return 'Moment: ' + (t(st.moment) || MISSING) + ' Stops for: ' + (t(st.stop) || MISSING);
+  }
+  function personaName(id){ var p = byId(activePersonas(), id); return p ? personaLabel(p) : ''; }
   function gameName(id){ var g = byId(GAMES, id); return g ? g.t : ''; }
 
   /* ---------- announcements: one polite live region ---------- */
@@ -627,6 +654,7 @@ var SECTIONS = [
     while (base.vids.length < 2) base.vids.push(blankVid()); base.vids = base.vids.slice(0, 2);
     while (base.ins.length < 3) base.ins.push(blankIns()); base.ins = base.ins.slice(0, 3);
     ['rachel','dani'].forEach(function(p){ if (!base.persona[p]) base.persona[p] = {moment:'', stop:''}; });
+    var ob = blankOwn(); Object.keys(ob).forEach(function(k){ if (typeof base.own[k] !== typeof ob[k]) base.own[k] = ob[k]; });
     if (!SEC[base.cur]) base.cur = 'start';
     if ([0,1,2].indexOf(base.part) < 0) base.part = 0;
     if (SEC[base.cur].part !== base.part) base.cur = base.part ? (base.part === 1 ? P1[0] : P2[0]) : 'start';
@@ -700,22 +728,59 @@ var SECTIONS = [
   };
 
   R.personas = function(b){
-    b.appendChild(h('p', {}, ['Breaking Games wants to reach two equal audiences. Every video, crossover and ad you make gets tagged with the one it targets, and you pitch why.']));
+    b.appendChild(h('p', {}, ['Breaking Games\' audience today is mostly 35 and older, and it wants to reach younger adults and Gen Z too. Rachel stands for the current buyer and Dani for younger players. Every video, crossover and ad you make gets tagged with the player it targets, and you pitch why.']));
+    var own = ownPersona();
     PERSONAS.forEach(function(p){
-      var st = S.persona[p.id];
+      var st = S.persona[p.id], swapped = own && own.swap === p.id;
       b.appendChild(h('div', {class:'card persona'}, [
         h('h3', {text:p.name + ', ' + p.age + ' (' + p.label.toLowerCase() + ')'}),
         h('dl', {}, [h('dt', {text:'Who'}), h('dd', {text:p.who}), h('dt', {text:'Moment'}), h('dd', {text:p.moment}),
           h('dt', {text:'Pain point'}), h('dd', {text:p.pain}), h('dt', {text:'Win'}), h('dd', {text:p.win}), h('dt', {text:'Best-fit games'}), h('dd', {text:p.games})]),
-        h('div', {style:'margin-top:12px'}, [field({id:'pm-' + p.id + '-moment', label:p.name + '\'s moment, from your scroll', multi:true, rows:2, value:st.moment,
+        swapped ? h('p', {class:'hint', text:'You\'re building your own player in ' + p.name + '\'s group, so skip ' + p.name + '\'s fields. Your player takes her place in your brief and your videos.'}) : null,
+        swapped ? null : h('div', {style:'margin-top:12px'}, [field({id:'pm-' + p.id + '-moment', label:p.name + '\'s moment, from your scroll', multi:true, rows:2, value:st.moment,
           hint:'One sentence: when and where would ' + p.name + ' see a Breaking Games post? Use what you saw scrolling as ' + p.name + ' on ' + p.where + '.', set:function(v){ st.moment = v; }})]),
-        h('div', {style:'margin-top:10px'}, [field({id:'pm-' + p.id + '-stop', label:'What would make ' + p.name + ' stop scrolling', multi:true, rows:2, value:st.stop,
+        swapped ? null : h('div', {style:'margin-top:10px'}, [field({id:'pm-' + p.id + '-stop', label:'What would make ' + p.name + ' stop scrolling', multi:true, rows:2, value:st.stop,
           hint:'One line. Think about her pain point.', set:function(v){ st.stop = v; }})]),
-        h('div', {style:'margin-top:10px'}, [ws([['weak', p.weak], ['strong', p.strong]], 'Weak vs. strong moment')])
+        swapped ? null : h('div', {style:'margin-top:10px'}, [ws([['weak', p.weak], ['strong', p.strong]], 'Weak vs. strong moment')])
       ]));
     });
     b.appendChild(tips('Tip', ['You\'re Gen Z, so you\'re the expert on Dani. Rachel is where you practice writing for a buyer unlike you.']));
+    b.appendChild(ownCard());
   };
+
+  /* Optional third card: the student's own player, in the same structure as Rachel and Dani */
+  function ownCard(){
+    var o = S.own, g = byId(GROUPS, o.group);
+    function rebuildAndFocus(id, msg){ rebuild('personas'); var el = $(id); if (el) el.focus(); announce(msg); changed(); }
+    var body = h('div', {id:'own-fields', hidden:!o.on}, [
+      h('div', {class:'card soft', style:'margin:12px 0'}, [h('h3', {text:'Example: ' + OWN_EX.name + ', ' + OWN_EX.age + ' (' + OWN_EX.group + ')'}),
+        h('p', {class:'hint', text:'One student\'s player. Build your own; don\'t reuse this one.'}),
+        h('dl', {}, [h('dt', {text:'Who'}), h('dd', {text:OWN_EX.who}), h('dt', {text:'Moment'}), h('dd', {text:OWN_EX.moment}),
+          h('dt', {text:'Pain point'}), h('dd', {text:OWN_EX.pain}), h('dt', {text:'Win'}), h('dd', {text:OWN_EX.win}), h('dt', {text:'Best-fit games'}), h('dd', {text:OWN_EX.games})])]),
+      h('div', {style:'margin-bottom:12px'}, [ws([['weak', 'Marcus, 41, likes games.'], ['strong', 'Friday on the train home, Marcus scrolls Instagram: five coworkers are coming over tonight, and poker is getting old.']], 'Weak vs. strong moment')]),
+      radioGroup({id:'own-group', legend:'Which group does your player fit?', value:o.group, options:GROUPS.map(function(x){ return [x.id, x.t]; }),
+        set:function(x){ o.group = x; }, after:function(){ var ng = byId(GROUPS, o.group), sw = byId(PERSONAS, ng.swap);
+          rebuildAndFocus('own-group-' + ng.id, 'Your player fits ' + ng.short + ' and takes ' + sw.name + '\'s place.'); }}),
+      h('div', {class:'grid'}, [
+        field({id:'own-name', label:'Name', value:o.name, hint:'A first name.', set:function(v){ o.name = v; }}),
+        field({id:'own-age', label:'Age', value:o.age, hint:g ? 'From ' + g.min + (g.max < 99 ? ' to ' + g.max : ' up') + ' for this group.' : 'Pick a group first: 35 or older, or 18 to 29.', set:function(v){ o.age = v; }})]),
+      field({id:'own-who', label:'Who', multi:true, rows:2, value:o.who, hint:'2 or 3 short lines: their life right now, who they play games with, and where they scroll.', set:function(v){ o.who = v; }}),
+      field({id:'own-moment', label:'Moment', multi:true, rows:2, value:o.moment, hint:'When and where would they see a Breaking Games post, and what do they want? Use what you saw scrolling as them.', set:function(v){ o.moment = v; }}),
+      field({id:'own-pain', label:'Pain point', multi:true, rows:2, value:o.pain, hint:'What gets in the way of buying or playing a game?', set:function(v){ o.pain = v; }}),
+      field({id:'own-win', label:'Win', multi:true, rows:2, value:o.win, hint:'What they do when a post works for them: save, comment, tap the link or buy.', set:function(v){ o.win = v; }}),
+      field({id:'own-games', label:'Best-fit games', value:o.games, hint:'2 or 3 games from breakinggames.com that fit them.', set:function(v){ o.games = v; }}),
+      field({id:'own-stop', label:'What would make them stop scrolling', multi:true, rows:2, value:o.stop, hint:'One line. Think about their pain point.', set:function(v){ o.stop = v; }})
+
+    ]);
+    return h('div', {class:'card persona', id:'own-card', style:'margin-top:14px'}, [
+      h('h3', {text:'Optional: Create your own player'}),
+      h('p', {}, ['Rachel and Dani aren\'t the only people who buy games. If you\'d rather make videos for someone else, like a single guy in his 40s who hosts poker night, build your own player. Your player must fit one of Breaking Games\' two groups and takes the place of the card in that group: 35 or older replaces Rachel, and 18 to 29 replaces Dani. You still make one video for each group.']),
+      h('label', {class:'pick', style:'max-width:62ch'}, [h('input', {type:'checkbox', id:'own-on', checked:o.on, 'aria-controls':'own-fields', onchange:function(e){
+        o.on = e.target.checked;
+        rebuildAndFocus('own-on', o.on ? 'Your own player\'s fields were added below.' : 'Your own player was removed. Rachel and Dani are your two players.'); }}),
+        'Create my own player', h('span', {class:'tick', 'aria-hidden':'true', text:'✓'})]),
+      body]);
+  }
 
   R.guard = function(b){
     var fs = h('fieldset', {id:'fs-guard', 'aria-describedby':'guard-hint count-guard'}, [h('legend', {}, ['Pick exactly 3 of the ' + GUARDS.length + ' guardrails ', h('span', {class:'req', text:'(required)'})]),
@@ -747,7 +812,7 @@ var SECTIONS = [
 
   R.promise = function(b){
     function upd(){ $('promise-preview').textContent = promiseText() || 'Fill in all 3 parts to see your full sentence here.'; }
-    b.appendChild(givensCard('The brand\'s givens (from its brand guide)', [h('li', {text:'You don\'t invent a voice. Your promise, and every video, puts this one to work for Rachel or Dani.'})]));
+    b.appendChild(givensCard('The brand\'s givens (from its brand guide)', [h('li', {text:'You don\'t invent a voice. Your promise, and every video, puts this one to work for your two players.'})]));
     b.appendChild(h('p', {}, ['Pattern: ', h('strong', {}, ['Breaking Games helps ', blank(), ' feel ', blank(), ' by ', blank(), '.'])]));
     [['who', 'Breaking Games helps... (who)', 'Name a real group. Example: friends planning a game night where not everyone knows each other'],
      ['feel', '...feel... (what feeling)', 'Example: like the whole table is in on the fun'],
@@ -779,7 +844,7 @@ var SECTIONS = [
     b.appendChild(h('h3', {text:'The 7 frameworks'}));
     b.appendChild(h('ul', {class:'fwlist'}, FWS.map(function(f){ return h('li', {}, [h('strong', {text:f.t}), h('span', {text:'Structure: ' + f.s}), h('br'), h('span', {text:'Breaking Games example: ' + f.ex})]); })));
     b.appendChild(tips('How to narrow it down', ['Pick 2 different energies. Play-Along + Day-in-the-Life works. Tutorial + Educational doesn\'t, because both teach.',
-      'Match the persona. Dani comments her guess, so Play-Along fits her. Rachel wants one game the whole family can play.',
+      'Match the persona. Dani comments her guess, so Play-Along fits her. Rachel wants one game the whole family can play. Built your own player? Match their moment and pain point the same way.',
       'Be honest about filming. You\'ll make these videos in the next few days with adult hands, your voice and the product image deck.']));
     S.vids.forEach(function(v, i){
       var n = i + 1;
@@ -788,8 +853,8 @@ var SECTIONS = [
         selectField({id:'v' + n + '-fw', label:'Framework ' + n, value:v.fw, options:FWS.map(function(f){ return [f.id, f.t]; }), set:function(x){ v.fw = x; },
           after:function(){ trendNote.hidden = v.fw !== 'trend'; var f = byId(FWS, v.fw); updateSuggest(); announce(f ? 'Video ' + n + ' framework: ' + f.t + '.' + (v.fw === 'trend' ? ' A heads-up note was added below it.' : '') : 'Video ' + n + ' framework cleared.'); }}),
         trendNote,
-        radioGroup({id:'v' + n + '-persona', legend:'Persona tag: who is Video ' + n + ' for?', value:v.persona, options:PERSONAS.map(function(p){ return [p.id, p.name + ', ' + p.age]; }), set:function(x){ v.persona = x; }, after:updateSuggest}),
-        selectField({id:'v' + n + '-game', label:'Game', value:v.game, hint:'Check stock first. Don\'t feature a sold-out game.', options:GAMES.map(function(g){ return [g.id, g.t + (g.sold ? ' (check stock)' : '')]; }), set:function(x){ v.game = x; }, after:updateSuggest}),
+        radioGroup({id:'v' + n + '-persona', legend:'Persona tag: who is Video ' + n + ' for?', value:v.persona, options:activePersonas().map(function(p){ return [p.id, personaLabel(p)]; }), set:function(x){ v.persona = x; }, after:updateSuggest}),
+        selectField({id:'v' + n + '-game', label:'Game', value:v.game, hint:'Start with Caminito or another focus game from Project 1.', options:GAMES.map(function(g){ return [g.id, g.t]; }), set:function(x){ v.game = x; }, after:updateSuggest}),
         selectField({id:'v' + n + '-pillar', label:'Pillar', value:v.pillar, options:pillarOptions().map(function(p){ return [p, p]; }), placeholder:'Choose a pillar', set:function(x){ v.pillar = x; }}),
         field({id:'v' + n + '-moment', label:'Calendar moment', opt:true, value:v.moment, hint:'For example: Friday game night, a birthday, a rainy day, or a gift moment.', set:function(x){ v.moment = x; }, onchange:updateSuggest}),
         field({id:'v' + n + '-why', label:'Why this framework', multi:true, rows:2, value:v.why, hint:'One line: why does it fit Breaking Games and the persona you tagged?', set:function(x){ v.why = x; }})
@@ -807,7 +872,6 @@ var SECTIONS = [
     out.push(t(a.moment) || t(c.moment) ? 'One video is tied to a calendar moment.' : 'Suggested: tie one video to a calendar moment.');
     if (a.persona && c.persona) out.push(a.persona !== c.persona ? 'Each video targets a different persona.' : 'Suggested: Video 2 targets the persona Video 1 didn\'t.');
     if (a.fw && a.fw === c.fw) out.push('Both videos use the same framework. Pick 2 different ones.');
-    [a, c].forEach(function(v, i){ var g = byId(GAMES, v.game); if (g && g.sold) out.push('Video ' + (i + 1) + ': ' + g.t + ' showed sold out on Oct 20, 2026. Check stock before you film.'); });
     return out;
   }
   var lastSuggest = null;
@@ -828,7 +892,7 @@ var SECTIONS = [
       h('li', {text:'Write the brand line exactly as "Good game, folks.", with the comma and the period.'}),
       h('li', {text:'No anti-screens angle ("put down your phone"). Show people choosing the table, not rejecting their phones.'}),
       h('li', {text:END_CARD})]));
-    var wf = h('fieldset', {id:'fs-words', 'aria-describedby':'words-hint'}, [h('legend', {text:'3 voice traits on TikTok'}), h('p', {class:'hint', id:'words-hint', text:'Pick 3 of the 6 traits above. For each, write how it sounds in a TikTok for Rachel or Dani. Don\'t invent a new voice.'})]);
+    var wf = h('fieldset', {id:'fs-words', 'aria-describedby':'words-hint'}, [h('legend', {text:'3 voice traits on TikTok'}), h('p', {class:'hint', id:'words-hint', text:'Pick 3 of the 6 traits above. For each, write how it sounds in a TikTok for one of your players. Don\'t invent a new voice.'})]);
     S.words.forEach(function(w, i){ var f = field({id:'w-' + i, label:'Voice trait ' + (i + 1) + ' on TikTok', value:w, set:function(v){ S.words[i] = v; }}); f.style.marginTop = '8px'; wf.appendChild(f); });
     b.appendChild(wf);
     b.appendChild(ws([['weak', 'Witty (just the trait name, with no TikTok in it)'], ['weak', 'Savage and unhinged (not the brand)'], ['strong', 'Nostalgic, not themed: a "This just in" hook for Dani, then straight to the game.']], 'Weak vs. strong voice traits'));
@@ -846,7 +910,7 @@ var SECTIONS = [
       options:[['guide', 'The Breaking Games brand guide'], ['temp', 'Temporary palette from the current logo']], set:function(x){ S.palSrc = x; }}));
     var fs = h('fieldset', {id:'fs-colors', 'aria-describedby':'pal-hint pal-temp-hint'}, [h('legend', {}, ['Your palette: 3 to 5 colors ', h('span', {class:'req', text:'(required)'})]),
       h('p', {class:'hint', id:'pal-hint'}, ['Type a hex code (like #CC0F3A) or use the picker. Brand guide colors: Arcade #4D4DFF (the lead color), Nebula #C486FF, Fireball #EA5347, Splash #0AD5AA, Spark #F2F300, Reset #F2F2F3 and Shadow #211F20.']),
-      h('p', {class:'hint', id:'pal-temp-hint'}, 'Used a temporary palette before the brand guide arrived? Switch to the brand guide colors now. Each color shows its contrast so you know if it can carry small text.'),
+      h('p', {class:'hint', id:'pal-temp-hint'}, ['Used a temporary palette before the brand guide arrived? Switch to the brand guide colors now. Each color shows its contrast so you know if it can carry small text.']),
       h('div', {id:'color-rows'}), h('div', {class:'actions', style:'margin-top:10px'}, [h('button', {type:'button', id:'add-color', text:'Add a color', onclick:addColor})])]);
     b.appendChild(fs); renderColors();
     var im = h('fieldset', {id:'fs-img', 'aria-describedby':'img-hint'}, [h('legend', {text:'3 imagery words'}), h('p', {class:'hint', id:'img-hint', text:'How should every frame feel? The rule underneath: ' + IMG_RULE})]);
@@ -926,7 +990,7 @@ var SECTIONS = [
   R.snap = function(b){
     b.appendChild(h('p', {}, ['The 10-second test: a stranger scrolling past could tell what the game is and why it\'s fun within 10 seconds, with the sound off. Pick 2 hero games and test the way you\'d show each one.']));
     var fs = h('fieldset', {id:'fs-snap', 'aria-describedby':'snap-hint count-snap'}, [h('legend', {}, ['Pick exactly 2 games ', h('span', {class:'req', text:'(required)'})]),
-      h('p', {class:'hint', id:'snap-hint', text:'Suggested: Caminito plus one game that is in stock.'}), h('p', {class:'count', id:'count-snap'})]);
+      h('p', {class:'hint', id:'snap-hint', text:'Suggested: Caminito plus one more focus game from Project 1.'}), h('p', {class:'count', id:'count-snap'})]);
     var g = h('div', {class:'grid'});
     GAMES.forEach(function(x){
       g.appendChild(h('label', {class:'choice'}, [
@@ -934,7 +998,7 @@ var SECTIONS = [
           toggleIn(S.snap, x.id, e.target.checked); countLine('count-snap', S.snap.length, 2, 'game'); renderSnapNotes();
           announce(S.snap.length + ' of 2 games selected.' + (S.snap.length > 2 ? ' Uncheck one.' : e.target.checked ? ' Test questions for ' + x.t + ' were added below the cards.' : '')); changed(); }}),
         h('span', {}, [x.hero ? h('span', {class:'tag', text:'Hero game'}) : null, h('span', {class:'t', id:'sg-' + x.id + '-t', text:x.t}),
-          h('span', {class:'x', id:'sg-' + x.id + '-d'}, rich(x.facts + '. ' + x.note + (x.sold ? ' ' + SOLD_NOTE : '')))]),
+          h('span', {class:'x', id:'sg-' + x.id + '-d'}, rich(x.facts + '. ' + x.note))]),
         h('span', {class:'tick', 'aria-hidden':'true', text:'✓'})]));
     });
     fs.appendChild(g); b.appendChild(fs);
@@ -1032,9 +1096,20 @@ var SECTIONS = [
   function V(k){
     var e = [];
     function add(id, msg, focus){ e.push({id:id, msg:msg, focus:focus || id}); }
-    if (k === 'personas') PERSONAS.forEach(function(p){ var st = S.persona[p.id];
-      if (!t(st.moment)) add('pm-' + p.id + '-moment', 'Error: Write ' + p.name + '\'s moment in one sentence.');
-      if (!t(st.stop)) add('pm-' + p.id + '-stop', 'Error: Write what would make ' + p.name + ' stop scrolling.'); });
+    if (k === 'personas'){
+      var own = ownPersona();
+      PERSONAS.forEach(function(p){ var st = S.persona[p.id]; if (own && own.swap === p.id) return;
+        if (!t(st.moment)) add('pm-' + p.id + '-moment', 'Error: Write ' + p.name + '\'s moment in one sentence.');
+        if (!t(st.stop)) add('pm-' + p.id + '-stop', 'Error: Write what would make ' + p.name + ' stop scrolling.'); });
+      if (S.own.on){ var o = S.own, g = byId(GROUPS, o.group), age = parseInt(t(o.age), 10);
+        if (!g) add('own-group', 'Error: Choose which group your player fits.', 'own-group-' + GROUPS[0].id);
+        if (!t(o.name)) add('own-name', 'Error: Give your player a first name.');
+        if (!/^\d{1,2}$/.test(t(o.age))) add('own-age', 'Error: Enter your player\'s age as a number.');
+        else if (g && (age < g.min || age > g.max)) add('own-age', 'Error: For ' + g.short + ', the age must be ' + g.min + (g.max < 99 ? ' to ' + g.max : ' or older') + '.');
+        [['who', 'who your player is'], ['moment', 'your player\'s moment'], ['pain', 'your player\'s pain point'], ['win', 'your player\'s win'], ['games', '2 or 3 best-fit games'], ['stop', 'what would make your player stop scrolling']].forEach(function(f){
+          if (!t(o[f[0]])) add('own-' + f[0], 'Error: Write ' + f[1] + '.'); });
+      }
+    }
     if (k === 'guard' && S.guard.length !== 3) add('fs-guard', 'Error: Pick exactly 3 of the ' + GUARDS.length + ' guardrails. You have ' + S.guard.length + ' selected.', 'g-' + GUARDS[0].id);
     if (k === 'promise'){
       if (!t(S.promise.who)) add('pr-who', 'Error: Fill in who Breaking Games helps.');
@@ -1048,7 +1123,7 @@ var SECTIONS = [
     if (k === 'fw') S.vids.forEach(function(v, i){ var n = i + 1;
       if (!v.fw) add('v' + n + '-fw', 'Error: Choose a framework for Video ' + n + '.');
       else if (n === 2 && v.fw === S.vids[0].fw) add('v2-fw', 'Error: Video 2 uses the same framework as Video 1. Choose a different one.');
-      if (!v.persona) add('v' + n + '-persona', 'Error: Tag Video ' + n + ' with Rachel or Dani.', 'v' + n + '-persona-rachel');
+      if (!byId(activePersonas(), v.persona)) add('v' + n + '-persona', 'Error: Tag Video ' + n + ' with one of your two players.', 'v' + n + '-persona-' + activePersonas()[0].id);
       if (!v.game) add('v' + n + '-game', 'Error: Choose a game for Video ' + n + '.');
       if (!v.pillar || pillarOptions().indexOf(v.pillar) < 0) add('v' + n + '-pillar', 'Error: Choose a pillar for Video ' + n + '.');
       if (!t(v.why)) add('v' + n + '-why', 'Error: Say why you picked this framework for Video ' + n + '.'); });
@@ -1237,8 +1312,8 @@ var SECTIONS = [
     sec('Relaunch challenge', [para(RELAUNCH)]);
     sec('Call to action', [h('p', {}, ['"' + CTA + '" → ', h('a', {href:SITE, target:'_blank', rel:'noopener'}, ['breakinggames.com', sr(' (opens in a new tab)')]), ' (or a game page, such as Caminito\'s). ' + END_CARD])]);
     sec('Brand voice (from the brand guide)', [para(voiceSummary())]);
-    sec('Who we\'re for', [list(PERSONAS.map(function(pp){ var st = S.persona[pp.id];
-      return [h('strong', {text:pp.name + ', ' + pp.age + ' (' + pp.label.toLowerCase() + '): '}), 'Moment: ' + (t(st.moment) || MISSING) + ' Stops for: ' + (t(st.stop) || MISSING)]; }))]);
+    sec('Who we\'re for', [list(activePersonas().map(function(pp){
+      return [h('strong', {text:personaLabel(pp) + ' (' + (pp.own ? pp.label : pp.label.toLowerCase()) + '): '}), playerLine(pp)]; }))]);
     sec('Guardrails: our top 3 (all 9 apply)', [list(guardList().map(function(g){ return [h('strong', {text:g.t + ': '}), g.d]; }))]);
     sec('Brand promise', [para(promiseText())]);
     sec('Content pillars', [list(pillarOptions())]);
@@ -1277,7 +1352,7 @@ var SECTIONS = [
     line('RELAUNCH CHALLENGE'); line(RELAUNCH); line('');
     line('CALL TO ACTION'); line('"' + CTA + '" -> ' + SITE + ' (or a game page, such as Caminito\'s). ' + END_CARD); line('');
     line('BRAND VOICE (FROM THE BRAND GUIDE)'); line(voiceSummary()); line('');
-    line('WHO WE\'RE FOR'); PERSONAS.forEach(function(pp){ var st = S.persona[pp.id]; line('- ' + pp.name + ', ' + pp.age + ' (' + pp.label.toLowerCase() + '): Moment: ' + (t(st.moment) || MISSING) + ' Stops for: ' + (t(st.stop) || MISSING)); }); line('');
+    line('WHO WE\'RE FOR'); activePersonas().forEach(function(pp){ line('- ' + personaLabel(pp) + ' (' + (pp.own ? pp.label : pp.label.toLowerCase()) + '): ' + playerLine(pp)); }); line('');
     line('GUARDRAILS: OUR TOP 3 (ALL 9 APPLY)'); guardList().forEach(function(g){ line('- ' + g.t + ': ' + g.d); }); if (!S.guard.length) line(MISSING); line('');
     line('BRAND PROMISE'); line(promiseText() || MISSING); line('');
     line('CONTENT PILLARS'); pillarOptions().forEach(function(x){ line('- ' + x); }); line('');
