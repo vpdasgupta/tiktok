@@ -190,6 +190,8 @@ Deploy (not yet): vpdasgupta/tiktok as breaking-games-brand-brief-builder.html
   .radio:has(input:checked){border:3px solid var(--ink);background:var(--pink-tint);padding:4px 12px;font-weight:700}
   .pm{display:inline;background:var(--amber-tint);color:var(--amber-ink);border:1px dashed var(--amber-ink);border-radius:4px;padding:0 4px;font-weight:700;font-size:.92em}
   .persona{border-top:4px solid var(--ink)}
+  .persona-head{display:flex;align-items:center;gap:14px}
+  .persona-head img{width:112px;height:112px;flex:none;border-radius:var(--radius-sm);border:1px solid var(--line);object-fit:cover}
 
   /* reasoning helpers */
   .ws{border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--canvas);padding:12px 14px;max-width:74ch}
@@ -408,6 +410,7 @@ var CAMINITO = '{PM: Caminito launch date, price, ages, player count and a one-l
 
 var PERSONAS = [
   {id:'rachel', name:'Rachel', age:38, label:'Core: the current buyer', where:'Instagram and Facebook',
+   img:'breaking-games-player-rachel.png', alt:'Cartoon of Rachel on her couch on a rainy day, phone in hand, with a stack of board games beside her.',
    who:'Two kids, 8 and 11. Hosts game night with the neighbors about once a month. Buys games as gifts. Scrolls Instagram and Facebook in the evening.',
    moment:'A rainy Saturday or a family birthday; wants one game the kids and grandparents can all play.',
    pain:'No patience for a long rulebook. Has bought games that sat on the shelf. Knows a few games, not the company.',
@@ -416,6 +419,7 @@ var PERSONAS = [
    weak:'Rachel is on Facebook.',
    strong:'Sunday night after the kids are in bed, Rachel scrolls Instagram looking for a birthday gift her 11-year-old and the grandparents can both play.'},
   {id:'danny', name:'Danny', age:21, label:'Stretch: new, younger players', where:'TikTok',
+   img:'breaking-games-player-danny.png', alt:'Cartoon of Danny in a hoodie at a game-night table with cards and dice, grinning at his phone.',
    who:'College junior and a true game lover. Shares an apartment with three friends and hosts game night most Fridays: party games when new people come over, a big strategy game when it\'s just the regulars. Scrolls #gamenight and #boardgames on TikTok between classes.',
    moment:'Planning a game night for 8 people, half of whom don\'t know each other, and a play-along clip makes him laugh. Or picking the next big strategy game for a night with his regulars.',
    pain:'Doesn\'t know which game works for a mixed group, or which big game is worth the money. Has never heard of Breaking Games. Skips anything that looks like an ad.',
@@ -736,7 +740,7 @@ var SECTIONS = [
     PERSONAS.forEach(function(p){
       var st = S.persona[p.id], swapped = own && own.swap === p.id;
       b.appendChild(h('div', {class:'card persona'}, [
-        h('h3', {text:p.name + ', ' + p.age + ' (' + p.label.toLowerCase() + ')'}),
+        h('div', {class:'persona-head'}, [h('img', {src:p.img, alt:p.alt, width:112, height:112}), h('h3', {text:p.name + ', ' + p.age + ' (' + p.label.toLowerCase() + ')'})]),
         h('dl', {}, [h('dt', {text:'Who'}), h('dd', {text:p.who}), h('dt', {text:'Moment'}), h('dd', {text:p.moment}),
           h('dt', {text:'Pain point'}), h('dd', {text:p.pain}), h('dt', {text:'Win'}), h('dd', {text:p.win}), h('dt', {text:'Best-fit games'}), h('dd', {text:p.games})]),
         swapped ? h('p', {class:'hint', text:'You\'re building your own player in ' + p.name + '\'s group, so skip ' + p.name + '\'s fields. Your player takes their place in your brief and your videos.'}) : null,
