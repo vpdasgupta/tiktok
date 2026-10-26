@@ -33,7 +33,9 @@ DEPLOY
   github-pages-deployer → vpdasgupta/tiktok as breaking-games-p2-create-your-video-1-steps.html,
   then on the Notion task page:
   <embed src="https://vpdasgupta.github.io/tiktok/breaking-games-p2-create-your-video-1-steps.html"></embed>
-  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  Set the Notion embed to 16:9: about 400px tall at normal page width, about
+  540px at full width. The deck fills the frame; only the step content scrolls.
+  Keep the text fallback toggle on the
   page (see task-page-v2-template.md).
 
 ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
@@ -45,6 +47,8 @@ ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
   - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
   - Arrow keys change step except inside links and scrollable samples.
   - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+  - Each slide is a focusable scroll region (tabindex=0), so keyboard users can
+    scroll long steps with the arrow keys inside the 16:9 frame.
 ================================================================================
 -->
 <title>Task Steps</title>
@@ -82,7 +86,7 @@ const TASK = {
     },
     {
       title: "Edit in CapCut",
-      instruction: "Tap <b>New project</b>, pick your clips, then <b>Add</b>. Set the ratio to <b>9:16</b>. Trim each clip by dragging its edges, or move the playhead, tap <b>Split</b> and delete the extra. Press and hold a clip to reorder it. Keep transitions to <b>None</b> or a simple fade. New to CapCut? Watch this <a href=\"https://www.youtube.com/watch?v=ImKkcOE3y70\" target=\"_blank\" rel=\"noopener\">CapCut beginner walkthrough<span class=\"sr-only\"> (opens in a new tab)</span></a>.",
+      instruction: "Tap <b>New project</b>, pick your clips, then <b>Add</b>. Set the ratio to <b>9:16</b>. Trim each clip by dragging its edges, or move the playhead, tap <b>Split</b> and delete the extra. Press and hold a clip to reorder it. Keep transitions to <b>None</b> or a simple fade. New to CapCut? Watch <a href=\"https://www.youtube.com/watch?v=VUMVsGm0xOE&t=107s\" target=\"_blank\" rel=\"noopener\">Primal Video's CapCut app tutorial<span class=\"sr-only\"> (opens in a new tab)</span></a> from 1:47 to 6:17: it sets up a 9:16 project and trims clips on a phone.",
       sample: { label: "Sample", kind: "text",
         body: "5 clips in order, 18 seconds total.\nHook is take 3, trimmed to start mid-move.\nNo effects, one sound under the clips." },
       onTrack: "your timeline matches your storyboard and runs 15 to 30 seconds.",
@@ -90,25 +94,25 @@ const TASK = {
     },
     {
       title: "Match your mood board's look",
-      instruction: "Tap a clip, then <b>Adjust</b>. Use Brightness, Contrast, Saturation and Temperature for warm, true colors, then <b>Apply to all</b>. Set text colors from your Look slide's hex codes, from the Breaking Games palette (Arcade #4D4DFF is the lead color), and check that text and background pass contrast.",
+      instruction: "Tap a clip, then <b>Adjust</b>. Use Brightness, Contrast, Saturation and Temperature for warm, true colors, then <b>Apply to all</b>. Set text colors from your Look slide's hex codes, from the Breaking Games palette (Arcade #4D4DFF is the lead color), and keep text easy to read: dark text on a light box, or white text on a dark box, never straight on a busy background.",
       sample: { label: "Sample", kind: "text",
         body: "Temperature +10 and Saturation +5, applied to all.\nText: dark color on a light box, from my Look slide." },
       onTrack: "a screenshot of your video sits next to your Look slide and they feel like the same family.",
-      stuck: ["Footage looks like an ad? Pull back the filters. Real tables and warm light beat heavy grading."]
+      stuck: ["Footage looks like an ad? Pull back the filters. Real tables and warm light beat heavy grading.", "Want to see it done? The same CapCut tutorial covers colors from 19:22 to 21:35."]
     },
     {
       title: "Add captions, hook text and your end card",
       instruction: "Tap <b>Text</b>, then <b>Auto captions</b>, and fix every mistake by hand. Put your hook on screen in the first 2 seconds, 7 words or fewer per overlay. Keep text out of the top, the bottom and the right edge, where TikTok's buttons sit. End with a 1 to 2 second end card: the Breaking Games logo + <b>\"Good game, folks.\"</b> with \"Find your next game night: link in bio.\"",
       sample: { label: "Sample", kind: "text",
-        body: "0:00 \"Guess this game from one move?\"\n0:11 \"Comment your guess\"\n0:13 \"It's Caminito.\"\n0:16 End card: logo, \"Good game, folks.\", \"Find your next game night: link in bio.\"" },
+        body: "0:00 \"Guess this game from one move?\"\n0:08 \"Comment your guess\"\n0:13 \"It's Caminito.\"\n0:16 End card: logo, \"Good game, folks.\", \"Find your next game night: link in bio.\"" },
       onTrack: "you can follow the whole video with the sound off.",
-      stuck: ["CapCut can show TikTok's safe zones on your canvas. Turn them on to see what the app's buttons will cover."]
+      stuck: ["Not sure where TikTok's buttons will sit? Keep all text in the middle of the screen: below the top edge, above the bottom fifth (where the caption and sound name go) and away from the right edge (like, comment and share).", "Captions not showing up? Watch <a href=\"https://www.youtube.com/watch?v=ohSSF43dl9U\" target=\"_blank\" rel=\"noopener\">How to add auto captions in CapCut (mobile)<span class=\"sr-only\"> (opens in a new tab)</span></a> (about 1.5 minutes)."]
     },
     {
       title: "Export and run the quality check",
       instruction: "Export at <b>1080p</b>, <b>MP4</b>, <b>9:16</b>. Name the file <code>BG-Video1-[Framework]-[YourName].mp4</code>. It needs to be under 35 MB for the Video Board. Then run the 10-item checklist in the sample and fix anything that fails.",
       sample: { label: "Sample checklist", kind: "text",
-        body: "BG-Video1-PlayAlong-JordanLee.mp4 (18 seconds, 22 MB)\n✓ 9:16, no black bars ✓ text in safe zones ✓ captions burned in\n✓ hook by 3 seconds, game clear by 10 ✓ game named on screen\n✓ \"Good game, folks.\" end card + CTA ✓ on-voice: game before the punchline, PG\n✓ no real customers, no one under 18, no AI people\n✓ family-safe game, in stock ✓ not posted anywhere" },
+        body: "BG-Video1-PlayAlong-JordanLee.mp4 (18 seconds, 22 MB)\n✓ 9:16, no black bars ✓ text in safe zones ✓ captions burned in\n✓ hook by 3 seconds, game clear by 10 ✓ game named on screen\n✓ \"Good game, folks.\" end card + CTA ✓ on-voice: game before the punchline, PG\n✓ no real customers, no one under 18, no AI people\n✓ family-safe game ✓ not posted anywhere" },
       onTrack: "every checklist item is a yes.",
       stuck: ["File over 35 MB? Export at 1080p and 30 fps, or trim a few seconds."]
     }
@@ -146,25 +150,28 @@ const TASK = {
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html, body { margin: 0; }
+  html, body { margin: 0; height: 100%; }
   body {
     font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     background: var(--canvas);
     color: var(--ink);
     line-height: 1.5;
-    padding: 16px;
+    padding: 12px;
     -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column; overflow: hidden;
   }
   button, a { font-family: inherit; }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
-  .deck { max-width: 880px; margin: 0 auto; }
+  /* 16:9 frame: the deck fills the embed; header and nav stay put, the slide scrolls */
+  .deck { flex: 1; min-height: 0; width: 100%; max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; }
+  #slides { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 
   /* Hero band: the dark TikTok header with red and teal glows and a gradient rule */
   .deck-head {
     display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-    margin-bottom: 14px; padding: 20px 24px 24px; border-radius: var(--radius);
+    flex: none; margin-bottom: 10px; padding: 12px 20px 14px; border-radius: var(--radius);
     color: #FFFFFF;
     background:
       var(--gradient) bottom / 100% 4px no-repeat,
@@ -172,7 +179,7 @@ const TASK = {
       radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
       var(--night);
   }
-  .deck-title { font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .deck-title { font-size: 20px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
   .deck-head :focus-visible { outline-color: var(--tt-cyan); }
   .btn-example {
     display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
@@ -185,8 +192,10 @@ const TASK = {
     overflow-wrap: anywhere;
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 28px 32px 24px;
+    padding: 22px 28px 20px;
+    flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
   }
+  .slide:focus-visible { outline-offset: -3px; }
   .step-num {
     display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
     color: var(--red-ink); background: var(--pink-tint); border-radius: 999px; padding: 4px 12px; margin: 0;
@@ -234,7 +243,7 @@ const TASK = {
   .eval-table tbody th { width: 30%; }
   .finish { background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 600; margin: 0; }
 
-  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .slide-nav { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
   .nav-btn {
     min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
     border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
@@ -255,7 +264,18 @@ const TASK = {
   }
   .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); } /* filled = visited, outline = not yet */
   .dot[aria-current="step"]::before { width: 28px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); } /* wide pill = current */
-  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+  .counter { flex: none; font-size: 13px; color: var(--ink-soft); text-align: center; margin: 2px 0 0; }
+  /* Short frames (a 16:9 embed in a normal-width Notion page): tighten the chrome */
+  @media (max-height: 460px) {
+    body { padding: 8px; }
+    .deck-head { padding: 8px 16px 10px; margin-bottom: 8px; }
+    .deck-title { font-size: 17px; }
+    .btn-example { min-height: 36px; padding: 4px 12px; }
+    .slide { padding: 16px 20px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { margin-top: 8px; }
+    .counter { display: none; }
+  }
 
   @media (max-width: 420px) {
     .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -263,10 +283,10 @@ const TASK = {
     .eval-table tbody th { padding-bottom: 0; border-bottom: 0; }
   }
   @media (max-width: 640px) {
-    body { padding: 12px; }
-    .deck-head { padding: 16px 18px 20px; }
+    body { padding: 8px; }
+    .deck-head { padding: 10px 14px 12px; }
     .deck-title { font-size: 21px; }
-    .slide { padding: 20px 18px; }
+    .slide { padding: 16px 16px; }
     .slide h2 { font-size: 20px; }
     .slide-nav { flex-wrap: wrap; }
     .dots { order: -1; width: 100%; justify-content: center; }
@@ -321,7 +341,7 @@ const TASK = {
   }
 
   const html = steps.map((s, i) => `
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
       <p>${s.instruction}</p>
@@ -334,7 +354,7 @@ const TASK = {
   if (ev) {
     const i = total - 1;
     html.push(`
-    <section class="slide" aria-labelledby="h-${i}" hidden>
+    <section class="slide" aria-labelledby="h-${i}" tabindex="0" hidden>
       <p class="step-num">${label(i)}</p>
       <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
       ${ev.intro ? `<p>${ev.intro}</p>` : ""}
@@ -366,6 +386,7 @@ const TASK = {
     step = Math.max(0, Math.min(total - 1, i));
     seen = Math.max(seen, step);
     slides.forEach((s, n) => s.hidden = n !== step);
+    slides[step].scrollTop = 0;
     dots.forEach((d, n) => {
       d.classList.toggle("seen", n <= seen);
       d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
