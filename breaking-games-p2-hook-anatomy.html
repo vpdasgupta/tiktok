@@ -254,6 +254,7 @@
   .checks input { flex: none; width: 22px; height: 22px; margin: 0; accent-color: var(--red-ink); }
   .checks label:has(input:checked) { background: var(--cyan-tint); }
   .checks label:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 1px; }
+  .checks li > a { display: inline-block; min-height: 24px; margin: 0 0 4px 36px; padding: 2px 0; font-size: 14px; font-weight: 600; }
   .count { font-size: 14px; font-weight: 700; color: var(--ink-soft); margin: 0; }
   .fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 4px 0 10px; }
   .fields label { display: block; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
@@ -421,9 +422,9 @@
         <li><label><input type="checkbox" class="chk"> <span>Friends appear as hands or voices only, with their OK.</span></label></li>
         <li><label><input type="checkbox" class="chk"> <span>Never film or name real customers.</span></label></li>
         <li><label><input type="checkbox" class="chk"> <span>No AI-made people shown as real.</span></label></li>
-        <li><label><input type="checkbox" class="chk"> <span>Family and all-ages games only: no adult titles, and no new Hypothetically Fun content.</span></label></li>
-        <li><label><input type="checkbox" class="chk"> <span>Check the game is in stock, and that price, ages and player count match the product page, with the date you checked.</span></label></li>
-        <li><label><input type="checkbox" class="chk"> <span>No game at home? Use the Breaking Games product image deck with your voiceover.</span></label></li>
+        <li><label><input type="checkbox" class="chk"> <span>Family and all-ages games only, plus Hypothetically Fun (ages 14+) for teen and adult audiences, never pitched to kids. No adult or edgy titles.</span></label></li>
+        <li><label><input type="checkbox" class="chk"> <span>Price, ages and player count match the game's page on breakinggames.com.</span></label></li>
+        <li><label><input type="checkbox" class="chk"> <span>No game at home? Use the Breaking Games product image deck with your voiceover.</span></label> <a href="https://smitabudhiaextern.github.io/extern-html-pages/bg-image-deck.html" target="_blank" rel="noopener">Open the product image deck<span class="sr-only"> (opens in a new tab)</span></a></li>
       </ul>
       <p class="count" id="chkCount">0 of 8 checked</p>
     </section>
