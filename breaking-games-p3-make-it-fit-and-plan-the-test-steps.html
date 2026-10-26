@@ -79,11 +79,11 @@ const TASK = {
     },
     {
       title: "Check, export and share",
-      instruction: "Check that every fact matches the product page (note the date you checked), every game is in stock, the voice is fun and warm, and both mock-ups say \"Concept.\" Export the Reels ad as a PNG and the carousel as one PDF, save both in a Drive folder called <code>BG-Ad-Mockups-[YourName]</code>, and upload each to the Video Board (\"Reels ad mock-up\" and \"Carousel ad mock-up\"). Then post both titles in Slack and ask which one peers would run first.",
+      instruction: "Check that every fact matches the product page (note the date you checked), the voice is fun and warm, and both mock-ups say \"Concept.\" Export the Reels ad as a PNG and the carousel as one PDF, save both in a Drive folder called <code>BG-Ad-Mockups-[YourName]</code>, and upload each to the Video Board (\"Reels ad mock-up\" and \"Carousel ad mock-up\"). Then post both titles in Slack and ask which one peers would run first.",
       sample: { label: "Sample Slack post", kind: "text",
         body: "Two placements for my POOP ad for Rachel, on the Video Board: a Reels ad and a 4-card carousel. If you were Breaking Games, which would you run first, and why?" },
       onTrack: "both files are on the board and your Slack post asks one clear question.",
-      stuck: ["A game sold out since you checked? Swap it for an in-stock game. Never feature a sold-out game."]
+      stuck: ["Not sure a fact is right? Open the game's page on breakinggames.com and copy the price and ages from there."]
     },
     {
       title: "Fill in Experiment 4",
@@ -116,7 +116,7 @@ const TASK = {
     criteria: [
       { name: "Reels ad", lookFor: "A 9:16 still from your ad, primary text that opens with the hook, a headline with the game and offer, a CTA button that matches the landing page." },
       { name: "Carousel ad", lookFor: "3 to 5 cards, one idea per card, an end card with \"Good game, folks.\" and one call to action." },
-      { name: "Honest and labeled", lookFor: "Every fact matches the product page, every game is in stock, no AI people, and both mock-ups say \"Concept.\"" },
+      { name: "Honest and labeled", lookFor: "Every fact matches the product page, no AI people, and both mock-ups say \"Concept.\"" },
       { name: "Experiment 4", lookFor: "Filled in, with a peer line and a \"What I learned\" line." },
       { name: "Test plan", lookFor: "One hook with a reason from your journal, one number that fits, a clear \"it worked if…\" and a next step. Marked as a concept, with no budgets or results invented." }
     ],
