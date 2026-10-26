@@ -84,11 +84,11 @@ const TASK = {
     },
     {
       title: "Run the guardrail and completeness check on every row",
-      instruction: "Fill in the guardrail check column for every moment: family-safe, the game in stock (with the date you checked), a disclosure if a creator is involved, and \"needs partner review\" for religious or cultural moments. Then check that every row has a <b>Platform</b> and a <b>Post date</b>, so it's ready to submit for Breaking Games to see. Nothing is posted.",
+      instruction: "Fill in the guardrail check column for every moment: family-safe, a disclosure if a creator is involved, and \"needs partner review\" for religious or cultural moments. Then check that every row has a <b>Platform</b> and a <b>Post date</b>, so it's ready to submit for Breaking Games to see. Nothing is posted.",
       sample: { label: "Sample", kind: "text",
-        body: "Mother's Day: family-safe yes; Play2Read in stock, checked [date]; no creator; no partner review needed. Instagram and Facebook · post date [date]\nEaster: family-safe yes; POOP in stock, checked [date]; needs partner review. TikTok · post date [date]" },
+        body: "Mother's Day: family-safe yes; Play2Read, $13 each from its page; no creator; no partner review needed. Instagram and Facebook · post date [date]\nEaster: family-safe yes; POOP, $10 from its page; needs partner review. TikTok · post date [date]" },
       onTrack: "no row is blank in the guardrail, Platform or Go-live (post) date columns.",
-      stuck: ["A game sold out? Swap it for an in-stock push-list game and update the check date."]
+      stuck: ["Not sure which game fits a moment? Start from the suggested games in the Moments Library tab."]
     }
   ],
   evaluation: {
@@ -98,7 +98,7 @@ const TASK = {
       { name: "Window", lookFor: "Every moment goes live on or after the handoff." },
       { name: "6 to 8 moments", lookFor: "Both personas, at least one Caminito moment, one fallback, push-list games first." },
       { name: "Organic or ad", lookFor: "Marked on every row, with at least 2 Instagram or Facebook versions." },
-      { name: "Guardrails", lookFor: "Every row checked: family-safe, in stock with a date, disclosure, partner review where needed." },
+      { name: "Guardrails", lookFor: "Every row checked: family-safe, disclosure, partner review where needed." },
       { name: "Ready to submit", lookFor: "Every row has a platform and a go-live (post) date." }
     ],
     finish: "Done? Submit the link to your calendar Sheet on the page below. Good game, folks."
