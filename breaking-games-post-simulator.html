@@ -634,7 +634,7 @@ const AD = [
   $("copyBtn").addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(summary);
-      $("copyStatus").textContent = "Copied. Paste it into your submission.";
+      $("copyStatus").textContent = "Copied. Paste it where your page tells you to.";
       $("fallbackText").hidden = true;
     } catch (err) {
       const ta = $("fallbackText");
