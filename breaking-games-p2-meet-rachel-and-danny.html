@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  Breaking Games x Social Media, Project 2: Meet Rachel and Danny (2 slides)
+  Built 2026-10-26 for the "Meet Rachel and Danny" section of [Training] Meet Your Players.
+  Each slide = pain-point portrait + player profile card. Card rows mirror the page's table
+  ("Text version of the player cards" toggle). Edit both together.
+  Chrome, tokens and slide engine copied from breaking-games-p2-meet-your-players.html.
+  WCAG 2.2 AA: one H1; inactive slides hidden; focus moves to each slide's h2; polite live region;
+  44px targets; images have alt text; pain point marked with a text label, not color alone;
+  reflows to one column at 640px; prefers-reduced-motion respected.
+  Deploy: https://vpdasgupta.github.io/tiktok/breaking-games-p2-meet-rachel-and-danny.html
+-->
+<title>Meet Rachel and Danny</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #F8FAFC; --card: #FFFFFF; --ink: #0F172A; --ink-soft: #5A6478;
+    --line: #E9E9E7; --edge: #64748B; --tt-cyan: #25F4EE; --tt-red: #FE2C55;
+    --red-ink: #CC0F3A; --red-dark: #A80C30; --pink-tint: #FFE9EF;
+    --teal-ink: #0E7C86; --cyan-tint: #E6FDFC;
+    --night: #0C0B10; --night-soft: #A89FA2;
+    --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
+    --radius: 16px; --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(15,23,42,.06), 0 10px 28px -14px rgba(15,23,42,.22);
+    --focus: #0F172A;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--canvas); color: var(--ink); line-height: 1.5; padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck { max-width: 920px; margin: 0 auto; }
+  .deck-head {
+    margin-bottom: 14px; padding: 18px 24px 22px; border-radius: var(--radius); color: #FFFFFF;
+    background:
+      var(--gradient) bottom / 100% 4px no-repeat,
+      radial-gradient(60% 140% at 0% 100%, rgba(254,44,85,.28), transparent 70%),
+      radial-gradient(50% 120% at 100% 0%, rgba(37,244,238,.18), transparent 70%),
+      var(--night);
+  }
+  .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--night-soft); }
+  .deck-title { font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -.01em; margin: 0; color: #FFFFFF; }
+  .grad-word { background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @media (forced-colors: active) { .grad-word { color: CanvasText; background: none; } }
+
+  .slide {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 20px;
+    aspect-ratio: 16 / 9; display: grid; grid-template-columns: minmax(0, 38%) minmax(0, 1fr); gap: 20px; align-items: start;
+  }
+
+  /* portrait */
+  .portrait { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .portrait img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--radius-sm); display: block; background: var(--canvas); }
+  .portrait figcaption { font-size: 14px; line-height: 1.4; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--pink-tint); }
+  .portrait figcaption b { color: var(--red-ink); }
+
+  /* profile card */
+  .profile {
+    min-width: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius-sm);
+    background: linear-gradient(180deg, var(--tt-cyan), var(--tt-red)) left top / 5px 100% no-repeat border-box, var(--canvas);
+    padding: 16px 18px 14px 22px;
+  }
+  .who-head { display: flex; gap: 12px; align-items: center; margin: 0 0 4px; }
+  .avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 18px; color: var(--ink); background: var(--cyan-tint); border: 2px solid var(--teal-ink); }
+  .avatar.danny { background: var(--pink-tint); border-color: var(--red-ink); }
+  .profile h2 { font-size: 23px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; }
+  .profile h2:focus { outline: none; }
+  .profile h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .role { display: inline-block; align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-ink); margin: 0 0 10px 56px; }
+  .rows { display: grid; grid-template-columns: max-content 1fr; gap: 7px 14px; margin: 0; font-size: 14px; line-height: 1.42; }
+  .rows dt { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); padding-top: 2px; }
+  .rows dd { margin: 0; }
+  .rows .pain { background: var(--pink-tint); border-radius: 8px; padding: 6px 10px; }
+  .rows dt.pain { color: var(--red-ink); padding-top: 8px; }
+  .rows dt.pain::before { content: "⚠ " / ""; }
+  .games { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
+  .games li { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; font-size: 13px; font-weight: 600; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 999px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--ink); }
+  .nav-btn.primary { background: var(--red-ink); color: #FFFFFF; border-color: var(--red-ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--red-dark); border-color: var(--red-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; justify-content: center; list-style: none; margin: 0; padding: 0; }
+  .dot { width: 30px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--edge); background: var(--card); }
+  .dot.seen::before { border-color: var(--red-ink); background: var(--red-ink); }
+  .dot[aria-current="step"]::before { width: 26px; border-radius: 999px; border-color: var(--ink); background: var(--gradient); }
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin: 6px 0 0; }
+
+  @media (max-width: 760px) {
+    .slide { aspect-ratio: auto; grid-template-columns: minmax(0, 1fr); }
+    .portrait { max-width: 420px; width: 100%; justify-self: center; }
+  }
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .deck-head { padding: 14px 16px 18px; }
+    .deck-title { font-size: 21px; }
+    .slide { padding: 14px; }
+    .profile h2 { font-size: 20px; }
+    .role { margin-left: 0; }
+    .rows { grid-template-columns: 1fr; gap: 2px; }
+    .rows dd { margin-bottom: 8px; }
+    .rows dt.pain { padding: 2px 0 0; }
+    .nav-btn { flex: 1; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <header class="deck-head">
+    <p class="eyebrow">Breaking Games × Social Media · Project 2</p>
+    <h1 class="deck-title" id="deckTitle">Meet <span class="grad-word">Rachel</span> and <span class="grad-word">Danny</span></h1>
+  </header>
+
+  <div id="slides">
+    <section class="slide" aria-labelledby="h-0" hidden>
+      <figure class="portrait">
+        <img src="https://vpdasgupta.github.io/tiktok/breaking-games-player-rachel-pain.png" width="1200" height="1200"
+             alt="Rachel on her couch by a rainy window, frowning at a huge rulebook full of tiny text while her two bored kids slump beside her, a grandparent waits, and shrink-wrapped games sit unplayed on the shelf.">
+        <figcaption><b>Her pain point:</b> long rulebooks, and games that end up sitting on the shelf.</figcaption>
+      </figure>
+      <div class="profile">
+        <div class="who-head"><span class="avatar" aria-hidden="true">R</span><h2 id="h-0" tabindex="-1">Rachel, 38</h2></div>
+        <p class="role">The current buyer</p>
+        <dl class="rows">
+          <dt>Who</dt><dd>Two kids, 8 and 11. Hosts game night with the neighbors about once a month. Buys games as gifts.</dd>
+          <dt>Where they scroll</dt><dd>Instagram and Facebook, in the evening</dd>
+          <dt>Moment</dt><dd>A rainy Saturday or a family birthday. She wants one game the kids and grandparents can all play.</dd>
+          <dt class="pain">Pain point</dt><dd class="pain">No patience for a long rulebook. Has bought games that sat on the shelf. Knows a few games, but not the company.</dd>
+          <dt>Win</dt><dd>Saves the post, taps through to the new site, buys, and at the end of the night everyone says "good game."</dd>
+          <dt>Best-fit games</dt><dd><ul class="games"><li>Caminito</li><li>The Game of 49</li><li>Play2Read</li><li>POOP</li></ul></dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="slide" aria-labelledby="h-1" hidden>
+      <figure class="portrait">
+        <img src="https://vpdasgupta.github.io/tiktok/breaking-games-player-danny-pain.png" width="1200" height="1200"
+             alt="Danny at his game table under string lights, puzzled, comparing a small party game with a big strategy game that has a price tag, while guests who don't know each other stand around awkwardly with drinks.">
+        <figcaption><b>His pain point:</b> which game works for a mixed group, and which big game is worth the money?</figcaption>
+      </figure>
+      <div class="profile">
+        <div class="who-head"><span class="avatar danny" aria-hidden="true">D</span><h2 id="h-1" tabindex="-1">Danny, 21</h2></div>
+        <p class="role">New, younger players</p>
+        <dl class="rows">
+          <dt>Who</dt><dd>College junior and a true game lover. Hosts game night most Fridays: party games when new people come over, a big strategy game when it's just the regulars.</dd>
+          <dt>Where they scroll</dt><dd>TikTok, between classes</dd>
+          <dt>Moment</dt><dd>Planning a game night for 8 people, half of whom don't know each other. Or picking the next big strategy game for his regulars.</dd>
+          <dt class="pain">Pain point</dt><dd class="pain">Doesn't know which game works for a mixed group, or which big game is worth the money. Has never heard of Breaking Games. Skips anything that looks like an ad.</dd>
+          <dt>Win</dt><dd>Comments his answer, saves, taps the link, and remembers "Breaking Games."</dd>
+          <dt>Best-fit games</dt><dd><ul class="games"><li>Caminito</li><li>Hypothetically Fun</li><li>Mixtape</li><li>We're Doomed!</li><li>Dwellings of Eldervale</li></ul></dd>
+        </dl>
+      </div>
+    </section>
+  </div>
+
+  <nav class="slide-nav" aria-label="Slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const KEY = "bg-deck:breaking-games-p2-meet-rachel-and-danny";
+  const slides = [...document.querySelectorAll(".slide")];
+  const total = slides.length;
+  const label = i => `Slide ${i + 1} of ${total}`;
+  const announce = msg => { const st = $("status"); st.textContent = ""; setTimeout(() => { st.textContent = msg; }, 40); };
+
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0;
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = Math.min(saved.step || 0, total - 1); seen = Math.min(saved.seen || 0, total - 1); } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    $("nextBtn").innerHTML = last ? "Last slide" : 'Next<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (moveFocus) { slides[step].querySelector("h2").focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => goTo(step + 1, true);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.step, true));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, input, textarea, select")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+
+  /* Deep link for previews and QA: #s=N opens slide N (1-based). */
+  const m = location.hash.match(/s=(\d+)/);
+  if (m) step = Math.min(total, Math.max(1, +m[1])) - 1;
+  goTo(step, false);
+})();
+</script>
+</body>
+</html>
