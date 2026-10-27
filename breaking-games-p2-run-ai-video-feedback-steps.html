@@ -110,13 +110,12 @@ const TASK = {
   ],
   evaluation: {
     title: "How it will be evaluated",
-    intro: "Your program manager checks your feedback notes for these three things.",
+    intro: "The AI review is for you: you don't submit it. Your program manager checks your fix for these two things.",
     criteria: [
-      { name: "Checked AI scores", lookFor: "4 scores, each with a reason tied to a timestamp." },
-      { name: "Guardrail check", lookFor: "Every guardrail marked yes or no, with a fix for any no." },
-      { name: "One fix with evidence", lookFor: "A specific change for Video 2, backed by at least two sources." }
+      { name: "A specific fix", lookFor: "One change for Video 2 that says exactly where and what to change, and doesn't break a guardrail." },
+      { name: "Evidence from two sources", lookFor: "Backed by at least two of: your peers, your checked AI review, the simulator." }
     ],
-    finish: "Done? Paste your scores, guardrail check, KEEP, FIX, TRY NEXT and your fix in the submission box below. Good game, folks."
+    finish: "Done? Paste your fix for Video 2 and its evidence in the submission box below. Good game, folks."
   }
 };
 /* ======================= DO NOT EDIT BELOW ======================== */
