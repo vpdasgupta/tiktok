@@ -51,70 +51,110 @@ ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
     scroll long steps with the arrow keys inside the 16:9 frame.
 ================================================================================
 -->
-<title>Task Steps</title>
+<title>Plan Your Video 1 · Steps</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
 /* ============================ EDIT THIS ============================ */
 const TASK = {
-  deckId: "bg-p2-plan-your-video-1",
-  title: "Plan Your Video 1",
-  exampleUrl: "",            // set to the deployed example PNG once it exists (see _asset-specs.md)
-  steps: [
+  "deckId": "bg-p2-plan-your-video-1",
+  "title": "Plan Your Video 1",
+  "exampleUrl": "",
+  "steps": [
     {
-      title: "Gather your inputs and write your test line",
-      instruction: "Open your mood board at your Video 1 player slide. Start a Google Doc named <code>BG-Video-Plans-[YourName]</code>; you'll use it for both videos. At the top, write the one thing Video 1 tests: <b>\"If I ___, then [Rachel / Danny] will ___.\"</b> Pick it from one of your starting hunches.",
-      sample: { label: "Sample", kind: "text",
-        body: "Video 1 · Framework: Play-Along · Pillar: Play It Out Loud · For Danny · Game: Caminito\nWhat I'm testing: \"If I open with 'Guess this game from one move?', then Danny will comment a guess.\"" },
-      onTrack: "your test line names one change and one thing the player would do.",
-      stuck: ["Look at your 3 starting hunches in your Experiment Journal. Turn the one you believe most into an \"If I...\" line."]
+      "title": "Set up your plan",
+      "instruction": "Start a Google Doc named <code>BG-Video-Plans-[YourName]</code>; you'll use it for both videos. Open your player slide, then fill in your <b>format</b>, <b>pillar</b> (Play It Out Loud, A Game for Every Table or Good Game Moments), <b>game</b> and <b>player</b>. Then write two lines:",
+      "items": [
+        "<b>Test line:</b> \"If I ___, then [player] will ___.\" Pick it from one of your starting hunches.",
+        "<b>Player tag:</b> \"For [player]: [their moment], and this video [what it does for them].\""
+      ],
+      "sample": {
+        "label": "Sample",
+        "kind": "text",
+        "body": "Video 1 · Format: Play-Along · Pillar: Play It Out Loud · For Danny · Game: Caminito\nTest line: \"If I open with 'Guess this game from one move?', then Danny will comment a guess.\"\nWeak tag: \"For Danny: he's 21 and on TikTok.\"\nStrong tag: \"For Danny: he's planning a Friday game night for 8 people who don't all know each other, and this play-along shows him a game that gets strangers talking.\""
+      },
+      "onTrack": "your test line names one change and one thing the player would do, and your tag names a moment, not an age.",
+      "stuck": [
+        "No test line yet? Turn the starting hunch you believe most into an \"If I...\" line.",
+        "Can't pick a format? Use the one you wrote down on the last slide of Video Formats That Work for Games."
+      ]
     },
     {
-      title: "Get 5 hook ideas from AI",
-      instruction: "Click <b>Copy code</b> under the <b>hook prompt</b> below, paste it into your AI chat assistant, and fill every bracket from your mood board and its Video 1 player slide.",
-      sample: { label: "The hook prompt", kind: "code",
-        body: "I'm planning a TikTok for Breaking Games, a tabletop game producer that works with designers. It's relaunching its quiet TikTok (@breakinggamesllc). Brand line: \"Good game, folks.\" Voice: a charismatic emcee, not a scene-stealing performer. Clever, casual, friendly (not salesy), and occasionally ridiculous, never unhinged.\n\nFramework for this video: [PASTE your Video 1 framework and pillar from your player slide, plus one line on why it fits]\nWho it's for: [PASTE the player tag and moment from your Video 1 player slide]\nGame: [Caminito, or the game you're featuring]\nVoice words: [PASTE the 3 voice words from your mood board's Feel slide]\nA hook I liked: [PASTE the adapted hook from your Video 1 player slide]\nWhat I'm testing: [PASTE your \"If I ___, then ___ will ___\" line]\n\nWrite 5 hook options. Each hook must:\n- Work in under 3 seconds, and work as on-screen text with the sound off\n- Show the game or hands in frame in second 1\n- Fit the hook style for my framework\n- Speak to my player in their moment, not to \"everyone\"\n- Not start with the brand name, a price, a logo or a promo code\n- Show the game before the punchline; no hype, no jokes at anyone's expense, nothing just for shock\n- Use a nostalgic newscast or game-show line (like \"This just in\") at most once, as the hook device\n- End on a period, not an exclamation point\n\nFor each hook, give: the line, what's on screen in second 1, and one sentence on why it works." },
-      onTrack: "the AI gives you 5 hooks, each with what's on screen in second 1.",
-      stuck: ["Left a bracket empty? The AI will guess. Fill every one before you send it."]
+      "title": "Write 2 hooks yourself",
+      "instruction": "Before any AI, write 2 hooks in your format's hook style. Give each the three parts from How TikTok Works: <b>visual</b> (what's on screen in second 1), <b>text</b> (7 words or fewer) and <b>promise</b> (why they keep watching). Borrow your player's words from your slide.",
+      "sample": {
+        "label": "Sample",
+        "kind": "text",
+        "body": "Hook A · Visual: one Caminito card face down in my hand · Text: \"Guess this game from one move?\" · Promise: the answer comes at the end\nHook B · Visual: 8 snack bowls on a table · Text: \"Half this table just met.\" · Promise: will the game break the ice?"
+      },
+      "onTrack": "both hooks have all three parts filled in.",
+      "stuck": [
+        "A part is blank? That's where the hook is weak. Try the Quick practice slide on How TikTok Works."
+      ]
     },
     {
-      title: "Score your hooks and pick one",
-      instruction: "Check each hook against five checks: Stops the scroll? Visual, text and promise line up? Fits the framework? On-voice: game before the punchline, ridiculous but not unhinged? Could you say it naturally? Pick one and make it sound like you.",
-      sample: { label: "Sample student work", kind: "text",
-        body: "Hook 2: \"Guess this game from one move?\" (6 words) · passes all five\nHook 4: \"This game will end friendships\" · fails: shock value, not the brand's voice\nHook 5: \"This just in: one card ends the argument\" · passes too: the card is in frame first\nMy pick: Hook 2, with one card face down in frame from second 1." },
-      onTrack: "your hook is 7 words or fewer on screen and passes all five checks.",
-      stuck: ["All five sound like ads? Ask the AI: \"Rewrite these as questions a friend would ask at game night.\""]
+      "title": "Draft your 5 shots",
+      "instruction": "Pick a <b>filming style</b>: voiceover over your hands, POV (the camera is the viewer's eyes), slideshow with audio (photos with your voice or music) or montage (quick clips cut to music). Then copy your format's <b>5 shots</b> from its slide and write one line per shot: what's on screen, and what's said or written.",
+      "sample": {
+        "label": "Sample",
+        "kind": "text",
+        "body": "Filming style: voiceover over my hands, because no one needs to be on camera.\n1 · one card face down · \"Guess this game from one move?\"\n2 · hands play the card\n3 · close-up on the result · \"Comment your guess\"\n4 · the box slides in · \"It's Caminito.\"\n5 · end card: logo + \"Good game, folks.\""
+      },
+      "onTrack": "you have 5 shots, and the last one is the end card.",
+      "stuck": [
+        "No game at home? Pick slideshow with audio and use the <a href=\"https://smitabudhiaextern.github.io/extern-html-pages/bg-image-deck.html\" target=\"_blank\" rel=\"noopener\">Breaking Games product image deck<span class=\"sr-only\"> (opens in a new tab)</span></a>. For a Play-Along, start on a tight crop of one piece and zoom out a little each shot. It's a full, equal path, not a backup."
+      ]
     },
     {
-      title: "Choose your template and shot structure",
-      instruction: "Your framework sets the story. The <b>template</b> sets how you film it: talking head (you talk to the camera), voiceover with B-roll (you talk over extra footage, like hands and the box), POV (filmed from your eyes, as if the viewer is playing), split screen (two clips side by side), green screen (you in front of a photo or a post), slideshow with audio (photos with your voice or music), or montage (quick clips cut to music). Write one line: \"Template: ___, because ___.\" Then copy your framework's 5-shot structure from the list below into your plan doc.",
-      items: ["Play-Along: 1 hook question, game in frame · 2 and 3 the play that holds the clue · 4 the reveal, box and name on screen · 5 end card", "Tutorial: 1 the problem · 2 to 4 one step per shot · 5 result, then end card", "Day-in-the-Life: 1 the moment · 2 and 3 key moments · 4 the \"good game\" moment · 5 end card", "Transformation: 1 set up the before · 2 before · 3 the change · 4 after · 5 end card", "Storytelling: 1 the situation · 2 the problem · 3 the turning point · 4 the payoff · 5 end card", "Educational: 1 myth or question · 2 explanation · 3 proof · 4 takeaway · 5 end card", "Trend-Based (family-safe only): 1 the format's opening · 2 and 3 your game twist · 4 pillar payoff · 5 end card"],
-      sample: { label: "Sample", kind: "text",
-        body: "Play-Along: 1 hook question, game in frame · 2-3 the play that holds the clue · 4 the reveal, box and name on screen · 5 end card\nTemplate: voiceover with B-roll of hands at my table, because no one needs to be on camera.\n\nNo game yet? Template: slideshow with audio, because my game hasn't arrived. Play-Along as a slideshow: 1 a tight crop of one piece from the product image deck, with \"Guess this game from one piece?\" · 2-3 zoom out a little more each shot, with a clue on screen · 4 the full box and the game's name · 5 end card. It's a full, equal path, not a backup." },
-      onTrack: "you can say your template in one line, with a reason.",
-      stuck: ["No game at home? Pick \"slideshow with audio\" and use the <a href=\"https://smitabudhiaextern.github.io/extern-html-pages/bg-image-deck.html\" target=\"_blank\" rel=\"noopener\">Breaking Games product image deck<span class=\"sr-only\"> (opens in a new tab)</span></a> with your voiceover."]
+      "title": "Expand your ideas with AI",
+      "instruction": "Now let AI stretch your draft, not replace it. Click <b>Copy code</b> under the prompt below, paste it into your AI chat assistant, and fill every bracket from your plan doc.",
+      "sample": {
+        "label": "The expand-your-ideas prompt",
+        "kind": "code",
+        "body": "I'm planning a TikTok for Breaking Games, a tabletop game producer relaunching its quiet TikTok (@breakinggamesllc). Brand line: \"Good game, folks.\" Voice: a charismatic emcee, not a scene-stealing performer. Clever, casual, friendly (not salesy), and occasionally ridiculous, never unhinged.\n\nFormat: [PASTE your format and pillar]\nWho it's for: [PASTE your player tag]\nGame: [PASTE your game]\nWhat I'm testing: [PASTE your test line]\nMy 2 hooks: [PASTE both hooks, with their visual, text and promise]\nMy 5-shot draft: [PASTE your shot list]\n\nHelp me expand my ideas:\n1. Write 5 more hooks in the same format. Each must work in under 3 seconds with the sound off, show the game or hands in second 1, speak to my player's moment, and end on a period. Don't start with the brand name, a price, a logo or a promo code. No hype, no jokes at anyone's expense, nothing just for shock.\n2. Suggest 1 different angle on this video that I haven't thought of, in one sentence.\n3. Tighten my shot list into a table: Shot #, Seconds, On screen, Audio/Text. Keep my hook in shot 1. Total 15 to 30 seconds, no shot longer than 5 seconds, 7 words or fewer of on-screen text per overlay, and the game named on screen at least once. Shot 5 is a 1 to 2 second end card: the Breaking Games logo, \"Good game, folks.\" and \"Find your next game night: link in bio\".\n\nRules: family-safe and PG; adult hands only, no one under 18, no real customers, no AI-made people; everything filmable with a phone on my own table; say \"games,\" not \"toys\"; don't state a price, ages or player count unless I give them to you."
+      },
+      "onTrack": "you get 5 new hooks, 1 new angle and a shot table that adds up to 15 to 30 seconds.",
+      "stuck": [
+        "Left a bracket empty? The AI will guess. Fill every one first.",
+        "AI wrote a shot you can't film? Tell it: \"Shot 3 has to be filmable on my kitchen table with one deck of cards.\"",
+        "All the hooks sound like ads? Ask: \"Rewrite these as questions a friend would ask at game night.\""
+      ]
     },
     {
-      title: "Build your storyboard with AI",
-      instruction: "Click <b>Copy code</b> under the <b>storyboard prompt</b> below, paste it into the same chat and fill its brackets. A <b>storyboard</b> here is a simple shot list: what's on screen, for how long, and what's said or written.",
-      sample: { label: "The storyboard prompt", kind: "code",
-        body: "Build a 5-shot storyboard for this TikTok.\n\nFramework: [PASTE your Video 1 framework from your player slide]\nHook (use word for word in Shot 1): \"[PASTE your final hook]\"\nTemplate: [PASTE your template]\nShot structure: [PASTE the shot structure for your framework]\nWho it's for: [PASTE the player tag from your Video 1 player slide]\nGuardrails: family-safe and PG; adult hands only, no one under 18 and no real customers; nothing invented; product facts only from the game's page; say \"games,\" not \"toys.\"\n\nGive me a table with: Shot #, Seconds, What happens, On screen, Audio/Text.\n\nRules:\n- Total 15 to 30 seconds, no shot longer than 5 seconds\n- On-screen text of 7 words or fewer per overlay\n- Name the game on screen at least once\n- Adult hands only; no one under 18, no real customers, no AI-made people\n- Shot 5 is a 1 to 2 second end card: the Breaking Games logo + \"Good game, folks.\" and the call to action \"Find your next game night: link in bio\"\n- Everything must be filmable with a phone on my own table\n- Don't state a price, ages or player count unless I give them to you" },
-      onTrack: "the AI gives you 5 shots that add up to 15 to 30 seconds and end on the end card.",
-      stuck: ["AI wrote a shot you can't film? Tell it: \"Shot 3 has to be filmable on my kitchen table with one deck of cards.\""]
-    },
-    {
-      title: "Make it filmable, then pre-score it (optional)",
-      instruction: "Go shot by shot. Can you picture it and film it this week? Is the text in the top or bottom third, away from the right edge where the app's buttons sit? Does every line sound like a person? Fix what fails. If you like, pre-score it in the <a href=\"https://vpdasgupta.github.io/tiktok/breaking-games-post-simulator.html\" target=\"_blank\" rel=\"noopener\">Post Performance Simulator<span class=\"sr-only\"> (opens in a new tab)</span></a>.",
-      sample: { label: "Sample storyboard (Play-Along, for Danny, 18 seconds)", kind: "text",
-        body: "1 · 3s · Hands hold one card face down · Text: \"Guess this game from one move?\"\n2 · 4s · Hands make one move · Friend's voice (with her OK): \"Wait, that's allowed?\"\n3 · 4s · Close-up on the result · Text: \"Comment your guess\"\n4 · 5s · The box slides in · Text: \"It's Caminito.\"\n5 · 2s · End card: logo + \"Good game, folks.\" + \"Find your next game night: link in bio\"\nFix I made: Shot 2 was a group laughing; now it's hands and one voice." },
-      onTrack: "every shot uses only adult hands, voices with permission, the game or the product image deck.",
-      stuck: [
+      "title": "Pick your hook and lock your plan",
+      "instruction": "Line up your 2 hooks and the AI's 5. Check each one: Stops the scroll? Visual, text and promise line up? Fits your format? On-voice: game before the punchline, ridiculous but not unhinged? Could you say it naturally? Pick one, make it sound like you, and put it in shot 1. Then check every shot is filmable this week, with text away from the right edge, where TikTok's buttons sit. If you like, pre-score it in the <a href=\"https://vpdasgupta.github.io/tiktok/breaking-games-post-simulator.html\" target=\"_blank\" rel=\"noopener\">Post Performance Simulator<span class=\"sr-only\"> (opens in a new tab)</span></a>.",
+      "sample": {
+        "label": "Sample (Play-Along, for Danny, 18 seconds)",
+        "kind": "text",
+        "body": "My pick: my own Hook A. The AI's \"This just in: one card ends the argument\" passed too, but mine sounds more like me.\nAI idea I kept: a friend's voice reacting in shot 2.\n1 · 3s · Hands hold one card face down · Text: \"Guess this game from one move?\"\n2 · 4s · Hands make one move · Friend's voice (with her OK): \"Wait, that's allowed?\"\n3 · 4s · Close-up on the result · Text: \"Comment your guess\"\n4 · 5s · The box slides in · Text: \"It's Caminito.\"\n5 · 2s · End card: logo + \"Good game, folks.\" + \"Find your next game night: link in bio\""
+      },
+      "onTrack": "your hook is 7 words or fewer and passes all five checks, and every shot uses only adult hands, voices with permission, the game or the product image deck.",
+      "stuck": [
         "Caminito's price, ages and player count aren't confirmed yet. Leave them off screen until your program manager shares them.",
         "No copy of Caminito? Use the product image deck, or pick another game from breakinggames.com."
       ]
     }
-  ]
+  ],
+  "evaluation": {
+    "title": "How it will be evaluated",
+    "intro": "Your program manager checks your plan against these three things.",
+    "criteria": [
+      {
+        "name": "Setup",
+        "lookFor": "A format, pillar and game, a player tag that names a moment, and a test line."
+      },
+      {
+        "name": "Your ideas first",
+        "lookFor": "2 hooks of your own, each with a visual, text and promise, written before the AI's."
+      },
+      {
+        "name": "Filmable plan",
+        "lookFor": "5 shots, 15 to 30 seconds, ending on the end card, with only adult hands, voices with permission, the game or the product image deck."
+      }
+    ],
+    "finish": "Done? Paste your test line, player tag, final hook and shot table in the submission box on the page below."
+  }
 };
 /* ======================= DO NOT EDIT BELOW ======================== */
 </script>

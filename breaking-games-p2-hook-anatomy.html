@@ -331,7 +331,7 @@
     </section>
     <section class="slide" aria-labelledby="h-2" hidden>
       <p class="step-num"></p>
-      <h2 id="h-2" tabindex="-1">Take one apart: Play-Along</h2>
+      <h2 id="h-2" tabindex="-1">Take one apart: a guessing hook</h2>
       <p class="hookline"><small>The hook</small>"Guess this game from one move?"</p>
       <p class="ask">What's the promise?</p>
       <div><button type="button" class="btn primary" data-reveal="map2" aria-expanded="false" aria-controls="map2" data-show="Show the three parts">Show the three parts</button></div>
@@ -345,7 +345,7 @@
     </section>
     <section class="slide" aria-labelledby="h-3" hidden>
       <p class="step-num"></p>
-      <h2 id="h-3" tabindex="-1">Take one apart: Day-in-the-Life</h2>
+      <h2 id="h-3" tabindex="-1">Take one apart: a game-night hook</h2>
       <p class="hookline"><small>The hook</small>"Friday game night, 8 people, half strangers."</p>
       <p class="ask">What's the promise?</p>
       <div><button type="button" class="btn primary" data-reveal="map3" aria-expanded="false" aria-controls="map3" data-show="Show the three parts">Show the three parts</button></div>
@@ -359,7 +359,7 @@
     </section>
     <section class="slide" aria-labelledby="h-4" hidden>
       <p class="step-num"></p>
-      <h2 id="h-4" tabindex="-1">Take one apart: Tutorial</h2>
+      <h2 id="h-4" tabindex="-1">Take one apart: a how-to hook</h2>
       <p class="hookline"><small>The hook</small>"Learn this game in 20 seconds."</p>
       <p class="ask">What's the promise?</p>
       <div><button type="button" class="btn primary" data-reveal="map4" aria-expanded="false" aria-controls="map4" data-show="Show the three parts">Show the three parts</button></div>
@@ -370,14 +370,6 @@
           <div class="box"><span class="part-lbl"><span class="pi" aria-hidden="true">➡️</span>Promise</span><p>You'll be ready to play by the end.</p></div>
         </div>
       </div>
-    </section>
-    <section class="slide" aria-labelledby="h-5" hidden>
-      <p class="step-num"></p>
-      <h2 id="h-5" tabindex="-1">Hooks by framework</h2>
-      <p>Each of the 7 frameworks gives the hook a different job.</p>
-      <label class="field" for="fwSel">Pick a framework</label>
-      <select id="fwSel"><option value="0">Tutorial</option><option value="1">Day-in-the-Life</option><option value="2">Transformation</option><option value="3">Trend-Based (family-safe only)</option><option value="4">Storytelling (published stories, credited)</option><option value="5" selected>Play-Along</option><option value="6">Educational</option></select>
-      <div class="fw-out" id="fwOut"><span class="fw-name">Play-Along</span><span class="fw-goal">Ask a question viewers can answer in the comments.</span></div>
     </section>
     <section class="slide" aria-labelledby="h-6" hidden>
       <p class="step-num"></p>
@@ -401,32 +393,6 @@
         <div class="box"><span class="status-pill no"><span aria-hidden="true">🚫 </span>Edgy (out)</span><p>Any joke at a person's or a group's expense, or anything just for shock.</p></div>
       </div>
       <p>Occasionally ridiculous, not unhinged: a pun is a flavor, not the main dish.</p>
-    </section>
-    <section class="slide" aria-labelledby="h-8" hidden>
-      <p class="step-num"></p>
-      <h2 id="h-8" tabindex="-1">The Op case: real play beats polish</h2>
-      <p class="lead">The Op, another game company, got about 8 million TikTok views in one month. Most viewers didn't follow the account.</p>
-      <ul class="plain">
-        <li>Low-polish phone footage of real play, not studio ads.</li>
-        <li>About 80% entertaining posts to 20% promoting.</li>
-        <li>For you: film real hands at a real table, and entertain first. Promote rarely.</li>
-      </ul>
-      <!-- VERIFY before launch: The Op figures (about 8M views in a month, mostly non-followers, 80/20 mix). Restored 2026-10-20 from the retired How TikTok Works interactive, slide 5. -->
-    </section>
-    <section class="slide" aria-labelledby="h-9" hidden>
-      <p class="step-num"></p>
-      <h2 id="h-9" tabindex="-1">Filming without customers</h2>
-      <ul class="checks" aria-describedby="chkCount">
-        <li><label><input type="checkbox" class="chk"> <span>Adult hands only, on your own table.</span></label></li>
-        <li><label><input type="checkbox" class="chk"> <span>No one under 18 on camera, hands included.</span></label></li>
-        <li><label><input type="checkbox" class="chk"> <span>Friends appear as hands or voices only, with their OK.</span></label></li>
-        <li><label><input type="checkbox" class="chk"> <span>Never film or name real customers.</span></label></li>
-        <li><label><input type="checkbox" class="chk"> <span>No AI-made people shown as real.</span></label></li>
-        <li><label><input type="checkbox" class="chk"> <span>Family and all-ages games only, plus Hypothetically Fun (ages 14+) for teen and adult audiences, never pitched to kids. No adult or edgy titles.</span></label></li>
-        <li><label><input type="checkbox" class="chk"> <span>Price, ages and player count match the game's page on breakinggames.com.</span></label></li>
-        <li><label><input type="checkbox" class="chk"> <span>No game at home? Use the Breaking Games product image deck with your voiceover.</span></label> <a href="https://smitabudhiaextern.github.io/extern-html-pages/bg-image-deck.html" target="_blank" rel="noopener">Open the product image deck<span class="sr-only"> (opens in a new tab)</span></a></li>
-      </ul>
-      <p class="count" id="chkCount">0 of 8 checked</p>
     </section>
     <section class="slide" aria-labelledby="h-10" hidden>
       <p class="step-num"></p>
@@ -452,21 +418,7 @@
 </main>
 <script>
 window.DECK = { id: "breaking-games-p2-hook-anatomy" };
-const FW = [["Tutorial", "Promise something useful."], ["Day-in-the-Life", "Feel close and real."], ["Transformation", "Set up the \"before.\""], ["Trend-Based (family-safe only)", "Use the format, then twist it toward the game."], ["Storytelling (published stories, credited)", "Open on the stakes."], ["Play-Along", "Ask a question viewers can answer in the comments."], ["Educational", "Challenge an assumption."]];
 DECK.init = ({ announce }) => {
-  const sel = document.getElementById("fwSel"), out = document.getElementById("fwOut");
-  sel.addEventListener("change", () => {
-    const [name, goal] = FW[+sel.value];
-    out.querySelector(".fw-name").textContent = name;
-    out.querySelector(".fw-goal").textContent = goal;
-    announce(name + ": " + goal);
-  });
-  const boxes = [...document.querySelectorAll(".chk")], count = document.getElementById("chkCount");
-  boxes.forEach(b => b.addEventListener("change", () => {
-    const n = boxes.filter(x => x.checked).length;
-    count.textContent = n + " of " + boxes.length + " checked" + (n === boxes.length ? ". All set to film." : "");
-    announce(count.textContent);
-  }));
   const f = { Visual: "fVis", Text: "fTxt", Promise: "fPro" };
   const fb = document.getElementById("copyFb"), copyBtn = document.getElementById("copyBtn");
   /* Hide the copy result once any field changes, so it never shows stale text. */
