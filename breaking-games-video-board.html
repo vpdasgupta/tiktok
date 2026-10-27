@@ -210,8 +210,8 @@
         <select id="fGame"><option value="">All games</option></select>
       </div>
       <div class="fld">
-        <label for="fPersona">Made for</label>
-        <select id="fPersona"><option value="">Anyone</option></select>
+        <label for="fPersona">Player</label>
+        <select id="fPersona"><option value="">Any player</option></select>
       </div>
       <div class="fld">
         <label for="fSearch" id="fSearchLabel">Search name or title</label>
@@ -266,7 +266,7 @@
           <input id="sGameOther" type="text" aria-required="true">
         </div>
         <fieldset id="sPersonaGroup">
-          <legend>Made for <span class="req">(required)</span></legend>
+          <legend>Player <span class="req">(required)</span></legend>
           <div class="radios" id="personaRadios"></div>
         </fieldset>
         <label for="sTested">What I tested <span class="req">(required)</span></label>
@@ -435,7 +435,7 @@
           '<dl class="meta">'+
             '<dt>'+(PARTNER?"Credit":"By")+'</dt><dd>'+esc(displayName(r))+'</dd>'+
             '<dt>Game</dt><dd>'+esc(r.game)+'</dd>'+
-            '<dt>Made for</dt><dd>'+esc(r.persona)+'</dd>'+
+            '<dt>Player</dt><dd>'+esc(r.persona)+'</dd>'+
             (r.score!==""&&r.score!=null?'<dt>Score</dt><dd>'+esc(r.score)+' of 100</dd>':'')+
           '</dl>'+
           (r.what_i_tested?'<p class="tested"><strong>'+(PARTNER?"The idea":"What I tested")+':</strong> '+esc(r.what_i_tested)+'</p>':'')+
@@ -627,7 +627,7 @@
     need("sGame","Choose the game featured.");
     if($("#sGame").value==="__other__") need("sGameOther","Type the game's name.");
     var pg=$("#sPersonaGroup");
-    if(!radio("persona")){ errs.push({id:"sPersonaGroup",msg:"Choose who it's made for."}); setGroupErr(pg,"persona","Choose who it's made for."); } else clearGroupErr(pg,"persona");
+    if(!radio("persona")){ errs.push({id:"sPersonaGroup",msg:"Choose the player it's made for."}); setGroupErr(pg,"persona","Choose the player it's made for."); } else clearGroupErr(pg,"persona");
     need("sTested","Add one line on what you tested.");
     need("sDesc","Describe what's on screen.");
     var sc=$("#sScore");
