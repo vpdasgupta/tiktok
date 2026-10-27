@@ -4,13 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--
-  Breaking Games x Social Media, Project 2: Meet Rachel and Danny (2 slides)
+  Breaking Games x Social Media, Project 2: Meet Rachel and Danny (3 slides)
   Built 2026-10-26 for the "Meet Rachel and Danny" section of [Training] Meet Your Players.
-  Each slide = pain-point portrait + player profile card. Card rows mirror the page's table
+  Slides 1-2 = pain-point portrait + player profile card. Slide 3 = "Who is it for?" button sort
+  (moved 2026-10-26 from the retired breaking-games-p2-meet-your-players.html, slide 4). Card rows mirror the page's table
   ("Text version of the player cards" toggle). Edit both together.
   Chrome, tokens and slide engine copied from breaking-games-p2-meet-your-players.html.
   WCAG 2.2 AA: one H1; inactive slides hidden; focus moves to each slide's h2; polite live region;
-  44px targets; images have alt text; pain point marked with a text label, not color alone;
+  44px targets; sort buttons use aria-pressed and feedback is announced and starts with "Right!"/"Not quite."
+  (not color alone); images have alt text; pain point marked with a text label, not color alone;
   reflows to one column at 640px; prefers-reduced-motion respected.
   Deploy: https://vpdasgupta.github.io/tiktok/breaking-games-p2-meet-rachel-and-danny.html
 -->
@@ -23,7 +25,7 @@
     --canvas: #F8FAFC; --card: #FFFFFF; --ink: #0F172A; --ink-soft: #5A6478;
     --line: #E9E9E7; --edge: #64748B; --tt-cyan: #25F4EE; --tt-red: #FE2C55;
     --red-ink: #CC0F3A; --red-dark: #A80C30; --pink-tint: #FFE9EF;
-    --teal-ink: #0E7C86; --cyan-tint: #E6FDFC;
+    --teal-ink: #0E7C86; --cyan-tint: #E6FDFC; --amber-ink: #9A5B00; --amber-tint: #FFF4E5;
     --night: #0C0B10; --night-soft: #A89FA2;
     --gradient: linear-gradient(90deg, var(--tt-cyan), #A665A7 50%, var(--tt-red));
     --radius: 16px; --radius-sm: 10px;
@@ -90,6 +92,28 @@
   .games { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
   .games li { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; font-size: 13px; font-weight: 600; }
 
+  /* slide 3: who is it for? */
+  .slide.quiz { display: flex; flex-direction: column; gap: 10px; }
+  .quiz h2 { font-size: 23px; line-height: 1.2; font-weight: 800; letter-spacing: -.01em; margin: 0; }
+  .quiz h2:focus { outline: none; }
+  .quiz h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .prompt { font-size: 15px; color: var(--ink-soft); margin: 0; }
+  .sorter { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .box { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; background: var(--canvas); display: flex; flex-direction: column; gap: 6px; }
+  .idea { font-size: 15px; font-weight: 600; margin: 0; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn {
+    min-height: 44px; min-width: 44px; border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 700; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--edge);
+  }
+  .btn:hover { border-color: var(--ink); }
+  .btn[aria-pressed="true"] { background: var(--ink); color: #FFFFFF; border-color: var(--ink); }
+  .btn[aria-pressed="true"]::after { content: " (your pick)" / ""; font-weight: 600; }
+  .feedback { padding: 8px 12px; border-radius: var(--radius-sm); border-left: 4px solid var(--ink); background: var(--card); font-size: 14px; }
+  .feedback.right { background: var(--cyan-tint); border-color: var(--teal-ink); }
+  .feedback.wrong { background: var(--amber-tint); border-color: var(--amber-ink); }
+  .feedback .verdict { font-weight: 700; }
+
   .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
   .nav-btn {
     min-height: 44px; min-width: 44px; background: var(--card); border: 1px solid var(--edge); color: var(--ink);
@@ -108,6 +132,7 @@
 
   @media (max-width: 760px) {
     .slide { aspect-ratio: auto; grid-template-columns: minmax(0, 1fr); }
+    .slide.quiz { aspect-ratio: auto; }
     .portrait { max-width: 420px; width: 100%; justify-self: center; }
   }
   @media (max-width: 640px) {
@@ -115,7 +140,8 @@
     .deck-head { padding: 14px 16px 18px; }
     .deck-title { font-size: 21px; }
     .slide { padding: 14px; }
-    .profile h2 { font-size: 20px; }
+    .profile h2, .quiz h2 { font-size: 20px; }
+    .sorter { grid-template-columns: 1fr; }
     .role { margin-left: 0; }
     .rows { grid-template-columns: 1fr; gap: 2px; }
     .rows dd { margin-bottom: 8px; }
@@ -175,6 +201,16 @@
         </dl>
       </div>
     </section>
+    <section class="slide quiz" aria-labelledby="h-2" hidden>
+      <h2 id="h-2" tabindex="-1">Who is it for?</h2>
+      <p class="prompt">Pick a player for each video idea.</p>
+      <div class="sorter">
+        <div class="box"><p class="idea">"Which game works with the grandparents too?"</p><div class="btn-row" role="group" aria-label="Idea 1: who is it for?" data-group="mp1" data-fb="fb-mp1" data-answer="Rachel" data-right="Right! Rachel: it fits her family-birthday moment." data-wrong="Not quite. This one is for Rachel: it fits her family-birthday moment, with the kids and the grandparents at one table."><button type="button" class="btn" data-pick="Rachel" aria-pressed="false">Rachel</button><button type="button" class="btn" data-pick="Danny" aria-pressed="false">Danny</button></div><div class="feedback" id="fb-mp1" hidden></div></div>
+        <div class="box"><p class="idea">"Guess this game from one move? Comment your answer."</p><div class="btn-row" role="group" aria-label="Idea 2: who is it for?" data-group="mp2" data-fb="fb-mp2" data-answer="Danny" data-right="Right! Danny: he comments his answer, and it doesn&#x27;t look like an ad." data-wrong="Not quite. This one is for Danny: he comments his answer, and it doesn&#x27;t look like an ad."><button type="button" class="btn" data-pick="Rachel" aria-pressed="false">Rachel</button><button type="button" class="btn" data-pick="Danny" aria-pressed="false">Danny</button></div><div class="feedback" id="fb-mp2" hidden></div></div>
+        <div class="box"><p class="idea">"$10 stocking stuffer: POOP, ages 6+."</p><div class="btn-row" role="group" aria-label="Idea 3: who is it for?" data-group="mp3" data-fb="fb-mp3" data-answer="Rachel" data-right="Right! Rachel: she buys games as gifts." data-wrong="Not quite. This one is for Rachel: she buys games as gifts, and a price and an age help her decide."><button type="button" class="btn" data-pick="Rachel" aria-pressed="false">Rachel</button><button type="button" class="btn" data-pick="Danny" aria-pressed="false">Danny</button></div><div class="feedback" id="fb-mp3" hidden></div></div>
+        <div class="box"><p class="idea">"8 people, half strangers. One icebreaker game."</p><div class="btn-row" role="group" aria-label="Idea 4: who is it for?" data-group="mp4" data-fb="fb-mp4" data-answer="Danny" data-right="Right! Danny: it solves his mixed-group pain point." data-wrong="Not quite. This one is for Danny: it solves his mixed-group pain point."><button type="button" class="btn" data-pick="Rachel" aria-pressed="false">Rachel</button><button type="button" class="btn" data-pick="Danny" aria-pressed="false">Danny</button></div><div class="feedback" id="fb-mp4" hidden></div></div>
+      </div>
+    </section>
   </div>
 
   <nav class="slide-nav" aria-label="Slides">
@@ -227,6 +263,19 @@
     if (e.target.closest("a, input, textarea, select")) return;
     if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
     if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+
+  document.querySelectorAll("[data-group]").forEach(group => {
+    const fb = $(group.dataset.fb);
+    const btns = [...group.querySelectorAll("[data-pick]")];
+    btns.forEach(b => b.addEventListener("click", () => {
+      btns.forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+      const right = b.dataset.pick === group.dataset.answer;
+      fb.innerHTML = '<span class="verdict">' + (right ? group.dataset.right : group.dataset.wrong) + '</span>';
+      fb.classList.toggle("right", right); fb.classList.toggle("wrong", !right);
+      fb.hidden = false;
+      announce(fb.textContent.replace(/\s+/g, " ").trim());
+    }));
   });
 
   /* Deep link for previews and QA: #s=N opens slide N (1-based). */
