@@ -99,10 +99,12 @@ body {
 
 /* ladder */
 .ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: .7cqi; }
-.ladder li { display: grid; grid-template-columns: 15% 1fr 20%; gap: 1.6cqi; align-items: baseline; padding: .8cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
+.ladder li { display: grid; grid-template-columns: 14% 1fr 16%; gap: 1.6cqi; align-items: baseline; padding: .6cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
 .ladder .tier { font-weight: 800; }
 .ladder .shows { font-weight: 700; text-align: right; }
 .ladder li.no { background: var(--pill); }
+.ladder li.head { white-space: nowrap; background: transparent; padding-top: 0; padding-bottom: 0; font-size: .74em; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.slide.dense th, .slide.dense td { padding-top: .35cqi; padding-bottom: .35cqi; }
 
 /* table */
 table { border-collapse: collapse; width: 100%; font-size: .92em; overflow-wrap: normal; }
@@ -143,6 +145,7 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
   .bars .track { height: 12px; }
   .ladder li { grid-template-columns: 1fr; gap: 2px; padding: 8px 10px; }
   .ladder .shows { text-align: left; }
+  .ladder li.head { display: none; }
   .scores li { grid-template-columns: 1fr auto; gap: 4px 10px; padding-bottom: 6px; }
   .scores .why { grid-column: 1 / -1; }
   th, td { padding: 4px 6px; }
@@ -176,7 +179,7 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
     <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 8">
       <article class="slide dense" aria-labelledby="s2">
         <div class="top"><div><p class="kicker">The baseline</p><h2 id="s2">Chroma, as Home Depot uses it today</h2></div></div>
-        <dl class="rows"><dt>What</dt><dd>An e-paper label: looks like ink, uses power only when the price changes. Most common: black-and-white Chroma 33.</dd><dt>Range facts</dt><dd>Batteries rated up to 10 years, replaceable · own radio, not store Wi-Fi · up to 6 prices on one screen <span class="src">[vendor]</span></dd><dt>MET's view</dt><dd>Strong “second-day support”: the vendor fixes problems for Home Depot.</dd></dl><p class="foot">Every feature and practice in this deck is tested as <b>Chroma plus one change</b>.</p>
+        <dl class="rows"><dt>What</dt><dd>An e-paper label (a screen that looks like ink): uses power only when the price changes. Most common: black-and-white Chroma 33.</dd><dt>Range facts</dt><dd>Batteries rated up to 10 years, replaceable · own radio, not store Wi-Fi · up to 6 prices on one screen <span class="src">[vendor]</span></dd><dt>MET's view</dt><dd>Strong “second-day support” (help after the labels go up): the vendor fixes problems for Home Depot.</dd></dl><p class="foot">Every feature and practice in this deck is tested as <b>Chroma plus one change</b>.</p>
       </article>
     </div>
     <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 8">
@@ -200,7 +203,7 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
     <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 8">
       <article class="slide" aria-labelledby="s6">
         <div class="top"><div><p class="kicker">Label feature 4 of 6</p><h2 id="s6">Thin / flush-mount</h2><p class="sub">Sticks out less from the shelf</p></div><p class="chip">Lever 4</p></div>
-        <dl class="rows"><dt>Does</dt><dd>Less to catch on carts and pallets. MET praised Jaquan's thin-label idea.</dd><dt>Chroma?</dt><dd>Not found. Other makers go as thin as 4.5 mm: a vendor risk.</dd><dt>Price</dt><dd>Not published. Assume $7–$13.</dd><dt>Watch out</dt><dd>No data proves thinner breaks less.</dd></dl>
+        <dl class="rows"><dt>Does</dt><dd>Less to catch on carts and pallets. MET praised an extern's thin-label idea.</dd><dt>Chroma?</dt><dd>Not found. Other makers go as thin as 4.5 mm: a vendor risk.</dd><dt>Price</dt><dd>Not published. Assume $7–$13.</dd><dt>Watch out</dt><dd>No data proves thinner breaks less.</dd></dl>
       </article>
     </div>
     <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 8">
@@ -212,7 +215,7 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
     <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 8">
       <article class="slide dense" aria-labelledby="s8">
         <div class="top"><div><p class="kicker">Label feature 6 of 6</p><h2 id="s8">LED light, NFC or buttons</h2><p class="sub">A light points workers to the spot</p></div><p class="chip">Lever 7</p></div>
-        <dl class="rows"><dt>Does</dt><dd>Flashes to guide restocking, order picking and returns. NFC lets a phone tap in.</dd><dt>Chroma?</dt><dd>LED: yes, up to Chroma 37 <span class="src">[vendor]</span></dd><dt>Price</dt><dd>Not separate. Expect the top of $5–$15.</dd><dt>Proof</dt><dd>Leroy Merlin cut picking time 17% <span class="src">[independent]</span></dd><dt>Watch out</dt><dd>Your model counts only price changes. Estimate the hours and ask who does that work.</dd></dl>
+        <dl class="rows"><dt>Does</dt><dd>Flashes to guide restocking, order picking and returns. An NFC tag (chip a phone taps) shares product info.</dd><dt>Chroma?</dt><dd>LED: yes, up to Chroma 37 <span class="src">[vendor]</span></dd><dt>Price</dt><dd>Not separate. Expect the top of $5–$15.</dd><dt>Proof</dt><dd>Leroy Merlin cut picking time 17% <span class="src">[independent]</span></dd><dt>Watch out</dt><dd>Your model counts only price changes. Estimate the hours and ask who does that work.</dd></dl>
       </article>
     </div>
   </div>
