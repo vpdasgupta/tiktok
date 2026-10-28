@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Comparing Your Options — 16:9 Deck</title>
+<title>Comparing Your Options: 16:9 Deck</title>
 <style>
   :root {
     --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
@@ -35,10 +35,15 @@
     display: flex; align-items: safe center; justify-content: center;
     overflow-x: hidden; overflow-y: auto;
   }
-  .slide {
-    width: var(--stagew); height: auto; min-height: var(--stageh);
+  .screen:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: -3px; }
+  /* The stage takes up exactly the scaled slide's size, so centering uses the real (scaled) box. */
+  .stage {
     flex: 0 0 auto;
-    transform: scale(var(--scale)); transform-origin: center center;
+    width: calc(var(--stagew) * var(--scale)); height: calc(var(--stageh) * var(--scale));
+  }
+  .slide {
+    width: var(--stagew); height: var(--stageh);
+    transform: scale(var(--scale)); transform-origin: top left;
     background: var(--card); position: relative; overflow: hidden;
   }
 
@@ -123,13 +128,14 @@
   .navbtn:hover { background: #fff; }
   .navbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   .navbtn[aria-disabled="true"] { opacity: .35; cursor: default; }
-  .navbtn--prev { left: 20px; }
-  .navbtn--next { right: 20px; }
+  .navbtn--prev { left: 10px; }
+  .navbtn--next { right: 10px; }
 
   @media (max-width: 640px) { .navbtn { width: 40px; height: 40px; font-size: 22px; } .navbtn--prev { left: 6px; } .navbtn--next { right: 6px; } }
   /* Reflow mode: zoomed, narrow (Notion column, phone) or short viewports get real-size text, not a shrunken stage. */
   @media (max-width: 900px), (max-height: 500px) {
     .screen { align-items: flex-start; }
+    .stage { width: 100%; height: auto; min-height: 100%; }
     .slide { transform: none; width: 100%; height: auto; min-height: 100%; padding: 24px 24px 88px; }
     .c-head { flex-wrap: wrap; align-items: flex-start; gap: 12px; }
     h2 { font-size: 30px; }
@@ -156,6 +162,7 @@
     html, body { height: auto; overflow: visible; background: #fff; }
     .deck { display: block; height: auto; width: auto; overflow: visible; }
     .screen { width: 1280px; height: 720px; break-after: page; }
+    .stage { width: 1280px; height: 720px; }
     .slide { transform: none; }
     .navbtn, #status { display: none; }
   }
@@ -175,8 +182,8 @@
   <h1 class="sr-only">Compare Label Options for Your Area: comparing your options</h1>
   <main>
   <div class="deck" id="deck" role="region" aria-roledescription="carousel" aria-label="Comparing your options">
-    <section class="screen" id="screen-0" aria-roledescription="slide" aria-labelledby="h-1">
-      <div class="slide slide--card">
+    <section class="screen" id="screen-0" tabindex="0" aria-roledescription="slide" aria-labelledby="h-1">
+      <div class="stage"><div class="slide slide--card">
         <div class="c-head">
           <div>
             <p class="r-counter">Comparing your options 1 of 3</p>
@@ -186,7 +193,7 @@
         </div>
         <ul class="steps">
           <li><span class="formula">Price per tag = the label's price (plus any add-on, like a guard) ÷ the number of paper tags it replaces.</span></li>
-          <li>Compare it with the price ceiling from page 2.</li>
+          <li>Compare it with your price ceiling (from the price ladder on page 2).</li>
           <li>Paper and best practices count as <strong>under</strong>, since there's no new hardware to buy.</li>
           <li>Anything <strong>over</strong> your ceiling can't pay back.</li>
         </ul>
@@ -206,15 +213,15 @@
             <li>$25 label ÷ 2 tags = $12.50: <b>near</b></li>
           </ul>
         </div>
-      </div>
+      </div></div>
     </section>
-    <section class="screen" id="screen-1" aria-roledescription="slide" aria-labelledby="h-2">
-      <div class="slide slide--card">
+    <section class="screen" id="screen-1" tabindex="0" aria-roledescription="slide" aria-labelledby="h-2">
+      <div class="stage"><div class="slide slide--card">
         <div class="c-head">
           <div>
             <p class="r-counter">Comparing your options 2 of 3</p>
             <h2 id="h-2">Which lever does my feature move?</h2>
-            <p class="c-sub">Full details are on the page 2 cards.</p>
+            <p class="c-sub">Full details are in the page 2 decks.</p>
           </div>
           <p class="chip">Levers 1–7</p>
         </div>
@@ -234,10 +241,10 @@
             <tr><th scope="row">LED light for restocking or picking online orders</th><td class="lv">7</td><td>Busy areas with lots of restocking, if MET does that work</td></tr>
           </tbody>
         </table>
-      </div>
+      </div></div>
     </section>
-    <section class="screen" id="screen-2" aria-roledescription="slide" aria-labelledby="h-3">
-      <div class="slide slide--card">
+    <section class="screen" id="screen-2" tabindex="0" aria-roledescription="slide" aria-labelledby="h-3">
+      <div class="stage"><div class="slide slide--card">
         <div class="c-head">
           <div>
             <p class="r-counter">Comparing your options 3 of 3</p>
@@ -262,7 +269,7 @@
             <tr><th scope="row">Proof</th><td class="strong-col">A home-improvement or warehouse retailer, with a number</td><td class="weak-col">Vendor claims only</td></tr>
           </tbody>
         </table>
-      </div>
+      </div></div>
     </section>
   </div>
   </main>
@@ -298,6 +305,7 @@
   function setActive(i) {
     if (i === current) return;
     var first = current === -1;
+    var hadFocus = !first && screens[current].contains(document.activeElement);
     current = i;
     screens.forEach(function (s, si) {
       if (si === i) { s.removeAttribute('inert'); s.removeAttribute('aria-hidden'); }
@@ -305,6 +313,7 @@
     });
     prev.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
     next.setAttribute('aria-disabled', i === screens.length - 1 ? 'true' : 'false');
+    if (hadFocus) screens[i].focus({ preventScroll: true });
     if (!first) statusEl.textContent = 'Slide ' + (i + 1) + ' of ' + screens.length + ': ' + screens[i].querySelector('h2').textContent;
   }
   setActive(0);
