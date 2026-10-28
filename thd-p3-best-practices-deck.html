@@ -99,10 +99,12 @@ body {
 
 /* ladder */
 .ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: .7cqi; }
-.ladder li { display: grid; grid-template-columns: 15% 1fr 20%; gap: 1.6cqi; align-items: baseline; padding: .8cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
+.ladder li { display: grid; grid-template-columns: 14% 1fr 16%; gap: 1.6cqi; align-items: baseline; padding: .6cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
 .ladder .tier { font-weight: 800; }
 .ladder .shows { font-weight: 700; text-align: right; }
 .ladder li.no { background: var(--pill); }
+.ladder li.head { white-space: nowrap; background: transparent; padding-top: 0; padding-bottom: 0; font-size: .74em; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.slide.dense th, .slide.dense td { padding-top: .35cqi; padding-bottom: .35cqi; }
 
 /* table */
 table { border-collapse: collapse; width: 100%; font-size: .92em; overflow-wrap: normal; }
@@ -143,6 +145,7 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
   .bars .track { height: 12px; }
   .ladder li { grid-template-columns: 1fr; gap: 2px; padding: 8px 10px; }
   .ladder .shows { text-align: left; }
+  .ladder li.head { display: none; }
   .scores li { grid-template-columns: 1fr auto; gap: 4px 10px; padding-bottom: 6px; }
   .scores .why { grid-column: 1 / -1; }
   th, td { padding: 4px 6px; }
@@ -176,7 +179,7 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
     <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 6">
       <article class="slide" aria-labelledby="s2">
         <div class="top"><div><p class="kicker">Best practice 2 of 6</p><h2 id="s2">Buy the cheapest size that fits</h2><p class="sub">Small black-and-white where you can</p></div><p class="chip">Lever 2</p></div>
-        <dl class="rows"><dt>Does</dt><dd>Uses a small label wherever the shelf doesn't need a bigger screen.</dd><dt>Price</dt><dd>Small: about $5–$9, vs. $11–$17 for 4.2 in. <span class="src">[vendor]</span></dd><dt>Watch out</dt><dd>The price must stay readable. Unit-price rules may set a minimum text size.</dd></dl>
+        <dl class="rows"><dt>Does</dt><dd>Uses a small label wherever the shelf doesn't need a bigger screen.</dd><dt>Price</dt><dd>Small: about $5–$9, vs. $11–$17 for 4.2 in. <span class="src">[vendor]</span></dd><dt>Watch out</dt><dd>The price must stay readable. Unit-price rules (laws on price-per-unit tags) may set a minimum text size.</dd></dl>
       </article>
     </div>
     <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 6">
@@ -194,13 +197,13 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
     <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 6">
       <article class="slide" aria-labelledby="s5">
         <div class="top"><div><p class="kicker">Best practice 5 of 6</p><h2 id="s5">Check the signal first</h2><p class="sub">Before any label goes up</p></div><p class="chip">Keeps months real</p></div>
-        <dl class="rows"><dt>Does</dt><dd>Tests coverage in far corners and adds a gateway where the signal is weak.</dd><dt>Price</dt><dd>A one-time survey, plus gateways where needed.</dd><dt>Why</dt><dd>The last whole-store test ended mostly because remote labels couldn't update.</dd><dt>Watch out</dt><dd>This is also your top risk fix on page 4.</dd></dl>
+        <dl class="rows"><dt>Does</dt><dd>Tests coverage in far corners and adds a gateway (the labels’ wireless hub) where the signal is weak.</dd><dt>Price</dt><dd>A one-time survey, plus gateways where needed.</dd><dt>Why</dt><dd>The last whole-store test ended mostly because remote labels couldn't update.</dd><dt>Watch out</dt><dd>This is also your top risk fix on page 4.</dd></dl>
       </article>
     </div>
     <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 6">
       <article class="slide" aria-labelledby="s6">
         <div class="top"><div><p class="kicker">Best practice 6 of 6</p><h2 id="s6">Reprice where markets move</h2><p class="sub">Lumber, copper, online competitors</p></div><p class="chip">Lever 6</p></div>
-        <dl class="rows"><dt>Does</dt><dd>Follows market prices more closely, so each label does more changes.</dd><dt>Price</dt><dd>None.</dd><dt>Proof</dt><dd>Stores with e-labels made more, smaller price changes <span class="src">[independent]</span></dd><dt>Watch out</dt><dd>Walmart rules out surge pricing; some states regulate it. More updates drain batteries.</dd></dl>
+        <dl class="rows"><dt>Does</dt><dd>Follows market prices more closely, so each label does more changes.</dd><dt>Price</dt><dd>None.</dd><dt>Proof</dt><dd>Stores with e-labels made more, smaller price changes <span class="src">[independent]</span></dd><dt>Watch out</dt><dd>Walmart rules out surge pricing (raising prices when demand spikes); some states regulate it. More updates drain batteries.</dd></dl>
       </article>
     </div>
   </div>
