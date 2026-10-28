@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Comparing Your Options — 16:9 Deck</title>
+<style>
+  :root {
+    --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
+    --bg: #f4f6f5; --accent: #d5581f; --accent-ink: #b8480f; --link: #1a5f7a;
+    --soft: #fbf3ee; --pill: #eef1f0;
+    --stagew: 1280px; --stageh: 720px; --scale: 1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0c110f; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .deck {
+    display: flex; flex-direction: row;
+    height: 100vh; width: 100vw;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    background: var(--bg);
+  }
+  .deck:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+  .screen {
+    flex: 0 0 100vw; height: 100vh;
+    scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; align-items: safe center; justify-content: center;
+    overflow-x: hidden; overflow-y: auto;
+  }
+  .slide {
+    width: var(--stagew); height: auto; min-height: var(--stageh);
+    flex: 0 0 auto;
+    transform: scale(var(--scale)); transform-origin: center center;
+    background: var(--card); position: relative; overflow: hidden;
+  }
+
+  .r-counter {
+    text-transform: uppercase; letter-spacing: .1em; font-size: 15px;
+    font-weight: 700; color: var(--accent-ink); margin: 0 0 6px;
+  }
+
+  /* ---------- card slide ---------- */
+  .slide--card { padding: 30px 88px 40px; border-top: 8px solid var(--accent); display: flex; flex-direction: column; gap: 16px; }
+  .c-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+  h2 { font-size: 40px; margin: 0 0 4px; line-height: 1.1; }
+  .c-sub { font-size: 21px; color: var(--muted); margin: 0; }
+  .chip {
+    flex: 0 0 auto; font-size: 16px; font-weight: 800; letter-spacing: .02em;
+    background: var(--accent-ink); color: #fff; border-radius: 999px; padding: 8px 18px; margin-bottom: 2px;
+    white-space: nowrap;
+  }
+  .rows { margin: 0; display: grid; grid-template-columns: 200px 1fr; border-top: 2px solid var(--ink); }
+  .rows dt, .rows dd { padding: 12px 0; border-bottom: 1px solid var(--line); margin: 0; }
+  .rows dt {
+    font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--muted); padding-top: 13px; padding-right: 16px;
+  }
+  .rows dd { font-size: 21px; line-height: 1.42; }
+  .rows dt.lever, .rows dd.lever { background: var(--soft); }
+  .rows dt.lever { color: var(--accent-ink); padding-left: 12px; border-left: 5px solid var(--accent); }
+  .src {
+    display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 16px; line-height: 1.3; padding: 1px 7px; margin: 0 1px; border-radius: 6px;
+    background: var(--pill); border: 1px solid var(--line); color: var(--muted); vertical-align: 1px;
+  }
+
+  /* ---------- price-per-tag slide ---------- */
+  .steps { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
+  .steps li { font-size: 21px; line-height: 1.42; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .formula { font-weight: 700; }
+  .bands-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .bands-title { font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0; }
+  .bands { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr 1.15fr; border: 2px solid var(--ink); border-radius: 10px; overflow: hidden; }
+  .bands li { padding: 10px 16px; font-size: 18px; line-height: 1.3; border-right: 2px solid var(--ink); }
+  .bands li:last-child { border-right: 0; }
+  .bands strong { display: block; font-size: 22px; letter-spacing: .02em; }
+  .band--under { background: var(--card); }
+  .band--near { background: var(--pill); }
+  .band--over { background: var(--soft); }
+  .band--over strong { color: var(--accent-ink); }
+  .worked { margin: 0; display: grid; grid-template-columns: auto 1fr; column-gap: 16px; align-items: baseline; }
+  .worked-label { font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent-ink); }
+  .worked ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px 10px; }
+  .worked li { font-size: 18px; line-height: 1.3; background: var(--pill); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; }
+  .worked li b { font-weight: 800; }
+
+  /* ---------- table slides ---------- */
+  .tbl { width: 100%; border-collapse: collapse; table-layout: fixed; border-top: 2px solid var(--ink); }
+  .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 11px 14px 11px 0; border-bottom: 1px solid var(--line); }
+  .tbl thead th {
+    font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--muted); padding-top: 11px; padding-bottom: 9px;
+  }
+  .tbl tbody th { font-weight: 700; }
+  .c-feat { width: 45%; } .c-lv { width: 12%; } .c-best { width: 43%; }
+  .c-q { width: 14%; } .c-sw { width: 43%; }
+  .tbl td, .tbl tbody th { font-size: 20px; line-height: 1.36; }
+  .tbl--levers td.lv { font-weight: 800; color: var(--accent-ink); }
+  .tbl--levers thead th.lv, .tbl--levers td.lv { background: var(--soft); padding-left: 12px; }
+  .tbl--sw td, .tbl--sw tbody th { font-size: 22px; line-height: 1.4; padding-top: 16px; padding-bottom: 16px; }
+  .tbl--sw thead th.sw { font-size: 17px; color: var(--ink); }
+  .tbl--sw .mark { display: inline-block; width: 1.4em; font-weight: 900; }
+  .tbl--sw .strong-col { border-left: 5px solid var(--accent); padding-left: 14px; }
+  .tbl--sw .weak-col { border-left: 5px dashed var(--muted); padding-left: 14px; }
+
+  /* ---------- chrome: arrows ---------- */
+  .navbtn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,.92); border: 1px solid var(--line);
+    color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 30;
+    box-shadow: 0 4px 14px rgba(0,0,0,.16);
+  }
+  .navbtn:hover { background: #fff; }
+  .navbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .navbtn[aria-disabled="true"] { opacity: .35; cursor: default; }
+  .navbtn--prev { left: 20px; }
+  .navbtn--next { right: 20px; }
+
+  @media (max-width: 640px) { .navbtn { width: 40px; height: 40px; font-size: 22px; } .navbtn--prev { left: 6px; } .navbtn--next { right: 6px; } }
+  /* Reflow mode: zoomed, narrow (Notion column, phone) or short viewports get real-size text, not a shrunken stage. */
+  @media (max-width: 900px), (max-height: 500px) {
+    .screen { align-items: flex-start; }
+    .slide { transform: none; width: 100%; height: auto; min-height: 100%; padding: 24px 24px 88px; }
+    .c-head { flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+    h2 { font-size: 30px; }
+    .rows { grid-template-columns: 1fr; }
+    .rows dt { padding: 12px 0 2px; border-bottom: 0; }
+    .rows dt.lever { padding-left: 12px; }
+    .rows dd { padding-top: 2px; font-size: 19px; }
+    .rows dd.lever { padding-left: 17px; }
+    .navbtn { top: auto; bottom: 16px; transform: none; }
+    .steps li { font-size: 19px; }
+    .bands { grid-template-columns: 1fr; }
+    .bands li { border-right: 0; border-bottom: 2px solid var(--ink); }
+    .bands li:last-child { border-bottom: 0; }
+    .worked { grid-template-columns: 1fr; row-gap: 8px; }
+    .tbl td, .tbl tbody th { font-size: 16px; }
+    .tbl--sw td, .tbl--sw tbody th { font-size: 16px; }
+    .tbl th, .tbl td { padding-right: 8px; }
+    .tbl thead th { font-size: 13px; letter-spacing: .04em; }
+    .c-feat { width: 40%; } .c-lv { width: 20%; } .c-best { width: 40%; }
+    .c-q { width: 22%; } .c-sw { width: 39%; }
+  }
+  @page { size: 1280px 720px; margin: 0; }
+  @media print {
+    html, body { height: auto; overflow: visible; background: #fff; }
+    .deck { display: block; height: auto; width: auto; overflow: visible; }
+    .screen { width: 1280px; height: 720px; break-after: page; }
+    .slide { transform: none; }
+    .navbtn, #status { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .deck { scroll-behavior: auto; } }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eef1f0; --muted: #a8b2af; --line: #2c3634; --card: #1a2321;
+      --bg: #101615; --accent: #f07a3d; --accent-ink: #f4a06f; --link: #6fc3dd;
+      --soft: #241a13; --pill: #222c2a;
+    }
+    .chip { color: #1a2321; }
+    .navbtn { background: rgba(26,35,33,.94); border-color: var(--line); color: var(--ink); }
+  }
+</style>
+</head>
+<body>
+  <h1 class="sr-only">Compare Label Options for Your Area: comparing your options</h1>
+  <main>
+  <div class="deck" id="deck" role="region" aria-roledescription="carousel" aria-label="Comparing your options">
+    <section class="screen" id="screen-0" aria-roledescription="slide" aria-labelledby="h-1">
+      <div class="slide slide--card">
+        <div class="c-head">
+          <div>
+            <p class="r-counter">Comparing your options 1 of 3</p>
+            <h2 id="h-1">How do I work out price per tag?</h2>
+          </div>
+          <p class="chip">Price check</p>
+        </div>
+        <ul class="steps">
+          <li><span class="formula">Price per tag = the label's price (plus any add-on, like a guard) ÷ the number of paper tags it replaces.</span></li>
+          <li>Compare it with the price ceiling from page 2.</li>
+          <li>Paper and best practices count as <strong>under</strong>, since there's no new hardware to buy.</li>
+          <li>Anything <strong>over</strong> your ceiling can't pay back.</li>
+        </ul>
+        <div class="bands-wrap">
+          <p class="bands-title" id="bands-t">Three price bands</p>
+          <ol class="bands" aria-labelledby="bands-t">
+            <li class="band--under"><strong>Under</strong>below half your ceiling</li>
+            <li class="band--near"><strong>Near</strong>half to all of your ceiling</li>
+            <li class="band--over"><strong>Over</strong>above your ceiling</li>
+          </ol>
+        </div>
+        <div class="worked">
+          <p class="worked-label" id="worked-t">Ceiling fans (ceiling about $17)</p>
+          <ul aria-labelledby="worked-t">
+            <li>$10 label ÷ 1 tag = $10: <b>near</b></li>
+            <li>$10 label ÷ 2 tags = $5: <b>under</b></li>
+            <li>$25 label ÷ 2 tags = $12.50: <b>near</b></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="screen" id="screen-1" aria-roledescription="slide" aria-labelledby="h-2">
+      <div class="slide slide--card">
+        <div class="c-head">
+          <div>
+            <p class="r-counter">Comparing your options 2 of 3</p>
+            <h2 id="h-2">Which lever does my feature move?</h2>
+            <p class="c-sub">Full details are on the page 2 cards.</p>
+          </div>
+          <p class="chip">Levers 1–7</p>
+        </div>
+        <table class="tbl tbl--levers">
+          <caption class="sr-only">Each label feature or best practice, the lever it moves, and the areas it suits best</caption>
+          <colgroup><col class="c-feat" /><col class="c-lv" /><col class="c-best" /></colgroup>
+          <thead>
+            <tr><th scope="col">Feature or practice</th><th scope="col" class="lv">Lever</th><th scope="col">Best for areas that are…</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Multi-price display: one label covers two tags (pack + single, or display + boxed)</th><td class="lv">1</td><td>Products shown in two places, or sold by the pack and each</td></tr>
+            <tr><th scope="row">Buy the cheapest size that fits (small black-and-white)</th><td class="lv">2</td><td>Any area; a big lever where many labels are needed</td></tr>
+            <tr><th scope="row">Start where paper is slowest</th><td class="lv">3</td><td>Locked cases, cages, high shelves</td></tr>
+            <tr><th scope="row">Thin profile, guards, bumpers or a sealed build</th><td class="lv">4</td><td>Bulky traffic, bottom shelves, outdoors</td></tr>
+            <tr><th scope="row">Batch updates overnight; replaceable batteries; replacements in the contract</th><td class="lv">5 (and 4)</td><td>Any area; matters most where prices change daily</td></tr>
+            <tr><th scope="row">Reprice more often where prices move with a market</th><td class="lv">6</td><td>Commodity or online-competitive products</td></tr>
+            <tr><th scope="row">LED light for restocking or picking online orders</th><td class="lv">7</td><td>Busy areas with lots of restocking, if MET does that work</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="screen" id="screen-2" aria-roledescription="slide" aria-labelledby="h-3">
+      <div class="slide slide--card">
+        <div class="c-head">
+          <div>
+            <p class="r-counter">Comparing your options 3 of 3</p>
+            <h2 id="h-3">What makes an answer strong or weak?</h2>
+          </div>
+          <p class="chip">Self-check</p>
+        </div>
+        <table class="tbl tbl--sw">
+          <caption class="sr-only">What a strong answer and a weak answer look like for each question: lever, price, fit and proof</caption>
+          <colgroup><col class="c-q" /><col class="c-sw" /><col class="c-sw" /></colgroup>
+          <thead>
+            <tr>
+              <th scope="col">Question</th>
+              <th scope="col" class="sw strong-col"><span class="mark" aria-hidden="true">✓</span>Strong</th>
+              <th scope="col" class="sw weak-col"><span class="mark" aria-hidden="true">✗</span>Weak</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Lever</th><td class="strong-col">Cuts price-change labor, or another task MET does</td><td class="weak-col">Solves another team's problem (say which team)</td></tr>
+            <tr><th scope="row">Price</th><td class="strong-col">Under half your ceiling, or no new hardware</td><td class="weak-col">Over your ceiling</td></tr>
+            <tr><th scope="row">Fit</th><td class="strong-col">Built for your area's traits (sealed for outdoors, guarded for forklift aisles)</td><td class="weak-col">Your traits work against it (rough area with no protection, Wi-Fi dead zone)</td></tr>
+            <tr><th scope="row">Proof</th><td class="strong-col">A home-improvement or warehouse retailer, with a number</td><td class="weak-col">Vendor claims only</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+  </main>
+
+  <button type="button" class="navbtn navbtn--prev" id="prev" aria-label="Previous slide">‹</button>
+  <button type="button" class="navbtn navbtn--next" id="next" aria-label="Next slide">›</button>
+  <p class="sr-only" id="status" role="status" aria-live="polite"></p>
+
+
+<script>
+(function () {
+  var deck = document.getElementById('deck');
+  var screens = Array.prototype.slice.call(deck.querySelectorAll('.screen'));
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var statusEl = document.getElementById('status');
+  var current = -1;
+
+  var reflowMQ = window.matchMedia('(max-width: 900px), (max-height: 500px)');
+  var reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function fit() {
+    if (reflowMQ.matches) { document.documentElement.style.setProperty('--scale', 1); return; }
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    document.documentElement.style.setProperty('--scale', s);
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  function goTo(i) {
+    i = Math.max(0, Math.min(screens.length - 1, i));
+    deck.scrollTo({ left: i * deck.clientWidth, behavior: reduceMQ.matches ? 'auto' : 'smooth' });
+  }
+  function setActive(i) {
+    if (i === current) return;
+    var first = current === -1;
+    current = i;
+    screens.forEach(function (s, si) {
+      if (si === i) { s.removeAttribute('inert'); s.removeAttribute('aria-hidden'); }
+      else { s.setAttribute('inert', ''); s.setAttribute('aria-hidden', 'true'); }
+    });
+    prev.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
+    next.setAttribute('aria-disabled', i === screens.length - 1 ? 'true' : 'false');
+    if (!first) statusEl.textContent = 'Slide ' + (i + 1) + ' of ' + screens.length + ': ' + screens[i].querySelector('h2').textContent;
+  }
+  setActive(0);
+
+  prev.addEventListener('click', function () { if (prev.getAttribute('aria-disabled') !== 'true') goTo(current - 1); });
+  next.addEventListener('click', function () { if (next.getAttribute('aria-disabled') !== 'true') goTo(current + 1); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End')  { e.preventDefault(); goTo(screens.length - 1); }
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) setActive(screens.indexOf(e.target));
+      });
+    }, { root: deck, threshold: 0.6 });
+    screens.forEach(function (s) { io.observe(s); });
+  }
+
+  // Keep the active slide in sync on any scroll (swipe, wheel, scrollbar, keys).
+  var st;
+  deck.addEventListener('scroll', function () {
+    clearTimeout(st);
+    st = setTimeout(function () { setActive(Math.round(deck.scrollLeft / deck.clientWidth)); }, 80);
+  }, { passive: true });
+
+  deck.addEventListener('wheel', function (e) {
+    if (reflowMQ.matches) return; // let the slide scroll vertically when reflowed
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      deck.scrollLeft += e.deltaY;
+    }
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
