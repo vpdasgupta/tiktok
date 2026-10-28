@@ -99,10 +99,12 @@ body {
 
 /* ladder */
 .ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: .7cqi; }
-.ladder li { display: grid; grid-template-columns: 15% 1fr 20%; gap: 1.6cqi; align-items: baseline; padding: .8cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
+.ladder li { display: grid; grid-template-columns: 14% 1fr 16%; gap: 1.6cqi; align-items: baseline; padding: .6cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
 .ladder .tier { font-weight: 800; }
 .ladder .shows { font-weight: 700; text-align: right; }
 .ladder li.no { background: var(--pill); }
+.ladder li.head { white-space: nowrap; background: transparent; padding-top: 0; padding-bottom: 0; font-size: .74em; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.slide.dense th, .slide.dense td { padding-top: .35cqi; padding-bottom: .35cqi; }
 
 /* table */
 table { border-collapse: collapse; width: 100%; font-size: .92em; overflow-wrap: normal; }
@@ -143,6 +145,7 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
   .bars .track { height: 12px; }
   .ladder li { grid-template-columns: 1fr; gap: 2px; padding: 8px 10px; }
   .ladder .shows { text-align: left; }
+  .ladder li.head { display: none; }
   .scores li { grid-template-columns: 1fr auto; gap: 4px 10px; padding-bottom: 6px; }
   .scores .why { grid-column: 1 / -1; }
   th, td { padding: 4px 6px; }
@@ -163,44 +166,32 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
 <main class="wrap">
   <header class="deck-head">
     <h1>What real retailers did</h1>
-    <p>Project 3 · 5 slides · use Next or swipe</p>
+    <p>Project 3 · 3 slides · use Next or swipe</p>
   </header>
   <section aria-roledescription="carousel" aria-label="What real retailers did">
   <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
-    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 5">
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 3">
       <article class="slide dense" aria-labelledby="s1">
         <div class="top"><div><p class="kicker">Closest to Home Depot</p><h2 id="s1">Home improvement stores</h2></div></div>
-        <ul class="cards " role="list"><li><b>Leroy Merlin · France · ESL</b><span>Order picking 17% faster. About 7 million labels wore out together after ≈ 8 years. <span class="src">[independent]</span></span></li><li><b>Busy Beaver · U.S. · ESL + shelf robots</b><span>Inventory checks: 80+ hours a week → a 30–40 minute review. <span class="src">[vendor]</span></span></li><li><b>Lowe's · U.S. · ESL</b><span>Appliances first; all U.S. stores by December 2020. No results published. <span class="src">[independent]</span></span></li><li><b>Mitre 10 · New Zealand · four-color ESL</b><span>45,000+ items in one store. No labor number. <span class="src">[vendor]</span></span></li></ul>
+        <ul class="cards " role="list"><li><b>Leroy Merlin · France · smart labels</b><span>Order picking 17% faster. About 7 million labels wore out together after ≈ 8 years. <span class="src">[independent]</span></span></li><li><b>Busy Beaver · U.S. · smart labels + shelf robots</b><span>Inventory checks: 80+ hours a week → a 30–40 minute review. <span class="src">[vendor]</span></span></li><li><b>Lowe's · U.S. · smart labels</b><span>Appliances first; all U.S. stores by December 2020. No results published. <span class="src">[independent]</span></span></li><li><b>Mitre 10 · New Zealand · four-color smart labels</b><span>45,000+ items in one store. No labor number. <span class="src">[vendor]</span></span></li></ul>
       </article>
     </div>
-    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 5">
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 3">
       <article class="slide dense" aria-labelledby="s2">
         <div class="top"><div><p class="kicker">Same job: shelf prices</p><h2 id="s2">Mass retail and grocery</h2></div></div>
-        <ul class="cards one" role="list"><li><b>Walmart · ESL + LED lights</b><span>A price update went from “two days” to “a few minutes” (company claim). All U.S. stores planned by end of 2026. <span class="src">[independent]</span></span></li><li><b>Carrefour · ESL</b><span>500 stores in 9 countries by 2022. No results yet. <span class="src">[independent]</span></span></li><li><b>Tesco · ESL</b><span>About 3,000 UK stores from 2026, after a pilot. No results yet. <span class="src">[independent]</span></span></li></ul>
+        <ul class="cards one" role="list"><li><b>Walmart · smart labels + LED lights</b><span>A price update went from “two days” to “a few minutes” (company claim). All U.S. stores planned by end of 2026. <span class="src">[independent]</span></span></li><li><b>Carrefour · smart labels</b><span>500 stores in 9 countries by 2022. No results yet. <span class="src">[independent]</span></span></li><li><b>Tesco · smart labels</b><span>About 3,000 UK stores from 2026, after a pilot. No results yet. <span class="src">[independent]</span></span></li></ul>
       </article>
     </div>
-    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 5">
-      <article class="slide dense" aria-labelledby="s3">
-        <div class="top"><div><p class="kicker">Different job: counting clothes</p><h2 id="s3">Apparel stores use RFID</h2><p class="sub">Useful for stock and theft, not for changing shelf prices.</p></div></div>
-        <ul class="cards three" role="list"><li><b>Decathlon</b><span>Every product tagged since 2019. Shrink down 9% (2014). <span class="src">[independent]</span></span></li><li><b>Uniqlo</b><span>Checkout waits roughly halved. <span class="src">[independent]</span></span></li><li><b>Macy's</b><span>Shoe display errors ≈ 30% → 4–6% (RFID vendors paid for the study). <span class="src">[independent]</span></span></li></ul>
-      </article>
-    </div>
-    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 5">
-      <article class="slide" aria-labelledby="s4">
-        <div class="top"><div><p class="kicker">Check the numbers</p><h2 id="s4">Two claims that didn't hold up</h2></div></div>
-        <ul class="cards one plain" role="list"><li><b>Zara's “99% inventory accuracy”</b><span>No Zara or independent source behind it. Don't use it.</span></li><li><b>“65% → 99% accuracy with RFID”</b><span>Really 63% → 95%, in apparel stores (Auburn University and GS1 US).</span></li></ul><p class="lead">Most label specs come from the companies selling them. When you use one, write <b>“the vendor claims…”</b></p>
-      </article>
-    </div>
-    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 5">
-      <article class="slide" aria-labelledby="s5">
-        <div class="top"><div><p class="kicker">Use proof well</p><h2 id="s5">“Walmart does this” isn't a reason</h2></div></div>
-        <p class="callout">At the October 7 meeting, Tina, the Home Depot leader who sponsors this program, praised an extern who said, in effect, “Walmart does this, but we may not need it.”</p><p class="lead">Ask what the retailer was solving, and whether Home Depot has the same problem.</p>
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 3">
+      <article class="slide" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">Use proof well</p><h2 id="s3">“Walmart does this” isn't a reason</h2></div></div>
+        <p class="callout">At the October 7 meeting, the Home Depot leader who sponsors this program praised an extern who said, in effect, “Walmart does this, but we may not need it.”</p><p class="lead">Ask what the retailer was solving, and whether Home Depot has the same problem.</p><p class="foot">Most label specs come from the companies selling them. When you use one, write <b>“the vendor claims…”</b></p>
       </article>
     </div>
   </div>
   <div class="controls">
     <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
-    <p class="count" id="count" aria-hidden="true">1 of 5</p>
+    <p class="count" id="count" aria-hidden="true">1 of 3</p>
     <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
   </div>
   <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
