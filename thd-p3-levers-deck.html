@@ -99,10 +99,12 @@ body {
 
 /* ladder */
 .ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: .7cqi; }
-.ladder li { display: grid; grid-template-columns: 15% 1fr 20%; gap: 1.6cqi; align-items: baseline; padding: .8cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
+.ladder li { display: grid; grid-template-columns: 14% 1fr 16%; gap: 1.6cqi; align-items: baseline; padding: .6cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
 .ladder .tier { font-weight: 800; }
 .ladder .shows { font-weight: 700; text-align: right; }
 .ladder li.no { background: var(--pill); }
+.ladder li.head { white-space: nowrap; background: transparent; padding-top: 0; padding-bottom: 0; font-size: .74em; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.slide.dense th, .slide.dense td { padding-top: .35cqi; padding-bottom: .35cqi; }
 
 /* table */
 table { border-collapse: collapse; width: 100%; font-size: .92em; overflow-wrap: normal; }
@@ -143,6 +145,7 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
   .bars .track { height: 12px; }
   .ladder li { grid-template-columns: 1fr; gap: 2px; padding: 8px 10px; }
   .ladder .shows { text-align: left; }
+  .ladder li.head { display: none; }
   .scores li { grid-template-columns: 1fr auto; gap: 4px 10px; padding-bottom: 6px; }
   .scores .why { grid-column: 1 / -1; }
   th, td { padding: 4px 6px; }
