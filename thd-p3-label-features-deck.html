@@ -32,11 +32,11 @@
   .screen {
     flex: 0 0 100vw; height: 100vh;
     scroll-snap-align: start; scroll-snap-stop: always;
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
+    display: flex; align-items: safe center; justify-content: center;
+    overflow-x: hidden; overflow-y: auto;
   }
   .slide {
-    width: var(--stagew); height: var(--stageh);
+    width: var(--stagew); height: auto; min-height: var(--stageh);
     flex: 0 0 auto;
     transform: scale(var(--scale)); transform-origin: center center;
     background: var(--card); position: relative; overflow: hidden;
@@ -83,11 +83,24 @@
   }
   .navbtn:hover { background: #fff; }
   .navbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-  .navbtn[disabled] { opacity: .3; cursor: default; }
+  .navbtn[aria-disabled="true"] { opacity: .35; cursor: default; }
   .navbtn--prev { left: 20px; }
   .navbtn--next { right: 20px; }
 
   @media (max-width: 640px) { .navbtn { width: 40px; height: 40px; font-size: 22px; } .navbtn--prev { left: 6px; } .navbtn--next { right: 6px; } }
+  /* Reflow mode: zoomed, narrow (Notion column, phone) or short viewports get real-size text, not a shrunken stage. */
+  @media (max-width: 900px), (max-height: 500px) {
+    .screen { align-items: flex-start; }
+    .slide { transform: none; width: 100%; height: auto; min-height: 100%; padding: 24px 24px 88px; }
+    .c-head { flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+    h2 { font-size: 30px; }
+    .rows { grid-template-columns: 1fr; }
+    .rows dt { padding: 12px 0 2px; border-bottom: 0; }
+    .rows dt.lever { padding-left: 12px; }
+    .rows dd { padding-top: 2px; font-size: 19px; }
+    .rows dd.lever { padding-left: 17px; }
+    .navbtn { top: auto; bottom: 16px; transform: none; }
+  }
   @page { size: 1280px 720px; margin: 0; }
   @media print {
     html, body { height: auto; overflow: visible; background: #fff; }
@@ -110,7 +123,8 @@
 </head>
 <body>
   <h1 class="sr-only">Know Your Smart Label Features &amp; Best Practices: label features</h1>
-  <main class="deck" id="deck" aria-roledescription="carousel" aria-label="Smart label features">
+  <main>
+  <div class="deck" id="deck" role="region" aria-roledescription="carousel" aria-label="Smart label features">
     <section class="screen" id="screen-0" aria-roledescription="slide" aria-labelledby="h-1">
       <div class="slide slide--card">
         <div class="c-head">
@@ -230,6 +244,7 @@
         </dl>
       </div>
     </section>
+  </div>
   </main>
 
   <button type="button" class="navbtn navbtn--prev" id="prev" aria-label="Previous label feature">‹</button>
@@ -245,7 +260,10 @@
   var statusEl = document.getElementById('status');
   var current = -1;
 
+  var reflowMQ = window.matchMedia('(max-width: 900px), (max-height: 500px)');
+  var reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
   function fit() {
+    if (reflowMQ.matches) { document.documentElement.style.setProperty('--scale', 1); return; }
     var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
     document.documentElement.style.setProperty('--scale', s);
   }
@@ -254,7 +272,7 @@
 
   function goTo(i) {
     i = Math.max(0, Math.min(screens.length - 1, i));
-    deck.scrollTo({ left: i * deck.clientWidth, behavior: 'smooth' });
+    deck.scrollTo({ left: i * deck.clientWidth, behavior: reduceMQ.matches ? 'auto' : 'smooth' });
   }
   function setActive(i) {
     if (i === current) return;
@@ -264,14 +282,14 @@
       if (si === i) { s.removeAttribute('inert'); s.removeAttribute('aria-hidden'); }
       else { s.setAttribute('inert', ''); s.setAttribute('aria-hidden', 'true'); }
     });
-    prev.disabled = (i === 0);
-    next.disabled = (i === screens.length - 1);
+    prev.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
+    next.setAttribute('aria-disabled', i === screens.length - 1 ? 'true' : 'false');
     if (!first) statusEl.textContent = 'Slide ' + (i + 1) + ' of ' + screens.length + ': ' + screens[i].querySelector('h2').textContent;
   }
   setActive(0);
 
-  prev.addEventListener('click', function () { goTo(current - 1); });
-  next.addEventListener('click', function () { goTo(current + 1); });
+  prev.addEventListener('click', function () { if (prev.getAttribute('aria-disabled') !== 'true') goTo(current - 1); });
+  next.addEventListener('click', function () { if (next.getAttribute('aria-disabled') !== 'true') goTo(current + 1); });
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
@@ -297,6 +315,7 @@
   }, { passive: true });
 
   deck.addEventListener('wheel', function (e) {
+    if (reflowMQ.matches) return; // let the slide scroll vertically when reflowed
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       deck.scrollLeft += e.deltaY;
     }
