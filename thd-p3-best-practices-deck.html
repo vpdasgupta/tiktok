@@ -3,314 +3,186 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Smart Label Best Practices — 16:9 Deck</title>
+<title>Smart Label Best Practices</title>
 <style>
-  :root {
-    --ink: #14211f; --muted: #4a5754; --line: #e2e6e4; --card: #ffffff;
-    --bg: #f4f6f5; --accent: #d5581f; --accent-ink: #b8480f; --link: #1a5f7a;
-    --soft: #fbf3ee; --pill: #eef1f0;
-    --stagew: 1280px; --stageh: 720px; --scale: 1;
+:root {
+  --ink: #14211f; --muted: #4a5754; --line: #d9dfdc; --card: #ffffff; --bg: #eef1f0;
+  --accent: #d5581f; --accent-ink: #a8410d; --soft: #fbf1ea; --pill: #eef1f0;
+  --bar: #d5581f; --bar-base: #6f7a77; --chip-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #eef1f0; --muted: #b3bcb9; --line: #34403d; --card: #1a2321; --bg: #101615;
+    --accent: #f07a3d; --accent-ink: #f4a06f; --soft: #2a1d15; --pill: #24302d;
+    --bar: #f07a3d; --bar-base: #93a09c; --chip-ink: #1a2321;
   }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #0c110f; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: var(--ink); -webkit-font-smoothing: antialiased;
-  }
-  .sr-only {
-    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
-  }
-  .deck {
-    display: flex; flex-direction: row;
-    height: 100vh; width: 100vw;
-    overflow-x: auto; overflow-y: hidden;
-    scroll-snap-type: x mandatory; scroll-behavior: smooth;
-    background: var(--bg);
-  }
-  .deck:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
-  .screen {
-    flex: 0 0 100vw; height: 100vh;
-    scroll-snap-align: start; scroll-snap-stop: always;
-    display: flex; align-items: safe center; justify-content: center;
-    overflow-x: hidden; overflow-y: auto;
-  }
-  .slide {
-    width: var(--stagew); height: auto; min-height: var(--stageh);
-    flex: 0 0 auto;
-    transform: scale(var(--scale)); transform-origin: center center;
-    background: var(--card); position: relative; overflow: hidden;
-  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: 1.35;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px 16px 32px; }
+.deck-head { margin: 0 0 14px; }
+.deck-head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
+.deck-head p { margin: 0; font-size: 15px; color: var(--muted); }
+.slides { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.frame { container-type: inline-size; }
+.slide {
+  aspect-ratio: 16 / 9; background: var(--card); border-top: 1.1cqi solid var(--accent);
+  border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  padding: 3.6cqi 5cqi 3cqi; display: flex; flex-direction: column; gap: 1.8cqi;
+  font-size: 2.5cqi; position: relative; overflow-wrap: anywhere;
+}
+.slide.dense { font-size: 2.15cqi; gap: 1.4cqi; }
+.slide.big { font-size: 2.95cqi; gap: 2.4cqi; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2cqi; }
+.kicker { margin: 0 0 .5cqi; font-size: 1.85cqi; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent-ink); }
+.slide h2 { font-size: 4.3cqi; line-height: 1.1; margin: 0; }
+.sub { margin: .6cqi 0 0; color: var(--muted); font-size: 1em; }
+.chip {
+  flex: 0 0 auto; margin: 0; background: var(--accent-ink); color: var(--chip-ink);
+  font-weight: 800; font-size: 1.85cqi; padding: .8cqi 1.8cqi; border-radius: 999px; white-space: nowrap;
+}
+.num { position: absolute; right: 2.4cqi; bottom: 1.6cqi; font-size: 1.6cqi; color: var(--muted); margin: 0; }
+.slide p { margin: 0; }
+.lead { font-size: 1.1em; }
+.src {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78em;
+  padding: 0 .5em; border-radius: 5px; background: var(--pill); border: 1px solid var(--line);
+  color: var(--muted); white-space: nowrap;
+}
+.foot { margin-top: auto !important; color: var(--muted); font-size: .86em; padding-right: 5cqi; }
 
-  .r-counter {
-    text-transform: uppercase; letter-spacing: .1em; font-size: 15px;
-    font-weight: 700; color: var(--accent-ink); margin: 0 0 6px;
-  }
+/* key/value rows */
+.rows { margin: 0; display: grid; grid-template-columns: 19% 1fr; border-top: 2px solid var(--ink); }
+.rows dt, .rows dd { margin: 0; padding: 1cqi 0; border-bottom: 1px solid var(--line); }
+.rows dt { font-weight: 800; font-size: .74em; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding-top: 1.35cqi; padding-right: 1.5cqi; }
 
-  /* ---------- card slide ---------- */
-  .slide--card { padding: 30px 88px 40px; border-top: 8px solid var(--accent); display: flex; flex-direction: column; gap: 16px; }
-  .c-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
-  h2 { font-size: 40px; margin: 0 0 4px; line-height: 1.1; }
-  .c-sub { font-size: 21px; color: var(--muted); margin: 0; }
-  .chip {
-    flex: 0 0 auto; font-size: 16px; font-weight: 800; letter-spacing: .02em;
-    background: var(--accent-ink); color: #fff; border-radius: 999px; padding: 8px 18px; margin-bottom: 2px;
-    white-space: nowrap;
-  }
-  .rows { margin: 0; display: grid; grid-template-columns: 200px 1fr; border-top: 2px solid var(--ink); }
-  .rows dt, .rows dd { padding: 12px 0; border-bottom: 1px solid var(--line); margin: 0; }
-  .rows dt {
-    font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: .06em;
-    color: var(--muted); padding-top: 13px; padding-right: 16px;
-  }
-  .rows dd { font-size: 21px; line-height: 1.42; }
-  .rows dt.lever, .rows dd.lever { background: var(--soft); }
-  .rows dt.lever { color: var(--accent-ink); padding-left: 12px; border-left: 5px solid var(--accent); }
-  .src {
-    display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 16px; line-height: 1.3; padding: 1px 7px; margin: 0 1px; border-radius: 6px;
-    background: var(--pill); border: 1px solid var(--line); color: var(--muted); vertical-align: 1px;
-  }
+/* card grid */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqi 2.4cqi; }
+.cards.three { grid-template-columns: 1fr 1fr 1fr; }
+.cards.one { grid-template-columns: 1fr; }
+.cards li { border-left: .7cqi solid var(--accent); background: var(--soft); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+.cards b { display: block; }
+.cards span { color: var(--muted); font-size: .9em; }
+.cards.plain li { background: transparent; border-left-color: var(--line); }
 
-  /* ---------- chrome: arrows ---------- */
-  .navbtn {
-    position: fixed; top: 50%; transform: translateY(-50%);
-    width: 52px; height: 52px; border-radius: 50%;
-    background: rgba(255,255,255,.92); border: 1px solid var(--line);
-    color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; z-index: 30;
-    box-shadow: 0 4px 14px rgba(0,0,0,.16);
-  }
-  .navbtn:hover { background: #fff; }
-  .navbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-  .navbtn[aria-disabled="true"] { opacity: .35; cursor: default; }
-  .navbtn--prev { left: 20px; }
-  .navbtn--next { right: 20px; }
+/* bar chart (values always written as text) */
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: .9cqi; }
+.bars li { display: grid; grid-template-columns: 46% 1fr 15%; align-items: center; gap: 1.6cqi; font-size: .9em; }
+.bars .track { height: 2.4cqi; background: var(--pill); border-radius: 4px; overflow: hidden; }
+.bars .fill { display: block; height: 100%; background: var(--bar); }
+.bars .base .fill { background: var(--bar-base); }
+.bars .val { font-weight: 800; text-align: right; }
 
-  @media (max-width: 640px) { .navbtn { width: 40px; height: 40px; font-size: 22px; } .navbtn--prev { left: 6px; } .navbtn--next { right: 6px; } }
-  /* Reflow mode: zoomed, narrow (Notion column, phone) or short viewports get real-size text, not a shrunken stage. */
-  @media (max-width: 900px), (max-height: 500px) {
-    .screen { align-items: flex-start; }
-    .slide { transform: none; width: 100%; height: auto; min-height: 100%; padding: 24px 24px 88px; }
-    .c-head { flex-wrap: wrap; align-items: flex-start; gap: 12px; }
-    h2 { font-size: 30px; }
-    .rows { grid-template-columns: 1fr; }
-    .rows dt { padding: 12px 0 2px; border-bottom: 0; }
-    .rows dt.lever { padding-left: 12px; }
-    .rows dd { padding-top: 2px; font-size: 19px; }
-    .rows dd.lever { padding-left: 17px; }
-    .navbtn { top: auto; bottom: 16px; transform: none; }
-  }
-  @page { size: 1280px 720px; margin: 0; }
-  @media print {
-    html, body { height: auto; overflow: visible; background: #fff; }
-    .deck { display: block; height: auto; width: auto; overflow: visible; }
-    .screen { width: 1280px; height: 720px; break-after: page; }
-    .slide { transform: none; }
-    .navbtn, #status { display: none; }
-  }
-  @media (prefers-reduced-motion: reduce) { .deck { scroll-behavior: auto; } }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --ink: #eef1f0; --muted: #a8b2af; --line: #2c3634; --card: #1a2321;
-      --bg: #101615; --accent: #f07a3d; --accent-ink: #f4a06f; --link: #6fc3dd;
-      --soft: #241a13; --pill: #222c2a;
-    }
-    .chip { color: #1a2321; }
-    .navbtn { background: rgba(26,35,33,.94); border-color: var(--line); color: var(--ink); }
-  }
+/* ladder */
+.ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: .7cqi; }
+.ladder li { display: grid; grid-template-columns: 15% 1fr 20%; gap: 1.6cqi; align-items: baseline; padding: .8cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
+.ladder .tier { font-weight: 800; }
+.ladder .shows { font-weight: 700; text-align: right; }
+.ladder li.no { background: var(--pill); }
+
+/* table */
+table { border-collapse: collapse; width: 100%; font-size: .92em; }
+caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+th, td { text-align: left; padding: .55cqi 1.4cqi; border-bottom: 1px solid var(--line); }
+thead th { border-bottom: 2px solid var(--ink); font-size: .85em; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+tr.hl th, tr.hl td { background: var(--soft); font-weight: 800; }
+
+/* trait scores */
+.scores { list-style: none; margin: 0; padding: 0; display: grid; gap: .8cqi; }
+.scores li { display: grid; grid-template-columns: 32% 13% 1fr; gap: 1.6cqi; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: .6cqi; }
+.lvl { font-weight: 800; text-align: center; border-radius: 999px; padding: .1cqi 0; border: 2px solid var(--accent-ink); color: var(--accent-ink); font-size: .85em; }
+.lvl.High { background: var(--accent-ink); color: var(--chip-ink); }
+.result { background: var(--soft); border-left: .7cqi solid var(--accent); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+
+/* big statement */
+.formula { font-size: 1.5em; font-weight: 800; text-align: center; padding: 2cqi; border: 2px dashed var(--accent); border-radius: 10px; }
+.steps { margin: 0; padding-left: 1.3em; display: grid; gap: .7cqi; }
+.callout { font-size: 1.15em; border-left: .9cqi solid var(--accent); padding: .4cqi 0 .4cqi 2cqi; }
+blockquote { margin: 0; font-style: italic; color: var(--muted); }
+
+/* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
+@container (max-width: 560px) {
+  .slide, .slide.dense, .slide.big { aspect-ratio: auto; font-size: 16px; padding: 18px 18px 34px; gap: 12px; border-top-width: 6px; }
+  .slide h2 { font-size: 23px; }
+  .kicker, .chip { font-size: 12.5px; }
+  .chip { padding: 4px 10px; }
+  .top { flex-wrap: wrap; }
+  .num { font-size: 12px; right: 14px; bottom: 10px; }
+  .rows { grid-template-columns: 1fr; }
+  .rows dt { padding: 8px 0 0; border-bottom: 0; }
+  .rows dd { padding: 2px 0 8px; }
+  .cards, .cards.three { grid-template-columns: 1fr; gap: 8px; }
+  .cards li { border-left-width: 4px; padding: 6px 10px; }
+  .bars li { grid-template-columns: 1fr 64px; gap: 4px 10px; }
+  .bars .lab { grid-column: 1 / -1; }
+  .bars .track { height: 12px; }
+  .ladder li { grid-template-columns: 1fr; gap: 2px; padding: 8px 10px; }
+  .ladder .shows { text-align: left; }
+  .scores li { grid-template-columns: 1fr 76px; gap: 4px 10px; padding-bottom: 6px; }
+  .scores .why { grid-column: 1 / -1; }
+  th, td { padding: 4px 6px; }
+  .formula { padding: 12px; font-size: 19px; }
+  .callout { border-left-width: 5px; padding-left: 12px; }
+  .result { border-left-width: 4px; padding: 6px 10px; }
+  .foot { padding-right: 0; }
+}
 </style>
 </head>
 <body>
-  <h1 class="sr-only">Know Your Smart Label Features &amp; Best Practices: best practices</h1>
-  <main>
-  <div class="deck" id="deck" role="region" aria-roledescription="carousel" aria-label="Smart label best practices">
-    <section class="screen" id="screen-0" aria-roledescription="slide" aria-labelledby="h-1">
-      <div class="slide slide--card">
-        <div class="c-head">
-          <div>
-            <p class="r-counter">Best practice 1 of 6</p>
-            <h2 id="h-1">Start where paper is slowest</h2>
-            <p class="c-sub">Locked cases, cages, high shelves</p>
-          </div>
-          <p class="chip">Lever 3</p>
-        </div>
-        <dl class="rows">
-          <dt>What it does</dt><dd>puts smart labels first where each paper change takes the longest: find a key holder, unlock, swap, relock.</dd>
-          <dt>Price per item</dt><dd>none. It's a placement choice.</dd>
-          <dt class="lever">Lever</dt><dd class="lever">3 (seconds per change).</dd>
-          <dt>Proof</dt><dd>Home Depot already uses Chroma in the locked case at the front of the store. No public time study found.</dd>
-          <dt>Watch out</dt><dd>you need a believable time for a locked-case change. Ask MET, or label your number an estimate.</dd>
-        </dl>
-      </div>
-    </section>
-    <section class="screen" id="screen-1" aria-roledescription="slide" aria-labelledby="h-2">
-      <div class="slide slide--card">
-        <div class="c-head">
-          <div>
-            <p class="r-counter">Best practice 2 of 6</p>
-            <h2 id="h-2">Buy the cheapest size that fits</h2>
-          </div>
-          <p class="chip">Lever 2</p>
-        </div>
-        <dl class="rows">
-          <dt>What it does</dt><dd>uses a small black-and-white label wherever the shelf doesn't need a bigger screen.</dd>
-          <dt>Price per item</dt><dd>small black-and-white about $5–$9, vs. $11–$17 for a 4.2-inch label <span class="src">[vendor]</span>.</dd>
-          <dt class="lever">Lever</dt><dd class="lever">2 (smart label price).</dd>
-          <dt>Proof</dt><dd>black-and-white is the cheapest option at every size <span class="src">[vendor]</span>.</dd>
-          <dt>Watch out</dt><dd>the price must stay readable, and unit-price rules may set a minimum text size.</dd>
-        </dl>
-      </div>
-    </section>
-    <section class="screen" id="screen-2" aria-roledescription="slide" aria-labelledby="h-3">
-      <div class="slide slide--card">
-        <div class="c-head">
-          <div>
-            <p class="r-counter">Best practice 3 of 6</p>
-            <h2 id="h-3">Batch price updates overnight; choose replaceable batteries</h2>
-          </div>
-          <p class="chip">Lever 5</p>
-        </div>
-        <dl class="rows">
-          <dt>What it does</dt><dd>sends price changes in one batch instead of all day, so batteries last closer to their rating, and swaps batteries instead of whole labels.</dd>
-          <dt>Price per item</dt><dd>none for batching; a battery costs less than a label.</dd>
-          <dt class="lever">Lever</dt><dd class="lever">5 (running cost), and it protects the label's lifespan.</dd>
-          <dt>Proof</dt><dd>Chroma batteries are replaceable and rated up to 10 years, assuming about 2–3 updates a day <span class="src">[vendor]</span>. Leroy Merlin's whole fleet wore out after about 8 years <span class="src">[independent]</span>.</dd>
-          <dt>Watch out</dt><dd>areas repriced daily drain batteries faster (MET partners).</dd>
-        </dl>
-      </div>
-    </section>
-    <section class="screen" id="screen-3" aria-roledescription="slide" aria-labelledby="h-4">
-      <div class="slide slide--card">
-        <div class="c-head">
-          <div>
-            <p class="r-counter">Best practice 4 of 6</p>
-            <h2 id="h-4">Put replacements and support in the contract</h2>
-          </div>
-          <p class="chip">Levers 4 + 5</p>
-        </div>
-        <dl class="rows">
-          <dt>What it does</dt><dd>builds broken-label replacement and battery swaps into the yearly software fee, on top of Chroma's second-day support.</dd>
-          <dt>Price per item</dt><dd>part of the software fee; no published price.</dd>
-          <dt class="lever">Lever</dt><dd class="lever">4 and 5 (the cost of damage and upkeep).</dd>
-          <dt>Proof</dt><dd>some label software licenses cover "replacement labels, battery replacement at end of life" <span class="src">[vendor]</span>.</dd>
-          <dt>Watch out</dt><dd>it only counts if it's in writing.</dd>
-        </dl>
-      </div>
-    </section>
-    <section class="screen" id="screen-4" aria-roledescription="slide" aria-labelledby="h-5">
-      <div class="slide slide--card">
-        <div class="c-head">
-          <div>
-            <p class="r-counter">Best practice 5 of 6</p>
-            <h2 id="h-5">Check the signal before installing</h2>
-          </div>
-          <p class="chip">No direct lever</p>
-        </div>
-        <dl class="rows">
-          <dt>What it does</dt><dd>tests coverage in the far corners of your area and adds a gateway where the signal is weak, before any label goes up.</dd>
-          <dt>Price per item</dt><dd>a one-time survey, plus extra gateways where needed (raises your gateway share a little).</dd>
-          <dt class="lever">Lever</dt><dd class="lever">none directly. It's what keeps your months real: the last whole-store test ended mostly because labels in remote areas couldn't be updated.</dd>
-          <dt>Proof</dt><dd>Chroma's communicator runs on its own radio, separate from Wi-Fi, and confirms each update <span class="src">[vendor]</span>. A published store study needed gateways using more than one radio type to reach 98.5% coverage <span class="src">[independent]</span>.</dd>
-          <dt>Watch out</dt><dd>this is also your top risk mitigation on page 4.</dd>
-        </dl>
-      </div>
-    </section>
-    <section class="screen" id="screen-5" aria-roledescription="slide" aria-labelledby="h-6">
-      <div class="slide slide--card">
-        <div class="c-head">
-          <div>
-            <p class="r-counter">Best practice 6 of 6</p>
-            <h2 id="h-6">Reprice more often where prices move with a market</h2>
-          </div>
-          <p class="chip">Lever 6</p>
-        </div>
-        <dl class="rows">
-          <dt>What it does</dt><dd>uses the labels to follow lumber, copper or online competitors more closely, so each label does more changes.</dd>
-          <dt>Price per item</dt><dd>none.</dd>
-          <dt class="lever">Lever</dt><dd class="lever">6 (price changes per product).</dd>
-          <dt>Proof</dt><dd>an academic study found that after stores added electronic labels, price changes became more frequent and smaller, with gains concentrated in fast-moving categories <span class="src">[independent]</span>.</dd>
-          <dt>Watch out</dt><dd>Walmart says it won't use its labels for surge pricing, and some states regulate dynamic pricing. More updates also drain batteries.</dd>
-        </dl>
-      </div>
-    </section>
-  </div>
-  </main>
-
-  <button type="button" class="navbtn navbtn--prev" id="prev" aria-label="Previous best practice">‹</button>
-  <button type="button" class="navbtn navbtn--next" id="next" aria-label="Next best practice">›</button>
-  <p class="sr-only" id="status" role="status" aria-live="polite"></p>
-
-<script>
-(function () {
-  var deck = document.getElementById('deck');
-  var screens = Array.prototype.slice.call(deck.querySelectorAll('.screen'));
-  var prev = document.getElementById('prev');
-  var next = document.getElementById('next');
-  var statusEl = document.getElementById('status');
-  var current = -1;
-
-  var reflowMQ = window.matchMedia('(max-width: 900px), (max-height: 500px)');
-  var reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
-  function fit() {
-    if (reflowMQ.matches) { document.documentElement.style.setProperty('--scale', 1); return; }
-    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
-    document.documentElement.style.setProperty('--scale', s);
-  }
-  window.addEventListener('resize', fit);
-  fit();
-
-  function goTo(i) {
-    i = Math.max(0, Math.min(screens.length - 1, i));
-    deck.scrollTo({ left: i * deck.clientWidth, behavior: reduceMQ.matches ? 'auto' : 'smooth' });
-  }
-  function setActive(i) {
-    if (i === current) return;
-    var first = current === -1;
-    current = i;
-    screens.forEach(function (s, si) {
-      if (si === i) { s.removeAttribute('inert'); s.removeAttribute('aria-hidden'); }
-      else { s.setAttribute('inert', ''); s.setAttribute('aria-hidden', 'true'); }
-    });
-    prev.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
-    next.setAttribute('aria-disabled', i === screens.length - 1 ? 'true' : 'false');
-    if (!first) statusEl.textContent = 'Slide ' + (i + 1) + ' of ' + screens.length + ': ' + screens[i].querySelector('h2').textContent;
-  }
-  setActive(0);
-
-  prev.addEventListener('click', function () { if (prev.getAttribute('aria-disabled') !== 'true') goTo(current - 1); });
-  next.addEventListener('click', function () { if (next.getAttribute('aria-disabled') !== 'true') goTo(current + 1); });
-
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
-    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
-    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
-    if (e.key === 'End')  { e.preventDefault(); goTo(screens.length - 1); }
-  });
-
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) setActive(screens.indexOf(e.target));
-      });
-    }, { root: deck, threshold: 0.6 });
-    screens.forEach(function (s) { io.observe(s); });
-  }
-
-  // Keep the active slide in sync on any scroll (swipe, wheel, scrollbar, keys).
-  var st;
-  deck.addEventListener('scroll', function () {
-    clearTimeout(st);
-    st = setTimeout(function () { setActive(Math.round(deck.scrollLeft / deck.clientWidth)); }, 80);
-  }, { passive: true });
-
-  deck.addEventListener('wheel', function (e) {
-    if (reflowMQ.matches) return; // let the slide scroll vertically when reflowed
-    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      deck.scrollLeft += e.deltaY;
-    }
-  }, { passive: true });
-})();
-</script>
+<main class="wrap">
+  <header class="deck-head">
+    <h1>Best practices: how MET buys, places and runs labels</h1>
+    <p>Project 3 · 6 slides · scroll down</p>
+  </header>
+  <ol class="slides">
+    <li class="frame">
+      <article class="slide" aria-labelledby="s1">
+        <div class="top"><div><p class="kicker">Best practice 1 of 6</p><h2 id="s1">Start where paper is slowest</h2><p class="sub">Locked cases, cages, high shelves</p></div><p class="chip">Lever 3</p></div>
+        <dl class="rows"><dt>Does</dt><dd>Puts smart labels first where a paper change means find a key, unlock, swap, relock.</dd><dt>Price</dt><dd>None. It's a placement choice.</dd><dt>Proof</dt><dd>Home Depot already uses Chroma in the front-of-store locked case.</dd><dt>Watch out</dt><dd>You need a believable time per change. Ask MET, or label it an estimate.</dd></dl>
+        <p class="num" aria-hidden="true">1 / 6</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide" aria-labelledby="s2">
+        <div class="top"><div><p class="kicker">Best practice 2 of 6</p><h2 id="s2">Buy the cheapest size that fits</h2><p class="sub">Small black-and-white where you can</p></div><p class="chip">Lever 2</p></div>
+        <dl class="rows"><dt>Does</dt><dd>Uses a small label wherever the shelf doesn't need a bigger screen.</dd><dt>Price</dt><dd>Small: about $5–$9, vs. $11–$17 for 4.2 in. <span class="src">[vendor]</span></dd><dt>Watch out</dt><dd>The price must stay readable. Unit-price rules may set a minimum text size.</dd></dl>
+        <p class="num" aria-hidden="true">2 / 6</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">Best practice 3 of 6</p><h2 id="s3">Batch updates; swap batteries</h2><p class="sub">Overnight updates, replaceable batteries</p></div><p class="chip">Lever 5</p></div>
+        <dl class="rows"><dt>Does</dt><dd>Sends price changes in one batch so batteries last, and swaps batteries, not labels.</dd><dt>Price</dt><dd>None for batching. A battery costs less than a label.</dd><dt>Proof</dt><dd>Chroma batteries: up to 10 years at 2–3 updates a day <span class="src">[vendor]</span></dd><dt>Watch out</dt><dd>Areas repriced daily drain batteries faster.</dd></dl>
+        <p class="num" aria-hidden="true">3 / 6</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide" aria-labelledby="s4">
+        <div class="top"><div><p class="kicker">Best practice 4 of 6</p><h2 id="s4">Put replacements in the contract</h2><p class="sub">Broken labels and batteries covered</p></div><p class="chip">Levers 4 + 5</p></div>
+        <dl class="rows"><dt>Does</dt><dd>Builds replacement labels and battery swaps into the yearly software fee.</dd><dt>Price</dt><dd>Part of the software fee. No published price.</dd><dt>Proof</dt><dd>Some licenses cover “replacement labels, battery replacement” <span class="src">[vendor]</span></dd><dt>Watch out</dt><dd>It only counts if it's in writing.</dd></dl>
+        <p class="num" aria-hidden="true">4 / 6</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide" aria-labelledby="s5">
+        <div class="top"><div><p class="kicker">Best practice 5 of 6</p><h2 id="s5">Check the signal first</h2><p class="sub">Before any label goes up</p></div><p class="chip">Keeps months real</p></div>
+        <dl class="rows"><dt>Does</dt><dd>Tests coverage in far corners and adds a gateway where the signal is weak.</dd><dt>Price</dt><dd>A one-time survey, plus gateways where needed.</dd><dt>Why</dt><dd>The last whole-store test ended mostly because remote labels couldn't update.</dd><dt>Watch out</dt><dd>This is also your top risk fix on page 4.</dd></dl>
+        <p class="num" aria-hidden="true">5 / 6</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide" aria-labelledby="s6">
+        <div class="top"><div><p class="kicker">Best practice 6 of 6</p><h2 id="s6">Reprice where markets move</h2><p class="sub">Lumber, copper, online competitors</p></div><p class="chip">Lever 6</p></div>
+        <dl class="rows"><dt>Does</dt><dd>Follows market prices more closely, so each label does more changes.</dd><dt>Price</dt><dd>None.</dd><dt>Proof</dt><dd>Stores with e-labels made more, smaller price changes <span class="src">[independent]</span></dd><dt>Watch out</dt><dd>Walmart rules out surge pricing; some states regulate it. More updates drain batteries.</dd></dl>
+        <p class="num" aria-hidden="true">6 / 6</p>
+      </article>
+    </li>
+  </ol>
+</main>
 </body>
 </html>

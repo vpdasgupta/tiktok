@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Area Traits</title>
+<style>
+:root {
+  --ink: #14211f; --muted: #4a5754; --line: #d9dfdc; --card: #ffffff; --bg: #eef1f0;
+  --accent: #d5581f; --accent-ink: #a8410d; --soft: #fbf1ea; --pill: #eef1f0;
+  --bar: #d5581f; --bar-base: #6f7a77; --chip-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #eef1f0; --muted: #b3bcb9; --line: #34403d; --card: #1a2321; --bg: #101615;
+    --accent: #f07a3d; --accent-ink: #f4a06f; --soft: #2a1d15; --pill: #24302d;
+    --bar: #f07a3d; --bar-base: #93a09c; --chip-ink: #1a2321;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: 1.35;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px 16px 32px; }
+.deck-head { margin: 0 0 14px; }
+.deck-head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
+.deck-head p { margin: 0; font-size: 15px; color: var(--muted); }
+.slides { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.frame { container-type: inline-size; }
+.slide {
+  aspect-ratio: 16 / 9; background: var(--card); border-top: 1.1cqi solid var(--accent);
+  border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  padding: 3.6cqi 5cqi 3cqi; display: flex; flex-direction: column; gap: 1.8cqi;
+  font-size: 2.5cqi; position: relative; overflow-wrap: anywhere;
+}
+.slide.dense { font-size: 2.15cqi; gap: 1.4cqi; }
+.slide.big { font-size: 2.95cqi; gap: 2.4cqi; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2cqi; }
+.kicker { margin: 0 0 .5cqi; font-size: 1.85cqi; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent-ink); }
+.slide h2 { font-size: 4.3cqi; line-height: 1.1; margin: 0; }
+.sub { margin: .6cqi 0 0; color: var(--muted); font-size: 1em; }
+.chip {
+  flex: 0 0 auto; margin: 0; background: var(--accent-ink); color: var(--chip-ink);
+  font-weight: 800; font-size: 1.85cqi; padding: .8cqi 1.8cqi; border-radius: 999px; white-space: nowrap;
+}
+.num { position: absolute; right: 2.4cqi; bottom: 1.6cqi; font-size: 1.6cqi; color: var(--muted); margin: 0; }
+.slide p { margin: 0; }
+.lead { font-size: 1.1em; }
+.src {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78em;
+  padding: 0 .5em; border-radius: 5px; background: var(--pill); border: 1px solid var(--line);
+  color: var(--muted); white-space: nowrap;
+}
+.foot { margin-top: auto !important; color: var(--muted); font-size: .86em; padding-right: 5cqi; }
+
+/* key/value rows */
+.rows { margin: 0; display: grid; grid-template-columns: 19% 1fr; border-top: 2px solid var(--ink); }
+.rows dt, .rows dd { margin: 0; padding: 1cqi 0; border-bottom: 1px solid var(--line); }
+.rows dt { font-weight: 800; font-size: .74em; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding-top: 1.35cqi; padding-right: 1.5cqi; }
+
+/* card grid */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqi 2.4cqi; }
+.cards.three { grid-template-columns: 1fr 1fr 1fr; }
+.cards.one { grid-template-columns: 1fr; }
+.cards li { border-left: .7cqi solid var(--accent); background: var(--soft); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+.cards b { display: block; }
+.cards span { color: var(--muted); font-size: .9em; }
+.cards.plain li { background: transparent; border-left-color: var(--line); }
+
+/* bar chart (values always written as text) */
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: .9cqi; }
+.bars li { display: grid; grid-template-columns: 46% 1fr 15%; align-items: center; gap: 1.6cqi; font-size: .9em; }
+.bars .track { height: 2.4cqi; background: var(--pill); border-radius: 4px; overflow: hidden; }
+.bars .fill { display: block; height: 100%; background: var(--bar); }
+.bars .base .fill { background: var(--bar-base); }
+.bars .val { font-weight: 800; text-align: right; }
+
+/* ladder */
+.ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: .7cqi; }
+.ladder li { display: grid; grid-template-columns: 15% 1fr 20%; gap: 1.6cqi; align-items: baseline; padding: .8cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
+.ladder .tier { font-weight: 800; }
+.ladder .shows { font-weight: 700; text-align: right; }
+.ladder li.no { background: var(--pill); }
+
+/* table */
+table { border-collapse: collapse; width: 100%; font-size: .92em; }
+caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+th, td { text-align: left; padding: .55cqi 1.4cqi; border-bottom: 1px solid var(--line); }
+thead th { border-bottom: 2px solid var(--ink); font-size: .85em; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+tr.hl th, tr.hl td { background: var(--soft); font-weight: 800; }
+
+/* trait scores */
+.scores { list-style: none; margin: 0; padding: 0; display: grid; gap: .8cqi; }
+.scores li { display: grid; grid-template-columns: 32% 13% 1fr; gap: 1.6cqi; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: .6cqi; }
+.lvl { font-weight: 800; text-align: center; border-radius: 999px; padding: .1cqi 0; border: 2px solid var(--accent-ink); color: var(--accent-ink); font-size: .85em; }
+.lvl.High { background: var(--accent-ink); color: var(--chip-ink); }
+.result { background: var(--soft); border-left: .7cqi solid var(--accent); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+
+/* big statement */
+.formula { font-size: 1.5em; font-weight: 800; text-align: center; padding: 2cqi; border: 2px dashed var(--accent); border-radius: 10px; }
+.steps { margin: 0; padding-left: 1.3em; display: grid; gap: .7cqi; }
+.callout { font-size: 1.15em; border-left: .9cqi solid var(--accent); padding: .4cqi 0 .4cqi 2cqi; }
+blockquote { margin: 0; font-style: italic; color: var(--muted); }
+
+/* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
+@container (max-width: 560px) {
+  .slide, .slide.dense, .slide.big { aspect-ratio: auto; font-size: 16px; padding: 18px 18px 34px; gap: 12px; border-top-width: 6px; }
+  .slide h2 { font-size: 23px; }
+  .kicker, .chip { font-size: 12.5px; }
+  .chip { padding: 4px 10px; }
+  .top { flex-wrap: wrap; }
+  .num { font-size: 12px; right: 14px; bottom: 10px; }
+  .rows { grid-template-columns: 1fr; }
+  .rows dt { padding: 8px 0 0; border-bottom: 0; }
+  .rows dd { padding: 2px 0 8px; }
+  .cards, .cards.three { grid-template-columns: 1fr; gap: 8px; }
+  .cards li { border-left-width: 4px; padding: 6px 10px; }
+  .bars li { grid-template-columns: 1fr 64px; gap: 4px 10px; }
+  .bars .lab { grid-column: 1 / -1; }
+  .bars .track { height: 12px; }
+  .ladder li { grid-template-columns: 1fr; gap: 2px; padding: 8px 10px; }
+  .ladder .shows { text-align: left; }
+  .scores li { grid-template-columns: 1fr 76px; gap: 4px 10px; padding-bottom: 6px; }
+  .scores .why { grid-column: 1 / -1; }
+  th, td { padding: 4px 6px; }
+  .formula { padding: 12px; font-size: 19px; }
+  .callout { border-left-width: 5px; padding-left: 12px; }
+  .result { border-left-width: 4px; padding: 6px 10px; }
+  .foot { padding-right: 0; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="deck-head">
+    <h1>Describe your area by its traits</h1>
+    <p>Project 3 · 8 slides · scroll down</p>
+  </header>
+  <ol class="slides">
+    <li class="frame">
+      <article class="slide" aria-labelledby="s1">
+        <div class="top"><div><p class="kicker">Describe your area</p><h2 id="s1">Five traits, not a floor plan</h2><p class="sub">MET decides by what the products are like. Score each trait High, Medium or Low, with one line of evidence.</p></div></div>
+        <ul class="cards "><li><b>1 · Price volatility</b><span>Lever 6: price changes</span></li><li><b>2 · Locked or hard to reach</b><span>Lever 3: seconds per change</span></li><li><b>3 · Features or comparison shopping</b><span>Bigger labels, online prices</span></li><li><b>4 · Bulky traffic</b><span>Lever 4: damage</span></li><li><b>5 · Wi-Fi reach</b><span>Can the labels get updates?</span></li></ul>
+        <p class="num" aria-hidden="true">1 / 8</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide big" aria-labelledby="s2">
+        <div class="top"><div><p class="kicker">Trait 1 of 5</p><h2 id="s2">Price volatility</h2></div><p class="chip">Lever 6</p></div>
+        <dl class="rows"><dt>Ask</dt><dd>Do prices follow a market that moves (lumber, copper wire, pipes and fittings), or frequent sales and online price-matching?</dd><dt>Why MET cares</dt><dd>More price changes = more paper changes saved. Lumber was repriced daily at times.</dd></dl>
+        <p class="num" aria-hidden="true">2 / 8</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide big" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">Trait 2 of 5</p><h2 id="s3">Locked or hard to reach</h2></div><p class="chip">Lever 3</p></div>
+        <dl class="rows"><dt>Ask</dt><dd>Are products in cages or locked cases, or are labels high up?</dd><dt>Why MET cares</dt><dd>Each paper change takes longer. The locked case at the front of the store already uses Chroma.</dd></dl>
+        <p class="num" aria-hidden="true">3 / 8</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide big" aria-labelledby="s4">
+        <div class="top"><div><p class="kicker">Trait 3 of 5</p><h2 id="s4">Features or comparison shopping</h2></div></div>
+        <dl class="rows"><dt>Ask</dt><dd>Do shoppers compare features and prices online before buying, like appliances?</dd><dt>Why MET cares</dt><dd>A bigger label can show features too, and prices move with online competitors. Appliances already use large-format Chroma.</dd></dl>
+        <p class="num" aria-hidden="true">4 / 8</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide big" aria-labelledby="s5">
+        <div class="top"><div><p class="kicker">Trait 4 of 5</p><h2 id="s5">Bulky traffic</h2></div><p class="chip">Lever 4</p></div>
+        <dl class="rows"><dt>Ask</dt><dd>Do carts, pallets, forklifts or big boxes pass close to the shelf edge?</dd><dt>Why MET cares</dt><dd>More damage. Taylor: “anything big and bulky… that's the worst areas to be in.”</dd></dl>
+        <p class="num" aria-hidden="true">5 / 8</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide big" aria-labelledby="s6">
+        <div class="top"><div><p class="kicker">Trait 5 of 5</p><h2 id="s6">Wi-Fi reach</h2></div></div>
+        <dl class="rows"><dt>Ask</dt><dd>Is your area in a far corner, outdoors, or behind lots of metal racking?</dd><dt>Why MET cares</dt><dd>The last whole-store test ended mostly because labels in remote areas couldn't be updated.</dd></dl>
+        <p class="num" aria-hidden="true">6 / 8</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide dense" aria-labelledby="s7">
+        <div class="top"><div><p class="kicker">Worked example 1 of 2</p><h2 id="s7">Appliances</h2></div></div>
+        <ul class="scores"><li><b>Price volatility</b><span class="lvl High">High</span><span class="why">online price competition</span></li><li><b>Features</b><span class="lvl High">High</span><span class="why">shoppers compare specs</span></li><li><b>Locked or hard to reach</b><span class="lvl Low">Low</span><span class="why"></span></li><li><b>Bulky traffic</b><span class="lvl Medium">Medium</span><span class="why"></span></li><li><b>Wi-Fi reach</b><span class="lvl Medium">Medium</span><span class="why"></span></li></ul><p class="result"><b>Result:</b> MET already uses large-format Chroma labels here.</p>
+        <p class="num" aria-hidden="true">7 / 8</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide dense" aria-labelledby="s8">
+        <div class="top"><div><p class="kicker">Worked example 2 of 2</p><h2 id="s8">Lumber racks</h2></div></div>
+        <ul class="scores"><li><b>Price volatility</b><span class="lvl High">High</span><span class="why">market-priced</span></li><li><b>Features</b><span class="lvl Low">Low</span><span class="why"></span></li><li><b>Locked or hard to reach</b><span class="lvl Low">Low</span><span class="why"></span></li><li><b>Bulky traffic</b><span class="lvl High">High</span><span class="why">forklifts</span></li><li><b>Wi-Fi reach</b><span class="lvl Low">Low–Medium</span><span class="why">tall racks, far end of store</span></li></ul><p class="result"><b>Result:</b> lots of price changes, but damage and coverage put payback at risk. Chris: “is it worth putting it where we have all of our boards…? Absolutely not.”</p>
+        <p class="num" aria-hidden="true">8 / 8</p>
+      </article>
+    </li>
+  </ol>
+</main>
+</body>
+</html>

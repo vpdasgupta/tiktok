@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Breakeven Levers</title>
+<style>
+:root {
+  --ink: #14211f; --muted: #4a5754; --line: #d9dfdc; --card: #ffffff; --bg: #eef1f0;
+  --accent: #d5581f; --accent-ink: #a8410d; --soft: #fbf1ea; --pill: #eef1f0;
+  --bar: #d5581f; --bar-base: #6f7a77; --chip-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #eef1f0; --muted: #b3bcb9; --line: #34403d; --card: #1a2321; --bg: #101615;
+    --accent: #f07a3d; --accent-ink: #f4a06f; --soft: #2a1d15; --pill: #24302d;
+    --bar: #f07a3d; --bar-base: #93a09c; --chip-ink: #1a2321;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: 1.35;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px 16px 32px; }
+.deck-head { margin: 0 0 14px; }
+.deck-head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
+.deck-head p { margin: 0; font-size: 15px; color: var(--muted); }
+.slides { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.frame { container-type: inline-size; }
+.slide {
+  aspect-ratio: 16 / 9; background: var(--card); border-top: 1.1cqi solid var(--accent);
+  border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  padding: 3.6cqi 5cqi 3cqi; display: flex; flex-direction: column; gap: 1.8cqi;
+  font-size: 2.5cqi; position: relative; overflow-wrap: anywhere;
+}
+.slide.dense { font-size: 2.15cqi; gap: 1.4cqi; }
+.slide.big { font-size: 2.95cqi; gap: 2.4cqi; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2cqi; }
+.kicker { margin: 0 0 .5cqi; font-size: 1.85cqi; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent-ink); }
+.slide h2 { font-size: 4.3cqi; line-height: 1.1; margin: 0; }
+.sub { margin: .6cqi 0 0; color: var(--muted); font-size: 1em; }
+.chip {
+  flex: 0 0 auto; margin: 0; background: var(--accent-ink); color: var(--chip-ink);
+  font-weight: 800; font-size: 1.85cqi; padding: .8cqi 1.8cqi; border-radius: 999px; white-space: nowrap;
+}
+.num { position: absolute; right: 2.4cqi; bottom: 1.6cqi; font-size: 1.6cqi; color: var(--muted); margin: 0; }
+.slide p { margin: 0; }
+.lead { font-size: 1.1em; }
+.src {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78em;
+  padding: 0 .5em; border-radius: 5px; background: var(--pill); border: 1px solid var(--line);
+  color: var(--muted); white-space: nowrap;
+}
+.foot { margin-top: auto !important; color: var(--muted); font-size: .86em; padding-right: 5cqi; }
+
+/* key/value rows */
+.rows { margin: 0; display: grid; grid-template-columns: 19% 1fr; border-top: 2px solid var(--ink); }
+.rows dt, .rows dd { margin: 0; padding: 1cqi 0; border-bottom: 1px solid var(--line); }
+.rows dt { font-weight: 800; font-size: .74em; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding-top: 1.35cqi; padding-right: 1.5cqi; }
+
+/* card grid */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqi 2.4cqi; }
+.cards.three { grid-template-columns: 1fr 1fr 1fr; }
+.cards.one { grid-template-columns: 1fr; }
+.cards li { border-left: .7cqi solid var(--accent); background: var(--soft); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+.cards b { display: block; }
+.cards span { color: var(--muted); font-size: .9em; }
+.cards.plain li { background: transparent; border-left-color: var(--line); }
+
+/* bar chart (values always written as text) */
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: .9cqi; }
+.bars li { display: grid; grid-template-columns: 46% 1fr 15%; align-items: center; gap: 1.6cqi; font-size: .9em; }
+.bars .track { height: 2.4cqi; background: var(--pill); border-radius: 4px; overflow: hidden; }
+.bars .fill { display: block; height: 100%; background: var(--bar); }
+.bars .base .fill { background: var(--bar-base); }
+.bars .val { font-weight: 800; text-align: right; }
+
+/* ladder */
+.ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: .7cqi; }
+.ladder li { display: grid; grid-template-columns: 15% 1fr 20%; gap: 1.6cqi; align-items: baseline; padding: .8cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
+.ladder .tier { font-weight: 800; }
+.ladder .shows { font-weight: 700; text-align: right; }
+.ladder li.no { background: var(--pill); }
+
+/* table */
+table { border-collapse: collapse; width: 100%; font-size: .92em; }
+caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+th, td { text-align: left; padding: .55cqi 1.4cqi; border-bottom: 1px solid var(--line); }
+thead th { border-bottom: 2px solid var(--ink); font-size: .85em; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+tr.hl th, tr.hl td { background: var(--soft); font-weight: 800; }
+
+/* trait scores */
+.scores { list-style: none; margin: 0; padding: 0; display: grid; gap: .8cqi; }
+.scores li { display: grid; grid-template-columns: 32% 13% 1fr; gap: 1.6cqi; align-items: baseline; border-bottom: 1px solid var(--line); padding-bottom: .6cqi; }
+.lvl { font-weight: 800; text-align: center; border-radius: 999px; padding: .1cqi 0; border: 2px solid var(--accent-ink); color: var(--accent-ink); font-size: .85em; }
+.lvl.High { background: var(--accent-ink); color: var(--chip-ink); }
+.result { background: var(--soft); border-left: .7cqi solid var(--accent); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+
+/* big statement */
+.formula { font-size: 1.5em; font-weight: 800; text-align: center; padding: 2cqi; border: 2px dashed var(--accent); border-radius: 10px; }
+.steps { margin: 0; padding-left: 1.3em; display: grid; gap: .7cqi; }
+.callout { font-size: 1.15em; border-left: .9cqi solid var(--accent); padding: .4cqi 0 .4cqi 2cqi; }
+blockquote { margin: 0; font-style: italic; color: var(--muted); }
+
+/* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
+@container (max-width: 560px) {
+  .slide, .slide.dense, .slide.big { aspect-ratio: auto; font-size: 16px; padding: 18px 18px 34px; gap: 12px; border-top-width: 6px; }
+  .slide h2 { font-size: 23px; }
+  .kicker, .chip { font-size: 12.5px; }
+  .chip { padding: 4px 10px; }
+  .top { flex-wrap: wrap; }
+  .num { font-size: 12px; right: 14px; bottom: 10px; }
+  .rows { grid-template-columns: 1fr; }
+  .rows dt { padding: 8px 0 0; border-bottom: 0; }
+  .rows dd { padding: 2px 0 8px; }
+  .cards, .cards.three { grid-template-columns: 1fr; gap: 8px; }
+  .cards li { border-left-width: 4px; padding: 6px 10px; }
+  .bars li { grid-template-columns: 1fr 64px; gap: 4px 10px; }
+  .bars .lab { grid-column: 1 / -1; }
+  .bars .track { height: 12px; }
+  .ladder li { grid-template-columns: 1fr; gap: 2px; padding: 8px 10px; }
+  .ladder .shows { text-align: left; }
+  .scores li { grid-template-columns: 1fr 76px; gap: 4px 10px; padding-bottom: 6px; }
+  .scores .why { grid-column: 1 / -1; }
+  th, td { padding: 4px 6px; }
+  .formula { padding: 12px; font-size: 19px; }
+  .callout { border-left-width: 5px; padding-left: 12px; }
+  .result { border-left-width: 4px; padding: 6px 10px; }
+  .foot { padding-right: 0; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="deck-head">
+    <h1>The levers of your breakeven</h1>
+    <p>Project 3 · 3 slides · scroll down</p>
+  </header>
+  <ol class="slides">
+    <li class="frame">
+      <article class="slide dense" aria-labelledby="s1">
+        <div class="top"><div><p class="kicker">Your breakeven</p><h2 id="s1">Seven numbers move your payback</h2><p class="sub">Each one is a <b>lever</b>: change it and your months change.</p></div></div>
+        <ul class="cards "><li><b>1 · Paper tags per smart label</b><span>More is better. Usually 1.</span></li><li><b>2 · Smart label price</b><span>Lower is better. $10 in your model.</span></li><li><b>3 · Seconds per paper change</b><span>More seconds = more labor saved.</span></li><li><b>4 · Damage rate</b><span>Lower is better. 5% in your model.</span></li><li><b>5 · Running cost per label</b><span>Lower is better. $0.50 a year.</span></li><li><b>6 · Price changes per product</b><span>More changes = more labor saved.</span></li><li><b>7 · Extra labor saved</b><span>More is better, if MET does that work.</span></li><li><b>Every idea on this page</b><span>moves one or more of these levers.</span></li></ul>
+        <p class="num" aria-hidden="true">1 / 3</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide dense" aria-labelledby="s2">
+        <div class="top"><div><p class="kicker">Example: ceiling fans</p><h2 id="s2">What one change does to payback</h2><p class="sub">Project 2 ≈ 101 months. Shorter bar = pays back sooner.</p></div></div>
+        <ul class="bars"><li class=""><span class="lab">1 · One label covers 2 tags</span><span class="track" aria-hidden="true"><span class="fill" style="width:37%"></span></span><span class="val">37 mo</span></li><li class=""><span class="lab">7 · +$100 extra labor a year</span><span class="track" aria-hidden="true"><span class="fill" style="width:45%"></span></span><span class="val">45 mo</span></li><li class=""><span class="lab">3 · 30 → 45 seconds a change</span><span class="track" aria-hidden="true"><span class="fill" style="width:53%"></span></span><span class="val">54 mo</span></li><li class=""><span class="lab">2 · $10 → $6 label</span><span class="track" aria-hidden="true"><span class="fill" style="width:57%"></span></span><span class="val">58 mo</span></li><li class=""><span class="lab">4 · 5% → 2% damage</span><span class="track" aria-hidden="true"><span class="fill" style="width:80%"></span></span><span class="val">81 mo</span></li><li class=""><span class="lab">5 · $0.50 → $0.25 running cost</span><span class="track" aria-hidden="true"><span class="fill" style="width:85%"></span></span><span class="val">86 mo</span></li><li class="base"><span class="lab">Project 2, no change</span><span class="track" aria-hidden="true"><span class="fill" style="width:100%"></span></span><span class="val">101 mo</span></li></ul><p class="foot">Lever 6 depends on your area. It decided most Project 2 answers.</p>
+        <p class="num" aria-hidden="true">2 / 3</p>
+      </article>
+    </li>
+    <li class="frame">
+      <article class="slide" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">The big idea</p><h2 id="s3">Count labels before you polish them</h2></div></div>
+        <p class="callout">Each fan hangs on display <em>and</em> sits boxed below, so it needs two tags. One label that covers both cuts payback by more than half. That beats any damage fix.</p><p class="lead">Ideas that change <b>how many labels you need</b> often beat ideas that make each label a little better.</p>
+        <p class="num" aria-hidden="true">3 / 3</p>
+      </article>
+    </li>
+  </ol>
+</main>
+</body>
+</html>
