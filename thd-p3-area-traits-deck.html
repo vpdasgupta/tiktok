@@ -28,8 +28,27 @@ body {
 .deck-head { margin: 0 0 14px; }
 .deck-head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
 .deck-head p { margin: 0; font-size: 15px; color: var(--muted); }
-.slides { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
-.frame { container-type: inline-size; }
+.slides {
+  display: flex; align-items: flex-start; gap: 0; margin: 0; padding: 4px 0 6px;
+  overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.slides::-webkit-scrollbar { display: none; }
+.slides:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; border-radius: 10px; }
+.frame { container-type: inline-size; flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; padding: 0 2px; }
+.controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.navbtn {
+  min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+  background: var(--card); border: 2px solid var(--muted);
+}
+.navbtn:hover { border-color: var(--accent-ink); }
+.navbtn:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+.navbtn[aria-disabled="true"] { opacity: .45; cursor: default; border-style: dashed; }
+.count { margin: 0; font-size: 15px; font-weight: 700; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .slides { scroll-behavior: auto; } }
+@media (forced-colors: active) { .navbtn[aria-disabled="true"] { border-color: GrayText; color: GrayText; } }
 .slide {
   aspect-ratio: 16 / 9; background: var(--card); border-top: 1.1cqi solid var(--accent);
   border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12);
@@ -144,66 +163,112 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
 <main class="wrap">
   <header class="deck-head">
     <h1>Describe your area by its traits</h1>
-    <p>Project 3 · 8 slides · scroll down</p>
+    <p>Project 3 · 8 slides · use Next or swipe</p>
   </header>
-  <ol class="slides" role="list">
-    <li class="frame">
+  <section aria-roledescription="carousel" aria-label="Describe your area by its traits">
+  <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 8">
       <article class="slide" aria-labelledby="s1">
         <div class="top"><div><p class="kicker">Describe your area</p><h2 id="s1">Five traits, not a floor plan</h2><p class="sub">MET decides by what the products are like. Score each trait High, Medium or Low, with one line of evidence.</p></div></div>
         <ul class="cards " role="list"><li><b>1 · Price volatility</b><span>Lever 6: price changes</span></li><li><b>2 · Locked or hard to reach</b><span>Lever 3: seconds per change</span></li><li><b>3 · Features or comparison shopping</b><span>Bigger labels, online prices</span></li><li><b>4 · Bulky traffic</b><span>Lever 4: damage</span></li><li><b>5 · Wi-Fi reach</b><span>Can the labels get updates?</span></li></ul>
-        <p class="num" aria-hidden="true">1 / 8</p>
       </article>
-    </li>
-    <li class="frame">
+    </div>
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 8">
       <article class="slide big" aria-labelledby="s2">
         <div class="top"><div><p class="kicker">Trait 1 of 5</p><h2 id="s2">Price volatility</h2></div><p class="chip">Lever 6</p></div>
         <dl class="rows"><dt>Ask</dt><dd>Do prices follow a market that moves (lumber, copper wire, pipes and fittings), or frequent sales and online price-matching?</dd><dt>Why MET cares</dt><dd>More price changes = more paper changes saved. Lumber was repriced daily at times.</dd></dl>
-        <p class="num" aria-hidden="true">2 / 8</p>
       </article>
-    </li>
-    <li class="frame">
+    </div>
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 8">
       <article class="slide big" aria-labelledby="s3">
         <div class="top"><div><p class="kicker">Trait 2 of 5</p><h2 id="s3">Locked or hard to reach</h2></div><p class="chip">Lever 3</p></div>
         <dl class="rows"><dt>Ask</dt><dd>Are products in cages or locked cases, or are labels high up?</dd><dt>Why MET cares</dt><dd>Each paper change takes longer. The locked case at the front of the store already uses Chroma.</dd></dl>
-        <p class="num" aria-hidden="true">3 / 8</p>
       </article>
-    </li>
-    <li class="frame">
+    </div>
+    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 8">
       <article class="slide big" aria-labelledby="s4">
         <div class="top"><div><p class="kicker">Trait 3 of 5</p><h2 id="s4">Features or comparison shopping</h2></div></div>
         <dl class="rows"><dt>Ask</dt><dd>Do shoppers compare features and prices online before buying, like appliances?</dd><dt>Why MET cares</dt><dd>A bigger label can show features too, and prices move with online competitors. Appliances already use large-format Chroma.</dd></dl>
-        <p class="num" aria-hidden="true">4 / 8</p>
       </article>
-    </li>
-    <li class="frame">
+    </div>
+    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 8">
       <article class="slide big" aria-labelledby="s5">
         <div class="top"><div><p class="kicker">Trait 4 of 5</p><h2 id="s5">Bulky traffic</h2></div><p class="chip">Lever 4</p></div>
         <dl class="rows"><dt>Ask</dt><dd>Do carts, pallets, forklifts or big boxes pass close to the shelf edge?</dd><dt>Why MET cares</dt><dd>More damage. Taylor: “anything big and bulky… that's the worst areas to be in.”</dd></dl>
-        <p class="num" aria-hidden="true">5 / 8</p>
       </article>
-    </li>
-    <li class="frame">
+    </div>
+    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 8">
       <article class="slide big" aria-labelledby="s6">
         <div class="top"><div><p class="kicker">Trait 5 of 5</p><h2 id="s6">Wi-Fi reach</h2></div></div>
         <dl class="rows"><dt>Ask</dt><dd>Is your area in a far corner, outdoors, or behind lots of metal racking?</dd><dt>Why MET cares</dt><dd>The last whole-store test ended mostly because labels in remote areas couldn't be updated.</dd></dl>
-        <p class="num" aria-hidden="true">6 / 8</p>
       </article>
-    </li>
-    <li class="frame">
+    </div>
+    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 8">
       <article class="slide dense" aria-labelledby="s7">
         <div class="top"><div><p class="kicker">Worked example 1 of 2</p><h2 id="s7">Appliances</h2></div></div>
         <ul class="scores" role="list"><li><b>Price volatility</b><span class="lvl High">High</span><span class="why">online price competition</span></li><li><b>Features</b><span class="lvl High">High</span><span class="why">shoppers compare specs</span></li><li><b>Locked or hard to reach</b><span class="lvl Low">Low</span><span class="why"></span></li><li><b>Bulky traffic</b><span class="lvl Medium">Medium</span><span class="why"></span></li><li><b>Wi-Fi reach</b><span class="lvl Medium">Medium</span><span class="why"></span></li></ul><p class="result"><b>Result:</b> MET already uses large-format Chroma labels here.</p>
-        <p class="num" aria-hidden="true">7 / 8</p>
       </article>
-    </li>
-    <li class="frame">
+    </div>
+    <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 8">
       <article class="slide dense" aria-labelledby="s8">
         <div class="top"><div><p class="kicker">Worked example 2 of 2</p><h2 id="s8">Lumber racks</h2></div></div>
         <ul class="scores" role="list"><li><b>Price volatility</b><span class="lvl High">High</span><span class="why">market-priced</span></li><li><b>Features</b><span class="lvl Low">Low</span><span class="why"></span></li><li><b>Locked or hard to reach</b><span class="lvl Low">Low</span><span class="why"></span></li><li><b>Bulky traffic</b><span class="lvl High">High</span><span class="why">forklifts</span></li><li><b>Wi-Fi reach</b><span class="lvl Low">Low–Medium</span><span class="why">tall racks, far end of store</span></li></ul><p class="result"><b>Result:</b> lots of price changes, but damage and coverage put payback at risk. Chris: “is it worth putting it where we have all of our boards…? Absolutely not.”</p>
-        <p class="num" aria-hidden="true">8 / 8</p>
       </article>
-    </li>
-  </ol>
+    </div>
+  </div>
+  <div class="controls">
+    <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
+    <p class="count" id="count" aria-hidden="true">1 of 8</p>
+    <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
+  </div>
+  <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
+  </section>
 </main>
+<script>
+(function () {
+  var track = document.getElementById('track');
+  var slides = Array.prototype.slice.call(track.querySelectorAll('.frame'));
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var countEl = document.getElementById('count');
+  var announceEl = document.getElementById('announce');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var current = -1;
+
+  function setActive(i, speak) {
+    if (i === current) return;
+    current = i;
+    slides.forEach(function (sl, si) {
+      if (si === i) { sl.removeAttribute('inert'); sl.removeAttribute('aria-hidden'); }
+      else { sl.setAttribute('inert', ''); sl.setAttribute('aria-hidden', 'true'); }
+    });
+    prevBtn.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
+    nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
+    countEl.textContent = (i + 1) + ' of ' + slides.length;
+    if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+  }
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft, behavior: reduce.matches ? 'auto' : 'smooth' });
+    setActive(i, true);
+  }
+  prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
+  nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
+  track.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+    else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+    else if (k === 'Home') { e.preventDefault(); goTo(0); }
+    else if (k === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+  var t;
+  track.addEventListener('scroll', function () {
+    clearTimeout(t);
+    t = setTimeout(function () { setActive(Math.round(track.scrollLeft / track.clientWidth), true); }, 90);
+  }, { passive: true });
+  window.addEventListener('resize', function () { track.scrollLeft = current * track.clientWidth; });
+  setActive(0, false);
+})();
+</script>
 </body>
 </html>
