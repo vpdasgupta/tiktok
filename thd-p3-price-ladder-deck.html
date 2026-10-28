@@ -99,10 +99,12 @@ body {
 
 /* ladder */
 .ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: .7cqi; }
-.ladder li { display: grid; grid-template-columns: 15% 1fr 20%; gap: 1.6cqi; align-items: baseline; padding: .8cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
+.ladder li { display: grid; grid-template-columns: 14% 1fr 16%; gap: 1.6cqi; align-items: baseline; padding: .6cqi 1.4cqi; background: var(--soft); border-radius: 6px; font-size: .9em; }
 .ladder .tier { font-weight: 800; }
 .ladder .shows { font-weight: 700; text-align: right; }
 .ladder li.no { background: var(--pill); }
+.ladder li.head { white-space: nowrap; background: transparent; padding-top: 0; padding-bottom: 0; font-size: .74em; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.slide.dense th, .slide.dense td { padding-top: .35cqi; padding-bottom: .35cqi; }
 
 /* table */
 table { border-collapse: collapse; width: 100%; font-size: .92em; overflow-wrap: normal; }
@@ -143,6 +145,7 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
   .bars .track { height: 12px; }
   .ladder li { grid-template-columns: 1fr; gap: 2px; padding: 8px 10px; }
   .ladder .shows { text-align: left; }
+  .ladder li.head { display: none; }
   .scores li { grid-template-columns: 1fr auto; gap: 4px 10px; padding-bottom: 6px; }
   .scores .why { grid-column: 1 / -1; }
   th, td { padding: 4px 6px; }
@@ -163,38 +166,32 @@ blockquote { margin: 0; font-style: italic; color: var(--muted); }
 <main class="wrap">
   <header class="deck-head">
     <h1>What smart label tech costs</h1>
-    <p>Project 3 · 4 slides · use Next or swipe</p>
+    <p>Project 3 · 3 slides · use Next or swipe</p>
   </header>
   <section aria-roledescription="carousel" aria-label="What smart label tech costs">
   <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
-    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 4">
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 3">
       <article class="slide dense" aria-labelledby="s1">
-        <div class="top"><div><p class="kicker">What smart label tech costs</p><h2 id="s1">The price ladder</h2><p class="sub">Broad estimates per item. Good enough to tell a $2 idea from a $100 one.</p></div></div>
-        <ul class="ladder" role="list"><li class=""><span class="tier">$50–$100+</span><span>Large-format, 10 in. or more · active (battery) RFID</span><span class="shows">Shows price: Large-format only</span></li><li class=""><span class="tier">$15–$50</span><span>Large-format, 6–7.5 in. ($16–$38) · color in some guides</span><span class="shows">Shows price: Yes</span></li><li class=""><span class="tier">$5–$15</span><span>Standard label like Chroma, $5–$13 (<b>your model: $10</b>) · small black-and-white $5–$9 · color ≈ $13 · multi-price = same as the label (it's a screen layout)</span><span class="shows">Shows price: Yes</span></li><li class="no"><span class="tier">$1–$5</span><span>Time-temperature sticker, up to ≈ $3.50</span><span class="shows">Shows price: No</span></li><li class="no"><span class="tier">Under $1</span><span>Paper tag · QR code · passive RFID ($0.04–$0.50) · NFC tag</span><span class="shows">Shows price: Paper only</span></li><li class="no"><span class="tier">Not found</span><span>Rugged models, guards, bumper rails: test +$2 or +$5 as an assumption</span><span class="shows">Shows price: Unknown</span></li></ul><p class="foot">Most prices are vendor claims <span class="src">[vendor]</span>: ballpark, not quotes.</p>
+        <div class="top"><div><p class="kicker">What smart label tech costs</p><h2 id="s1">The price ladder</h2><p class="sub">Broad estimates per item, mostly vendor claims <span class="src">[vendor]</span>. Good enough to tell a $2 idea from a $100 one.</p></div></div>
+        <ul class="ladder" role="list"><li class="head" aria-hidden="true"><span>Price</span><span>What you get</span><span class="shows">Shows price?</span></li><li class=""><span class="tier">$50–$100+</span><span>Large-format, 10 in.+ · active RFID (battery radio tag)</span><span class="shows"><span class="sr-only">Shows a price: </span>Large only</span></li><li class=""><span class="tier">$15–$50</span><span>Large-format, 6–7.5 in. ($16–$38) · color in some guides</span><span class="shows"><span class="sr-only">Shows a price: </span>Yes</span></li><li class=""><span class="tier">$5–$15</span><span>Like Chroma (<b>your model: $10</b>) · small $5–$9 · color ≈ $13</span><span class="shows"><span class="sr-only">Shows a price: </span>Yes</span></li><li class="no"><span class="tier">$1–$5</span><span>Time-temperature sticker, up to ≈ $3.50</span><span class="shows"><span class="sr-only">Shows a price: </span>No</span></li><li class="no"><span class="tier">Under $1</span><span>Paper · QR code · passive RFID (no-battery radio tag) · NFC (phone-tap chip)</span><span class="shows"><span class="sr-only">Shows a price: </span>Paper only</span></li><li class="no"><span class="tier">Not found</span><span>Rugged models, guards, bumper rails: test +$2 or +$5</span><span class="shows"><span class="sr-only">Shows a price: </span>Unknown</span></li></ul>
       </article>
     </div>
-    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 4">
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 3">
       <article class="slide" aria-labelledby="s2">
         <div class="top"><div><p class="kicker">Your limit</p><h2 id="s2">Find your price ceiling</h2></div></div>
         <p class="formula">Price ceiling ≈ 7 × labor saved per tag per year</p><ol class="steps"><li>From your Project 2 Builder PDF: <b>labor saved per year ÷ label spots</b>.</li><li>Multiply by 7. Labels last about 7 years (Leroy Merlin’s lasted about 8).</li><li>Above the ceiling: <b>never pays back</b>. Near it: probably not.</li></ol><p class="foot">One label covering 2 tags halves its price per tag.</p>
       </article>
     </div>
-    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 4">
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 3">
       <article class="slide dense" aria-labelledby="s3">
         <div class="top"><div><p class="kicker">Example: ceiling fans</p><h2 id="s3">Ceiling ≈ $17 a label</h2><p class="sub">Fans save ≈ $2.41 per tag a year (10 price changes × 30 seconds × $28 an hour).</p></div></div>
-        <table><caption>Ceiling fan payback by label price</caption><thead><tr><th scope="col">Label price</th><th scope="col">1 label per tag</th><th scope="col">1 label covers 2 tags</th></tr></thead><tbody><tr><th scope="row">$2</th><td>≈ 24 months</td><td>≈ 10 months</td></tr><tr><th scope="row">$5</th><td>≈ 48 months</td><td>≈ 19 months</td></tr><tr class="hl"><th scope="row">$10 (your model)</th><td>≈ 101 months</td><td>≈ 37 months</td></tr><tr><th scope="row">$15</th><td>≈ 178 months</td><td>≈ 56 months</td></tr><tr><th scope="row">$25</th><td>≈ 518 months</td><td>≈ 105 months</td></tr><tr><th scope="row">$50</th><td>never</td><td>≈ 348 months</td></tr><tr><th scope="row">$100</th><td>never</td><td>never</td></tr></tbody></table>
-      </article>
-    </div>
-    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 4">
-      <article class="slide dense" aria-labelledby="s4">
-        <div class="top"><div><p class="kicker">Cheap isn't automatically good</p><h2 id="s4">No shelf price, no payback</h2><p class="sub">These tags cost little, but none shows a price, so none saves price-change labor on its own.</p></div></div>
-        <ul class="cards " role="list"><li><b>RFID</b><span>Radio chip for counts and theft. Cents to $100+. Reads poorly near metal. Owner: supply chain, Asset Protection.</span></li><li><b>NFC tag</b><span>A phone taps it for product info. Tens of cents. Owner: marketing.</span></li><li><b>QR code</b><span>Printed 2D code. Print cost only. Checkouts move to 2D codes by 2027.</span></li><li><b>Time-temperature / freshness</b><span>Changes color when warm or spoiled. A grocery tool.</span></li><li><b>Tamper / security</b><span>Shows a box was opened or trips the alarm. Owner: Asset Protection.</span></li><li><b>Have an idea from one?</b><span>If it works <em>on</em> a shelf label (like NFC in an ESL), treat it as a feature.</span></li></ul><p class="foot">Owners are our inference. We could not confirm Home Depot uses item-level RFID.</p>
+        <table><caption>Ceiling fan payback by label price</caption><thead><tr><th scope="col">Label price</th><th scope="col">1 label per tag</th><th scope="col">1 label covers 2 tags</th></tr></thead><tbody><tr><th scope="row">$2</th><td>≈ 24 months</td><td>≈ 10 months</td></tr><tr><th scope="row">$5</th><td>≈ 48 months</td><td>≈ 19 months</td></tr><tr class="hl"><th scope="row">$10 (your model)</th><td>≈ 101 months</td><td>≈ 37 months</td></tr><tr><th scope="row">$15</th><td>≈ 178 months</td><td>≈ 56 months</td></tr><tr><th scope="row">$25</th><td>≈ 518 months</td><td>≈ 105 months</td></tr><tr><th scope="row">$100</th><td>never</td><td>never</td></tr></tbody></table><p class="foot"><b>Why 101 months if the ceiling is $17?</b> The ceiling ignores running cost and damage, and a $10 label is $11.50 up front (new label, including its share of the gateway). So fans at $10 run past the label’s 84-month life: the example needs an improvement.</p>
       </article>
     </div>
   </div>
   <div class="controls">
     <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
-    <p class="count" id="count" aria-hidden="true">1 of 4</p>
+    <p class="count" id="count" aria-hidden="true">1 of 3</p>
     <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
   </div>
   <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
