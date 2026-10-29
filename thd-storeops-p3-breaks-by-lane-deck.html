@@ -75,6 +75,11 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
 .pills li { display:flex; align-items:center; gap:.6rem; background:var(--chip); border-radius:999px;
   padding:.35rem .9rem .35rem .4rem; font-weight:600; font-size:1rem; line-height:1.25; }
 
+.terms { list-style:none; padding:0; margin:.2em 0 .7em; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:.45rem .8rem; max-width:44rem; }
+.terms li { background:var(--chip); border-radius:10px; padding:.45em .75em; font-size:1rem; line-height:1.35; }
+.terms b { display:block; text-transform:uppercase; letter-spacing:.05em; font-size:.8rem; color:var(--muted); }
+.terms .q { font-weight:600; }
+
 /* phone mockups: always a light screen, like a screenshot */
 .phone { width:clamp(170px, 26vw, 210px); background:#ffffff; color:#14211f; border:6px solid var(--frame);
   border-radius:26px; padding:10px 12px 14px; display:flex; flex-direction:column; gap:7px;
@@ -126,6 +131,7 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
   .cols, .cols--even { grid-template-columns:1fr; }
   .cols > .visual { align-items:flex-start; }
   .pills { max-width:none; }
+  .terms { grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -133,57 +139,97 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
 <main>
 <div class="carousel" id="carousel" role="region" aria-roledescription="carousel" aria-label="Ideas for breaks in your lane">
 <div class="deck" id="deck">
-<section class="slide" id="s-1" tabindex="0" aria-roledescription="slide" aria-label="1 of 5: What could break in your lane?" data-title="What could break in your lane?"><div class="inner">
+<section class="slide" id="s-1" tabindex="0" aria-roledescription="slide" aria-label="1 of 9: What could break in your lane?" data-title="What could break in your lane?"><div class="inner">
 <div class="solo">
   <p class="eyebrow">Ideas, not rules</p>
   <h1>What could break in your lane?</h1>
-  <p>Each slide shows one break and the screen that handles it. Use them as starting points. Your break should come from a Guess in your own Project 2 notes.</p>
+  <p>Two ideas for each lane. Each slide shows one break and the screen that handles it. Use them as starting points. Your break should come from a Guess in your own Project 2 notes.</p>
 </div>
 </div></section>
-<section class="slide" id="s-2" tabindex="0" aria-roledescription="slide" aria-label="2 of 5: Customer Experience" data-title="Customer Experience"><div class="inner">
+<section class="slide" id="s-2" tabindex="0" aria-roledescription="slide" aria-label="2 of 9: Customer Experience, idea 1" data-title="Customer Experience, idea 1"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Lane 1 of 4</p>
+    <p class="counter">Lane 1 of 4 · Idea 1 of 2</p>
     <h2>Customer Experience</h2>
     <div class="callout"><span class="tag">The break</span><p>The app says the item is in stock, but the shelf is empty.</p></div>
   </div>
   <div class="visual"><div class="phone phone--wide" role="img" aria-label="Phone screen in three parts. What went wrong: This item isn&#x27;t on the shelf right now. What to do next: a main button, Ask an associate to check. Who can help: Any associate in an orange apron can look it up."><span class="ph-notch"></span><span class="ph-label">What went wrong</span><span class="ph-title">This item isn&#x27;t on the shelf right now.</span><span class="ph-label">What to do next</span><span class="ph-btn">Ask an associate to check</span><span class="ph-label">Who can help</span><span class="ph-line">Any associate in an orange apron can look it up.</span></div></div>
 </div>
 </div></section>
-<section class="slide" id="s-3" tabindex="0" aria-roledescription="slide" aria-label="3 of 5: Technology" data-title="Technology"><div class="inner">
+<section class="slide" id="s-3" tabindex="0" aria-roledescription="slide" aria-label="3 of 9: Customer Experience, idea 2" data-title="Customer Experience, idea 2"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Lane 2 of 4</p>
+    <p class="counter">Lane 1 of 4 · Idea 2 of 2</p>
+    <h2>Customer Experience</h2>
+    <div class="callout"><span class="tag">The break</span><p>The customer arrives for pickup, but the order isn&#x27;t ready.</p></div>
+  </div>
+  <div class="visual"><div class="phone phone--wide" role="img" aria-label="Phone screen in three parts. What went wrong: Your order isn&#x27;t ready yet. What to do next: a main button, Text me when it&#x27;s ready. Who can help: The Service Desk can check on it."><span class="ph-notch"></span><span class="ph-label">What went wrong</span><span class="ph-title">Your order isn&#x27;t ready yet.</span><span class="ph-label">What to do next</span><span class="ph-btn">Text me when it&#x27;s ready</span><span class="ph-label">Who can help</span><span class="ph-line">The Service Desk can check on it.</span></div></div>
+</div>
+</div></section>
+<section class="slide" id="s-4" tabindex="0" aria-roledescription="slide" aria-label="4 of 9: Technology, idea 1" data-title="Technology, idea 1"><div class="inner">
+<div class="cols">
+  <div>
+    <p class="counter">Lane 2 of 4 · Idea 1 of 2</p>
     <h2>Technology</h2>
     <div class="callout"><span class="tag">The break</span><p>The order the associate sent never shows up at the Pro desk.</p></div>
   </div>
   <div class="visual"><div class="phone phone--wide" role="img" aria-label="Phone screen in three parts. What went wrong: The Pro desk didn&#x27;t get this order. What to do next: a main button, Show order number. Who can help: The Pro desk can type the number in."><span class="ph-notch"></span><span class="ph-label">What went wrong</span><span class="ph-title">The Pro desk didn&#x27;t get this order.</span><span class="ph-label">What to do next</span><span class="ph-btn">Show order number</span><span class="ph-label">Who can help</span><span class="ph-line">The Pro desk can type the number in.</span></div></div>
 </div>
 </div></section>
-<section class="slide" id="s-4" tabindex="0" aria-roledescription="slide" aria-label="4 of 5: Workforce &amp; Training" data-title="Workforce &amp; Training"><div class="inner">
+<section class="slide" id="s-5" tabindex="0" aria-roledescription="slide" aria-label="5 of 9: Technology, idea 2" data-title="Technology, idea 2"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Lane 3 of 4</p>
+    <p class="counter">Lane 2 of 4 · Idea 2 of 2</p>
+    <h2>Technology</h2>
+    <div class="callout"><span class="tag">The break</span><p>The hdPhone loses its signal in the back of the store.</p></div>
+  </div>
+  <div class="visual"><div class="phone phone--wide" role="img" aria-label="Phone screen in three parts. What went wrong: You&#x27;re offline right now. What to do next: a main button, Save and send later. Who can help: Move toward the front, or ask the Service Desk to send it."><span class="ph-notch"></span><span class="ph-label">What went wrong</span><span class="ph-title">You&#x27;re offline right now.</span><span class="ph-label">What to do next</span><span class="ph-btn">Save and send later</span><span class="ph-label">Who can help</span><span class="ph-line">Move toward the front, or ask the Service Desk to send it.</span></div></div>
+</div>
+</div></section>
+<section class="slide" id="s-6" tabindex="0" aria-roledescription="slide" aria-label="6 of 9: Workforce &amp; Training, idea 1" data-title="Workforce &amp; Training, idea 1"><div class="inner">
+<div class="cols">
+  <div>
+    <p class="counter">Lane 3 of 4 · Idea 1 of 2</p>
     <h2>Workforce &amp; Training</h2>
     <div class="callout"><span class="tag">The break</span><p>The associate who gets the question works in a different department.</p></div>
   </div>
   <div class="visual"><div class="phone phone--wide" role="img" aria-label="Phone screen in three parts. What went wrong: This question is outside your department. What to do next: a main button, Call the right department. Who can help: Your department supervisor can find someone."><span class="ph-notch"></span><span class="ph-label">What went wrong</span><span class="ph-title">This question is outside your department.</span><span class="ph-label">What to do next</span><span class="ph-btn">Call the right department</span><span class="ph-label">Who can help</span><span class="ph-line">Your department supervisor can find someone.</span></div></div>
 </div>
 </div></section>
-<section class="slide" id="s-5" tabindex="0" aria-roledescription="slide" aria-label="5 of 5: Asset Protection" data-title="Asset Protection"><div class="inner">
+<section class="slide" id="s-7" tabindex="0" aria-roledescription="slide" aria-label="7 of 9: Workforce &amp; Training, idea 2" data-title="Workforce &amp; Training, idea 2"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Lane 4 of 4</p>
+    <p class="counter">Lane 3 of 4 · Idea 2 of 2</p>
+    <h2>Workforce &amp; Training</h2>
+    <div class="callout"><span class="tag">The break</span><p>The associate hasn&#x27;t been trained on the new step yet.</p></div>
+  </div>
+  <div class="visual"><div class="phone phone--wide" role="img" aria-label="Phone screen in three parts. What went wrong: First time doing this? What to do next: a main button, Show me the 3 steps. Who can help: Your department supervisor can walk you through it."><span class="ph-notch"></span><span class="ph-label">What went wrong</span><span class="ph-title">First time doing this?</span><span class="ph-label">What to do next</span><span class="ph-btn">Show me the 3 steps</span><span class="ph-label">Who can help</span><span class="ph-line">Your department supervisor can walk you through it.</span></div></div>
+</div>
+</div></section>
+<section class="slide" id="s-8" tabindex="0" aria-roledescription="slide" aria-label="8 of 9: Asset Protection, idea 1" data-title="Asset Protection, idea 1"><div class="inner">
+<div class="cols">
+  <div>
+    <p class="counter">Lane 4 of 4 · Idea 1 of 2</p>
     <h2>Asset Protection</h2>
     <div class="callout"><span class="tag">The break</span><p>The system can&#x27;t confirm the customer paid before they reach the door.</p></div>
   </div>
   <div class="visual"><div class="phone phone--wide" role="img" aria-label="Phone screen in three parts. What went wrong: We can&#x27;t see a payment for this cart yet. What to do next: a main button, Check the receipt in their app. Who can help: The front-end supervisor can confirm it."><span class="ph-notch"></span><span class="ph-label">What went wrong</span><span class="ph-title">We can&#x27;t see a payment for this cart yet.</span><span class="ph-label">What to do next</span><span class="ph-btn">Check the receipt in their app</span><span class="ph-label">Who can help</span><span class="ph-line">The front-end supervisor can confirm it.</span></div></div>
 </div>
 </div></section>
+<section class="slide" id="s-9" tabindex="0" aria-roledescription="slide" aria-label="9 of 9: Asset Protection, idea 2" data-title="Asset Protection, idea 2"><div class="inner">
+<div class="cols">
+  <div>
+    <p class="counter">Lane 4 of 4 · Idea 2 of 2</p>
+    <h2>Asset Protection</h2>
+    <div class="callout"><span class="tag">The break</span><p>The cart has an item the receipt doesn&#x27;t list.</p></div>
+  </div>
+  <div class="visual"><div class="phone phone--wide" role="img" aria-label="Phone screen in three parts. What went wrong: One item isn&#x27;t on this receipt. What to do next: a main button, Scan the item to add it. Who can help: The front-end supervisor can help sort it out."><span class="ph-notch"></span><span class="ph-label">What went wrong</span><span class="ph-title">One item isn&#x27;t on this receipt.</span><span class="ph-label">What to do next</span><span class="ph-btn">Scan the item to add it</span><span class="ph-label">Who can help</span><span class="ph-line">The front-end supervisor can help sort it out.</span></div></div>
+</div>
+</div></section>
 </div>
 <div class="bar">
   <button type="button" class="navbtn" id="prev" aria-label="Previous slide"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  <div class="dots" role="group" aria-label="Choose a slide"><button type="button" class="dot" aria-label="Go to slide 1: What could break in your lane?"></button><button type="button" class="dot" aria-label="Go to slide 2: Customer Experience"></button><button type="button" class="dot" aria-label="Go to slide 3: Technology"></button><button type="button" class="dot" aria-label="Go to slide 4: Workforce &amp; Training"></button><button type="button" class="dot" aria-label="Go to slide 5: Asset Protection"></button></div>
+  <div class="dots" role="group" aria-label="Choose a slide"><button type="button" class="dot" aria-label="Go to slide 1: What could break in your lane?"></button><button type="button" class="dot" aria-label="Go to slide 2: Customer Experience, idea 1"></button><button type="button" class="dot" aria-label="Go to slide 3: Customer Experience, idea 2"></button><button type="button" class="dot" aria-label="Go to slide 4: Technology, idea 1"></button><button type="button" class="dot" aria-label="Go to slide 5: Technology, idea 2"></button><button type="button" class="dot" aria-label="Go to slide 6: Workforce &amp; Training, idea 1"></button><button type="button" class="dot" aria-label="Go to slide 7: Workforce &amp; Training, idea 2"></button><button type="button" class="dot" aria-label="Go to slide 8: Asset Protection, idea 1"></button><button type="button" class="dot" aria-label="Go to slide 9: Asset Protection, idea 2"></button></div>
   <button type="button" class="navbtn" id="next" aria-label="Next slide"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </div>
 <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>

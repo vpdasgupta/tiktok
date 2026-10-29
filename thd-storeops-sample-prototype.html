@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Clickable Prototype – Marcus's Sample</title>
+<title>Clickable Prototype – Samples</title>
 <style>
   :root{
     --orange:#F96302;          /* main button fill only, dark text on it (5.65:1) */
@@ -46,6 +46,7 @@
   button[aria-disabled="true"]{opacity:.6;cursor:not-allowed}
   .controls{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:14px}
   .toggle{display:flex;align-items:center;gap:8px;min-height:44px;font-weight:600;cursor:pointer}
+  .toggle[hidden]{display:none}
   .toggle input{width:20px;height:20px;accent-color:var(--orange-text)}
   .where{font-size:.9rem;color:var(--muted);margin-bottom:10px}
 
@@ -85,6 +86,16 @@
   .caption{width:min(420px,100%);margin-top:12px;font-size:.95rem;background:#fff;border:1px solid var(--border);border-left:4px solid var(--orange-text);border-radius:6px;padding:10px 12px}
   .caption b{font-weight:700}
 
+  .chooser{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+  .chooser button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;line-height:1.3}
+  .chooser button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chooser .lane{font-weight:400;font-size:.8rem}
+  .chooser button[aria-pressed="false"] .lane{color:var(--muted)}
+  .phone.is-card .screen{gap:8px}
+  .steps{padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:.92rem;color:var(--ink)}
+  .steps li{background:var(--box);border-radius:6px;padding:7px 9px}
+  .tag.card{color:var(--ink);background:#fff;border:1px solid var(--frame)}
+  .code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1.3rem;letter-spacing:.12em}
   .jump{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
   .jump button{min-height:40px;font-size:.85rem;font-weight:600}
   .jump button[aria-current="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -103,23 +114,25 @@
 </head>
 <body>
 <main>
-  <p class="eyebrow">Project 3 — Sample clickable prototype</p>
-  <h1>Marcus's prototype: Cart on the hdPhone</h1>
-  <p class="intro">This is what done looks like: rough, gray, and easy for a stranger to follow. Click the buttons on the phone to move through it. It has a cover, 3 main-flow screens, and 1 screen for when something goes wrong. Each screen has a caption underneath.</p>
-  <p class="full-link"><a href="https://vpdasgupta.github.io/tiktok/thd-storeops-sample-prototype.html" target="_blank" rel="noopener">Open the sample prototype full page<span class="sr-only"> (opens in a new tab)</span></a></p>
+  <p class="eyebrow">Project 3 — Sample clickable prototypes</p>
+  <h1>Three sample prototypes, three kinds of ideas</h1>
+  <p class="intro">Pick the example closest to your lane, then click the buttons on the phone to move through it. Each one has a cover, 3 main-flow screens, and 1 screen for when something goes wrong, with a caption under every screen. They're kept simple on purpose. Yours can look however you like.</p>
+  <p class="full-link"><a href="https://vpdasgupta.github.io/tiktok/thd-storeops-sample-prototype.html" target="_blank" rel="noopener">Open the sample prototypes full page<span class="sr-only"> (opens in a new tab)</span></a></p>
 
   <div class="card">
+    <h2 id="h-choose">Choose an example</h2>
+    <div class="chooser" id="chooser" role="group" aria-labelledby="h-choose"></div>
     <div class="controls">
       <button type="button" id="back-btn">Back</button>
       <button type="button" id="restart-btn">Restart</button>
-      <label class="toggle"><input type="checkbox" id="bonus-toggle"> Show bonus screens</label>
+      <label class="toggle" id="bonus-wrap"><input type="checkbox" id="bonus-toggle"> Show bonus screens</label>
     </div>
     <p class="where" id="where"></p>
     <p class="sr-only" id="status" role="status" aria-live="polite" aria-atomic="true"></p>
 
     <div class="stage">
-      <section class="phone" id="phone" aria-label="Phone mockup: Sarah's hdPhone">
-        <div class="bar" aria-hidden="true"><span>hdPhone</span><span>Aisle 32</span></div>
+      <section class="phone" id="phone" aria-label="Phone mockup">
+        <div class="bar" aria-hidden="true"><span></span><span></span></div>
         <div id="screens"></div>
       </section>
       <p class="caption" id="caption"></p>
@@ -132,88 +145,147 @@
   </div>
 
   <div class="card notes">
-    <h2>What to notice</h2>
-    <ul>
-      <li><strong>Exactly 4 screens are required:</strong> 3 for the main flow and 1 for when something goes wrong. The cover doesn't count.</li>
-      <li><strong>The "goes wrong" screen comes from a Guess.</strong> Marcus's biggest Guess is that the hdPhone can find an online order, so his goes-wrong screen opens from the small "Cart not found?" button on Screen 1, where the scan happens. It says what went wrong, what to do next, and who can help.</li>
-      <li><strong>Every screen has a caption</strong> that starts "What this shows."</li>
-      <li><strong>Rough and gray.</strong> Gray boxes, plain words, and orange only on the main button. No logos or photos.</li>
-      <li><strong>Bonus screens are optional.</strong> Turn on "Show bonus screens" to see 2 stretch screens: the Pro desk's side of the hand-off and a "done" screen. Only build a bonus once your 4 work end to end.</li>
-      <li><strong>Path B looks like this.</strong> If you ask an AI chat to build your prototype as one HTML file, this is about the right amount of polish.</li>
-    </ul>
+    <h2 id="h-notes">What to notice</h2>
+    <ul id="notes"></ul>
   </div>
-  <footer>Example prototype — fictional customer and details, for format reference only.</footer>
+  <footer>Example prototypes — fictional customer and details, for format reference only.</footer>
 </main>
 
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
 
-  // kind: cover | main | wrong | bonus
-  var SCREENS = [
-    {id:'cover', kind:'cover', label:'Cover', title:'Cart on the hdPhone',
-     body:[
-       ['p','box','When Marcus shows his order code, Sarah\'s hdPhone pulls up his saved cart and sends it to the Pro desk. He pays without listing his items again.'],
-       ['p','small','This depends on one Guess: that the hdPhone can reach online orders. Home Depot would need to confirm it.']
-     ],
-     buttons:[{label:'Start', to:'s1', main:true}],
-     caption:'The cover: a title and the main point. It doesn\'t count toward the 4 screens.'},
-
-    {id:'s1', kind:'main', n:1, label:'Screen 1 · Main flow', title:'Find a Pro\'s order',
-     body:[
-       ['p','box tall','Camera box: point at the code on the customer\'s phone'],
-       ['p','small','Customer: Marcus R. (Pro)']
-     ],
-     buttons:[{label:'Scan code', to:'s2', main:true},{label:'Cart not found?', to:'w1', small:true}],
-     caption:'Sarah starts by scanning the code on Marcus\'s phone.'},
-
-    {id:'s2', kind:'main', n:2, label:'Screen 2 · Main flow', title:'Marcus\'s cart: 14 items',
-     list:[['2x4 stud, 8 ft (×40)','In stock'],['Drywall screws, 5 lb','In stock'],['Joint compound','In stock'],['+ 11 more items','In stock']],
-     buttons:[{label:'Send to Pro desk', to:'s3', main:true}],
-     caption:'His whole cart shows up on the hdPhone, so nothing gets rebuilt by hand.'},
-
-    {id:'s3', kind:'main', n:3, label:'Screen 3 · Main flow', title:'Sent to the Pro desk',
-     body:[
-       ['p','box','Order #4821 is waiting at the Pro desk.'],
-       ['p','box','Tell Marcus: pay at the Pro desk. His items are already loaded.']
-     ],
-     buttons:[{label:'Done', to:'cover', main:true},{label:'See the Pro desk\'s screen (bonus)', to:'b1', bonusOnly:true}],
-     caption:'The order gets to the Pro desk before Marcus does, so he just pays.'},
-
-    {id:'w1', kind:'wrong', n:4, label:'Screen 4', title:'Cart not found',
-     alert:['We couldn\'t find this cart.','Ask the customer to open the cart in their app and read you the order number.'],
-     body:[['p','small','Still stuck? The Pro desk can look up the order.']],
-     buttons:[{label:'Type order number', to:'s2', main:true}],
-     caption:'If the scan fails, Sarah knows what to do next and who can help.'},
-
-    {id:'b1', kind:'bonus', n:5, label:'Bonus screen 5 · Pro desk view', title:'Incoming order #4821',
-     bar:['Pro desk (OrderUp!)','Register 2'],
-     list:[['From','Aisle 32, Sarah'],['Customer','Marcus R. (Pro)'],['Items','14, all loaded']],
-     body:[['p','box','Ready to pay. No need to scan items again.']],
-     buttons:[{label:'Take payment', to:'b2', main:true}],
-     caption:'Bonus, the other side of the hand-off: the Pro desk sees the same order, so Marcus doesn\'t start over.'},
-
-    {id:'b2', kind:'bonus', n:6, label:'Bonus screen 6 · Done', title:'Paid',
-     bar:['Pro desk (OrderUp!)','Register 2'],
-     body:[['p','box','14 items paid. Receipt sent to Marcus\'s phone.'],['p','small','Time at the desk: about 2 minutes.']],
-     buttons:[{label:'Start over', to:'cover', main:true}],
-     caption:'Bonus, the "done" screen: Marcus leaves without listing a single item again.'}
+  var COMMON_NOTES = [
+    ['Exactly 4 screens are required:', ' 3 for the main flow and 1 for when something goes wrong. The cover doesn\'t count.'],
+    ['Every screen has a caption', ' that starts "What this shows."'],
+    ['The look is up to you.', ' These samples are plain so you can see what to include. Use your own colors, icons, and layout, as long as each screen has one clear main button and text that\'s easy to read.'],
+    ['Path B looks like this.', ' If you ask an AI chat to build your prototype as one HTML file, this is about the right amount of detail.']
   ];
-  var byId = {}; SCREENS.forEach(function(s){ byId[s.id] = s; });
 
-  var current = 'cover', history = [], showBonus = false;
+  // kind: cover | main | wrong | bonus. bar: [whose screen, where]
+  var PROTOS = {
+    cart: {
+      name:'Cart on the hdPhone', lanes:'Technology, Customer Experience', bonus:true,
+      notes:[
+        ['One associate\'s screens.', ' Every screen is Sarah\'s hdPhone, because she\'s the one doing something new.'],
+        ['The "goes wrong" screen comes from a Guess.', ' Marcus\'s biggest Guess is that the hdPhone can find an online order, so the goes-wrong screen opens from the small "Cart not found?" button on Screen 1, where the scan happens. It says what went wrong, what to do next, and who can help.'],
+        ['Bonus screens are optional.', ' Turn on "Show bonus screens" to see the Pro desk\'s side of the hand-off and a "done" screen.']
+      ],
+      screens:[
+        {id:'cover', kind:'cover', bar:["Sarah's hdPhone",'Aisle 32'], title:'Cart on the hdPhone',
+         body:[['p','box','When Marcus shows his order code, Sarah\'s hdPhone pulls up his saved cart and sends it to the Pro desk. He pays without listing his items again.'],
+               ['p','small','This depends on one Guess: that the hdPhone can reach online orders. Home Depot would need to confirm it.']],
+         buttons:[{label:'Start', to:'s1', main:true}],
+         caption:'The cover: a title and the main point. It doesn\'t count toward the 4 screens.'},
+        {id:'s1', kind:'main', n:1, bar:["Sarah's hdPhone",'Aisle 32'], title:'Find a Pro\'s order',
+         body:[['p','box tall','Camera box: point at the code on the customer\'s phone'],['p','small','Customer: Marcus R. (Pro)']],
+         buttons:[{label:'Scan code', to:'s2', main:true},{label:'Cart not found?', to:'w1', small:true}],
+         caption:'Sarah starts by scanning the code on Marcus\'s phone.'},
+        {id:'s2', kind:'main', n:2, bar:["Sarah's hdPhone",'Aisle 32'], title:'Marcus\'s cart: 14 items',
+         list:[['2x4 stud, 8 ft (×40)','In stock'],['Drywall screws, 5 lb','In stock'],['Joint compound','In stock'],['+ 11 more items','In stock']],
+         buttons:[{label:'Send to Pro desk', to:'s3', main:true}],
+         caption:'His whole cart shows up on the hdPhone, so nothing gets rebuilt by hand.'},
+        {id:'s3', kind:'main', n:3, bar:["Sarah's hdPhone",'Aisle 32'], title:'Sent to the Pro desk',
+         body:[['p','box','Order #4821 is waiting at the Pro desk.'],['p','box','Tell Marcus: pay at the Pro desk. His items are already loaded.']],
+         buttons:[{label:'Done', to:'cover', main:true},{label:'See the Pro desk\'s screen (bonus)', to:'b1', bonusOnly:true}],
+         caption:'The order gets to the Pro desk before Marcus does, so he just pays.'},
+        {id:'w1', kind:'wrong', n:4, bar:["Sarah's hdPhone",'Aisle 32'], title:'Cart not found',
+         alert:['We couldn\'t find this cart.','Ask the customer to open the cart in their app and read you the order number.'],
+         body:[['p','small','Still stuck? The Pro desk can look up the order.']],
+         buttons:[{label:'Type order number', to:'s2', main:true}],
+         caption:'If the scan fails, Sarah knows what to do next and who can help.'},
+        {id:'b1', kind:'bonus', n:5, bar:['Pro desk (OrderUp!)','Register 2'], title:'Incoming order #4821',
+         list:[['From','Aisle 32, Sarah'],['Customer','Marcus R. (Pro)'],['Items','14, all loaded']],
+         body:[['p','box','Ready to pay. No need to scan items again.']],
+         buttons:[{label:'Take payment', to:'b2', main:true}],
+         caption:'Bonus, the other side of the hand-off: the Pro desk sees the same order, so Marcus doesn\'t start over.'},
+        {id:'b2', kind:'bonus', n:6, bar:['Pro desk (OrderUp!)','Register 2'], title:'Paid',
+         body:[['p','box','14 items paid. Receipt sent to Marcus\'s phone.'],['p','small','Time at the desk: about 2 minutes.']],
+         buttons:[{label:'Start over', to:'cover', main:true}],
+         caption:'Bonus, the "done" screen: Marcus leaves without listing a single item again.'}
+      ]},
+    pay: {
+      name:'Pay in the aisle', lanes:'Asset Protection',
+      notes:[
+        ['A handoff between people.', ' Each screen belongs to someone different: Sarah\'s hdPhone, then Marcus\'s app, then the exit associate\'s hdPhone. The label at the top of the phone says whose screen it is.'],
+        ['The "goes wrong" screen comes from a Guess.', ' The biggest Guess is that the exit can see a payment taken in the aisle right away, so the goes-wrong screen opens from Screen 3, where the check happens.'],
+        ['It shows the Asset Protection tradeoff from Project 2.', ' The store knows Marcus paid, and the check still takes seconds. The goes-wrong screen stays calm: no alarms, no blame.']
+      ],
+      screens:[
+        {id:'cover', kind:'cover', bar:["Sarah's hdPhone",'Aisle 32'], title:'Pay in the aisle',
+         body:[['p','box','When Marcus pays on Sarah\'s hdPhone in the aisle, his app shows a paid receipt and the exit associate confirms it in seconds. He skips the checkout line, and the store still knows he paid.'],
+               ['p','small','This depends on one Guess: that the exit can see a payment taken in the aisle right away. Home Depot would need to confirm it.']],
+         buttons:[{label:'Start', to:'s1', main:true}],
+         caption:'The cover: a title and the main point. It doesn\'t count toward the 4 screens.'},
+        {id:'s1', kind:'main', n:1, bar:["Sarah's hdPhone",'Aisle 32'], title:'Marcus\'s cart: ready to pay',
+         list:[['Items','14, all scanned'],['Customer','Marcus R. (Pro)']],
+         body:[['p','box','Marcus taps his card on the hdPhone to pay.']],
+         buttons:[{label:'Take payment', to:'s2', main:true}],
+         caption:'Sarah takes payment in the aisle, so Marcus skips the checkout line.'},
+        {id:'s2', kind:'main', n:2, bar:["Marcus's app",'Home Depot app'], title:'Paid in Aisle 32',
+         body:[['p','box tall code','Receipt code: 7Q4-K2M'],['p','small','14 items. Show this code at the exit.']],
+         buttons:[{label:'Show receipt code', to:'s3', main:true}],
+         caption:'Marcus\'s app becomes his proof of payment.'},
+        {id:'s3', kind:'main', n:3, bar:["Exit associate's hdPhone",'Exit'], title:'Receipt check',
+         list:[['Paid','Aisle 32, 4 min ago'],['Items','14 of 14'],['Large items','40 studs, flatbed cart']],
+         buttons:[{label:'Confirm, all set', to:'cover', main:true},{label:'Payment not showing?', to:'w1', small:true}],
+         caption:'The exit associate confirms the sale in seconds, without unloading the cart.'},
+        {id:'w1', kind:'wrong', n:4, bar:["Exit associate's hdPhone",'Exit'], title:'Payment not showing yet',
+         alert:['We can\'t see a payment for this code yet.','Ask the customer to refresh the receipt in their app, then check again.'],
+         body:[['p','small','Still stuck? The front-end supervisor can confirm the sale.']],
+         buttons:[{label:'Check again', to:'s3', main:true}],
+         caption:'If the payment hasn\'t come through, the check stays calm and quick, and a supervisor can step in.'}
+      ]},
+    help: {
+      name:'Help in any aisle', lanes:'Workforce & Training',
+      notes:[
+        ['Screen 2 is a card screen.', ' Workforce & Training ideas are often about what an associate needs to know. A short answer card shows that on one screen, in the same phone-size layout.'],
+        ['The "goes wrong" screen comes from a Guess.', ' The biggest Guess is that the hdPhone knows who is free in Plumbing, so the goes-wrong screen opens from Screen 2, where Sarah asks for help.'],
+        ['It shows the Workforce & Training tradeoff from Project 2.', ' Sarah can help in any aisle, and the card tells her when to hand off to someone who knows the department.']
+      ],
+      screens:[
+        {id:'cover', kind:'cover', bar:["Sarah's hdPhone",'Lumber, Aisle 32'], title:'Help in any aisle',
+         body:[['p','box','When Marcus asks a plumbing question in lumber, Sarah\'s hdPhone gives her a short answer card and finds a plumbing associate who is free. Marcus gets help without walking the store.'],
+               ['p','small','This depends on one Guess: that the hdPhone knows who is free in each department. Home Depot would need to confirm it.']],
+         buttons:[{label:'Start', to:'s1', main:true}],
+         caption:'The cover: a title and the main point. It doesn\'t count toward the 4 screens.'},
+        {id:'s1', kind:'main', n:1, bar:["Sarah's hdPhone",'Lumber, Aisle 32'], title:'Help with another department',
+         list:[['Department','Plumbing'],['Question','Fittings for a water line']],
+         buttons:[{label:'Get the answer card', to:'s2', main:true}],
+         caption:'Sarah can start helping with a question from outside lumber.'},
+        {id:'s2', kind:'main', card:true, n:2, bar:["Sarah's hdPhone",'Lumber, Aisle 32'], title:'Answer card: water line fittings',
+         steps:['Ask what pipe he has and what it connects to.','Show him the fittings aisle on the store map.','Anything past the basics? Bring in Plumbing.'],
+         buttons:[{label:'Find a plumbing associate', to:'s3', main:true},{label:'No one free?', to:'w1', small:true}],
+         caption:'A short card gives Sarah a first answer and tells her when to hand off.'},
+        {id:'s3', kind:'main', n:3, bar:["Sarah's hdPhone",'Lumber, Aisle 32'], title:'Help is on the way',
+         body:[['p','box','A plumbing associate is coming to Aisle 32, in about 3 minutes.'],['p','box','Tell Marcus to wait here.']],
+         buttons:[{label:'Done', to:'cover', main:true}],
+         caption:'Marcus gets a real expert without leaving the aisle.'},
+        {id:'w1', kind:'wrong', n:4, bar:["Sarah's hdPhone",'Lumber, Aisle 32'], title:'No one free in Plumbing',
+         alert:['No plumbing associate is free right now.','Walk Marcus to the plumbing aisle and use the answer card. The plumbing desk phone can reach someone soon.'],
+         body:[['p','small','Still stuck? Your department supervisor can find someone.']],
+         buttons:[{label:'Call the plumbing desk', to:'s3', main:true}],
+         caption:'When no one is free, Sarah still has a next step and a person to call, so Marcus isn\'t left waiting.'}
+      ]}
+  };
+  var ORDER = ['cart', 'pay', 'help'];
+
+  var proto = 'cart', byId = {}, current = 'cover', history = [], showBonus = false;
 
   function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function P(){ return PROTOS[proto]; }
 
   function build(){
-    var wrap = $('screens');
-    SCREENS.forEach(function(s){
+    var wrap = $('screens'); wrap.textContent = ''; byId = {};
+    P().screens.forEach(function(s){
+      byId[s.id] = s;
       var sc = el('div', 'screen'); sc.id = 'scr-' + s.id; sc.hidden = true;
       var h = el('h2'); h.id = 'h-' + s.id; h.tabIndex = -1;
       if (s.kind !== 'cover'){
-        var lab = el('span', 'scr-label', s.label);
+        var lab = el('span', 'scr-label', s.kind === 'wrong' ? 'Screen 4' : (s.kind === 'bonus' ? 'Bonus screen ' + s.n : 'Screen ' + s.n + ' · Main flow'));
         if (s.kind === 'wrong'){ lab.appendChild(document.createTextNode(' ')); lab.appendChild(el('span', 'tag wrong', 'Goes wrong')); }
         if (s.kind === 'bonus'){ lab.appendChild(document.createTextNode(' ')); lab.appendChild(el('span', 'tag bonus', 'Bonus')); }
+        if (s.card){ lab.appendChild(document.createTextNode(' ')); lab.appendChild(el('span', 'tag card', 'Card screen')); }
         lab.appendChild(el('span', 'sr-only', ': '));
         h.appendChild(lab);
         h.appendChild(document.createTextNode(s.title));
@@ -235,6 +307,11 @@
         s.list.forEach(function(r){ var li = el('li'); li.appendChild(el('span', null, r[0])); li.appendChild(el('span', 'ok', r[1])); ul.appendChild(li); });
         sc.appendChild(ul);
       }
+      if (s.steps){
+        var ol = el('ol', 'steps');
+        s.steps.forEach(function(x){ ol.appendChild(el('li', null, x)); });
+        sc.appendChild(ol);
+      }
       (s.body || []).forEach(function(b){ sc.appendChild(el(b[0], b[1], b[2])); });
       sc.appendChild(el('div', 'spacer'));
       var btns = el('div', 'btns');
@@ -247,9 +324,36 @@
       sc.appendChild(btns);
       wrap.appendChild(sc);
     });
+    var notes = $('notes'); notes.textContent = '';
+    COMMON_NOTES.slice(0, 2).concat(P().notes, COMMON_NOTES.slice(2)).forEach(function(n){
+      var li = el('li'); li.appendChild(el('strong', null, n[0])); li.appendChild(document.createTextNode(n[1])); notes.appendChild(li);
+    });
+    $('bonus-wrap').hidden = !P().bonus;
+    if (!P().bonus){ showBonus = false; $('bonus-toggle').checked = false; }
   }
 
-  function visible(){ return SCREENS.filter(function(s){ return showBonus || s.kind !== 'bonus'; }); }
+  function renderChooser(){
+    var box = $('chooser'); box.textContent = '';
+    ORDER.forEach(function(k){
+      var b = el('button'); b.type = 'button';
+      b.appendChild(el('span', null, PROTOS[k].name));
+      b.appendChild(el('span', 'lane', PROTOS[k].lanes));
+      b.setAttribute('aria-pressed', k === proto ? 'true' : 'false');
+      b.addEventListener('click', function(){ choose(k, b); });
+      box.appendChild(b);
+    });
+  }
+  function choose(k, btn){
+    if (k === proto) return;
+    proto = k; history = []; current = 'cover';
+    build(); show(current); renderChooser();
+    var bs = $('chooser').querySelectorAll('button'); bs[ORDER.indexOf(k)].focus();
+    var st = $('status'); st.textContent = '';
+    setTimeout(function(){ st.textContent = 'Showing the ' + PROTOS[k].name + ' example, on its cover screen.'; }, 80);
+    try { window.history.replaceState(null, '', '?ex=' + k); } catch(e){}
+  }
+
+  function visible(){ return P().screens.filter(function(s){ return showBonus || s.kind !== 'bonus'; }); }
 
   function renderJump(){
     var ul = $('jump'); ul.textContent = '';
@@ -264,15 +368,15 @@
   }
 
   function show(id){
-    SCREENS.forEach(function(s){ $('scr-' + s.id).hidden = (s.id !== id); });
+    P().screens.forEach(function(s){ $('scr-' + s.id).hidden = (s.id !== id); });
     var s = byId[id];
     var phone = $('phone');
     phone.classList.toggle('is-wrong', s.kind === 'wrong');
     phone.classList.toggle('is-bonus', s.kind === 'bonus');
+    phone.classList.toggle('is-card', !!s.card);
     var bar = phone.querySelector('.bar');
-    var bt = s.bar || ['hdPhone', 'Aisle 32'];
-    bar.children[0].textContent = bt[0]; bar.children[1].textContent = bt[1];
-    phone.setAttribute('aria-label', s.kind === 'bonus' && s.bar ? 'Phone mockup: Pro desk screen' : 'Phone mockup: Sarah\'s hdPhone');
+    bar.children[0].textContent = s.bar[0]; bar.children[1].textContent = s.bar[1];
+    phone.setAttribute('aria-label', 'Phone mockup: ' + s.bar[0]);
 
     var cap = $('caption'); cap.textContent = '';
     cap.appendChild(el('b', null, s.kind === 'cover' ? 'About the cover: ' : 'What this shows: '));
@@ -281,7 +385,7 @@
     var req = s.kind === 'main' ? 'Screen ' + s.n + ' of 4 required (main flow)' :
               s.kind === 'wrong' ? 'Screen 4 of 4 required (goes wrong)' :
               s.kind === 'bonus' ? 'Bonus screen (optional)' : 'Cover (not one of the 4)';
-    $('where').textContent = 'You are on: ' + req + '.';
+    $('where').textContent = 'You are on: ' + req + ', ' + s.bar[0] + '.';
 
     Array.prototype.forEach.call(document.querySelectorAll('[data-bonus]'), function(b){ b.hidden = !showBonus; });
     $('back-btn').setAttribute('aria-disabled', history.length ? 'false' : 'true');
@@ -318,7 +422,11 @@
     }, 80);
   });
 
-  build(); show(current);
+  (function fromUrl(){
+    var m = /[?&#]ex=(cart|pay|help)\b/.exec(window.location.search + window.location.hash);
+    if (m) proto = m[1];
+  })();
+  renderChooser(); build(); show(current);
 })();
 </script>
 </body>

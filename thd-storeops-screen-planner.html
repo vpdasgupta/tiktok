@@ -98,6 +98,20 @@
   .ph-cap b{font-weight:700}
   .ph-break{margin-top:8px;font-size:.84rem;border-left:4px solid var(--wrong-edge);background:var(--wrong-bg);color:var(--wrong-ink);padding:6px 8px;border-radius:4px;overflow-wrap:anywhere}
   .empty-txt{color:var(--muted);font-style:italic}
+  .phone.is-card .phone-body{border-style:dashed}
+  .ph-kind{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+
+  .examples{margin-bottom:10px}
+  .ex-label{font-weight:700;font-size:.92rem;margin-bottom:6px}
+  .ex-btn{display:flex;flex-direction:column;align-items:flex-start;text-align:left;line-height:1.3}
+  .ex-lane{font-weight:400;font-size:.8rem;color:var(--muted)}
+  .lane-tip{font-size:.9rem;background:#FFF6EE;border-left:4px solid var(--orange-text);border-radius:4px;padding:8px 10px;margin:8px 0 4px;max-width:70ch}
+  .lane-tip[hidden]{display:none}
+  fieldset.flow{margin-top:10px}
+  .radio{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+  .radio input{width:20px;height:20px;margin-top:2px;flex:0 0 auto;accent-color:var(--orange-text)}
+  .radio .sub{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+  .opt{font-weight:400;color:var(--muted);font-size:.9rem}
 
   .status{font-weight:600;color:var(--ok);min-height:1.5em;margin:8px 0}
   .status.warn{color:var(--warn)}
@@ -125,7 +139,7 @@
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   @media print{
     body{background:#fff;padding:0;max-width:none}
-    .no-print,#planner,.full-link,.status,.fallback,.save-state,.tip,.preview-wrap .hint,dialog{display:none!important}
+    .no-print,#planner,.examples,.full-link,.status,.fallback,.save-state,.tip,.preview-wrap .hint,dialog{display:none!important}
     .card{border:0;padding:0}
     .layout{display:block}
     .preview-wrap{position:static;max-height:none;overflow:visible}
@@ -139,12 +153,19 @@
 <body>
 <main>
   <h1>Screen Planner: <span class="accent">Plan Your Screens</span></h1>
-  <p class="intro">Plan the 3 main-flow screens of your clickable prototype before you build anything. Pick one person and one moment, then plan one screen at a time. Keep it rough: a few words per box is plenty.</p>
+  <p class="intro">Plan the 3 main-flow screens of your clickable prototype before you build anything. Pick your lane, whose screens you'll show, and one moment, then plan one screen at a time. A few words per box is plenty.</p>
   <p class="full-link no-print"><a href="https://vpdasgupta.github.io/tiktok/thd-storeops-screen-planner.html" target="_blank" rel="noopener">Open the Screen Planner full page<span class="sr-only"> (opens in a new tab)</span></a></p>
 
   <div class="card">
+    <div class="no-print examples" role="group" aria-labelledby="ex-label">
+      <p class="ex-label" id="ex-label">See an example:</p>
+      <div class="actions">
+        <button type="button" class="ex-btn" data-ex="cart">Cart on the hdPhone <span class="ex-lane">Technology, Customer Experience</span></button>
+        <button type="button" class="ex-btn" data-ex="pay">Pay in the aisle <span class="ex-lane">Asset Protection</span></button>
+        <button type="button" class="ex-btn" data-ex="help">Help in any aisle <span class="ex-lane">Workforce &amp; Training</span></button>
+      </div>
+    </div>
     <div class="actions top-actions no-print">
-      <button type="button" id="example-btn">See Marcus's example</button>
       <button type="button" id="clear-btn">Clear</button>
     </div>
     <p class="status" id="status" role="status" aria-live="polite" aria-atomic="true"></p>
@@ -154,11 +175,28 @@
         <section class="block" aria-labelledby="h-who">
           <h2 id="h-who">Who and when</h2>
           <div class="field">
-            <label for="who">Who uses these screens?<span class="sub">One person. Example: "Sarah, an aisle associate"</span></label>
+            <label for="lane">Your lane</label>
+            <select id="lane">
+              <option value="">Choose your lane</option>
+              <option value="cx">Customer Experience</option>
+              <option value="tech">Technology</option>
+              <option value="wt">Workforce &amp; Training</option>
+              <option value="ap">Asset Protection</option>
+            </select>
+          </div>
+          <p class="lane-tip" id="lane-tip" hidden></p>
+          <fieldset class="flow">
+            <legend>Whose screens will you show?</legend>
+            <label class="radio"><input type="radio" name="flow" value="customer"> <span><b>The customer's screens</b><span class="sub">Their app or phone, step by step.</span></span></label>
+            <label class="radio"><input type="radio" name="flow" value="associate"> <span><b>One associate's screens</b><span class="sub">Their hdPhone. One screen can be a card, like a short answer card or checklist.</span></span></label>
+            <label class="radio"><input type="radio" name="flow" value="handoff"> <span><b>A handoff between people</b><span class="sub">Each screen can belong to someone different: the associate, then the customer, then the exit.</span></span></label>
+          </fieldset>
+          <div class="field">
+            <label for="who"><span id="who-label">Who uses these screens?</span><span class="sub" id="who-sub">One person. Example: "Sarah, an aisle associate"</span></label>
             <input type="text" id="who" maxlength="120">
           </div>
           <div class="field">
-            <label for="moment">The moment your prototype shows<span class="sub">One moment from your Project 2 notes, in a sentence or two.</span></label>
+            <label for="moment">The moment your prototype shows<span class="sub">A short stretch of your Project 2 blueprint (2 or 3 steps), in a sentence or two.</span></label>
             <textarea id="moment" rows="2" maxlength="400"></textarea>
           </div>
         </section>
@@ -194,6 +232,15 @@
             </div>
           </fieldset>
         </section>
+
+        <section class="block" aria-labelledby="h-look">
+          <h2 id="h-look">Your look <span class="opt">(optional)</span></h2>
+          <p class="hint">Building with AI? Describe the style you want in a few words. Leave it blank for a clean, simple look. Building in Canva? Skip this. You'll design the look yourself.</p>
+          <div class="field">
+            <label for="look">Style in a few words<span class="sub">Example: "bright and friendly, rounded buttons, big text" or "dark mode, like a store scanner"</span></label>
+            <input type="text" id="look" maxlength="160">
+          </div>
+        </section>
       </form>
 
       <section class="preview-wrap" aria-labelledby="h-preview">
@@ -217,7 +264,7 @@
     </div>
 
     <p class="save-state" id="save-state">Saved only in this browser on this device.</p>
-    <p class="tip">Your plan opens again on the next page, where you'll build from it. Building with AI? <strong>Copy AI build prompt</strong> gives you the whole prompt with your screens in it. Building in Canva? Keep this planner open next to Canva.</p>
+    <p class="tip">Your plan opens again on the next page, where you'll build from it. Building with AI? <strong>Copy AI build prompt</strong> gives you the whole prompt with your screens in it. Building in Canva? Keep this planner open next to your design.</p>
   </div>
 </main>
 
@@ -235,23 +282,51 @@
   var KEY = 'thd-storeops-p3-plan';
   var N = 3;
   var FIELDS = [
+    {k:'whose', label:'Whose screen is it?', sub:'Example: "Sarah\'s hdPhone" or "Marcus\'s app."', multi:false, max:80, opt:true},
     {k:'title', label:'Title', sub:'A few words at the top of the screen.', multi:false, max:80},
-    {k:'words', label:'Words', sub:'Two or three lines of plain words the person reads.', multi:true, max:300},
+    {k:'words', label:'Words', sub:'Two or three lines of plain words the person reads. On a card screen, a short list of 2 or 3 steps.', multi:true, max:300},
     {k:'tap',   label:'Button', sub:'The one button that moves them to the next screen.', multi:false, max:80},
     {k:'cap',   label:'What this shows', sub:'A one-line caption under the screen.', multi:false, max:160}
   ];
+  var LANES = {
+    cx:  {name:'Customer Experience', flow:'customer', tip:"Customer Experience ideas usually show the customer's screens. Show where the trip moves between online, the aisle, checkout, and pickup."},
+    tech:{name:'Technology', flow:'associate', tip:"Technology ideas usually show the associate's hdPhone. Show the moment one system passes information to another."},
+    wt:  {name:'Workforce & Training', flow:'associate', tip:"Workforce & Training ideas usually show the associate's screens. Show what they need to know or do, especially outside their own department. A card screen, like a short answer card or checklist, works well here."},
+    ap:  {name:'Asset Protection', flow:'handoff', tip:"Asset Protection ideas usually show a handoff between people. Show how the next person knows the customer paid, without slowing the trip down."}
+  };
+  var FLOWS = {customer:"The customer's screens", associate:"One associate's screens", handoff:'A handoff between people'};
 
-  function blankScreen(){ return {title:'', words:'', tap:'', cap:''}; }
-  function blank(){ return {who:'', moment:'', main:[blankScreen(), blankScreen(), blankScreen()], brk:{on:'', guess:''}}; }
-  var EXAMPLE = {
-    who:'Sarah, an aisle associate, helping Marcus (a Pro contractor)',
-    moment:'Marcus shows his order code in the aisle. Sarah pulls up his saved cart on her hdPhone and sends it to the Pro desk, so he can pay without listing his items again.',
-    main:[
-      {title:"Find a Pro's order", words:"Camera box: point at the code on the customer's phone. Customer: Marcus R. (Pro)", tap:'Scan code', cap:"Sarah starts by scanning the code on Marcus's phone."},
-      {title:"Marcus's cart: 14 items", words:'2x4 studs, drywall screws, joint compound, and 11 more items. Each one says In stock.', tap:'Send to Pro desk', cap:'His whole cart shows up on the hdPhone, so nothing gets rebuilt by hand.'},
-      {title:'Sent to the Pro desk', words:'Order #4821 is waiting at the Pro desk. Tell Marcus: pay at the Pro desk. His items are already loaded.', tap:'Done', cap:'The order gets to the Pro desk before Marcus does, so he just pays.'}
-    ],
-    brk:{on:'1', guess:"The hdPhone might not be able to find a customer's online cart."}
+  function blankScreen(){ return {whose:'', kind:'screen', title:'', words:'', tap:'', cap:''}; }
+  function blank(){ return {lane:'', flow:'', who:'', moment:'', look:'', main:[blankScreen(), blankScreen(), blankScreen()], brk:{on:'', guess:''}}; }
+  function scr(whose, kind, title, words, tap, cap){ return {whose:whose, kind:kind, title:title, words:words, tap:tap, cap:cap}; }
+  var EXAMPLES = {
+    cart: {name:'Cart on the hdPhone', lane:'tech', flow:'associate', look:'',
+      who:'Sarah, an aisle associate, helping Marcus (a Pro contractor)',
+      moment:'Marcus shows his order code in the aisle. Sarah pulls up his saved cart on her hdPhone and sends it to the Pro desk, so he can pay without listing his items again.',
+      main:[
+        scr("Sarah's hdPhone", 'screen', "Find a Pro's order", "Camera box: point at the code on the customer's phone. Customer: Marcus R. (Pro)", 'Scan code', "Sarah starts by scanning the code on Marcus's phone."),
+        scr("Sarah's hdPhone", 'screen', "Marcus's cart: 14 items", '2x4 studs, drywall screws, joint compound, and 11 more items. Each one says In stock.', 'Send to Pro desk', 'His whole cart shows up on the hdPhone, so nothing gets rebuilt by hand.'),
+        scr("Sarah's hdPhone", 'screen', 'Sent to the Pro desk', 'Order #4821 is waiting at the Pro desk. Tell Marcus: pay at the Pro desk. His items are already loaded.', 'Done', 'The order gets to the Pro desk before Marcus does, so he just pays.')
+      ],
+      brk:{on:'1', guess:"The hdPhone might not be able to find a customer's online cart."}},
+    pay: {name:'Pay in the aisle', lane:'ap', flow:'handoff', look:'',
+      who:'Sarah (aisle associate), Marcus (a Pro contractor), and the associate checking receipts at the exit',
+      moment:'Marcus pays for his cart on Sarah\'s hdPhone in the aisle. His app shows a paid receipt, and the exit associate confirms it, so he walks out without waiting in a second line.',
+      main:[
+        scr("Sarah's hdPhone", 'screen', "Marcus's cart: ready to pay", '14 items, all scanned. Marcus taps his card on the hdPhone to pay.', 'Take payment', 'Sarah takes payment in the aisle, so Marcus skips the checkout line.'),
+        scr("Marcus's app", 'screen', 'Paid in Aisle 32', '14 items. Show this receipt code at the exit.', 'Show receipt code', "Marcus's app becomes his proof of payment."),
+        scr("Exit associate's hdPhone", 'screen', 'Receipt check', 'Paid in Aisle 32, 4 minutes ago. 14 of 14 items, including 40 studs on a flatbed cart.', 'Confirm, all set', 'The exit associate confirms the sale in seconds, without unloading the cart.')
+      ],
+      brk:{on:'3', guess:"The exit associate's hdPhone might not see a payment taken in the aisle right away."}},
+    help: {name:'Help in any aisle', lane:'wt', flow:'associate', look:'',
+      who:'Sarah, an associate in lumber, helping Marcus (a Pro contractor) with a plumbing question',
+      moment:'Marcus asks Sarah, in lumber, which fittings he needs for a water line. Her hdPhone gives her a short answer card and finds a plumbing associate who is free, so Marcus gets help without walking the store.',
+      main:[
+        scr("Sarah's hdPhone", 'screen', 'Help with another department', 'Department: Plumbing. Question: fittings for a water line.', 'Get the answer card', 'Sarah can start helping with a question from outside lumber.'),
+        scr("Sarah's hdPhone", 'card', 'Answer card: water line fittings', '1. Ask what pipe he has and what it connects to. 2. Show him the fittings aisle on the store map. 3. Anything past the basics? Bring in Plumbing.', 'Find a plumbing associate', 'A short card gives Sarah a first answer and tells her when to hand off.'),
+        scr("Sarah's hdPhone", 'screen', 'Help is on the way', 'A plumbing associate is coming to Aisle 32 (lumber), in about 3 minutes. Tell Marcus to wait here.', 'Done', 'Marcus gets a real expert without leaving the aisle.')
+      ],
+      brk:{on:'2', guess:'The hdPhone might not know which plumbing associates are free right now.'}}
   };
 
   var state = blank();
@@ -261,10 +336,11 @@
   function clone(o){ return JSON.parse(JSON.stringify(o)); }
   function t(s){ return (s || '').trim(); }
   function one(s){ return t(s).replace(/\s*\n\s*/g, ' '); }
+  function radios(){ return Array.prototype.slice.call(document.querySelectorAll('input[name="flow"]')); }
 
   function hasContent(){
-    if (t(state.who) || t(state.moment) || state.brk.on || t(state.brk.guess)) return true;
-    return state.main.some(function(m){ return FIELDS.some(function(f){ return t(m[f.k]); }); });
+    if (state.lane || state.flow || t(state.who) || t(state.moment) || t(state.look) || state.brk.on || t(state.brk.guess)) return true;
+    return state.main.some(function(m){ return m.kind === 'card' || FIELDS.some(function(f){ return t(m[f.k]); }); });
   }
 
   // ---- announcements ----
@@ -296,10 +372,13 @@
   function valid(d){
     if (!d || typeof d !== 'object' || !Array.isArray(d.main)) return null;
     var out = blank();
-    out.who = str(d.who, 120); out.moment = str(d.moment, 400);
+    out.lane = LANES[d.lane] ? d.lane : '';
+    out.flow = FLOWS[d.flow] ? d.flow : '';
+    out.who = str(d.who, 120); out.moment = str(d.moment, 400); out.look = str(d.look, 160);
     for (var i = 0; i < N; i++){
       var m = d.main[i] || {};
       FIELDS.forEach(function(f){ out.main[i][f.k] = str(m[f.k], f.max); });
+      out.main[i].kind = m.kind === 'card' ? 'card' : 'screen';
     }
     var b = d.brk || {};
     out.brk = {on: ['1','2','3'].indexOf(b.on) > -1 ? b.on : '', guess: str(b.guess, 300)};
@@ -317,6 +396,7 @@
   function field(id, f, value, onInput){
     var wrap = el('div', 'field');
     var lab = el('label', null, f.label); lab.htmlFor = id;
+    if (f.opt) lab.appendChild(el('span', 'opt', state.flow === 'handoff' ? '' : ' (optional)'));
     if (f.sub) lab.appendChild(el('span', 'sub', f.sub));
     var inp = document.createElement(f.multi ? 'textarea' : 'input');
     if (f.multi) inp.rows = 2; else inp.type = 'text';
@@ -325,19 +405,57 @@
     wrap.appendChild(lab); wrap.appendChild(inp);
     return wrap;
   }
+  function kindField(i, m){
+    var wrap = el('div', 'field');
+    var lab = el('label', null, 'Screen type'); lab.htmlFor = 'm' + i + '-kind';
+    lab.appendChild(el('span', 'sub', 'A card screen is laid out like a short answer card, checklist, or receipt.'));
+    var sel = document.createElement('select'); sel.id = 'm' + i + '-kind';
+    [['screen','Regular screen'],['card','Card screen']].forEach(function(o){
+      var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; sel.appendChild(op);
+    });
+    sel.value = m.kind;
+    sel.addEventListener('change', function(){ m.kind = sel.value; edited(); });
+    wrap.appendChild(lab); wrap.appendChild(sel);
+    return wrap;
+  }
   function renderMain(){
     var list = $('main-list'); list.textContent = '';
     state.main.forEach(function(m, i){
       var fs = el('fieldset');
       fs.appendChild(el('legend', null, 'Screen ' + (i+1) + ' of ' + N));
-      FIELDS.forEach(function(f){
+      FIELDS.forEach(function(f, j){
         fs.appendChild(field('m'+i+'-'+f.k, f, m[f.k], function(v){ m[f.k] = v; }));
+        if (j === 0) fs.appendChild(kindField(i, m));
       });
       list.appendChild(fs);
     });
   }
+  function renderLane(){
+    var tip = $('lane-tip');
+    if (LANES[state.lane]){ tip.textContent = LANES[state.lane].tip; tip.hidden = false; }
+    else { tip.textContent = ''; tip.hidden = true; }
+    radios().forEach(function(r){ r.checked = r.value === state.flow; });
+    var hand = state.flow === 'handoff';
+    $('who-label').textContent = hand ? "Who's involved?" : 'Who uses these screens?';
+    $('who-sub').textContent = hand ? 'Everyone in the handoff. Example: "Sarah (aisle associate), Marcus (a Pro), and the exit associate"'
+      : (state.flow === 'customer' ? 'One person. Example: "Marcus, a Pro contractor"' : 'One person. Example: "Sarah, an aisle associate"');
+  }
+  $('lane').addEventListener('change', function(){
+    state.lane = $('lane').value;
+    var msg = '';
+    if (LANES[state.lane] && !state.flow){
+      state.flow = LANES[state.lane].flow;
+      msg = 'Suggested for your lane: ' + FLOWS[state.flow] + '. You can change it.';
+    }
+    renderLane(); renderMain(); applyStep(); edited();
+    if (msg) announce(msg);
+  });
+  radios().forEach(function(r){
+    r.addEventListener('change', function(){ if (r.checked){ state.flow = r.value; renderLane(); renderMain(); applyStep(); edited(); } });
+  });
   $('who').addEventListener('input', function(){ state.who = $('who').value; edited(); });
   $('moment').addEventListener('input', function(){ state.moment = $('moment').value; edited(); });
+  $('look').addEventListener('input', function(){ state.look = $('look').value; edited(); });
   $('b-on').addEventListener('change', function(){ state.brk.on = $('b-on').value; edited(); });
   $('b-guess').addEventListener('input', function(){ state.brk.guess = $('b-guess').value; edited(); });
 
@@ -377,9 +495,10 @@
 
   // ---- preview ----
   function phone(m, i){
-    var li = el('li', 'phone');
-    li.appendChild(el('p', 'phone-label', 'Screen ' + (i+1) + ' · Main flow'));
+    var li = el('li', 'phone' + (m.kind === 'card' ? ' is-card' : ''));
+    li.appendChild(el('p', 'phone-label', 'Screen ' + (i+1) + ' · ' + (t(m.whose) || 'Main flow')));
     var body = el('div', 'phone-body');
+    if (m.kind === 'card') body.appendChild(el('p', 'ph-kind', 'Card screen'));
     var ti = el('p', 'ph-title' + (t(m.title) ? '' : ' empty'));
     ti.appendChild(el('span', 'sr-only', 'Title: '));
     ti.appendChild(document.createTextNode(t(m.title) || 'Title not filled in yet'));
@@ -404,20 +523,25 @@
   function showCurrentPhone(){
     Array.prototype.forEach.call($('board').children, function(li, i){ li.classList.toggle('off', i !== cur); });
   }
+  function metaLine(label, value){
+    var p = el('p'); p.appendChild(el('strong', null, label)); p.appendChild(document.createTextNode(value || 'Not filled in yet')); return p;
+  }
   function renderPreview(){
     var meta = $('board-meta'); meta.textContent = '';
-    var p1 = el('p'); p1.appendChild(el('strong', null, 'Who: ')); p1.appendChild(document.createTextNode(t(state.who) || 'Not filled in yet'));
-    var p2 = el('p'); p2.appendChild(el('strong', null, 'The moment: ')); p2.appendChild(document.createTextNode(t(state.moment) || 'Not filled in yet'));
-    meta.appendChild(p1); meta.appendChild(p2);
+    if (LANES[state.lane]) meta.appendChild(metaLine('Lane: ', LANES[state.lane].name));
+    meta.appendChild(metaLine('Whose screens: ', FLOWS[state.flow] || ''));
+    meta.appendChild(metaLine(state.flow === 'handoff' ? "Who's involved: " : 'Who: ', t(state.who)));
+    meta.appendChild(metaLine('The moment: ', t(state.moment)));
     var board = $('board'); board.textContent = '';
     state.main.forEach(function(m, i){ board.appendChild(phone(m, i)); });
     showCurrentPhone();
   }
 
   function renderAll(){
-    $('who').value = state.who; $('moment').value = state.moment;
+    $('lane').value = state.lane;
+    $('who').value = state.who; $('moment').value = state.moment; $('look').value = state.look;
     $('b-on').value = state.brk.on; $('b-guess').value = state.brk.guess;
-    renderMain(); renderPreview(); applyStep();
+    renderLane(); renderMain(); renderPreview(); applyStep();
   }
   function edited(){ $('fallback').hidden = true; renderPreview(); save(); }
 
@@ -445,15 +569,19 @@
   $('confirm-ok').addEventListener('click', function(){ closeDlg(true); });
   dlg.addEventListener('cancel', function(e){ e.preventDefault(); closeDlg(false); });
 
-  // ---- example + clear ----
-  $('example-btn').addEventListener('click', function(){
-    var go = function(){
-      state = clone(EXAMPLE); cur = 0; renderAll(); save(); $('fallback').hidden = true;
-      $('example-btn').focus();
-      announce("Marcus's example loaded. Showing screen 1 of 3. Use Next screen to see the rest.");
-    };
-    if (hasContent()) ask("Replace your plan with Marcus's example?", 'What you wrote will be erased. Copy or print it first if you want to keep it.', 'Yes, show example', go, $('example-btn'));
-    else go();
+  // ---- examples + clear ----
+  Array.prototype.forEach.call(document.querySelectorAll('.ex-btn'), function(btn){
+    btn.addEventListener('click', function(){
+      var ex = EXAMPLES[btn.getAttribute('data-ex')];
+      var go = function(){
+        var d = clone(ex); delete d.name;
+        state = d; cur = 0; renderAll(); save(); $('fallback').hidden = true;
+        btn.focus();
+        announce('Example loaded: ' + ex.name + ', for the ' + LANES[ex.lane].name + ' lane. Showing screen 1 of 3. Use Next screen to see the rest.');
+      };
+      if (hasContent()) ask('Replace your plan with the ' + ex.name + ' example?', 'What you wrote will be erased. Copy or print it first if you want to keep it.', 'Yes, show example', go, btn);
+      else go();
+    });
   });
   $('clear-btn').addEventListener('click', function(){
     if (!hasContent()){ announce('Your planner is already empty.'); return; }
@@ -468,31 +596,40 @@
   function firstMissing(){
     for (var i = 0; i < N; i++){
       for (var j = 0; j < FIELDS.length; j++){
-        if (!t(state.main[i][FIELDS[j].k])) return {i:i, f:FIELDS[j]};
+        var f = FIELDS[j];
+        if (f.opt && state.flow !== 'handoff') continue;
+        if (!t(state.main[i][f.k])) return {i:i, f:f};
       }
     }
     return null;
   }
   function asPrompt(){
     var s = state, out = [
-      'Here are my notes for a clickable prototype of a Home Depot store idea:', '',
-      'Who uses it: ' + one(s.who), 'The moment: ' + one(s.moment), ''];
+      'Here are my notes for a clickable prototype of a Home Depot store idea:', ''];
+    if (LANES[s.lane]) out.push('My lane: ' + LANES[s.lane].name);
+    out.push('Whose screens: ' + FLOWS[s.flow]);
+    out.push((s.flow === 'handoff' ? "Who's involved: " : 'Who uses it: ') + one(s.who));
+    out.push('The moment: ' + one(s.moment));
+    out.push('');
     s.main.forEach(function(m, i){
       out.push('Screen ' + (i+1));
+      out.push("Whose screen: " + (one(m.whose) || one(s.who)));
+      out.push('Type: ' + (m.kind === 'card' ? 'card screen (lay it out like a short card: a heading, then a numbered list)' : 'regular screen'));
       out.push('Title: ' + one(m.title));
       out.push('Words: ' + one(m.words));
       out.push('Button: ' + one(m.tap));
       out.push('What this shows: ' + one(m.cap));
       out.push('');
     });
+    var look = one(s.look);
     out = out.concat([
       'Build ONE self-contained HTML file, with all styling and code inside it and nothing loaded from the internet. Rules:',
-      '1. Show each screen as a phone-size card (about 390 x 844 pixels), centered, one screen at a time.',
+      '1. Show each screen as a phone-size card (about 390 x 844 pixels), centered, one screen at a time. Above each screen, show a small label saying whose screen it is.',
       '2. Use the title, words, and button from my notes for each screen, word for word.',
       '3. Make every button a real HTML button that opens the next screen. The last screen\'s button goes back to Screen 1.',
       '4. Under each screen, show its caption from my notes, starting "What this shows:".',
-      '5. Keep it rough and gray: white, light gray, and dark gray only. Use Home Depot orange (#F96302) only for the main button, with dark text on it. No logos, photos, or icons.',
-      '6. Make it accessible: buttons that work with the keyboard, readable contrast, a visible focus outline, and the screen title as a heading. When the screen changes, move keyboard focus to the new title.',
+      '5. ' + (look ? 'Style: ' + look + '.' : 'Keep the look clean and simple.') + ' Give every screen the same look, with the main button in the same spot and the same style on each one. You can use Home Depot orange (#F96302) for the main button, with dark text on it. Don\'t try to draw the Home Depot logo (a drawn copy looks off-brand; I can add the real one myself), and don\'t use photos of real people.',
+      '6. Make it accessible: buttons that work with the keyboard, text contrast of at least 4.5 to 1, a visible focus outline, and the screen title as a heading. When the screen changes, move keyboard focus to the new title.',
       '7. Use only what\'s in my notes. Don\'t invent Home Depot systems or numbers, and don\'t add screens or buttons I didn\'t give you.',
       '',
       'Give me the complete file to download.'
@@ -520,15 +657,20 @@
     } else { if (legacyCopy(text, btn)) done(); else fail(); }
   }
   $('copy-btn').addEventListener('click', function(){
+    if (!state.flow){
+      announceOut('Choose whose screens you will show first.', true);
+      radios()[0].focus();
+      return;
+    }
     if (!t(state.who) || !t(state.moment)){
-      announceOut('Fill in who uses the screens and the moment first.', true);
+      announceOut('Fill in who is involved and the moment first.', true);
       $(t(state.who) ? 'moment' : 'who').focus();
       return;
     }
     var miss = firstMissing();
     if (miss){
       goTo(miss.i, true);
-      announceOut('Screen ' + (miss.i+1) + ' still needs its ' + miss.f.label.toLowerCase() + '. Fill it in, then copy again.', true);
+      announceOut('Screen ' + (miss.i+1) + ' still needs its ' + miss.f.label.toLowerCase().replace('?', '') + '. Fill it in, then copy again.', true);
       $('m' + miss.i + '-' + miss.f.k).focus();
       return;
     }

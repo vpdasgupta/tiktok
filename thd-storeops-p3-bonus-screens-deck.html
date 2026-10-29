@@ -75,6 +75,11 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
 .pills li { display:flex; align-items:center; gap:.6rem; background:var(--chip); border-radius:999px;
   padding:.35rem .9rem .35rem .4rem; font-weight:600; font-size:1rem; line-height:1.25; }
 
+.terms { list-style:none; padding:0; margin:.2em 0 .7em; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:.45rem .8rem; max-width:44rem; }
+.terms li { background:var(--chip); border-radius:10px; padding:.45em .75em; font-size:1rem; line-height:1.35; }
+.terms b { display:block; text-transform:uppercase; letter-spacing:.05em; font-size:.8rem; color:var(--muted); }
+.terms .q { font-weight:600; }
+
 /* phone mockups: always a light screen, like a screenshot */
 .phone { width:clamp(170px, 26vw, 210px); background:#ffffff; color:#14211f; border:6px solid var(--frame);
   border-radius:26px; padding:10px 12px 14px; display:flex; flex-direction:column; gap:7px;
@@ -126,6 +131,7 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
   .cols, .cols--even { grid-template-columns:1fr; }
   .cols > .visual { align-items:flex-start; }
   .pills { max-width:none; }
+  .terms { grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -133,17 +139,17 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
 <main>
 <div class="carousel" id="carousel" role="region" aria-roledescription="carousel" aria-label="Bonus screens menu">
 <div class="deck" id="deck">
-<section class="slide" id="s-1" tabindex="0" aria-roledescription="slide" aria-label="1 of 5: Bonus screens: pick up to 2" data-title="Bonus screens: pick up to 2"><div class="inner">
+<section class="slide" id="s-1" tabindex="0" aria-roledescription="slide" aria-label="1 of 6: Bonus screens: pick up to 2" data-title="Bonus screens: pick up to 2"><div class="inner">
 <div class="solo">
   <p class="eyebrow">Optional</p>
   <h1>Bonus screens: pick up to 2</h1>
   <p>Only after your 4 required screens work end to end. Skipping them never costs you points. Give each one a caption and link it in like the others.</p>
 </div>
 </div></section>
-<section class="slide" id="s-2" tabindex="0" aria-roledescription="slide" aria-label="2 of 5: A second &quot;goes wrong&quot; screen" data-title="A second &quot;goes wrong&quot; screen"><div class="inner">
+<section class="slide" id="s-2" tabindex="0" aria-roledescription="slide" aria-label="2 of 6: A second &quot;goes wrong&quot; screen" data-title="A second &quot;goes wrong&quot; screen"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Bonus 1 of 4</p>
+    <p class="counter">Bonus 1 of 5</p>
     <h2>A second &ldquo;goes wrong&rdquo; screen</h2>
     <p class="label">What it shows</p>
     <p>A different break, from another Guess in your Project 2 notes.</p>
@@ -151,21 +157,21 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
   <figure class="visual"><p class="ex-label">Marcus example</p><div class="phone" role="img" aria-label="Phone screen. Title: The Pro desk can&#x27;t open this order. Text: Read the order number out loud to the Pro desk. Main button: Show order number."><span class="ph-notch"></span><span class="ph-title">The Pro desk can&#x27;t open this order</span><span class="ph-line">Read the order number out loud to the Pro desk.</span><span class="ph-btn">Show order number</span><span class="ph-btn2"></span></div></figure>
 </div>
 </div></section>
-<section class="slide" id="s-3" tabindex="0" aria-roledescription="slide" aria-label="3 of 5: The other side of the hand-off" data-title="The other side of the hand-off"><div class="inner">
+<section class="slide" id="s-3" tabindex="0" aria-roledescription="slide" aria-label="3 of 6: The other side of the hand-off" data-title="The other side of the hand-off"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Bonus 2 of 4</p>
+    <p class="counter">Bonus 2 of 5</p>
     <h2>The other side of the hand-off</h2>
     <p class="label">What it shows</p>
-    <p>What the other person sees at the same moment: the associate, the Pro desk, or the back room.</p>
+    <p>What the other person sees at the same moment: the customer, the Pro desk, the exit, or the back room.</p>
   </div>
   <figure class="visual"><p class="ex-label">Marcus example</p><div class="phone" role="img" aria-label="Phone screen. Title: Order from Sarah. Text: 14 items, ready to pay. Main button: Take payment."><span class="ph-notch"></span><span class="ph-title">Order from Sarah</span><span class="ph-line">14 items, ready to pay.</span><span class="ph-box"></span><span class="ph-btn">Take payment</span><span class="ph-btn2"></span></div></figure>
 </div>
 </div></section>
-<section class="slide" id="s-4" tabindex="0" aria-roledescription="slide" aria-label="4 of 5: A &quot;done&quot; screen" data-title="A &quot;done&quot; screen"><div class="inner">
+<section class="slide" id="s-4" tabindex="0" aria-roledescription="slide" aria-label="4 of 6: A &quot;done&quot; screen" data-title="A &quot;done&quot; screen"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Bonus 3 of 4</p>
+    <p class="counter">Bonus 3 of 5</p>
     <h2>A &ldquo;done&rdquo; screen</h2>
     <p class="label">What it shows</p>
     <p>What the customer sees when it worked, like a confirmation or receipt.</p>
@@ -173,10 +179,10 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
   <figure class="visual"><p class="ex-label">Marcus example</p><div class="phone" role="img" aria-label="Marcus&#x27;s app. Phone screen. Title: Paid at the Pro desk. Text: 14 of 14 items. Main button: View receipt."><span class="ph-notch"></span><span class="ph-title">Paid at the Pro desk</span><span class="ph-line">14 of 14 items.</span><span class="ph-box"></span><span class="ph-btn">View receipt</span><span class="ph-btn2"></span></div></figure>
 </div>
 </div></section>
-<section class="slide" id="s-5" tabindex="0" aria-roledescription="slide" aria-label="5 of 5: A &quot;today&quot; screen" data-title="A &quot;today&quot; screen"><div class="inner">
+<section class="slide" id="s-5" tabindex="0" aria-roledescription="slide" aria-label="5 of 6: A &quot;today&quot; screen" data-title="A &quot;today&quot; screen"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Bonus 4 of 4</p>
+    <p class="counter">Bonus 4 of 5</p>
     <h2>A &ldquo;today&rdquo; screen</h2>
     <p class="label">What it shows</p>
     <p>How the friction looks now, so leaders see the before and after.</p>
@@ -184,10 +190,21 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
   <figure class="visual"><p class="ex-label">Marcus example</p><div class="phone" role="img" aria-label="Sarah&#x27;s hdPhone today. Phone screen. Title: Cart. Text: No items yet."><span class="ph-notch"></span><span class="ph-title">Cart</span><span class="ph-line">No items yet.</span><span class="ph-box"></span><span class="ph-box"></span></div><figcaption class="cap">Marcus reads 14 items off his phone while Sarah types them in.</figcaption></figure>
 </div>
 </div></section>
+<section class="slide" id="s-6" tabindex="0" aria-roledescription="slide" aria-label="6 of 6: A training moment" data-title="A training moment"><div class="inner">
+<div class="cols">
+  <div>
+    <p class="counter">Bonus 5 of 5</p>
+    <h2>A training moment</h2>
+    <p class="label">What it shows</p>
+    <p>What an associate sees the first time they use your idea: a short how-to card, 3 steps or fewer.</p>
+  </div>
+  <figure class="visual"><p class="ex-label">Help in any aisle example</p><div class="phone" role="img" aria-label="Sarah&#x27;s hdPhone, card screen. Phone screen. Title: First time? 3 quick steps. Text: 1 Pick the department. 2 Read the answer card. 3 Hand off if it&#x27;s past the basics. Main button: Got it."><span class="ph-notch"></span><span class="ph-title">First time? 3 quick steps</span><span class="ph-line">1 Pick the department. 2 Read the answer card. 3 Hand off if it&#x27;s past the basics.</span><span class="ph-btn">Got it</span><span class="ph-btn2"></span></div></figure>
+</div>
+</div></section>
 </div>
 <div class="bar">
   <button type="button" class="navbtn" id="prev" aria-label="Previous slide"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  <div class="dots" role="group" aria-label="Choose a slide"><button type="button" class="dot" aria-label="Go to slide 1: Bonus screens: pick up to 2"></button><button type="button" class="dot" aria-label="Go to slide 2: A second &quot;goes wrong&quot; screen"></button><button type="button" class="dot" aria-label="Go to slide 3: The other side of the hand-off"></button><button type="button" class="dot" aria-label="Go to slide 4: A &quot;done&quot; screen"></button><button type="button" class="dot" aria-label="Go to slide 5: A &quot;today&quot; screen"></button></div>
+  <div class="dots" role="group" aria-label="Choose a slide"><button type="button" class="dot" aria-label="Go to slide 1: Bonus screens: pick up to 2"></button><button type="button" class="dot" aria-label="Go to slide 2: A second &quot;goes wrong&quot; screen"></button><button type="button" class="dot" aria-label="Go to slide 3: The other side of the hand-off"></button><button type="button" class="dot" aria-label="Go to slide 4: A &quot;done&quot; screen"></button><button type="button" class="dot" aria-label="Go to slide 5: A &quot;today&quot; screen"></button><button type="button" class="dot" aria-label="Go to slide 6: A training moment"></button></div>
   <button type="button" class="navbtn" id="next" aria-label="Next slide"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </div>
 <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>

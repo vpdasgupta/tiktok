@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Build It in Canva: Step by Step | Project 3</title>
+<title>Design It in Canva: Step by Step | Project 3</title>
 <style>
 :root {
   --ink:#14211f; --muted:#4a5754; --line:#d5dbd9; --card:#ffffff; --bar:#f4f6f5;
@@ -75,6 +75,11 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
 .pills li { display:flex; align-items:center; gap:.6rem; background:var(--chip); border-radius:999px;
   padding:.35rem .9rem .35rem .4rem; font-weight:600; font-size:1rem; line-height:1.25; }
 
+.terms { list-style:none; padding:0; margin:.2em 0 .7em; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:.45rem .8rem; max-width:44rem; }
+.terms li { background:var(--chip); border-radius:10px; padding:.45em .75em; font-size:1rem; line-height:1.35; }
+.terms b { display:block; text-transform:uppercase; letter-spacing:.05em; font-size:.8rem; color:var(--muted); }
+.terms .q { font-weight:600; }
+
 /* phone mockups: always a light screen, like a screenshot */
 .phone { width:clamp(170px, 26vw, 210px); background:#ffffff; color:#14211f; border:6px solid var(--frame);
   border-radius:26px; padding:10px 12px 14px; display:flex; flex-direction:column; gap:7px;
@@ -126,76 +131,85 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
   .cols, .cols--even { grid-template-columns:1fr; }
   .cols > .visual { align-items:flex-start; }
   .pills { max-width:none; }
+  .terms { grid-template-columns:1fr; }
 }
 </style>
 </head>
 <body>
 <main>
-<div class="carousel" id="carousel" role="region" aria-roledescription="carousel" aria-label="Build it in Canva, step by step">
+<div class="carousel" id="carousel" role="region" aria-roledescription="carousel" aria-label="Design it in Canva, step by step">
 <div class="deck" id="deck">
-<section class="slide" id="s-1" tabindex="0" aria-roledescription="slide" aria-label="1 of 7: Build it in Canva" data-title="Build it in Canva"><div class="inner">
+<section class="slide" id="s-1" tabindex="0" aria-roledescription="slide" aria-label="1 of 8: Design it in Canva" data-title="Design it in Canva"><div class="inner">
 <div class="cols">
   <div>
     <p class="eyebrow">Path A · Canva</p>
-    <h1>Build it in Canva</h1>
-    <p>Six steps. Keep your Screen Planner open next to this.</p>
+    <h1>Design it in Canva</h1>
+    <p>Your screens, your style. Seven steps. Keep your Screen Planner open next to this.</p>
   </div>
   <div class="visual minirow" aria-hidden="true"><span class="mini"><span class="ln"></span><span class="ln ln--s"></span><span class="ln"></span><span class="mb mb--gray"></span></span><svg class="arr" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mini"><span class="ln"></span><span class="ln ln--s"></span><span class="ln"></span><span class="mb mb--gray"></span></span><svg class="arr" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="mini"><span class="ln"></span><span class="ln ln--s"></span><span class="ln"></span><span class="mb mb--gray"></span></span></div>
 </div>
 </div></section>
-<section class="slide" id="s-2" tabindex="0" aria-roledescription="slide" aria-label="2 of 7: Copy the template" data-title="Copy the template"><div class="inner">
+<section class="slide" id="s-2" tabindex="0" aria-roledescription="slide" aria-label="2 of 8: Start a phone-size design" data-title="Start a phone-size design"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Step 1 of 6</p>
-    <h2>Copy the template</h2>
-    <p>Open the template and select <strong>Use template</strong>. Canva makes your own copy.</p>
+    <p class="counter">Step 1 of 7</p>
+    <h2>Start a phone-size design</h2>
+    <p>On Canva&rsquo;s home page, select <strong>Custom size</strong>. Type <strong>390</strong> wide by <strong>844</strong> tall, in px, then select <strong>Create new design</strong>. That&rsquo;s the size of a phone screen.</p>
   </div>
-  <div class="visual"><span class="chip-btn" role="img" aria-label="The Use template button">Use template</span></div>
+  <div class="visual"><span class="chip-btn chip-btn--dark" role="img" aria-label="Custom size: 390 by 844 px">390 × 844 px</span></div>
 </div>
 </div></section>
-<section class="slide" id="s-3" tabindex="0" aria-roledescription="slide" aria-label="3 of 7: Make Screen 1" data-title="Make Screen 1"><div class="inner">
+<section class="slide" id="s-3" tabindex="0" aria-roledescription="slide" aria-label="3 of 8: Get ideas first" data-title="Get ideas first"><div class="inner">
+<div class="solo">
+  <div>
+    <p class="counter">Step 2 of 7</p>
+    <h2>Get ideas first</h2>
+    <p>Open two or three apps you use every day and look at one screen in each. Where does the main button sit? How much text is there? You can also browse Canva&rsquo;s mobile prototype templates (the link is on this page).</p><div class="callout"><span class="tag">Tip</span><p>Borrow a layout, not a look. Your words and your idea make it yours.</p></div>
+  </div>
+</div>
+</div></section>
+<section class="slide" id="s-4" tabindex="0" aria-roledescription="slide" aria-label="4 of 8: Find your parts" data-title="Find your parts"><div class="inner">
+<div class="solo">
+  <div>
+    <p class="counter">Step 3 of 7</p>
+    <h2>Find your parts</h2>
+    <p>Open <strong>Elements</strong> on the left and search for what you need:</p><ul class="terms"><li><b>Buttons</b><span class="q">button, rounded rectangle</span></li><li><b>Icons</b><span class="q">scan icon, cart icon, receipt icon, checklist icon, map pin icon</span></li><li><b>Phone details</b><span class="q">phone status bar, app header</span></li><li><b>Card screens</b><span class="q">checklist, note card, receipt</span></li><li><b>Codes</b><span class="q">Apps, then search QR code</span></li><li><b>Free only</b><span class="q">Skip items with a crown. Those are Pro.</span></li></ul>
+  </div>
+</div>
+</div></section>
+<section class="slide" id="s-5" tabindex="0" aria-roledescription="slide" aria-label="5 of 8: Make Screen 1, then duplicate it" data-title="Make Screen 1, then duplicate it"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Step 2 of 6</p>
-    <h2>Make Screen 1</h2>
-    <p>Select the sample screen, then <strong>Duplicate page</strong>. Change the title, words, and button to match Screen 1 in your plan.</p>
+    <p class="counter">Step 4 of 7</p>
+    <h2>Make Screen 1, then duplicate it</h2>
+    <p>Build Screen 1 from your plan: a title, a few words, and <strong>one</strong> main button. Then select <strong>Duplicate page</strong> for Screens 2 and 3, so the button stays in the same spot.</p><p>Keep text big (16 px or more) and easy to read against its background.</p>
   </div>
   <div class="visual"><div class="phone" role="img" aria-label="Phone screen. Title: Find a Pro&#x27;s order. Text: Ask the customer to show the order code in their Home Depot app. Main button: Scan code."><span class="ph-notch"></span><span class="ph-title">Find a Pro&#x27;s order</span><span class="ph-line">Ask the customer to show the order code in their Home Depot app.</span><span class="ph-box"></span><span class="ph-btn">Scan code</span><span class="ph-btn2"></span></div></div>
 </div>
 </div></section>
-<section class="slide" id="s-4" tabindex="0" aria-roledescription="slide" aria-label="4 of 7: Make Screens 2 and 3" data-title="Make Screens 2 and 3"><div class="inner">
+<section class="slide" id="s-6" tabindex="0" aria-roledescription="slide" aria-label="6 of 8: Label and caption each screen" data-title="Label and caption each screen"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Step 3 of 6</p>
-    <h2>Make Screens 2 and 3</h2>
-    <p>Duplicate and edit again. Duplicating keeps the button in the same spot on every screen.</p>
+    <p class="counter">Step 5 of 7</p>
+    <h2>Label and caption each screen</h2>
+    <p>At the top, a small label for whose screen it is, like &ldquo;Sarah&rsquo;s hdPhone.&rdquo; At the bottom, one line that starts &ldquo;What this shows: &hellip;&rdquo;</p>
   </div>
-  <div class="visual minirow" role="img" aria-label="Three screens with the main button in the same spot on each"><span class="mini"><span class="ln"></span><span class="ln ln--s"></span><span class="ln"></span><span class="mb"></span></span><span class="mini"><span class="ln"></span><span class="ln ln--s"></span><span class="ln"></span><span class="mb"></span></span><span class="mini"><span class="ln"></span><span class="ln ln--s"></span><span class="ln"></span><span class="mb"></span></span></div>
+  <figure class="visual"><p class="ex-label">Sarah&rsquo;s hdPhone</p><div class="phone" role="img" aria-label="Phone screen. Title: Find a Pro&#x27;s order. Text: Ask the customer to show the order code in their Home Depot app. Main button: Scan code."><span class="ph-notch"></span><span class="ph-title">Find a Pro&#x27;s order</span><span class="ph-line">Ask the customer to show the order code in their Home Depot app.</span><span class="ph-btn">Scan code</span></div><figcaption class="cap">What this shows: Sarah starts from Marcus&rsquo;s code, not a blank cart.</figcaption></figure>
 </div>
 </div></section>
-<section class="slide" id="s-5" tabindex="0" aria-roledescription="slide" aria-label="5 of 7: Add a caption under each screen" data-title="Add a caption under each screen"><div class="inner">
-<div class="cols">
-  <div>
-    <p class="counter">Step 4 of 6</p>
-    <h2>Add a caption under each screen</h2>
-    <p>One line that starts &ldquo;What this shows: &hellip;&rdquo;</p>
-  </div>
-  <figure class="visual"><div class="phone" role="img" aria-label="Phone screen. Title: Find a Pro&#x27;s order. Text: Ask the customer to show the order code in their Home Depot app. Main button: Scan code."><span class="ph-notch"></span><span class="ph-title">Find a Pro&#x27;s order</span><span class="ph-line">Ask the customer to show the order code in their Home Depot app.</span><span class="ph-btn">Scan code</span></div><figcaption class="cap">What this shows: Sarah starts from Marcus&rsquo;s code, not a blank cart.</figcaption></figure>
-</div>
-</div></section>
-<section class="slide" id="s-6" tabindex="0" aria-roledescription="slide" aria-label="6 of 7: Link each button" data-title="Link each button"><div class="inner">
+<section class="slide" id="s-7" tabindex="0" aria-roledescription="slide" aria-label="7 of 8: Link each button" data-title="Link each button"><div class="inner">
 <div class="solo">
   <div>
-    <p class="counter">Step 5 of 6</p>
+    <p class="counter">Step 6 of 7</p>
     <h2>Link each button</h2>
     <p>Select the button, then <strong><span aria-hidden="true">••• </span><span class="sr-only">three-dot menu, </span>More <span aria-hidden="true">→</span><span class="sr-only">, then</span> Link</strong>. Under <strong>Pages in this document</strong>, pick the next screen. Screen 3&rsquo;s button can link back to Screen 1.</p><div class="callout"><span class="tag">Tip</span><p>If only the words are clickable, select the box and its text together, choose <strong>Group</strong>, then link the group.</p></div>
   </div>
 </div>
 </div></section>
-<section class="slide" id="s-7" tabindex="0" aria-roledescription="slide" aria-label="7 of 7: Try it" data-title="Try it"><div class="inner">
+<section class="slide" id="s-8" tabindex="0" aria-roledescription="slide" aria-label="8 of 8: Try it" data-title="Try it"><div class="inner">
 <div class="cols">
   <div>
-    <p class="counter">Step 6 of 6</p>
+    <p class="counter">Step 7 of 7</p>
     <h2>Try it</h2>
     <p>Select <strong>Present</strong> and tap every button. Each one should open the screen you expect.</p>
   </div>
@@ -205,7 +219,7 @@ p { font-size:var(--fs-body); line-height:1.45; margin:0 0 .7em; max-width:36em;
 </div>
 <div class="bar">
   <button type="button" class="navbtn" id="prev" aria-label="Previous slide"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  <div class="dots" role="group" aria-label="Choose a slide"><button type="button" class="dot" aria-label="Go to slide 1: Build it in Canva"></button><button type="button" class="dot" aria-label="Go to slide 2: Copy the template"></button><button type="button" class="dot" aria-label="Go to slide 3: Make Screen 1"></button><button type="button" class="dot" aria-label="Go to slide 4: Make Screens 2 and 3"></button><button type="button" class="dot" aria-label="Go to slide 5: Add a caption under each screen"></button><button type="button" class="dot" aria-label="Go to slide 6: Link each button"></button><button type="button" class="dot" aria-label="Go to slide 7: Try it"></button></div>
+  <div class="dots" role="group" aria-label="Choose a slide"><button type="button" class="dot" aria-label="Go to slide 1: Design it in Canva"></button><button type="button" class="dot" aria-label="Go to slide 2: Start a phone-size design"></button><button type="button" class="dot" aria-label="Go to slide 3: Get ideas first"></button><button type="button" class="dot" aria-label="Go to slide 4: Find your parts"></button><button type="button" class="dot" aria-label="Go to slide 5: Make Screen 1, then duplicate it"></button><button type="button" class="dot" aria-label="Go to slide 6: Label and caption each screen"></button><button type="button" class="dot" aria-label="Go to slide 7: Link each button"></button><button type="button" class="dot" aria-label="Go to slide 8: Try it"></button></div>
   <button type="button" class="navbtn" id="next" aria-label="Next slide"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 </div>
 <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
