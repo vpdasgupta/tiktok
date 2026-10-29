@@ -21,8 +21,6 @@
     --wrong-edge:#B91C1C;      /* 6.47:1 on white */
     --wrong-bg:#FFF0F0;
     --wrong-ink:#7A1F1F;       /* 9.29:1 on wrong-bg */
-    --bonus-bg:#FFF1E6;
-    --bonus-ink:#8A3600;       /* 7.28:1 on bonus-bg */
     --ok:#146A34;
     --warn:#B91C1C;
   }
@@ -61,13 +59,8 @@
   .block:last-child{margin-bottom:0}
   .hint{color:var(--muted);font-size:.9rem;margin-bottom:8px;max-width:70ch}
   fieldset{border:1px solid var(--border);border-radius:10px;padding:10px 12px 12px;margin:0 0 12px;min-width:0}
-  legend{font-weight:700;font-size:.95rem;padding:0 4px}
   fieldset.wrong{border:2px dashed var(--wrong-edge);background:var(--wrong-bg)}
-  fieldset.bonus{border:2px dashed var(--orange-text);background:var(--bonus-bg)}
-  .tag{display:inline-block;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
-    border-radius:10px;padding:1px 8px;margin-left:4px;vertical-align:1px}
-  .tag.wrong{color:var(--wrong-ink);background:#fff;border:1px solid var(--wrong-edge)}
-  .tag.bonus{color:var(--bonus-ink);background:#fff;border:1px solid var(--orange-text)}
+  legend{font-weight:700;font-size:.95rem;padding:0 4px}
   .field{margin-top:8px}
   .field label{display:block;font-weight:600;font-size:.92rem;margin-bottom:2px}
   .field .sub{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
@@ -77,47 +70,34 @@
   }
   select{min-height:44px}
   textarea{min-height:60px;resize:vertical;line-height:1.45}
-  .bonus-note{background:var(--bonus-bg);border-left:4px solid var(--orange-text);padding:10px 12px;border-radius:6px;margin-bottom:10px;font-size:.92rem}
-  .bonus-note strong{color:var(--bonus-ink)}
-  .sub-h{font-weight:400;color:var(--muted);font-size:.95rem}
-  .count{font-size:.9rem;color:var(--muted);margin-top:8px}
-  .remove-bonus{margin-top:10px;min-height:40px;font-size:.85rem}
 
-  /* one-screen-at-a-time stepper */
-  .stepper{border-top:1px solid var(--border);padding-top:14px;margin-bottom:14px}
-  .stepper-title{font-weight:700;font-size:1rem;margin-bottom:8px}
+  /* one screen at a time */
   .step-pick{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
   .step-pick button{min-width:44px;padding:9px 12px}
   .step-pick button[aria-current="step"]{background:var(--ink);border-color:var(--ink);color:#fff}
-  .step-pick button.is-wrong-step{border:2px dashed var(--wrong-edge)}
-  .step-pick button.is-bonus-step{border:2px dashed var(--orange-text)}
-  .step-pick button[aria-current="step"].is-wrong-step,
-  .step-pick button[aria-current="step"].is-bonus-step{border-style:solid}
-  .step-nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:4px}
+  .step-nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
   .step-pos{font-size:.9rem;color:var(--muted);font-weight:600}
   .off{display:none!important}
-  .board.single{grid-template-columns:minmax(0,280px)}
-  .board.single .phone-body{min-height:260px;font-size:.92rem}
 
   /* storyboard preview */
   .preview-wrap h2{margin-bottom:2px}
   .board-meta{font-size:.9rem;margin:6px 0 10px}
   .board-meta p{margin:2px 0}
-  .board{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .board{list-style:none;display:grid;grid-template-columns:minmax(0,280px);gap:12px}
   .phone{display:flex;flex-direction:column}
   .phone-label{font-size:.8rem;font-weight:700;margin-bottom:4px}
   .phone-body{
     border:3px solid var(--frame);border-radius:18px;background:#fff;padding:14px 10px 12px;
-    min-height:200px;display:flex;flex-direction:column;gap:8px;font-size:.84rem
+    min-height:260px;display:flex;flex-direction:column;gap:8px;font-size:.92rem
   }
-  .phone.is-wrong .phone-body{border-style:dashed;border-color:var(--wrong-edge)}
-  .phone.is-bonus .phone-body{border-style:dashed;border-color:var(--orange-text)}
+  .ph-title{font-weight:700;font-size:1rem;color:var(--ink);overflow-wrap:anywhere}
+  .ph-title.empty{font-weight:400;color:var(--muted);font-style:italic;font-size:.92rem}
   .ph-box{background:var(--box);border-radius:6px;padding:8px;color:var(--ink);flex:1;overflow-wrap:anywhere}
-  .ph-box .k{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
   .ph-btn{background:var(--orange);border:2px solid #8A3600;border-radius:8px;padding:6px 8px;text-align:center;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
   .ph-btn.empty,.ph-box.empty{background:#fff;border:2px dashed var(--control);color:var(--muted);font-weight:400}
-  .ph-cap{font-size:.82rem;margin-top:6px;overflow-wrap:anywhere}
+  .ph-cap{font-size:.84rem;margin-top:6px;overflow-wrap:anywhere}
   .ph-cap b{font-weight:700}
+  .ph-break{margin-top:8px;font-size:.84rem;border-left:4px solid var(--wrong-edge);background:var(--wrong-bg);color:var(--wrong-ink);padding:6px 8px;border-radius:4px;overflow-wrap:anywhere}
   .empty-txt{color:var(--muted);font-style:italic}
 
   .status{font-weight:600;color:var(--ok);min-height:1.5em;margin:8px 0}
@@ -140,19 +120,18 @@
   }
   @media (forced-colors:active){
     a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid Highlight}
-    .phone-body,.ph-btn,.tag{border-color:CanvasText}
+    .phone-body,.ph-btn{border-color:CanvasText}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   @media print{
     body{background:#fff;padding:0;max-width:none}
-    .no-print,#planner,.full-link,.status,.fallback,.save-state,.tip,dialog{display:none!important}
+    .no-print,#planner,.full-link,.status,.fallback,.save-state,.tip,.preview-wrap .hint,dialog{display:none!important}
     .card{border:0;padding:0}
     .layout{display:block}
     .preview-wrap{position:static;max-height:none;overflow:visible}
-    .board,.board.single{grid-template-columns:repeat(3,1fr)}
+    .board{grid-template-columns:repeat(3,1fr)}
     .board .phone.off{display:flex!important}
-    .stepper,.step-nav{display:none!important}
     .phone{break-inside:avoid}
     .ph-btn{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   }
@@ -161,7 +140,7 @@
 <body>
 <main>
   <h1>Screen Planner: <span class="accent">Plan Your Screens</span></h1>
-  <p class="intro">Plan the 4 screens of your clickable prototype before you build anything. Pick one person and one moment. Then plan 3 main-flow screens and 1 screen for when something goes wrong. Keep it rough and gray: a few words per box is plenty.</p>
+  <p class="intro">Plan the 3 main-flow screens of your clickable prototype before you build anything. Pick one person and one moment, then plan one screen at a time. Keep it rough: a few words per box is plenty.</p>
   <p class="full-link no-print"><a href="https://vpdasgupta.github.io/tiktok/thd-storeops-screen-planner.html" target="_blank" rel="noopener">Open the Screen Planner full page<span class="sr-only"> (opens in a new tab)</span></a></p>
 
   <div class="card">
@@ -185,25 +164,26 @@
           </div>
         </section>
 
-        <div class="stepper no-print">
-          <p class="stepper-title" id="step-title">Plan one screen at a time</p>
-          <div class="step-pick" id="step-pick" role="group" aria-labelledby="step-title"></div>
-        </div>
-
-        <section class="block" aria-labelledby="h-main" id="sec-main">
-          <h2 id="h-main">2. Your 3 main-flow screens</h2>
-          <p class="hint">The main flow is what happens when everything works. Each screen needs what the person sees, the one thing they tap, and a one-line caption.</p>
+        <section class="block" aria-labelledby="h-main">
+          <h2 id="h-main">2. Your 3 screens, one at a time</h2>
+          <p class="hint">The main flow is what happens when everything works. Each screen needs a title, a few plain words, the one button they tap, and a one-line caption.</p>
+          <div class="step-pick no-print" id="step-pick" role="group" aria-label="Choose a screen"></div>
           <div id="main-list"></div>
+          <div class="step-nav no-print">
+            <button type="button" id="prev-btn">Previous screen</button>
+            <button type="button" id="next-btn">Next screen</button>
+            <span class="step-pos" id="step-pos" aria-hidden="true"></span>
+          </div>
         </section>
 
-        <section class="block" aria-labelledby="h-wrong" id="sec-wrong">
-          <h2 id="h-wrong">3. Your "goes wrong" screen</h2>
-          <p class="hint">Pick one Guess from your Project 2 notes that could break. This screen shows what the person sees when it does.</p>
+        <section class="block" aria-labelledby="h-break">
+          <h2 id="h-break">3. Where it could break</h2>
+          <p class="hint">Look at your riskiest hand-off (a Guess in your Project 2 notes). Which screen depends on it? You'll build a "goes wrong" screen there on page 4.</p>
           <fieldset class="wrong">
-            <legend>Screen 4 <span class="tag wrong">Goes wrong</span></legend>
+            <legend>Could break here</legend>
             <div class="field">
-              <label for="w-on">Which main-flow screen does it break on?</label>
-              <select id="w-on">
+              <label for="b-on">Which screen could it break on?</label>
+              <select id="b-on">
                 <option value="">Choose a screen</option>
                 <option value="1">Screen 1</option>
                 <option value="2">Screen 2</option>
@@ -211,69 +191,41 @@
               </select>
             </div>
             <div class="field">
-              <label for="w-breaks">What breaks<span class="sub">From a Guess in your Project 2 notes, in plain words.</span></label>
-              <textarea id="w-breaks" rows="2" maxlength="300"></textarea>
-            </div>
-            <div class="field">
-              <label for="w-says">What the screen says</label>
-              <textarea id="w-says" rows="2" maxlength="300"></textarea>
-            </div>
-            <div class="field">
-              <label for="w-next">What to do next (and who can help)</label>
-              <textarea id="w-next" rows="2" maxlength="300"></textarea>
-            </div>
-            <div class="field">
-              <label for="w-cap">What this shows (one-line caption)</label>
-              <input type="text" id="w-cap" maxlength="160">
+              <label for="b-guess">The Guess that might fail there<span class="sub">In plain words, from your Project 2 notes.</span></label>
+              <textarea id="b-guess" rows="2" maxlength="300"></textarea>
             </div>
           </fieldset>
         </section>
-
-        <section class="block" aria-labelledby="h-bonus" id="sec-bonus">
-          <h2 id="h-bonus">4. Bonus screens <span class="sub-h">(optional)</span></h2>
-          <div class="bonus-note" id="bonus-note">
-            <p><strong>Optional.</strong> Only start a bonus screen once your 4 work end to end. Skipping it never costs you points. You can add up to 2 bonus screens, for 6 screens total.</p>
-          </div>
-          <div id="bonus-list"></div>
-          <button type="button" id="add-bonus" class="no-print" aria-describedby="screen-count">Add a bonus screen</button>
-          <p class="count" id="screen-count">4 of 6 screens planned (4 required).</p>
-        </section>
-
-        <div class="step-nav no-print">
-          <button type="button" id="prev-btn">Previous screen</button>
-          <button type="button" class="primary" id="next-btn">Next screen</button>
-          <span class="step-pos" id="step-pos" aria-hidden="true"></span>
-        </div>
       </form>
 
       <section class="preview-wrap" aria-labelledby="h-preview">
         <h2 id="h-preview">Preview: your rough storyboard</h2>
-        <p class="hint">This shows the screen you're working on and updates as you type. It's a sketch, not your final screens.</p>
+        <p class="hint">This shows the screen you're working on and updates as you type. It's a sketch, not your final screen.</p>
         <div class="board-meta" id="board-meta"></div>
-        <ol class="board single" id="board"></ol>
+        <ol class="board" id="board"></ol>
       </section>
     </div>
 
     <div class="actions bottom no-print">
-      <button type="button" class="primary" id="copy-btn">Copy as text</button>
+      <button type="button" class="primary" id="copy-btn">Copy AI build prompt</button>
       <button type="button" id="print-btn">Print / save as PDF</button>
     </div>
     <p class="status" id="out-status" role="status" aria-live="polite" aria-atomic="true"></p>
 
     <div class="fallback" id="fallback" hidden>
-      <label for="fallback-text">Your screens as text</label>
+      <label for="fallback-text">Your AI build prompt</label>
       <p class="tip" id="fallback-hint">Your browser blocked copying. The text is selected. Press Cmd+C (Mac) or Ctrl+C (Windows) to copy it.</p>
       <textarea id="fallback-text" readonly aria-describedby="fallback-hint"></textarea>
     </div>
 
     <p class="save-state" id="save-state">Saved only in this browser on this device.</p>
-    <p class="tip">Tip: paste the text into your notes doc under <strong>My Screens</strong>. You'll build from it on the next page.</p>
+    <p class="tip">Your plan opens again on the next page, where you'll build from it. Building with AI? <strong>Copy AI build prompt</strong> gives you the whole prompt with your screens in it. Building in Canva? Keep this planner open next to Canva.</p>
   </div>
 </main>
 
 <dialog id="confirm" aria-labelledby="confirm-title" aria-describedby="confirm-body">
   <h2 id="confirm-title">Clear everything?</h2>
-  <p id="confirm-body">This erases all your screens. You can't undo it.</p>
+  <p id="confirm-body">This erases your whole plan. You can't undo it.</p>
   <div class="actions">
     <button type="button" id="confirm-cancel">Cancel</button>
     <button type="button" class="primary" id="confirm-ok">Yes, clear</button>
@@ -282,48 +234,39 @@
 
 <script>
 (function(){
-  var KEY = 'thd-storeops-p3-screens';
-  var MAX_BONUS = 2, REQUIRED = 4;
-  var BONUS_TYPES = [
-    {v:'wrong2', label:'A second "goes wrong" screen (a different break, from another Guess)'},
-    {v:'other',  label:'The other side of the hand-off (what the associate, Pro desk, or back room sees)'},
-    {v:'done',   label:'A "done" screen (what they see when it worked)'},
-    {v:'today',  label:'A "today" screen (how the problem looks now, for a before/after)'}
+  var KEY = 'thd-storeops-p3-plan';
+  var N = 3;
+  var FIELDS = [
+    {k:'title', label:'Title', sub:'A few words at the top of the screen.', multi:false, max:80},
+    {k:'words', label:'Words', sub:'Two or three lines of plain words the person reads.', multi:true, max:300},
+    {k:'tap',   label:'Button', sub:'The one button that moves them to the next screen.', multi:false, max:80},
+    {k:'cap',   label:'What this shows', sub:'A one-line caption under the screen.', multi:false, max:160}
   ];
-  var SHORT = {wrong2:'Second goes wrong', other:'Other side of the hand-off', done:'Done', today:'Today (before)'};
 
-  function blank(){
-    return {who:'', moment:'', main:[{see:'',tap:'',cap:''},{see:'',tap:'',cap:''},{see:'',tap:'',cap:''}],
-      wrong:{on:'', breaks:'', says:'', next:'', cap:''}, bonus:[]};
-  }
+  function blankScreen(){ return {title:'', words:'', tap:'', cap:''}; }
+  function blank(){ return {who:'', moment:'', main:[blankScreen(), blankScreen(), blankScreen()], brk:{on:'', guess:''}}; }
   var EXAMPLE = {
     who:'Sarah, an aisle associate, helping Marcus (a Pro contractor)',
     moment:'Marcus shows his order code in the aisle. Sarah pulls up his saved cart on her hdPhone and sends it to the Pro desk, so he can pay without listing his items again.',
     main:[
-      {see:"Find a Pro's order. A gray camera box for scanning the code on the customer's phone. A small gray button: Cart not found?", tap:'Scan code', cap:"Sarah starts by scanning the code on Marcus's phone."},
-      {see:"Marcus's cart: 14 items, each marked In stock here.", tap:'Send to Pro desk', cap:'His whole cart shows up on the hdPhone, so nothing gets rebuilt by hand.'},
-      {see:'Sent to the Pro desk. Order #4821 is waiting there. Tell Marcus he can pay at the Pro desk.', tap:'Done', cap:'The order gets to the Pro desk before Marcus does, so he just pays.'}
+      {title:"Find a Pro's order", words:"Camera box: point at the code on the customer's phone. Customer: Marcus R. (Pro)", tap:'Scan code', cap:"Sarah starts by scanning the code on Marcus's phone."},
+      {title:"Marcus's cart: 14 items", words:'2x4 studs, drywall screws, joint compound, and 11 more items. Each one says In stock.', tap:'Send to Pro desk', cap:'His whole cart shows up on the hdPhone, so nothing gets rebuilt by hand.'},
+      {title:'Sent to the Pro desk', words:'Order #4821 is waiting at the Pro desk. Tell Marcus: pay at the Pro desk. His items are already loaded.', tap:'Done', cap:'The order gets to the Pro desk before Marcus does, so he just pays.'}
     ],
-    wrong:{on:'1',
-      breaks:"The hdPhone can't find his online cart. (My Guess: the hdPhone can reach online orders.)",
-      says:"We couldn't find this cart. Ask the customer to open the cart in their app and read you the order number.",
-      next:'Tap Type order number. Still stuck? The Pro desk can look up the order.',
-      cap:'If the scan fails, Sarah knows what to do next and who can help.'},
-    bonus:[]
+    brk:{on:'1', guess:"The hdPhone might not be able to find a customer's online cart."}
   };
 
   var state = blank();
+  var cur = 0;
   var canSave = true;
   var $ = function(id){ return document.getElementById(id); };
   function clone(o){ return JSON.parse(JSON.stringify(o)); }
   function t(s){ return (s || '').trim(); }
+  function one(s){ return t(s).replace(/\s*\n\s*/g, ' '); }
 
   function hasContent(){
-    var s = state;
-    if (t(s.who) || t(s.moment)) return true;
-    if (s.main.some(function(m){ return t(m.see) || t(m.tap) || t(m.cap); })) return true;
-    var w = s.wrong; if (w.on || t(w.breaks) || t(w.says) || t(w.next) || t(w.cap)) return true;
-    return s.bonus.length > 0;
+    if (t(state.who) || t(state.moment) || state.brk.on || t(state.brk.guess)) return true;
+    return state.main.some(function(m){ return FIELDS.some(function(f){ return t(m[f.k]); }); });
   }
 
   // ---- announcements ----
@@ -349,23 +292,19 @@
   function storageFailed(){
     if (!canSave) return;
     canSave = false;
-    $('save-state').textContent = 'Autosave is off in this view. Open the full page to save your work, or copy it before you leave.';
+    $('save-state').textContent = "Autosave is off in this view, so your plan won't be here on the next page. Before you leave, select Print / save as PDF, or open the full page and plan there.";
   }
-  function str(v, max){ return typeof v === 'string' ? v.slice(0, max || 400) : ''; }
+  function str(v, max){ return typeof v === 'string' ? v.slice(0, max) : ''; }
   function valid(d){
     if (!d || typeof d !== 'object' || !Array.isArray(d.main)) return null;
     var out = blank();
-    out.who = str(d.who, 120); out.moment = str(d.moment);
-    for (var i = 0; i < 3; i++){
+    out.who = str(d.who, 120); out.moment = str(d.moment, 400);
+    for (var i = 0; i < N; i++){
       var m = d.main[i] || {};
-      out.main[i] = {see:str(m.see, 300), tap:str(m.tap, 80), cap:str(m.cap, 160)};
+      FIELDS.forEach(function(f){ out.main[i][f.k] = str(m[f.k], f.max); });
     }
-    var w = d.wrong || {};
-    out.wrong = {on: ['1','2','3'].indexOf(w.on) > -1 ? w.on : '', breaks:str(w.breaks,300), says:str(w.says,300), next:str(w.next,300), cap:str(w.cap,160)};
-    if (Array.isArray(d.bonus)) d.bonus.slice(0, MAX_BONUS).forEach(function(b){
-      b = b || {};
-      out.bonus.push({type: SHORT[b.type] ? b.type : '', see:str(b.see,300), tap:str(b.tap,80), cap:str(b.cap,160)});
-    });
+    var b = d.brk || {};
+    out.brk = {on: ['1','2','3'].indexOf(b.on) > -1 ? b.on : '', guess: str(b.guess, 300)};
     return out;
   }
   function load(){
@@ -375,217 +314,116 @@
     try { var d = valid(JSON.parse(raw)); if (d) state = d; } catch(e){}
   }
 
-  // ---- form building ----
-  function field(id, labelText, sub, multi, max, value, onInput){
-    var wrap = document.createElement('div'); wrap.className = 'field';
-    var lab = document.createElement('label'); lab.htmlFor = id; lab.textContent = labelText;
-    if (sub){ var s = document.createElement('span'); s.className = 'sub'; s.textContent = sub; lab.appendChild(s); }
-    var inp = document.createElement(multi ? 'textarea' : 'input');
-    if (multi) inp.rows = 2; else inp.type = 'text';
-    inp.id = id; inp.maxLength = max; inp.value = value || '';
+  // ---- form ----
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function field(id, f, value, onInput){
+    var wrap = el('div', 'field');
+    var lab = el('label', null, f.label); lab.htmlFor = id;
+    if (f.sub) lab.appendChild(el('span', 'sub', f.sub));
+    var inp = document.createElement(f.multi ? 'textarea' : 'input');
+    if (f.multi) inp.rows = 2; else inp.type = 'text';
+    inp.id = id; inp.maxLength = f.max; inp.value = value || '';
     inp.addEventListener('input', function(){ onInput(inp.value); edited(); });
     wrap.appendChild(lab); wrap.appendChild(inp);
     return wrap;
   }
-
   function renderMain(){
     var list = $('main-list'); list.textContent = '';
     state.main.forEach(function(m, i){
-      var fs = document.createElement('fieldset');
-      var lg = document.createElement('legend'); lg.textContent = 'Screen ' + (i+1) + ' (main flow)';
-      fs.appendChild(lg);
-      fs.appendChild(field('m'+i+'-see', 'What they see', null, true, 300, m.see, function(v){ m.see = v; }));
-      fs.appendChild(field('m'+i+'-tap', 'What they tap', 'The one button that moves them to the next screen.', false, 80, m.tap, function(v){ m.tap = v; }));
-      fs.appendChild(field('m'+i+'-cap', 'What this shows (one-line caption)', null, false, 160, m.cap, function(v){ m.cap = v; }));
+      var fs = el('fieldset');
+      fs.appendChild(el('legend', null, 'Screen ' + (i+1) + ' of ' + N));
+      FIELDS.forEach(function(f){
+        fs.appendChild(field('m'+i+'-'+f.k, f, m[f.k], function(v){ m[f.k] = v; }));
+      });
       list.appendChild(fs);
     });
   }
-
-  function renderWrong(){
-    var w = state.wrong;
-    $('w-on').value = w.on; $('w-breaks').value = w.breaks; $('w-says').value = w.says;
-    $('w-next').value = w.next; $('w-cap').value = w.cap;
-  }
-  [['w-breaks','breaks'],['w-says','says'],['w-next','next'],['w-cap','cap']].forEach(function(p){
-    $(p[0]).addEventListener('input', function(){ state.wrong[p[1]] = $(p[0]).value; edited(); });
-  });
-  $('w-on').addEventListener('change', function(){ state.wrong.on = $('w-on').value; edited(); });
   $('who').addEventListener('input', function(){ state.who = $('who').value; edited(); });
   $('moment').addEventListener('input', function(){ state.moment = $('moment').value; edited(); });
+  $('b-on').addEventListener('change', function(){ state.brk.on = $('b-on').value; edited(); });
+  $('b-guess').addEventListener('input', function(){ state.brk.guess = $('b-guess').value; edited(); });
 
-  function renderBonus(){
-    var list = $('bonus-list'); list.textContent = '';
-    state.bonus.forEach(function(b, i){
-      var n = REQUIRED + i + 1;
-      var fs = document.createElement('fieldset'); fs.className = 'bonus';
-      var lg = document.createElement('legend');
-      lg.appendChild(document.createTextNode('Screen ' + n + ' '));
-      var tg = document.createElement('span'); tg.className = 'tag bonus'; tg.textContent = 'Bonus'; lg.appendChild(tg);
-      fs.appendChild(lg);
-
-      var wrap = document.createElement('div'); wrap.className = 'field';
-      var lab = document.createElement('label'); lab.htmlFor = 'b'+i+'-type'; lab.textContent = 'Which kind of bonus screen?';
-      var sel = document.createElement('select'); sel.id = 'b'+i+'-type';
-      var o0 = document.createElement('option'); o0.value = ''; o0.textContent = 'Choose one'; sel.appendChild(o0);
-      BONUS_TYPES.forEach(function(bt){ var o = document.createElement('option'); o.value = bt.v; o.textContent = bt.label; sel.appendChild(o); });
-      sel.value = b.type;
-      sel.addEventListener('change', function(){ b.type = sel.value; edited(); });
-      wrap.appendChild(lab); wrap.appendChild(sel); fs.appendChild(wrap);
-
-      fs.appendChild(field('b'+i+'-see', 'What they see', null, true, 300, b.see, function(v){ b.see = v; }));
-      fs.appendChild(field('b'+i+'-tap', 'What they tap', null, false, 80, b.tap, function(v){ b.tap = v; }));
-      fs.appendChild(field('b'+i+'-cap', 'What this shows (one-line caption)', null, false, 160, b.cap, function(v){ b.cap = v; }));
-
-      var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'remove-bonus no-print';
-      rm.textContent = 'Remove bonus screen ' + n;
-      rm.addEventListener('click', function(){ removeBonus(i); });
-      fs.appendChild(rm);
-      list.appendChild(fs);
-    });
-    var total = REQUIRED + state.bonus.length;
-    var full = state.bonus.length >= MAX_BONUS;
-    $('add-bonus').setAttribute('aria-disabled', full ? 'true' : 'false');
-    $('screen-count').textContent = total + ' of 6 screens planned (4 required' +
-      (state.bonus.length ? ', ' + state.bonus.length + ' bonus' : '') + ').' +
-      (full ? ' That\'s the most allowed.' : '');
-  }
-
-  // ---- preview ----
-  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function phone(label, tagText, tagCls, boxes, tap, cap, cls){
-    var li = el('li', 'phone' + (cls ? ' ' + cls : ''));
-    var lab = el('p', 'phone-label', label);
-    if (tagText){ var tg = el('span', 'tag ' + tagCls, tagText); lab.appendChild(document.createTextNode(' ')); lab.appendChild(tg); }
-    li.appendChild(lab);
-    var body = el('div', 'phone-body');
-    boxes.forEach(function(bx){
-      var b = el('div', 'ph-box' + (t(bx.v) ? '' : ' empty'));
-      if (bx.k) b.appendChild(el('span', 'k', bx.k));
-      b.appendChild(document.createTextNode(t(bx.v) || 'Not filled in yet'));
-      body.appendChild(b);
-    });
-    if (tap !== null){
-      var btn = el('div', 'ph-btn' + (t(tap) ? '' : ' empty'));
-      btn.appendChild(el('span', 'sr-only', 'Button: '));
-      btn.appendChild(document.createTextNode(t(tap) || 'Button not filled in yet'));
-      body.appendChild(btn);
+  // ---- stepper ----
+  (function buildPicker(){
+    var pick = $('step-pick');
+    for (var i = 0; i < N; i++){
+      (function(i){
+        var b = el('button'); b.type = 'button';
+        b.appendChild(el('span', 'sr-only', 'Screen '));
+        b.appendChild(document.createTextNode(String(i+1)));
+        b.addEventListener('click', function(){ goTo(i); });
+        pick.appendChild(b);
+      })(i);
     }
-    li.appendChild(body);
-    var c = el('p', 'ph-cap'); c.appendChild(el('b', null, 'What this shows: '));
-    if (t(cap)) c.appendChild(document.createTextNode(t(cap))); else c.appendChild(el('span', 'empty-txt', 'not filled in yet'));
-    li.appendChild(c);
-    return li;
-  }
-  function renderPreview(){
-    var meta = $('board-meta'); meta.textContent = '';
-    var p1 = el('p'); p1.appendChild(el('strong', null, 'Who: ')); p1.appendChild(document.createTextNode(t(state.who) || 'Not filled in yet'));
-    var p2 = el('p'); p2.appendChild(el('strong', null, 'The moment: ')); p2.appendChild(document.createTextNode(t(state.moment) || 'Not filled in yet'));
-    meta.appendChild(p1); meta.appendChild(p2);
-
-    var board = $('board'); board.textContent = '';
-    state.main.forEach(function(m, i){
-      board.appendChild(phone('Screen ' + (i+1) + ' · Main flow', null, null, [{v:m.see}], m.tap, m.cap));
-    });
-    var w = state.wrong;
-    board.appendChild(phone('Screen 4' + (w.on ? ' · Breaks on screen ' + w.on : ''), 'Goes wrong', 'wrong',
-      [{k:'What broke', v:w.breaks}, {k:'Screen says', v:w.says}, {k:'What to do next', v:w.next}], null, w.cap, 'is-wrong'));
-    state.bonus.forEach(function(b, i){
-      board.appendChild(phone('Screen ' + (REQUIRED+i+1) + (b.type ? ' · ' + SHORT[b.type] : ''), 'Bonus', 'bonus',
-        [{v:b.see}], b.tap, b.cap, 'is-bonus'));
-    });
-    showCurrentPhone();
-  }
-
-  // ---- one screen at a time ----
-  var cur = 0;
-  function total(){ return REQUIRED + state.bonus.length; }
-  function stepKind(i){ return i < 3 ? 'main flow' : i === 3 ? 'goes wrong' : 'bonus'; }
-  function stepLabel(i){ return 'Screen ' + (i+1) + ' (' + stepKind(i) + ')'; }
-  function showCurrentPhone(){
-    Array.prototype.forEach.call($('board').children, function(li, i){ li.classList.toggle('off', i !== cur); });
-  }
-  function renderPicker(){
-    var pick = $('step-pick'), n = total();
-    if (pick.children.length !== n){
-      pick.textContent = '';
-      for (var i = 0; i < n; i++){
-        (function(i){
-          var b = el('button', i === 3 ? 'is-wrong-step' : i > 3 ? 'is-bonus-step' : null);
-          b.type = 'button';
-          b.appendChild(el('span', 'sr-only', 'Screen '));
-          b.appendChild(document.createTextNode(String(i+1)));
-          if (i >= 3) b.appendChild(el('span', 'sr-only', ', ' + stepKind(i)));
-          b.addEventListener('click', function(){ goTo(i); });
-          pick.appendChild(b);
-        })(i);
-      }
-    }
-    Array.prototype.forEach.call(pick.children, function(b, i){
+  })();
+  function applyStep(){
+    Array.prototype.forEach.call($('main-list').children, function(fs, i){ fs.classList.toggle('off', i !== cur); });
+    Array.prototype.forEach.call($('step-pick').children, function(b, i){
       if (i === cur) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
     });
-  }
-  function applyStep(){
-    var n = total();
-    if (cur > n - 1) cur = n - 1;
-    if (cur < 0) cur = 0;
-    Array.prototype.forEach.call($('main-list').children, function(fs, i){ fs.classList.toggle('off', i !== cur); });
-    Array.prototype.forEach.call($('bonus-list').children, function(fs, i){ fs.classList.toggle('off', REQUIRED + i !== cur); });
-    $('sec-main').classList.toggle('off', cur > 2);
-    $('sec-wrong').classList.toggle('off', cur !== 3);
-    $('sec-bonus').classList.toggle('off', cur < 3);
     $('prev-btn').setAttribute('aria-disabled', cur === 0 ? 'true' : 'false');
-    $('next-btn').setAttribute('aria-disabled', cur === n - 1 ? 'true' : 'false');
-    $('step-pos').textContent = 'Screen ' + (cur+1) + ' of ' + n;
-    renderPicker(); showCurrentPhone();
+    $('next-btn').setAttribute('aria-disabled', cur === N - 1 ? 'true' : 'false');
+    $('step-pos').textContent = 'Screen ' + (cur+1) + ' of ' + N;
+    showCurrentPhone();
   }
-  function goTo(i){
+  function goTo(i, quiet){
     cur = i; applyStep();
-    announce('Showing ' + stepLabel(cur) + ', ' + (cur+1) + ' of ' + total() + '.');
+    if (!quiet) announce('Showing screen ' + (cur+1) + ' of ' + N + '.');
   }
   $('prev-btn').addEventListener('click', function(){
     if (cur === 0){ announce('This is the first screen.'); return; }
     goTo(cur - 1);
   });
   $('next-btn').addEventListener('click', function(){
-    if (cur >= total() - 1){
-      announce(state.bonus.length < MAX_BONUS ? 'This is the last screen. You can add an optional bonus screen.' : 'This is the last screen.');
-      return;
-    }
+    if (cur === N - 1){ announce('This is the last screen. Next, mark where it could break.'); return; }
     goTo(cur + 1);
   });
 
+  // ---- preview ----
+  function phone(m, i){
+    var li = el('li', 'phone');
+    li.appendChild(el('p', 'phone-label', 'Screen ' + (i+1) + ' · Main flow'));
+    var body = el('div', 'phone-body');
+    var ti = el('p', 'ph-title' + (t(m.title) ? '' : ' empty'));
+    ti.appendChild(el('span', 'sr-only', 'Title: '));
+    ti.appendChild(document.createTextNode(t(m.title) || 'Title not filled in yet'));
+    body.appendChild(ti);
+    var bx = el('div', 'ph-box' + (t(m.words) ? '' : ' empty'), t(m.words) || 'Words not filled in yet');
+    body.appendChild(bx);
+    var btn = el('div', 'ph-btn' + (t(m.tap) ? '' : ' empty'));
+    btn.appendChild(el('span', 'sr-only', 'Button: '));
+    btn.appendChild(document.createTextNode(t(m.tap) || 'Button not filled in yet'));
+    body.appendChild(btn);
+    li.appendChild(body);
+    var c = el('p', 'ph-cap'); c.appendChild(el('b', null, 'What this shows: '));
+    if (t(m.cap)) c.appendChild(document.createTextNode(t(m.cap))); else c.appendChild(el('span', 'empty-txt', 'not filled in yet'));
+    li.appendChild(c);
+    if (state.brk.on === String(i+1)){
+      var br = el('p', 'ph-break'); br.appendChild(el('b', null, 'Could break here: '));
+      br.appendChild(document.createTextNode(t(state.brk.guess) || 'Guess not filled in yet'));
+      li.appendChild(br);
+    }
+    return li;
+  }
+  function showCurrentPhone(){
+    Array.prototype.forEach.call($('board').children, function(li, i){ li.classList.toggle('off', i !== cur); });
+  }
+  function renderPreview(){
+    var meta = $('board-meta'); meta.textContent = '';
+    var p1 = el('p'); p1.appendChild(el('strong', null, 'Who: ')); p1.appendChild(document.createTextNode(t(state.who) || 'Not filled in yet'));
+    var p2 = el('p'); p2.appendChild(el('strong', null, 'The moment: ')); p2.appendChild(document.createTextNode(t(state.moment) || 'Not filled in yet'));
+    meta.appendChild(p1); meta.appendChild(p2);
+    var board = $('board'); board.textContent = '';
+    state.main.forEach(function(m, i){ board.appendChild(phone(m, i)); });
+    showCurrentPhone();
+  }
+
   function renderAll(){
     $('who').value = state.who; $('moment').value = state.moment;
-    renderMain(); renderWrong(); renderBonus(); renderPreview(); applyStep();
+    $('b-on').value = state.brk.on; $('b-guess').value = state.brk.guess;
+    renderMain(); renderPreview(); applyStep();
   }
   function edited(){ $('fallback').hidden = true; renderPreview(); save(); }
-
-  // ---- bonus add/remove ----
-  $('add-bonus').addEventListener('click', function(){
-    if (state.bonus.length >= MAX_BONUS){
-      announce('You already have 6 screens, the most allowed. Remove a bonus screen to add a different one.', true);
-      return;
-    }
-    state.bonus.push({type:'', see:'', tap:'', cap:''});
-    var i = state.bonus.length - 1;
-    cur = REQUIRED + i;
-    renderBonus(); edited(); applyStep();
-    $('b' + i + '-type').focus();
-    announce('Bonus screen ' + (REQUIRED + i + 1) + ' added. ' + (REQUIRED + state.bonus.length) + ' of 6 screens.');
-  });
-  function removeBonus(i){
-    var b = state.bonus[i];
-    var doIt = function(){
-      state.bonus.splice(i, 1);
-      cur = REQUIRED + i - 1;
-      renderBonus(); edited(); applyStep();
-      $('add-bonus').focus();
-      announce('Bonus screen removed. Showing ' + stepLabel(cur) + '. ' + total() + ' of 6 screens.');
-    };
-    if (t(b.see) || t(b.tap) || t(b.cap)){
-      ask('Remove this bonus screen?', 'What you wrote for bonus screen ' + (REQUIRED+i+1) + ' will be erased.', 'Yes, remove', doIt, $('add-bonus'));
-    } else doIt();
-  }
 
   // ---- confirm dialog (native <dialog>, falls back to confirm()) ----
   var dlg = $('confirm'), pending = null, returnTo = null;
@@ -616,37 +454,53 @@
     var go = function(){
       state = clone(EXAMPLE); cur = 0; renderAll(); save(); $('fallback').hidden = true;
       $('example-btn').focus();
-      announce("Marcus's example loaded: 3 main-flow screens and 1 goes-wrong screen. He skipped the bonus. Showing screen 1. Use Next screen to see the rest.");
+      announce("Marcus's example loaded. Showing screen 1 of 3. Use Next screen to see the rest.");
     };
-    if (hasContent()) ask("Replace your screens with Marcus's example?", 'What you wrote will be erased. Copy it first if you want to keep it.', 'Yes, show example', go, $('example-btn'));
+    if (hasContent()) ask("Replace your plan with Marcus's example?", 'What you wrote will be erased. Copy or print it first if you want to keep it.', 'Yes, show example', go, $('example-btn'));
     else go();
   });
   $('clear-btn').addEventListener('click', function(){
     if (!hasContent()){ announce('Your planner is already empty.'); return; }
-    ask('Clear everything?', "This erases all your screens. You can't undo it.", 'Yes, clear', function(){
+    ask('Clear everything?', "This erases your whole plan. You can't undo it.", 'Yes, clear', function(){
       state = blank(); cur = 0; renderAll(); save(); $('fallback').hidden = true;
       $('clear-btn').focus();
       announce('Cleared. Your planner is empty.');
     }, $('clear-btn'));
   });
 
-  // ---- copy + print ----
-  function line(label, v){ return '- ' + label + ': ' + (t(v).replace(/\s*\n\s*/g, ' ') || '___'); }
-  function asText(){
-    var s = state, out = ['My Screens', 'Who: ' + (t(s.who) || '___'), 'The moment: ' + (t(s.moment).replace(/\s*\n\s*/g, ' ') || '___'), ''];
+  // ---- AI build prompt ----
+  function firstMissing(){
+    for (var i = 0; i < N; i++){
+      for (var j = 0; j < FIELDS.length; j++){
+        if (!t(state.main[i][FIELDS[j].k])) return {i:i, f:FIELDS[j]};
+      }
+    }
+    return null;
+  }
+  function asPrompt(){
+    var s = state, out = [
+      'Here are my notes for a clickable prototype of a Home Depot store idea:', '',
+      'Who uses it: ' + one(s.who), 'The moment: ' + one(s.moment), ''];
     s.main.forEach(function(m, i){
-      out.push('Screen ' + (i+1) + ' (main flow)');
-      out.push(line('What they see', m.see)); out.push(line('What they tap', m.tap)); out.push(line('What this shows', m.cap)); out.push('');
-    });
-    var w = s.wrong;
-    out.push('Screen 4 (goes wrong' + (w.on ? ', breaks on screen ' + w.on : '') + ')');
-    out.push(line('What breaks', w.breaks)); out.push(line('What the screen says', w.says));
-    out.push(line('What to do next', w.next)); out.push(line('What this shows', w.cap));
-    s.bonus.forEach(function(b, i){
+      out.push('Screen ' + (i+1));
+      out.push('Title: ' + one(m.title));
+      out.push('Words: ' + one(m.words));
+      out.push('Button: ' + one(m.tap));
+      out.push('What this shows: ' + one(m.cap));
       out.push('');
-      out.push('Screen ' + (REQUIRED+i+1) + ' (bonus' + (b.type ? ': ' + SHORT[b.type] : '') + ')');
-      out.push(line('What they see', b.see)); out.push(line('What they tap', b.tap)); out.push(line('What this shows', b.cap));
     });
+    out = out.concat([
+      'Build ONE self-contained HTML file, with all styling and code inside it and nothing loaded from the internet. Rules:',
+      '1. Show each screen as a phone-size card (about 390 x 844 pixels), centered, one screen at a time.',
+      '2. Use the title, words, and button from my notes for each screen, word for word.',
+      '3. Make every button a real HTML button that opens the next screen. The last screen\'s button goes back to Screen 1.',
+      '4. Under each screen, show its caption from my notes, starting "What this shows:".',
+      '5. Keep it rough and gray: white, light gray, and dark gray only. Use Home Depot orange (#F96302) only for the main button, with dark text on it. No logos, photos, or icons.',
+      '6. Make it accessible: buttons that work with the keyboard, readable contrast, a visible focus outline, and the screen title as a heading. When the screen changes, move keyboard focus to the new title.',
+      '7. Use only what\'s in my notes. Don\'t invent Home Depot systems or numbers, and don\'t add screens or buttons I didn\'t give you.',
+      '',
+      'Give me the complete file to download.'
+    ]);
     return out.join('\n') + '\n';
   }
   function legacyCopy(text, btn){
@@ -663,15 +517,26 @@
     function fail(){
       $('fallback-text').value = text; $('fallback').hidden = false;
       $('fallback-text').focus(); $('fallback-text').select();
-      announceOut("Couldn't copy automatically. The text is selected below. Press Ctrl+C or Cmd+C.", true);
+      announceOut("Couldn't copy automatically. The prompt is selected below. Press Ctrl+C or Cmd+C.", true);
     }
     if (navigator.clipboard && window.isSecureContext){
       navigator.clipboard.writeText(text).then(done, function(){ if (legacyCopy(text, btn)) done(); else fail(); });
     } else { if (legacyCopy(text, btn)) done(); else fail(); }
   }
   $('copy-btn').addEventListener('click', function(){
-    if (!hasContent()){ announceOut('Your planner is empty. Fill in a few boxes first.', true); return; }
-    copyText(asText(), $('copy-btn'), 'Copied. Paste it into your notes doc under My Screens.');
+    if (!t(state.who) || !t(state.moment)){
+      announceOut('Fill in who uses the screens and the moment first.', true);
+      $(t(state.who) ? 'moment' : 'who').focus();
+      return;
+    }
+    var miss = firstMissing();
+    if (miss){
+      goTo(miss.i, true);
+      announceOut('Screen ' + (miss.i+1) + ' still needs its ' + miss.f.label.toLowerCase() + '. Fill it in, then copy again.', true);
+      $('m' + miss.i + '-' + miss.f.k).focus();
+      return;
+    }
+    copyText(asPrompt(), $('copy-btn'), 'Copied. Paste it into Claude or ChatGPT on the next page.');
   });
   $('print-btn').addEventListener('click', function(){
     announceOut('Opening print. Choose Save as PDF to keep a copy. If nothing opens, use the full-page link at the top.');

@@ -214,7 +214,7 @@
     </div>
 
     <p class="save-state" id="save-state">Saved only in this browser on this device.</p>
-    <p class="tip">Tip: paste the text into your notes doc under <strong>What I Learned</strong>.</p>
+    <p class="tip">Tip: paste the text into your final presentation outline doc under <strong>What I Designed</strong>.</p>
   </div>
 </main>
 
@@ -477,7 +477,7 @@
   }
   $('copy-btn').addEventListener('click', function(){
     if (!hasContent()){ announceOut('Your test card is empty. Fill in a few answers first.', true); return; }
-    copyText(asText(), $('copy-btn'), 'Copied. Paste it into your notes doc under What I Learned.');
+    copyText(asText(), $('copy-btn'), 'Copied. Paste it into your outline doc under What I Designed.');
   });
   $('print-btn').addEventListener('click', function(){
     announceOut('Opening print. Choose Save as PDF to keep a copy. If nothing opens, use the full-page link at the top.');
