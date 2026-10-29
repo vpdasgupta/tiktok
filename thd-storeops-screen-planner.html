@@ -73,10 +73,9 @@
 
   /* one screen at a time */
   .step-pick{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-  .step-pick button{min-width:44px;padding:9px 12px}
+  .step-pick button{padding:9px 14px}
   .step-pick button[aria-current="step"]{background:var(--ink);border-color:var(--ink);color:#fff}
   .step-nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-  .step-pos{font-size:.9rem;color:var(--muted);font-weight:600}
   .off{display:none!important}
 
   /* storyboard preview */
@@ -153,7 +152,7 @@
     <div class="layout">
       <form id="planner" autocomplete="off" novalidate>
         <section class="block" aria-labelledby="h-who">
-          <h2 id="h-who">1. Who and when</h2>
+          <h2 id="h-who">Who and when</h2>
           <div class="field">
             <label for="who">Who uses these screens?<span class="sub">One person. Example: "Sarah, an aisle associate"</span></label>
             <input type="text" id="who" maxlength="120">
@@ -165,19 +164,18 @@
         </section>
 
         <section class="block" aria-labelledby="h-main">
-          <h2 id="h-main">2. Your 3 screens, one at a time</h2>
+          <h2 id="h-main">Your 3 screens, one at a time</h2>
           <p class="hint">The main flow is what happens when everything works. Each screen needs a title, a few plain words, the one button they tap, and a one-line caption.</p>
           <div class="step-pick no-print" id="step-pick" role="group" aria-label="Choose a screen"></div>
           <div id="main-list"></div>
           <div class="step-nav no-print">
             <button type="button" id="prev-btn">Previous screen</button>
             <button type="button" id="next-btn">Next screen</button>
-            <span class="step-pos" id="step-pos" aria-hidden="true"></span>
           </div>
         </section>
 
         <section class="block" aria-labelledby="h-break">
-          <h2 id="h-break">3. Where it could break</h2>
+          <h2 id="h-break">Where it could break</h2>
           <p class="hint">Look at your riskiest hand-off (a Guess in your Project 2 notes). Which screen depends on it? You'll build a "goes wrong" screen there on page 4.</p>
           <fieldset class="wrong">
             <legend>Could break here</legend>
@@ -349,8 +347,7 @@
     for (var i = 0; i < N; i++){
       (function(i){
         var b = el('button'); b.type = 'button';
-        b.appendChild(el('span', 'sr-only', 'Screen '));
-        b.appendChild(document.createTextNode(String(i+1)));
+        b.textContent = 'Screen ' + (i+1);
         b.addEventListener('click', function(){ goTo(i); });
         pick.appendChild(b);
       })(i);
@@ -363,7 +360,6 @@
     });
     $('prev-btn').setAttribute('aria-disabled', cur === 0 ? 'true' : 'false');
     $('next-btn').setAttribute('aria-disabled', cur === N - 1 ? 'true' : 'false');
-    $('step-pos').textContent = 'Screen ' + (cur+1) + ' of ' + N;
     showCurrentPhone();
   }
   function goTo(i, quiet){
