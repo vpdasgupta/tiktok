@@ -83,6 +83,22 @@
   .count{font-size:.9rem;color:var(--muted);margin-top:8px}
   .remove-bonus{margin-top:10px;min-height:40px;font-size:.85rem}
 
+  /* one-screen-at-a-time stepper */
+  .stepper{border-top:1px solid var(--border);padding-top:14px;margin-bottom:14px}
+  .stepper-title{font-weight:700;font-size:1rem;margin-bottom:8px}
+  .step-pick{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+  .step-pick button{min-width:44px;padding:9px 12px}
+  .step-pick button[aria-current="step"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .step-pick button.is-wrong-step{border:2px dashed var(--wrong-edge)}
+  .step-pick button.is-bonus-step{border:2px dashed var(--orange-text)}
+  .step-pick button[aria-current="step"].is-wrong-step,
+  .step-pick button[aria-current="step"].is-bonus-step{border-style:solid}
+  .step-nav{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:4px}
+  .step-pos{font-size:.9rem;color:var(--muted);font-weight:600}
+  .off{display:none!important}
+  .board.single{grid-template-columns:minmax(0,280px)}
+  .board.single .phone-body{min-height:260px;font-size:.92rem}
+
   /* storyboard preview */
   .preview-wrap h2{margin-bottom:2px}
   .board-meta{font-size:.9rem;margin:6px 0 10px}
@@ -134,7 +150,9 @@
     .card{border:0;padding:0}
     .layout{display:block}
     .preview-wrap{position:static;max-height:none;overflow:visible}
-    .board{grid-template-columns:repeat(3,1fr)}
+    .board,.board.single{grid-template-columns:repeat(3,1fr)}
+    .board .phone.off{display:flex!important}
+    .stepper,.step-nav{display:none!important}
     .phone{break-inside:avoid}
     .ph-btn{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   }
@@ -167,13 +185,18 @@
           </div>
         </section>
 
-        <section class="block" aria-labelledby="h-main">
+        <div class="stepper no-print">
+          <p class="stepper-title" id="step-title">Plan one screen at a time</p>
+          <div class="step-pick" id="step-pick" role="group" aria-labelledby="step-title"></div>
+        </div>
+
+        <section class="block" aria-labelledby="h-main" id="sec-main">
           <h2 id="h-main">2. Your 3 main-flow screens</h2>
           <p class="hint">The main flow is what happens when everything works. Each screen needs what the person sees, the one thing they tap, and a one-line caption.</p>
           <div id="main-list"></div>
         </section>
 
-        <section class="block" aria-labelledby="h-wrong">
+        <section class="block" aria-labelledby="h-wrong" id="sec-wrong">
           <h2 id="h-wrong">3. Your "goes wrong" screen</h2>
           <p class="hint">Pick one Guess from your Project 2 notes that could break. This screen shows what the person sees when it does.</p>
           <fieldset class="wrong">
@@ -206,7 +229,7 @@
           </fieldset>
         </section>
 
-        <section class="block" aria-labelledby="h-bonus">
+        <section class="block" aria-labelledby="h-bonus" id="sec-bonus">
           <h2 id="h-bonus">4. Bonus screens <span class="sub-h">(optional)</span></h2>
           <div class="bonus-note" id="bonus-note">
             <p><strong>Optional.</strong> Only start a bonus screen once your 4 work end to end. Skipping it never costs you points. You can add up to 2 bonus screens, for 6 screens total.</p>
@@ -215,13 +238,19 @@
           <button type="button" id="add-bonus" class="no-print" aria-describedby="screen-count">Add a bonus screen</button>
           <p class="count" id="screen-count">4 of 6 screens planned (4 required).</p>
         </section>
+
+        <div class="step-nav no-print">
+          <button type="button" id="prev-btn">Previous screen</button>
+          <button type="button" class="primary" id="next-btn">Next screen</button>
+          <span class="step-pos" id="step-pos" aria-hidden="true"></span>
+        </div>
       </form>
 
       <section class="preview-wrap" aria-labelledby="h-preview">
         <h2 id="h-preview">Preview: your rough storyboard</h2>
-        <p class="hint">This updates as you type. It's a sketch, not your final screens.</p>
+        <p class="hint">This shows the screen you're working on and updates as you type. It's a sketch, not your final screens.</p>
         <div class="board-meta" id="board-meta"></div>
-        <ol class="board" id="board"></ol>
+        <ol class="board single" id="board"></ol>
       </section>
     </div>
 
@@ -464,11 +493,70 @@
       board.appendChild(phone('Screen ' + (REQUIRED+i+1) + (b.type ? ' · ' + SHORT[b.type] : ''), 'Bonus', 'bonus',
         [{v:b.see}], b.tap, b.cap, 'is-bonus'));
     });
+    showCurrentPhone();
   }
+
+  // ---- one screen at a time ----
+  var cur = 0;
+  function total(){ return REQUIRED + state.bonus.length; }
+  function stepKind(i){ return i < 3 ? 'main flow' : i === 3 ? 'goes wrong' : 'bonus'; }
+  function stepLabel(i){ return 'Screen ' + (i+1) + ' (' + stepKind(i) + ')'; }
+  function showCurrentPhone(){
+    Array.prototype.forEach.call($('board').children, function(li, i){ li.classList.toggle('off', i !== cur); });
+  }
+  function renderPicker(){
+    var pick = $('step-pick'), n = total();
+    if (pick.children.length !== n){
+      pick.textContent = '';
+      for (var i = 0; i < n; i++){
+        (function(i){
+          var b = el('button', i === 3 ? 'is-wrong-step' : i > 3 ? 'is-bonus-step' : null);
+          b.type = 'button';
+          b.appendChild(el('span', 'sr-only', 'Screen '));
+          b.appendChild(document.createTextNode(String(i+1)));
+          if (i >= 3) b.appendChild(el('span', 'sr-only', ', ' + stepKind(i)));
+          b.addEventListener('click', function(){ goTo(i); });
+          pick.appendChild(b);
+        })(i);
+      }
+    }
+    Array.prototype.forEach.call(pick.children, function(b, i){
+      if (i === cur) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+  }
+  function applyStep(){
+    var n = total();
+    if (cur > n - 1) cur = n - 1;
+    if (cur < 0) cur = 0;
+    Array.prototype.forEach.call($('main-list').children, function(fs, i){ fs.classList.toggle('off', i !== cur); });
+    Array.prototype.forEach.call($('bonus-list').children, function(fs, i){ fs.classList.toggle('off', REQUIRED + i !== cur); });
+    $('sec-main').classList.toggle('off', cur > 2);
+    $('sec-wrong').classList.toggle('off', cur !== 3);
+    $('sec-bonus').classList.toggle('off', cur < 3);
+    $('prev-btn').setAttribute('aria-disabled', cur === 0 ? 'true' : 'false');
+    $('next-btn').setAttribute('aria-disabled', cur === n - 1 ? 'true' : 'false');
+    $('step-pos').textContent = 'Screen ' + (cur+1) + ' of ' + n;
+    renderPicker(); showCurrentPhone();
+  }
+  function goTo(i){
+    cur = i; applyStep();
+    announce('Showing ' + stepLabel(cur) + ', ' + (cur+1) + ' of ' + total() + '.');
+  }
+  $('prev-btn').addEventListener('click', function(){
+    if (cur === 0){ announce('This is the first screen.'); return; }
+    goTo(cur - 1);
+  });
+  $('next-btn').addEventListener('click', function(){
+    if (cur >= total() - 1){
+      announce(state.bonus.length < MAX_BONUS ? 'This is the last screen. You can add an optional bonus screen.' : 'This is the last screen.');
+      return;
+    }
+    goTo(cur + 1);
+  });
 
   function renderAll(){
     $('who').value = state.who; $('moment').value = state.moment;
-    renderMain(); renderWrong(); renderBonus(); renderPreview();
+    renderMain(); renderWrong(); renderBonus(); renderPreview(); applyStep();
   }
   function edited(){ $('fallback').hidden = true; renderPreview(); save(); }
 
@@ -479,8 +567,9 @@
       return;
     }
     state.bonus.push({type:'', see:'', tap:'', cap:''});
-    renderBonus(); edited();
     var i = state.bonus.length - 1;
+    cur = REQUIRED + i;
+    renderBonus(); edited(); applyStep();
     $('b' + i + '-type').focus();
     announce('Bonus screen ' + (REQUIRED + i + 1) + ' added. ' + (REQUIRED + state.bonus.length) + ' of 6 screens.');
   });
@@ -488,9 +577,10 @@
     var b = state.bonus[i];
     var doIt = function(){
       state.bonus.splice(i, 1);
-      renderBonus(); edited();
+      cur = REQUIRED + i - 1;
+      renderBonus(); edited(); applyStep();
       $('add-bonus').focus();
-      announce('Bonus screen removed. ' + (REQUIRED + state.bonus.length) + ' of 6 screens.');
+      announce('Bonus screen removed. Showing ' + stepLabel(cur) + '. ' + total() + ' of 6 screens.');
     };
     if (t(b.see) || t(b.tap) || t(b.cap)){
       ask('Remove this bonus screen?', 'What you wrote for bonus screen ' + (REQUIRED+i+1) + ' will be erased.', 'Yes, remove', doIt, $('add-bonus'));
@@ -524,9 +614,9 @@
   // ---- example + clear ----
   $('example-btn').addEventListener('click', function(){
     var go = function(){
-      state = clone(EXAMPLE); renderAll(); save(); $('fallback').hidden = true;
+      state = clone(EXAMPLE); cur = 0; renderAll(); save(); $('fallback').hidden = true;
       $('example-btn').focus();
-      announce("Marcus's example loaded: 3 main-flow screens and 1 goes-wrong screen. He skipped the bonus.");
+      announce("Marcus's example loaded: 3 main-flow screens and 1 goes-wrong screen. He skipped the bonus. Showing screen 1. Use Next screen to see the rest.");
     };
     if (hasContent()) ask("Replace your screens with Marcus's example?", 'What you wrote will be erased. Copy it first if you want to keep it.', 'Yes, show example', go, $('example-btn'));
     else go();
@@ -534,7 +624,7 @@
   $('clear-btn').addEventListener('click', function(){
     if (!hasContent()){ announce('Your planner is already empty.'); return; }
     ask('Clear everything?', "This erases all your screens. You can't undo it.", 'Yes, clear', function(){
-      state = blank(); renderAll(); save(); $('fallback').hidden = true;
+      state = blank(); cur = 0; renderAll(); save(); $('fallback').hidden = true;
       $('clear-btn').focus();
       announce('Cleared. Your planner is empty.');
     }, $('clear-btn'));
