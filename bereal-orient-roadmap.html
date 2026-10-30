@@ -41,7 +41,7 @@ p{margin:0}
 a{color:var(--link)}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 
-.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .tab{appearance:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;
   background:var(--surface);border:1px solid var(--ui-line);border-radius:var(--r-card);
   padding:12px 14px;min-height:64px;display:flex;flex-direction:column;justify-content:center;gap:2px;position:relative}
@@ -75,6 +75,7 @@ a{color:var(--link)}
 .example{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:start}
 .example video{display:block;width:100%;aspect-ratio:420/800;border-radius:var(--r-inner);background:#000;border:1px solid var(--ui-line)}
 .example p{margin:0 0 8px}
+.panel.ex h2{margin-bottom:12px}
 .example details{margin-top:4px}
 .example summary{cursor:pointer;font-weight:600;color:var(--link);padding:4px 0}
 .example ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
@@ -162,7 +163,10 @@ const CONFIG = {
         { name: "ChatGPT or Claude", use: "Draft your pitch script, then rewrite it in your own words." },
         { name: "Canva", use: "Build your pitch slides." },
         { name: "Loom", use: "Record your pitch with your slides on screen. Zoom or Canva's \"Present and record\" work too." }
-      ],
+      ]
+    },
+    {
+      range: "Example", name: "Final project",
       example: {
         heading: "See an example final project",
         intro: "A past extern's feature, 30 Days of Real Moments, shown as a clickable prototype. The video is 30 seconds and has no sound.",
@@ -198,6 +202,7 @@ const CONFIG = {
   const $ = (id) => document.getElementById(id);
   const tablist = $("tablist"), panels = $("panels"), bar = $("bar");
   const n = CONFIG.stages.length;
+  const nStages = CONFIG.stages.filter((s) => !s.example).length;
   $("title").textContent = CONFIG.title;
   $("walk").textContent = CONFIG.walkAway;
   $("foot").textContent = CONFIG.footnote;
@@ -224,8 +229,10 @@ const CONFIG = {
     p.setAttribute("aria-labelledby", "tab-" + i);
     p.tabIndex = 0;
     const h = document.createElement("h2");
-    h.textContent = s.range + ": " + s.name;
+    h.textContent = s.example ? s.example.heading : s.range + ": " + s.name;
     p.appendChild(h);
+    if (s.example) p.classList.add("ex");
+    if (s.projects) {
     const ul = document.createElement("ul");
     s.projects.forEach((pr) => {
       const li = document.createElement("li");
@@ -249,12 +256,13 @@ const CONFIG = {
     hi.innerHTML = "<b>What you'll hand in:</b> ";
     hi.appendChild(document.createTextNode(s.handIn));
     p.appendChild(hi);
+    }
 
     if (s.tools && s.tools.length) {
       const sec = document.createElement("div");
       sec.className = "sect";
       const h3 = document.createElement("h3");
-      h3.textContent = "AI tools you'll use";
+      h3.textContent = "Tools You'll Use";
       const tl = document.createElement("ul");
       tl.className = "tools";
       s.tools.forEach((tool) => {
@@ -273,10 +281,6 @@ const CONFIG = {
 
     if (s.example) {
       const ex = s.example;
-      const sec = document.createElement("div");
-      sec.className = "sect";
-      const h3 = document.createElement("h3");
-      h3.textContent = ex.heading;
       const wrap = document.createElement("div");
       wrap.className = "example";
       const v = document.createElement("video");
@@ -298,16 +302,17 @@ const CONFIG = {
       det.append(sum, ol);
       txt.append(intro, det);
       wrap.append(v, txt);
-      sec.append(h3, wrap);
-      p.appendChild(sec);
+      p.appendChild(wrap);
     }
     panels.appendChild(p);
     pans.push(p);
 
-    const seg = document.createElement("span");
-    seg.className = "seg";
-    bar.appendChild(seg);
-    segs.push(seg);
+    if (!s.example) {
+      const seg = document.createElement("span");
+      seg.className = "seg";
+      bar.appendChild(seg);
+      segs.push(seg);
+    }
 
     tab.addEventListener("click", () => select(i, false, true));
   });
@@ -320,11 +325,14 @@ const CONFIG = {
       t.setAttribute("aria-selected", on ? "true" : "false");
       t.tabIndex = on ? 0 : -1;
       pans[j].hidden = !on;
-      segs[j].classList.toggle("on", j <= i);
+      if (segs[j]) segs[j].classList.toggle("on", j <= i);
     });
-    $("barLabel").textContent = "Stage " + (i + 1) + " of " + n;
+    const isEx = !!CONFIG.stages[i].example;
+    $("barLabel").textContent = isEx ? "All " + nStages + " stages" : "Stage " + (i + 1) + " of " + nStages;
     if (focus) tabs[i].focus();
-    if (announce) $("live").textContent = "Showing stage " + (i + 1) + " of " + n + ": " + CONFIG.stages[i].range + ", " + CONFIG.stages[i].name + ".";
+    if (announce) $("live").textContent = isEx
+      ? "Showing the example final project."
+      : "Showing stage " + (i + 1) + " of " + nStages + ": " + CONFIG.stages[i].range + ", " + CONFIG.stages[i].name + ".";
   }
 
   tablist.addEventListener("keydown", (e) => {
