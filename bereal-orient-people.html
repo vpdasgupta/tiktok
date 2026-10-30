@@ -3,17 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Meet Your People</title>
+<title>Meet Your Company Mentor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
 :root{
   --bg:#F7F5F2; --surface:#FFFFFF; --ink:#1C1B1B; --muted:#5B666D; --line:#DAD6CE;
-  --ui-line:#7A8288;
-  --brand:#241A6B; --brand-soft:#E6E4FF; --brand-softer:#F3F2FF;
-  --green:#0B7431; --green-soft:#DDF9E4;
-  --gray-soft:#EFEDE9;
+  --green:#0B7431;
   --focus:#2A4EEF;
   --co:#0F0F10; --co-on:#FFFFFF; --co-soft:#F0F0F0; --co-ink:#0F0F10; --co-accent:linear-gradient(90deg,#FFD643,#FF5117,#FF3D9E);
   --r-card:14px; --r-inner:12px;
@@ -23,12 +20,9 @@
 @media (prefers-color-scheme: dark){
   :root{
     --bg:#121416; --surface:#1B1E21; --ink:#ECEAE5; --muted:#A3ACB2; --line:#33383D;
-    --ui-line:#7D868C;
-    --brand:#C9C3FF; --brand-soft:#2B2650; --brand-softer:#211E38;
-    --green:#5BE58A; --green-soft:#173826;
-    --gray-soft:#26292C;
+    --green:#5BE58A;
     --focus:#93A6FF;
-    --co:#FFFFFF; --co-on:#0F0F10; --co-soft:#26272A; --co-ink:#FFFFFF; --co-accent:linear-gradient(90deg,#FFD643,#FF5117,#FF3D9E);
+    --co:#FFFFFF; --co-on:#0F0F10; --co-soft:#26272A; --co-ink:#FFFFFF;
     color-scheme:dark;
   }
 }
@@ -37,210 +31,110 @@ html,body{background:var(--bg)}
 body{margin:0;padding:14px 12px 12px;position:relative;color:var(--ink);font:400 15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-h1{margin:0 0 10px;font:700 22px/1.2 var(--body);letter-spacing:-.01em;color:var(--co)}
-h2{margin:2px 0 10px;font:700 22px/1.2 var(--body);color:var(--ink)}
+h1{margin:0;font:700 22px/1.2 var(--body);letter-spacing:-.01em;color:var(--co)}
+h2{margin:0 0 8px;font:700 16px/1.3 var(--body);color:var(--co-ink)}
 p{margin:0}
 
-/* Track: horizontal scroll-snap, one slide per view */
-.track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
-  gap:12px;padding:2px;margin:-2px;scrollbar-width:none;overscroll-behavior-x:contain}
-.track::-webkit-scrollbar{display:none}
-@media (prefers-reduced-motion: reduce){.track{scroll-behavior:auto}}
-.slide{flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always;
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);
-  padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px;align-items:start}
-.slide.pm{background:var(--brand-softer);border-color:var(--brand-soft)}
-.slide.co{background:var(--co-soft);border-color:var(--co-soft)}
-.co .tag{color:var(--co-ink)}
-.slide.peers{background:var(--green-soft);border-color:transparent}
+.co-strip{position:absolute;top:0;left:0;right:0;height:4px;background:var(--co-accent);pointer-events:none}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px}
+.co-chip{display:inline-flex;align-items:center;min-height:24px;padding:3px 10px;border-radius:999px;background:var(--co-soft);color:var(--co-ink);font:600 12.5px/1.2 var(--body);white-space:nowrap}
 
-.tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
-.pm .tag{color:var(--brand)}
-.media{border-radius:var(--r-inner);overflow:hidden;background:var(--gray-soft)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:16px}
+.media{border-radius:var(--r-inner);overflow:hidden;background:#000}
 .media video{display:block;width:100%;aspect-ratio:16/9;background:#000}
-.media img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
-.peer-art{aspect-ratio:1/1;display:grid;place-items:center;background:var(--surface)}
-.peer-art svg{width:72%;height:auto}
 .media-cap{margin-top:8px;font-size:13px;color:var(--muted)}
 
+.who{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center;margin-top:14px}
+.who img{width:96px;height:96px;border-radius:50%;object-fit:cover;object-position:50% 25%}
+.tag{font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
+.name{font:700 20px/1.2 var(--body);margin:2px 0}
+.role{color:var(--muted);font-size:14px}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:14px}
+.panel{background:var(--co-soft);border-radius:var(--r-inner);padding:14px}
 ul{margin:0;padding-left:20px}
 li{margin:0 0 6px}
 li:last-child{margin-bottom:0}
-.note{margin-top:12px;padding:10px 12px;border-radius:var(--r-inner);background:var(--surface);font-size:14px}
-.peers .note{color:var(--ink)}
 
-/* Company brand layer (BeReal) */
-.co-strip{position:absolute;top:0;left:0;right:0;height:4px;background:var(--co-accent);pointer-events:none}
-.top{display:flex;justify-content:flex-end;margin:0 0 8px}
-.co-chip{display:inline-flex;align-items:center;min-height:24px;padding:3px 10px;border-radius:999px;background:var(--co-soft);color:var(--co-ink);font:600 12.5px/1.2 var(--body);white-space:nowrap}
-
-/* Controls */
-.controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
-.nav{appearance:none;font:inherit;font-weight:600;cursor:pointer;min-height:44px;min-width:44px;padding:8px 18px;border-radius:999px;
-  border:2px solid var(--co);background:var(--co);color:var(--co-on)}
-.nav.prev{background:transparent;color:var(--co)}
-.nav[disabled]{cursor:default;opacity:.4}
-.dots{display:flex;gap:6px;align-items:center}
-.dot{appearance:none;cursor:pointer;width:44px;height:44px;padding:0;border:0;background:transparent;display:grid;place-items:center}
-.dot span{display:block;width:28px;height:8px;border-radius:999px;background:var(--line);box-shadow:inset 0 0 0 1px var(--ui-line)}
-.dot[aria-current="true"] span{background:var(--green);box-shadow:none;width:40px}
-.count{font-size:13px;font-weight:600;color:var(--muted);min-width:46px;text-align:center}
+.tbtn{appearance:none;font:inherit;font-weight:600;cursor:pointer;min-height:44px;padding:8px 18px;border-radius:999px;border:2px solid var(--co);background:transparent;color:var(--co);margin-top:12px}
+.tbtn[aria-expanded="true"]{background:var(--co);color:var(--co-on)}
+#transcript{margin-top:10px;padding:12px 14px;border-radius:var(--r-inner);border:1px solid var(--line);font-size:14px}
+#transcript p+p{margin-top:8px}
 
 @media (max-width:560px){
-  .slide{grid-template-columns:minmax(0,1fr);gap:14px;padding:14px}
-  .media img,.peer-art{aspect-ratio:16/10}
-  .media img{object-position:50% 25%}
-  .nav{padding:8px 12px}
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .who{grid-template-columns:72px minmax(0,1fr)}
+  .who img{width:72px;height:72px}
 }
 </style>
 </head>
 <body>
 <div class="co-strip" aria-hidden="true"></div>
-<h1 class="sr-only">Meet your people</h1>
-<div class="top"><span class="co-chip" aria-hidden="true">Extern × BeReal</span></div>
+<div class="top">
+  <h1>Meet your company mentor</h1>
+  <span class="co-chip" aria-hidden="true">Extern × BeReal</span>
+</div>
 
-<section class="carousel" aria-roledescription="carousel" aria-label="Your people">
-  <div class="track" id="track">
+<main class="card">
+  <div class="media">
+    <video controls preload="metadata" playsinline poster="bereal-orient-assets/bereal-mentor-ben-intro-poster.jpg"
+           aria-label="Video: Ben Moore introduces himself and BeReal, 1 minute 45 seconds, captions on screen" aria-describedby="vidcap">
+      <source src="bereal-orient-assets/bereal-mentor-ben-intro.mp4" type="video/mp4">
+      <track kind="captions" src="bereal-orient-assets/bereal-mentor-ben-intro.vtt" srclang="en" label="English">
+    </video>
+  </div>
+  <p class="media-cap" id="vidcap">Clips from a recorded BeReal company meeting. Captions are on screen.</p>
 
-    <div class="slide pm" role="group" aria-roledescription="slide" aria-label="1 of 3: Your Program Manager" id="s1">
-      <div>
-        <div class="media">
-          <video controls preload="metadata" playsinline poster="bereal-orient-assets/bereal-pm-intro-poster.jpg"
-                 aria-label="Video: your program manager introduces themself">
-            <source src="bereal-orient-assets/bereal-pm-intro.mp4" type="video/mp4">
-          </video>
-        </div>
-        <p class="media-cap">Watch a quick hello from your program manager.</p>
-      </div>
-      <div>
-        <p class="tag"><span aria-hidden="true">👋</span> Your first contact</p>
-        <h2>Your Program Manager</h2>
-        <ul>
-          <li>Unblocks you when you're stuck on a task or a tool</li>
-          <li>Reviews your work and replies within 24 hours</li>
-          <li>Runs your live sessions: project check-ins, Q&amp;A, and networking with other externs and the BeReal team</li>
-        </ul>
-        <p class="note"><span aria-hidden="true">💬</span> Message your program manager on Slack. You'll hear back within 24 hours.</p>
-      </div>
-    </div>
-
-    <div class="slide co" role="group" aria-roledescription="slide" aria-label="2 of 3: Company Mentor" id="s2">
-      <div>
-        <div class="media"><img src="bereal-orient-assets/bereal-mentor-ben.jpg" alt="Ben Moore, smiling, in a headshot"></div>
-      </div>
-      <div>
-        <p class="tag"><span aria-hidden="true">🏢</span> Company mentor · BeReal</p>
-        <h2>Ben Moore</h2>
-        <ul>
-          <li>US Managing Director at BeReal, bringing product, data, and go-to-market together to drive growth</li>
-          <li>10+ years in advertising and tech, at Walmart Connect, TikTok, Dailymotion, and Havas</li>
-          <li>Can mentor you on structuring partnerships, building roadmaps with measurable outcomes, and leading clearly on fast-moving teams</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="slide peers" role="group" aria-roledescription="slide" aria-label="3 of 3: Your Peers" id="s3">
-      <div>
-        <div class="media peer-art" aria-hidden="true">
-          <svg viewBox="0 0 120 90" fill="none">
-            <circle cx="30" cy="34" r="12" fill="#0B7431" opacity=".35"/>
-            <path d="M10 76c0-12 9-20 20-20s20 8 20 20" fill="#0B7431" opacity=".35"/>
-            <circle cx="90" cy="34" r="12" fill="#241A6B" opacity=".35"/>
-            <path d="M70 76c0-12 9-20 20-20s20 8 20 20" fill="#241A6B" opacity=".35"/>
-            <circle cx="60" cy="28" r="14" fill="#0B7431"/>
-            <path d="M36 80c0-14 11-24 24-24s24 10 24 24" fill="#0B7431"/>
-          </svg>
-        </div>
-      </div>
-      <div>
-        <p class="tag"><span aria-hidden="true">👥</span> Live sessions · set from your availability form</p>
-        <h2>Your Peers</h2>
-        <ul>
-          <li>Share ideas and ask questions as you work. Someone has often hit the same snag.</li>
-          <li>Swap feedback before you submit, in Slack or at a live session.</li>
-          <li>Meet externs from around the world and start building your network.</li>
-        </ul>
-        <p class="note">Your program manager isn't a 24/7 help line, so your peers are often the fastest answer.</p>
-      </div>
-    </div>
-
+  <button type="button" class="tbtn" id="tbtn" aria-expanded="false" aria-controls="transcript">Show transcript</button>
+  <div id="transcript" hidden>
+    <p>For those of you who I haven't met yet, I'm Ben. I've been leading the relaunch, or the monetization, as we call it, of BeReal since the last 10 months now, here in the US. I'm based in Los Angeles. I have a small but mighty team, essentially composed of salespeople that go to brands and agencies to explain the value proposition of BeReal.</p>
+    <p>So hopefully you're all familiar with the app now, but we're the alternative to the big ones, the Instagram and the TikTok. We're the only AI-free social media. We're the place where you never have to wonder if what you see is real or not, and we're essentially the place where you can connect with actual human beings, and hopefully people you care about.</p>
+    <p>And it's been very encouraging to see so many of you truly motivated by the idea of doing something, or participating in this big project that is making BeReal culturally relevant, ultimately. So thank you for joining. Excited to bring BeReal to the level of hype and virality that it was a few years back when it blew up, especially in the US.</p>
+    <p>And so those PMs are really the catalysts, the enablers of the features that make the users stay on the app, stick to the app, but also tell their friends about it, and what keeps them coming back to the app, essentially.</p>
   </div>
 
-  <div class="controls">
-    <button type="button" class="nav prev" id="prev" aria-controls="track">
-      <span aria-hidden="true">←</span> Back
-    </button>
-    <div class="dots" id="dots">
-      <button type="button" class="dot" aria-controls="track" aria-label="Slide 1: Your Program Manager"><span></span></button>
-      <button type="button" class="dot" aria-controls="track" aria-label="Slide 2: Company Mentor"><span></span></button>
-      <button type="button" class="dot" aria-controls="track" aria-label="Slide 3: Your Peers"><span></span></button>
+  <div class="who">
+    <img src="bereal-orient-assets/bereal-mentor-ben.jpg" alt="Ben Moore, smiling, in a headshot">
+    <div>
+      <p class="tag">Your company mentor · BeReal</p>
+      <p class="name">Ben Moore</p>
+      <p class="role">US Managing Director, BeReal</p>
     </div>
-    <button type="button" class="nav next" id="next" aria-controls="track">
-      Next <span aria-hidden="true">→</span>
-    </button>
   </div>
-  <p class="sr-only" aria-live="polite" id="status"></p>
-</section>
+
+  <div class="grid">
+    <section class="panel" aria-labelledby="h-about">
+      <h2 id="h-about">About Ben</h2>
+      <ul>
+        <li>Leads BeReal's relaunch in the US, bringing product, data, and go-to-market together to drive growth</li>
+        <li>10+ years in advertising and tech, at Walmart Connect, TikTok, Dailymotion, and Havas</li>
+        <li>Can mentor you on structuring partnerships, building roadmaps with measurable outcomes, and leading on fast-moving teams</li>
+      </ul>
+    </section>
+    <section class="panel" aria-labelledby="h-work">
+      <h2 id="h-work">How you'll work with Ben</h2>
+      <ul>
+        <li>You'll meet him at company meetings. That's where you share your ideas and hear his feedback.</li>
+        <li>Save big-picture questions about BeReal for those meetings. Bring them prepared.</li>
+        <li>Don't message Ben or anyone at BeReal directly, and never ask for a job, internship, or referral.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+<p class="sr-only" aria-live="polite" id="status"></p>
 
 <script>
 (function(){
-  var track = document.getElementById('track');
-  var slides = Array.prototype.slice.call(track.querySelectorAll('.slide'));
-  var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
-  var prev = document.getElementById('prev');
-  var next = document.getElementById('next');
-  var status = document.getElementById('status');
-  var current = 0;
-  var announce = false;
-
-  function go(i){
-    i = Math.max(0, Math.min(slides.length - 1, i));
-    announce = true;
-    track.scrollTo({left: slides[i].offsetLeft - track.offsetLeft, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
-    setCurrent(i);
-  }
-
-  function setCurrent(i){
-    if (i === current && dots[i].getAttribute('aria-current') === 'true') return;
-    current = i;
-    slides.forEach(function(s, n){
-      var on = n === i;
-      // Keep off-screen slides out of the tab order and the reading flow.
-      if ('inert' in s) s.inert = !on; else s.setAttribute('aria-hidden', on ? 'false' : 'true');
-      if (!on) { var v = s.querySelector('video'); if (v && !v.paused) v.pause(); }
-    });
-    dots.forEach(function(d, n){ d.setAttribute('aria-current', n === i ? 'true' : 'false'); });
-    prev.disabled = i === 0;
-    next.disabled = i === slides.length - 1;
-    if (announce) status.textContent = slides[i].getAttribute('aria-label');
-  }
-
-  prev.addEventListener('click', function(){ go(current - 1); });
-  next.addEventListener('click', function(){ go(current + 1); });
-  dots.forEach(function(d, n){ d.addEventListener('click', function(){ go(n); }); });
-
-  // Track swipes, trackpad scrolls, and button-driven scrolls.
-  var t;
-  track.addEventListener('scroll', function(){
-    clearTimeout(t);
-    t = setTimeout(function(){
-      var i = Math.round(track.scrollLeft / track.clientWidth);
-      announce = true;
-      setCurrent(i);
-    }, 80);
-  }, {passive:true});
-
-  // Left/Right arrows when focus is inside the carousel (but not in the video controls).
-  document.querySelector('.carousel').addEventListener('keydown', function(e){
-    if (e.target.tagName === 'VIDEO') return;
-    if (e.key === 'ArrowRight') { e.preventDefault(); go(current + 1); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); go(current - 1); }
+  var b = document.getElementById('tbtn');
+  var t = document.getElementById('transcript');
+  var s = document.getElementById('status');
+  b.addEventListener('click', function(){
+    var open = b.getAttribute('aria-expanded') === 'true';
+    b.setAttribute('aria-expanded', open ? 'false' : 'true');
+    t.hidden = open;
+    b.textContent = open ? 'Show transcript' : 'Hide transcript';
+    s.textContent = open ? 'Transcript hidden' : 'Transcript shown below the video';
   });
-
-  window.addEventListener('resize', function(){ track.scrollLeft = slides[current].offsetLeft - track.offsetLeft; });
-
-  current = -1;
-  setCurrent(0);
 })();
 </script>
 </body>
