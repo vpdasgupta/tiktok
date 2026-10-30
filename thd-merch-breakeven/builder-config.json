@@ -1,18 +1,17 @@
 {
-  "_note": "Replace with the JSON printed by builder-cohort-setup.gs, then deploy next to breakeven-builder.html.",
-  "formAction": "",
+  "formAction": "https://docs.google.com/forms/d/e/1FAIpQLSek1UEycQ3pvunT4E6F41_Ge8cnIYAL6VRi3pKIrvMu6ivAow/formResponse",
   "entries": {
-    "name": "",
-    "area": "",
-    "spots": "",
-    "changes": "",
-    "seconds": "",
-    "damage": "",
-    "labor": "",
-    "upfront": "",
-    "running": "",
-    "months": "",
-    "finding": ""
+    "name": "entry.898611896",
+    "area": "entry.1667170533",
+    "spots": "entry.438907031",
+    "changes": "entry.185213861",
+    "seconds": "entry.1341921038",
+    "damage": "entry.1186297611",
+    "labor": "entry.1013968535",
+    "upfront": "entry.2028945538",
+    "running": "entry.2097220012",
+    "months": "entry.1755303607",
+    "finding": "entry.2138196734"
   },
-  "csv": ""
+  "csv": "https://docs.google.com/spreadsheets/d/e/2PACX-1vSPuqec7bkqM9FHtOUBAib5LGkr5pCMY2LLacn-Fy3uUeIAPft3DQV78hR6hZN3K63LlnVVhwBjTII9/pub?gid=1909237914&single=true&output=csv"
 }
