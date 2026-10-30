@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get Set Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F7F5F2; --surface:#FFFFFF; --ink:#1C1B1B; --muted:#5B666D; --line:#DAD6CE;
+  --ui-line:#7A8288; --track:#7A8288;
+  --brand:#241A6B; --brand-soft:#E6E4FF; --brand-softer:#F3F2FF;
+  --green:#0B7431; --green-bright:#18DD4C; --green-soft:#DDF9E4;
+  --red:#A3261B; --red-soft:#FDE2E0; --link:#2A4EEF; --focus:#2A4EEF;
+  --on-ink:#FFFFFF;
+  --body:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121416; --surface:#1B1E21; --ink:#ECEAE5; --muted:#A3ACB2; --line:#33383D;
+    --ui-line:#7D868C; --track:#5E666C;
+    --brand:#C9C3FF; --brand-soft:#2B2650; --brand-softer:#211E38;
+    --green:#5BE58A; --green-soft:#173826;
+    --red:#F3988E; --red-soft:#3D1D1A; --link:#93A6FF; --focus:#93A6FF;
+    --on-ink:#121416;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;padding:12px 16px 16px;color:var(--ink);font:400 15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+p{margin:0}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+
+/* Header */
+.progress{display:flex;align-items:center;gap:12px;margin:0 0 16px}
+.bar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;flex:1}
+.seg{height:6px;border-radius:999px;background:var(--line);box-shadow:inset 0 0 0 1px var(--track)}
+.seg.on{background:var(--green);box-shadow:none}
+.count{font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap}
+.eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin:0 0 4px}
+h1{margin:0 0 4px;font:700 34px/1.15 var(--body);color:var(--brand);letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0 0 16px}
+
+/* Card + rows */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.rows{list-style:none;margin:0;padding:0}
+.row{padding:12px 16px 12px 10px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row-main{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
+.check{position:relative;width:44px;height:44px;flex:none}
+.check input{position:absolute;inset:0;margin:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:1}
+.check .box{position:absolute;top:9px;left:9px;width:26px;height:26px;border-radius:50%;border:2px solid var(--ui-line);background:var(--surface);display:grid;place-items:center;pointer-events:none}
+.check .box svg{width:14px;height:14px;opacity:0}
+.check input:checked + .box{background:var(--green-bright);border-color:var(--green)}
+.check input:checked + .box svg{opacity:1}
+.check input:focus-visible + .box{outline:3px solid var(--focus);outline-offset:3px}
+.text{flex:1 1 250px;min-width:0}
+.title{font-weight:600;font-size:15.5px;cursor:pointer}
+.opt{font-weight:500;color:var(--muted)}
+.detail{color:var(--muted);font-size:14px;line-height:1.45}
+.done{display:inline-flex;align-items:center;gap:3px;margin-left:8px;font-size:13px;font-weight:600;color:var(--green);white-space:nowrap}
+.done[hidden]{display:none}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto}
+
+.btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid var(--ui-line);background:var(--surface);color:var(--ink);font:600 14.5px/1.2 var(--body);text-decoration:none;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--brand-softer);border-color:var(--brand)}
+.btn .ext{font-weight:500}
+.btn-pri{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.btn-pri:hover{background:var(--brand);border-color:var(--brand);color:var(--on-ink)}
+.btn[disabled]{background:var(--surface);border-style:dashed;color:var(--muted);cursor:not-allowed}
+
+/* Inline panels */
+.panel{margin:10px 0 4px 54px;background:var(--brand-softer);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.panel h3{margin:0 0 2px;font:600 16px/1.3 var(--body);color:var(--brand)}
+.panel .hint{color:var(--muted);font-size:14px;margin-bottom:8px}
+.stmts{list-style:none;margin:0;padding:0}
+.stmt{padding:8px 0;border-top:1px solid var(--line)}
+.stmt:first-child{border-top:0}
+.stmt-top{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px}
+.stmt-text{flex:1 1 220px;font-weight:500}
+.choices{display:flex;gap:8px}
+.choice{appearance:none;min-height:44px;min-width:76px;padding:0 14px;border-radius:999px;border:1.5px solid var(--ui-line);background:var(--surface);color:var(--ink);font:600 14px/1 var(--body);cursor:pointer}
+.choice:hover{border-color:var(--brand)}
+.choice[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--surface)}
+.fb{font-size:14px;margin-top:4px;font-weight:500}
+.fb:empty{display:none}
+.fb.ok{color:var(--green)}
+.fb.no{color:var(--red)}
+.fb b{font-weight:700}
+.why{margin-top:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:14.5px}
+.why[hidden]{display:none}
+.agree-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:12px}
+.agree-row .note{font-size:14px;color:var(--muted)}
+.block-msg{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.block-msg:empty{display:none}
+
+.cap-link{margin:4px 0 10px;font-size:14.5px}
+label.cap-lbl{display:block;font-weight:600;font-size:14px;margin-bottom:4px}
+textarea{display:block;width:100%;min-height:118px;resize:vertical;padding:10px 12px;border:1.5px solid var(--ui-line);border-radius:10px;background:var(--surface);color:var(--ink);font:400 14px/1.5 var(--body)}
+.copy-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:10px}
+.copy-status{font-size:14px;font-weight:600;color:var(--green)}
+.copy-status.warn{color:var(--ink)}
+
+/* Ready panel */
+.ready{margin-top:14px;background:var(--brand-soft);border-radius:14px;padding:14px 18px;display:flex;gap:12px;align-items:flex-start}
+.ready .icon{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--brand);display:grid;place-items:center;margin-top:1px}
+.ready.is-ready .icon{background:var(--green-bright);border-color:var(--green)}
+.ready .icon svg{width:14px;height:14px}
+.ready h2{margin:0;font:600 16.5px/1.35 var(--body);color:var(--brand)}
+.ready p{margin-top:2px;font-size:14.5px;color:var(--ink)}
+.help{margin-top:14px;font-size:14.5px}
+.help a{display:inline-flex;align-items:center;min-height:44px}
+
+@media (max-width:540px){
+  body{padding:10px 12px 14px}
+  h1{font-size:30px}
+  .row{padding:10px 12px 12px 6px}
+  .actions{margin-left:54px;width:100%}
+  .panel{margin-left:0}
+  .check{align-self:flex-start;margin-top:-6px}
+  .ready{padding:12px 14px}
+}
+@media (prefers-reduced-motion: no-preference){
+  .seg,.check .box,.btn,.choice{transition:background-color .15s ease,border-color .15s ease}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="eyebrow">Orientation · 3 of 3 · 5 min</p>
+  <h1>Get Set Up</h1>
+  <p class="sub">Do these now so nothing gets in the way on Day 1.</p>
+
+  <div class="progress">
+    <div class="bar" aria-hidden="true"><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span></div>
+    <p class="count" id="count" aria-live="polite" aria-atomic="true">0 of 4 done</p>
+  </div>
+
+  <section class="card" aria-labelledby="tasks-h">
+    <h2 class="sr-only" id="tasks-h">Your setup checklist</h2>
+    <ul class="rows">
+      <!-- Row 1 -->
+      <li class="row" id="row-0">
+        <div class="row-main">
+          <span class="check"><input type="checkbox" id="c0" aria-describedby="d0"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M2.5 7.4 5.6 10.3 11.5 3.8" fill="none" stroke="#1C1B1B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+          <div class="text">
+            <label class="title" for="c0">Join Slack</label><span class="done" hidden><span aria-hidden="true">✓</span> Done</span>
+            <p class="detail" id="d0">Say hello in the program channel and introduce yourself.</p>
+          </div>
+          <div class="actions" id="slack-actions"></div>
+        </div>
+      </li>
+      <!-- Row 2 -->
+      <li class="row" id="row-1">
+        <div class="row-main">
+          <span class="check"><input type="checkbox" id="c1" aria-describedby="d1"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M2.5 7.4 5.6 10.3 11.5 3.8" fill="none" stroke="#1C1B1B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+          <div class="text">
+            <label class="title" for="c1">Fill out the availability form</label><span class="done" hidden><span aria-hidden="true">✓</span> Done</span>
+            <p class="detail" id="d1">Tell us when you're free so we can set live session times that work for everyone.</p>
+          </div>
+          <div class="actions">
+            <a class="btn" id="form-link" target="_blank" rel="noopener">Open form <span class="ext" aria-hidden="true">↗</span><span class="sr-only"> (availability form, opens in a new tab)</span></a>
+          </div>
+        </div>
+      </li>
+      <!-- Row 3 -->
+      <li class="row" id="row-2">
+        <div class="row-main">
+          <span class="check"><input type="checkbox" id="c2" aria-describedby="d2"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M2.5 7.4 5.6 10.3 11.5 3.8" fill="none" stroke="#1C1B1B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+          <div class="text">
+            <label class="title" for="c2">Agree to the house rules</label><span class="done" hidden><span aria-hidden="true">✓</span> Done</span>
+            <p class="detail" id="d2">Sort six quick rules into Do or Don't, then agree.</p>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn" id="rules-toggle" aria-expanded="false" aria-controls="rules-panel">Review rules</button>
+          </div>
+        </div>
+        <div class="panel" id="rules-panel" hidden>
+          <h3 id="rules-h" tabindex="-1">House rules: Do or Don't?</h3>
+          <p class="hint">Pick Do or Don't for each one.</p>
+          <p class="block-msg" id="block-msg"></p>
+          <ol class="stmts" id="stmts"></ol>
+          <p class="why" id="why" hidden></p>
+          <div class="agree-row">
+            <button type="button" class="btn btn-pri" id="agree" disabled aria-describedby="agree-note">I agree to the house rules</button>
+            <p class="note" id="agree-note">Answer all six to unlock this button.</p>
+          </div>
+        </div>
+      </li>
+      <!-- Row 4 -->
+      <li class="row" id="row-3">
+        <div class="row-main">
+          <span class="check"><input type="checkbox" id="c3" aria-describedby="d3"><span class="box" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M2.5 7.4 5.6 10.3 11.5 3.8" fill="none" stroke="#1C1B1B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+          <div class="text">
+            <label class="title" for="c3">Tell your network <span class="opt">(optional)</span></label><span class="done" hidden><span aria-hidden="true">✓</span> Done</span>
+            <p class="detail" id="d3">Post on LinkedIn that you've started your externship.</p>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn" id="cap-toggle" aria-expanded="false" aria-controls="cap-panel">Get caption</button>
+          </div>
+        </div>
+        <div class="panel" id="cap-panel" hidden>
+          <h3>Your announcement post</h3>
+          <p class="cap-link"><a id="img-link" target="_blank" rel="noopener">Open the announcement image in Google Drive<span class="sr-only"> (opens in a new tab)</span></a></p>
+          <label class="cap-lbl" for="caption">Sample caption</label>
+          <textarea id="caption" readonly rows="5"></textarea>
+          <div class="copy-row">
+            <button type="button" class="btn" id="copy">Copy caption</button>
+            <p class="copy-status" id="copy-status" aria-live="polite" aria-atomic="true"></p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="ready" id="ready" aria-labelledby="ready-h">
+    <span class="icon" aria-hidden="true"><svg viewBox="0 0 14 14" id="ready-svg"><path d="M2.5 7.4 5.6 10.3 11.5 3.8" fill="none" stroke="#1C1B1B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <div>
+      <h2 id="ready-h">Finish the first three to be ready for Day 1.</h2>
+      <p id="ready-p" hidden></p>
+    </div>
+  </section>
+
+  <p class="help"><a id="help-link" target="_blank" rel="noopener">Questions? Message your program manager on Slack<span class="sr-only"> (opens in a new tab)</span></a></p>
+  <p class="sr-only" id="announce" aria-live="polite" aria-atomic="true"></p>
+</main>
+
+<script>
+const CONFIG = {
+  company: "BeReal",
+  storageKey: "extern-orient-setup-bereal-v1",
+  slackLinks: [
+    { label: "Open Slack", url: "http://bit.ly/externslackinvitation" }
+  ],
+  helpUrl: "http://bit.ly/externslackinvitation",
+  formUrl: "https://tally.so/r/ob5b9e",
+  imageUrl: "https://drive.google.com/file/d/1b_tjAhmMPjcmZyHf8L0Zjz6TBqI8uMtq/view?usp=sharing",
+  day1: "Your first assignment, Project 1: Your First BeReal Teardown, unlocks on Day 1. You'll map the BeReal user journey and spot where it delights users and where it frustrates them.",
+  caption: "Excited to kick off my externship with BeReal & Extern! Over the next few weeks, I'll be mapping user journeys, benchmarking competitors, and designing a new product feature for one of the most distinctive social apps out there. If you've worked in product management, UX research, or social app growth, I'd love to connect! #Externship #BeReal #ProductManagement #UserResearch #FeatureDesign"
+};
+
+(function(){
+  "use strict";
+  const C = CONFIG.company;
+  const RULES = [
+    { text: "Follow the suggested pacing", answer: "do" },
+    { text: "Join live sessions and company meetings", answer: "do" },
+    { text: "Bring every question to Slack or your program manager", answer: "do" },
+    { text: "Message someone at " + C + " directly on LinkedIn", answer: "dont" },
+    { text: "Call yourself an intern or employee", answer: "dont", why: "You're an extern hosted by Extern, Inc. in partnership with " + C + "." },
+    { text: "Share project data or files outside approved channels", answer: "dont" }
+  ];
+  const $ = (id) => document.getElementById(id);
+  const checks = [0,1,2,3].map(i => $("c" + i));
+
+  // ---- State (localStorage is optional) ----
+  let state = { checks: [false,false,false,false], agreed: false, answers: {} };
+  function load(){
+    try {
+      const raw = window.localStorage.getItem(CONFIG.storageKey);
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s && Array.isArray(s.checks)) state.checks = [0,1,2,3].map(i => !!s.checks[i]);
+        if (s && s.agreed) state.agreed = true;
+        if (s && s.answers && typeof s.answers === "object") state.answers = s.answers;
+      }
+    } catch (e) { /* storage blocked: keep defaults */ }
+  }
+  function save(){
+    try { window.localStorage.setItem(CONFIG.storageKey, JSON.stringify(state)); } catch (e) {}
+  }
+  function announce(msg){
+    const el = $("announce");
+    el.textContent = "";
+    window.setTimeout(() => { el.textContent = msg; }, 60);
+  }
+
+  // ---- Links from CONFIG ----
+  const slackWrap = $("slack-actions");
+  CONFIG.slackLinks.forEach(l => {
+    const a = document.createElement("a");
+    a.className = "btn"; a.href = l.url; a.target = "_blank"; a.rel = "noopener";
+    a.innerHTML = '<span></span> <span class="ext" aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span>';
+    a.firstChild.textContent = l.label;
+    slackWrap.appendChild(a);
+  });
+  $("form-link").href = CONFIG.formUrl;
+  $("img-link").href = CONFIG.imageUrl;
+  $("help-link").href = CONFIG.helpUrl;
+  $("caption").value = CONFIG.caption;
+
+  // ---- Progress + ready state ----
+  function render(){
+    checks.forEach((c, i) => {
+      c.checked = state.checks[i];
+      $("row-" + i).querySelector(".done").hidden = !state.checks[i];
+    });
+    const n = state.checks.filter(Boolean).length;
+    document.querySelectorAll(".seg").forEach((s, i) => s.classList.toggle("on", i < n));
+    const countText = n + " of 4 done";
+    if ($("count").textContent !== countText) $("count").textContent = countText;
+    const ready = state.checks[0] && state.checks[1] && state.checks[2];
+    const box = $("ready");
+    box.classList.toggle("is-ready", ready);
+    $("ready-svg").style.visibility = ready ? "visible" : "hidden";
+    $("ready-h").textContent = ready ? "You're ready for Day 1" : "Finish the first three to be ready for Day 1.";
+    $("ready-p").hidden = !ready;
+    $("ready-p").textContent = ready ? CONFIG.day1 : "";
+    return ready;
+  }
+
+  checks.forEach((c, i) => {
+    c.addEventListener("click", (e) => {
+      if (i === 2 && c.checked && !state.agreed) {
+        e.preventDefault();
+        const msg = "Sort the six rules below, then select “I agree to the house rules” to check this off.";
+        openRules();
+        $("block-msg").textContent = msg;
+        announce(msg);
+        return;
+      }
+    });
+    c.addEventListener("change", () => {
+      const wasReady = state.checks[0] && state.checks[1] && state.checks[2];
+      state.checks[i] = c.checked;
+      save();
+      const nowReady = render();
+      if (nowReady && !wasReady) announce("You're ready for Day 1.");
+    });
+  });
+
+  // ---- House rules panel ----
+  const rulesToggle = $("rules-toggle"), rulesPanel = $("rules-panel");
+  function openRules(){
+    rulesPanel.hidden = false;
+    rulesToggle.setAttribute("aria-expanded", "true");
+    rulesToggle.textContent = "Hide rules";
+    $("rules-h").focus();
+  }
+  function closeRules(){
+    rulesPanel.hidden = true;
+    rulesToggle.setAttribute("aria-expanded", "false");
+    rulesToggle.textContent = "Review rules";
+  }
+  rulesToggle.addEventListener("click", () => {
+    if (rulesPanel.hidden) openRules(); else closeRules();
+  });
+  rulesPanel.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { closeRules(); rulesToggle.focus(); }
+  });
+
+  const list = $("stmts");
+  RULES.forEach((r, i) => {
+    const li = document.createElement("li");
+    li.className = "stmt";
+    li.innerHTML =
+      '<div class="stmt-top">' +
+        '<p class="stmt-text" id="st' + i + '"></p>' +
+        '<div class="choices" role="group" aria-labelledby="st' + i + '">' +
+          '<button type="button" class="choice" data-i="' + i + '" data-v="do" aria-pressed="false">Do</button>' +
+          '<button type="button" class="choice" data-i="' + i + '" data-v="dont" aria-pressed="false">Don’t</button>' +
+        '</div>' +
+      '</div>' +
+      '<p class="fb" id="fb' + i + '"></p>';
+    li.querySelector(".stmt-text").textContent = (i + 1) + ". " + r.text;
+    list.appendChild(li);
+  });
+
+  function feedbackText(i){
+    const r = RULES[i], v = state.answers[i];
+    if (!v) return null;
+    const word = r.answer === "do" ? "Do" : "Don’t";
+    const ok = v === r.answer;
+    return { ok, text: (ok ? "Correct. " : "Not quite. ") + "This is a " + word + "." + (r.why ? " " + r.why : "") };
+  }
+  function renderRules(){
+    RULES.forEach((r, i) => {
+      list.querySelectorAll('.choice[data-i="' + i + '"]').forEach(b => {
+        b.setAttribute("aria-pressed", String(state.answers[i] === b.dataset.v));
+      });
+      const fb = $("fb" + i), f = feedbackText(i);
+      fb.className = "fb" + (f ? (f.ok ? " ok" : " no") : "");
+      fb.innerHTML = "";
+      if (f) {
+        const mark = document.createElement("b");
+        mark.setAttribute("aria-hidden", "true");
+        mark.textContent = f.ok ? "✓ " : "✗ ";
+        fb.appendChild(mark);
+        fb.appendChild(document.createTextNode(f.text));
+      }
+    });
+    const all = RULES.every((r, i) => !!state.answers[i]);
+    const why = $("why");
+    why.hidden = !all;
+    why.innerHTML = all ? "<b>Why this matters:</b> " : "";
+    if (all) why.appendChild(document.createTextNode("Breaking these rules can cost you, and future externs, this opportunity. " + C + " relies on your professionalism."));
+    const agree = $("agree");
+    agree.disabled = !all;
+    $("agree-note").textContent = state.agreed ? "You agreed. Row 3 is checked." : (all ? "" : "Answer all six to unlock this button.");
+    agree.setAttribute("aria-describedby", all ? "why" : "agree-note");
+    return all;
+  }
+  list.addEventListener("click", (e) => {
+    const b = e.target.closest(".choice");
+    if (!b) return;
+    const i = Number(b.dataset.i);
+    const before = RULES.every((r, k) => !!state.answers[k]);
+    state.answers[i] = b.dataset.v;
+    save();
+    const after = renderRules();
+    const f = feedbackText(i);
+    if (after && !before) {
+      announce(f.text + " All six sorted. The I agree button is ready.");
+    } else {
+      announce(f.text);
+    }
+  });
+  $("agree").addEventListener("click", () => {
+    state.agreed = true;
+    state.checks[2] = true;
+    $("block-msg").textContent = "";
+    save();
+    renderRules();
+    const ready = render();
+    closeRules();
+    rulesToggle.focus();
+    announce("You agreed to the house rules. Row 3 is checked." + (ready ? " You're ready for Day 1." : ""));
+  });
+
+  // ---- Caption panel ----
+  const capToggle = $("cap-toggle"), capPanel = $("cap-panel");
+  capToggle.addEventListener("click", () => {
+    const open = capPanel.hidden;
+    capPanel.hidden = !open;
+    capToggle.setAttribute("aria-expanded", String(open));
+    capToggle.textContent = open ? "Hide caption" : "Get caption";
+    if (open) { const ta = $("caption"); ta.style.height = "auto"; ta.style.height = (ta.scrollHeight + 4) + "px"; }
+  });
+  function setCopyStatus(msg, warn){
+    const s = $("copy-status");
+    s.classList.toggle("warn", !!warn);
+    s.textContent = "";
+    window.setTimeout(() => { s.textContent = msg; }, 60);
+  }
+  $("copy").addEventListener("click", async () => {
+    const ta = $("caption"), btn = $("copy");
+    let ok = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(ta.value);
+        ok = true;
+      }
+    } catch (e) { ok = false; }
+    if (!ok) {
+      try {
+        ta.focus(); ta.select(); ta.setSelectionRange(0, ta.value.length);
+        ok = document.execCommand && document.execCommand("copy");
+        if (ok) btn.focus();
+      } catch (e) { ok = false; }
+    }
+    if (ok) {
+      setCopyStatus("✓ Caption copied");
+    } else {
+      ta.focus(); ta.select();
+      setCopyStatus("Caption selected. Press Ctrl+C or Command+C to copy it.", true);
+    }
+  });
+
+  // ---- Init ----
+  load();
+  if (state.checks[2] && !state.agreed) state.agreed = true;
+  renderRules();
+  render();
+})();
+</script>
+</body>
+</html>
