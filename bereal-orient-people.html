@@ -44,14 +44,22 @@ p{margin:0}
 .media video{display:block;width:100%;aspect-ratio:16/9;background:#000}
 .media-cap{margin-top:8px;font-size:13px;color:var(--muted)}
 
-.who{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center;margin-top:14px}
-.who img{width:96px;height:96px;border-radius:50%;object-fit:cover;object-position:50% 25%}
+.screen{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:18px;align-items:center}
+.profile{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.profile img{width:112px;height:112px;border-radius:50%;object-fit:cover;object-position:50% 25%;margin-bottom:10px}
 .tag{font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
-.name{font:700 20px/1.2 var(--body);margin:2px 0}
+.name{font:700 24px/1.2 var(--body);margin:2px 0}
 .role{color:var(--muted);font-size:14px}
+.cta{appearance:none;font:inherit;font-weight:600;cursor:pointer;min-height:44px;padding:10px 20px;border-radius:999px;border:2px solid var(--co);background:var(--co);color:var(--co-on);margin-top:16px}
+.cta:hover{opacity:.9}
 
-.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:14px}
+.about-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.about-head img{width:56px;height:56px;border-radius:50%;object-fit:cover;object-position:50% 25%}
+.about-head h2{margin:0;font-size:20px}
+.about-head .role{margin:0}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 .panel{background:var(--co-soft);border-radius:var(--r-inner);padding:14px}
+.panel h3{margin:0 0 8px;font:700 16px/1.3 var(--body);color:var(--co-ink)}
 ul{margin:0;padding-left:20px}
 li{margin:0 0 6px}
 li:last-child{margin-bottom:0}
@@ -60,11 +68,13 @@ li:last-child{margin-bottom:0}
 .tbtn[aria-expanded="true"]{background:var(--co);color:var(--co-on)}
 #transcript{margin-top:10px;padding:12px 14px;border-radius:var(--r-inner);border:1px solid var(--line);font-size:14px}
 #transcript p+p{margin-top:8px}
+.view:focus{outline:none}
+.view h2:focus{outline:none}
+.view h2:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 
 @media (max-width:560px){
-  .grid{grid-template-columns:minmax(0,1fr)}
-  .who{grid-template-columns:72px minmax(0,1fr)}
-  .who img{width:72px;height:72px}
+  .screen,.grid{grid-template-columns:minmax(0,1fr)}
+  .profile img{width:80px;height:80px}
 }
 </style>
 </head>
@@ -76,50 +86,63 @@ li:last-child{margin-bottom:0}
 </div>
 
 <main class="card">
-  <div class="media">
-    <video controls preload="metadata" playsinline poster="bereal-orient-assets/bereal-mentor-ben-intro-poster.jpg"
-           aria-label="Video: Ben Moore introduces himself and BeReal, 1 minute 45 seconds, captions on screen" aria-describedby="vidcap">
-      <source src="bereal-orient-assets/bereal-mentor-ben-intro.mp4" type="video/mp4">
-      <track kind="captions" src="bereal-orient-assets/bereal-mentor-ben-intro.vtt" srclang="en" label="English">
-    </video>
-  </div>
-  <p class="media-cap" id="vidcap">Clips from a recorded BeReal company meeting. Captions are on screen.</p>
-
-  <button type="button" class="tbtn" id="tbtn" aria-expanded="false" aria-controls="transcript">Show transcript</button>
-  <div id="transcript" hidden>
+  <section class="view" id="v-ben" aria-label="Ben Moore">
+    <div class="screen">
+      <div>
+        <div class="media">
+          <video id="vid" controls preload="metadata" playsinline poster="bereal-orient-assets/bereal-mentor-ben-intro-poster.jpg"
+                 aria-label="Video: Ben Moore introduces himself and BeReal, 1 minute 45 seconds, captions on screen" aria-describedby="vidcap">
+            <source src="bereal-orient-assets/bereal-mentor-ben-intro.mp4" type="video/mp4">
+            <track kind="captions" src="bereal-orient-assets/bereal-mentor-ben-intro.vtt" srclang="en" label="English">
+          </video>
+        </div>
+        <p class="media-cap" id="vidcap">Clips from a recorded BeReal company meeting. Captions are on screen.</p>
+      </div>
+      <div class="profile">
+        <img src="bereal-orient-assets/bereal-mentor-ben.jpg" alt="Ben Moore, smiling, in a headshot">
+        <p class="tag">Your company mentor</p>
+        <p class="name">Ben Moore</p>
+        <p class="role">US Managing Director, BeReal</p>
+        <button type="button" class="cta" id="open-about">Read about Ben →</button>
+      </div>
+    </div>
+    <button type="button" class="tbtn" id="tbtn" aria-expanded="false" aria-controls="transcript">Show transcript</button>
+    <div id="transcript" hidden>
     <p>For those of you who I haven't met yet, I'm Ben. I've been leading the relaunch, or the monetization, as we call it, of BeReal since the last 10 months now, here in the US. I'm based in Los Angeles. I have a small but mighty team, essentially composed of salespeople that go to brands and agencies to explain the value proposition of BeReal.</p>
     <p>So hopefully you're all familiar with the app now, but we're the alternative to the big ones, the Instagram and the TikTok. We're the only AI-free social media. We're the place where you never have to wonder if what you see is real or not, and we're essentially the place where you can connect with actual human beings, and hopefully people you care about.</p>
     <p>And it's been very encouraging to see so many of you truly motivated by the idea of doing something, or participating in this big project that is making BeReal culturally relevant, ultimately. So thank you for joining. Excited to bring BeReal to the level of hype and virality that it was a few years back when it blew up, especially in the US.</p>
     <p>And so those PMs are really the catalysts, the enablers of the features that make the users stay on the app, stick to the app, but also tell their friends about it, and what keeps them coming back to the app, essentially.</p>
   </div>
+  </section>
 
-  <div class="who">
-    <img src="bereal-orient-assets/bereal-mentor-ben.jpg" alt="Ben Moore, smiling, in a headshot">
-    <div>
-      <p class="tag">Your company mentor · BeReal</p>
-      <p class="name">Ben Moore</p>
-      <p class="role">US Managing Director, BeReal</p>
+  <section class="view" id="v-about" aria-labelledby="h-about" hidden>
+    <div class="about-head">
+      <img src="bereal-orient-assets/bereal-mentor-ben.jpg" alt="">
+      <div>
+        <h2 id="h-about" tabindex="-1">About Ben Moore</h2>
+        <p class="role">US Managing Director, BeReal</p>
+      </div>
     </div>
-  </div>
-
-  <div class="grid">
-    <section class="panel" aria-labelledby="h-about">
-      <h2 id="h-about">About Ben</h2>
-      <ul>
+    <div class="grid">
+      <section class="panel" aria-labelledby="h-bg">
+        <h3 id="h-bg">His background</h3>
+        <ul>
         <li>Leads BeReal's relaunch in the US, bringing product, data, and go-to-market together to drive growth</li>
         <li>10+ years in advertising and tech, at Walmart Connect, TikTok, Dailymotion, and Havas</li>
         <li>Can mentor you on structuring partnerships, building roadmaps with measurable outcomes, and leading on fast-moving teams</li>
       </ul>
-    </section>
-    <section class="panel" aria-labelledby="h-work">
-      <h2 id="h-work">How you'll work with Ben</h2>
-      <ul>
+      </section>
+      <section class="panel" aria-labelledby="h-work">
+        <h3 id="h-work">How you'll work with Ben</h3>
+        <ul>
         <li>You'll meet him at company meetings. That's where you share your ideas and hear his feedback.</li>
         <li>Save big-picture questions about BeReal for those meetings. Bring them prepared.</li>
         <li>Don't message Ben or anyone at BeReal directly, and never ask for a job, internship, or referral.</li>
       </ul>
-    </section>
-  </div>
+      </section>
+    </div>
+    <button type="button" class="tbtn" id="back">← Back to Ben's video</button>
+  </section>
 </main>
 <p class="sr-only" aria-live="polite" id="status"></p>
 
@@ -134,6 +157,24 @@ li:last-child{margin-bottom:0}
     t.hidden = open;
     b.textContent = open ? 'Show transcript' : 'Hide transcript';
     s.textContent = open ? 'Transcript hidden' : 'Transcript shown below the video';
+  });
+
+  var vBen = document.getElementById('v-ben');
+  var vAbout = document.getElementById('v-about');
+  var openBtn = document.getElementById('open-about');
+  var back = document.getElementById('back');
+  var vid = document.getElementById('vid');
+  openBtn.addEventListener('click', function(){
+    if (!vid.paused) vid.pause();
+    vBen.hidden = true;
+    vAbout.hidden = false;
+    document.getElementById('h-about').focus();
+  });
+  back.addEventListener('click', function(){
+    vAbout.hidden = true;
+    vBen.hidden = false;
+    openBtn.focus();
+    s.textContent = 'Back to Ben\'s video';
   });
 })();
 </script>
