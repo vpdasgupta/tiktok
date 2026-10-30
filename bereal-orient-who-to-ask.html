@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Who Should I Ask?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F7F5F2; --surface:#FFFFFF; --ink:#1C1B1B; --muted:#5B666D; --line:#DAD6CE;
+  --ui-line:#7A8288;
+  --brand:#241A6B; --brand-soft:#E6E4FF; --brand-softer:#F3F2FF;
+  --green:#0B7431; --green-soft:#DDF9E4; --red:#A3261B; --red-soft:#FDE2E0;
+  --btn-bg:#1C1B1B; --btn-ink:#FFFFFF;
+  --focus:#2A4EEF;
+  --display:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --body:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121416; --surface:#1B1E21; --ink:#ECEAE5; --muted:#A3ACB2; --line:#33383D;
+    --ui-line:#7D868C;
+    --brand:#C9C3FF; --brand-soft:#2B2650; --brand-softer:#211E38;
+    --green:#5BE58A; --green-soft:#173826; --red:#F3988E; --red-soft:#3D1D1A;
+    --btn-bg:#ECEAE5; --btn-ink:#121416;
+    --focus:#93A6FF;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;padding:8px 12px 12px;color:var(--ink);font:400 15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+h1{margin:0 0 2px;font:700 28px/1.15 var(--display);letter-spacing:-.01em;color:var(--brand)}
+.intro{margin:0 0 12px;color:var(--muted)}
+h2{margin:0 0 12px;font:600 18px/1.35 var(--body);color:var(--ink)}
+h2:focus{outline:none}
+h2:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+p{margin:0}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green);white-space:nowrap}
+.bar{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;flex:1}
+.seg{height:6px;border-radius:999px;background:var(--line);box-shadow:inset 0 0 0 1px var(--ui-line)}
+.seg.on{background:var(--green);box-shadow:none}
+
+.answers{display:flex;flex-direction:column;gap:8px}
+.ans{appearance:none;font:inherit;font-weight:500;color:var(--ink);text-align:left;cursor:pointer;
+  background:var(--surface);border:1px solid var(--ui-line);border-radius:12px;
+  min-height:44px;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ans:hover:not([aria-disabled="true"]){border-color:var(--brand);background:var(--brand-softer)}
+.ans[aria-disabled="true"]{cursor:default}
+.ans .tag{font-size:13px;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.ans.is-right{border:2px solid var(--green);padding:8px 13px;background:var(--green-soft)}
+.ans.is-right .tag{color:var(--green)}
+.ans.is-wrong{border:2px solid var(--red);padding:8px 13px;background:var(--red-soft)}
+.ans.is-wrong .tag{color:var(--red)}
+.ans.dim{color:var(--muted)}
+
+.feedback{margin-top:12px}
+.fb{border-radius:12px;padding:10px 14px}
+.fb.good{background:var(--green-soft)}
+.fb.bad{background:var(--red-soft)}
+.fb .verdict{font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.fb.good .verdict{color:var(--green)}
+.fb.bad .verdict{color:var(--red)}
+.icon{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;border:2px solid currentColor;font-size:12px;line-height:1;font-weight:700}
+
+.actions{display:flex;justify-content:flex-end;margin-top:12px}
+.primary{appearance:none;font:inherit;font-weight:600;cursor:pointer;border:2px solid var(--btn-bg);
+  background:var(--btn-bg);color:var(--btn-ink);border-radius:999px;min-height:44px;padding:8px 22px}
+.primary:hover{opacity:.9}
+
+.score{font:400 30px/1.15 var(--display);color:var(--brand);margin:0 0 4px}
+.summary{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.summary li{background:var(--brand-soft);border-radius:12px;padding:10px 14px}
+.summary b{color:var(--brand);font-weight:600}
+
+@media (max-width:420px){
+  h1{font-size:28px}
+  .ans{flex-wrap:wrap}
+}
+@media (prefers-reduced-motion: no-preference){
+  .ans,.seg{transition:background-color .15s ease,border-color .15s ease}
+}
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="intro" id="intro"></p>
+  <div id="stage"></div>
+  <div class="sr-only" aria-live="polite" id="live"></div>
+</main>
+<script>
+const CONFIG = {
+  company: "BeReal",
+  title: "Who should I ask?",
+  intro: "Pick who you'd go to first.",
+  options: {
+    pm: "Your program manager",
+    mentor: "Your company mentor (at a company meeting)",
+    peers: "Your peers",
+    none: "None of them"
+  },
+  cards: [
+    { q: "A tool won't load and you've already tried restarting it.", answer: "pm",
+      why: "Your program manager unblocks you when you're stuck on a task or a tool." },
+    { q: "You want a quick gut check on your idea before you submit.", answer: "peers",
+      why: "Peers are often the fastest answer. Swap feedback in Slack or at a live session." },
+    { q: "You have a big-picture question about how {company} makes decisions.", answer: "mentor",
+      why: "Save it for a company meeting. Your program manager can help you sharpen it." },
+    { q: "You'll miss a deadline because of a family emergency.", answer: "pm",
+      why: "Tell your program manager early. They reply within 24 hours." },
+    { q: "You'd like to ask the {company} mentor for a job referral.", answer: "none", extra: true,
+      why: "House rule: never ask company representatives for jobs, internships, or referrals." }
+  ],
+  summary: [
+    { who: "Program manager", what: "stuck, feedback, deadlines · replies within 24 hours" },
+    { who: "Company mentor", what: "big-picture questions, saved for company meetings, never by direct message" },
+    { who: "Peers", what: "quick ideas, swapping feedback, networking" }
+  ]
+};
+
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const stage = $("stage"), live = $("live");
+  const fill = (s) => s.replace(/\{company\}/g, CONFIG.company);
+  const total = CONFIG.cards.length;
+  let idx = 0, score = 0, answered = false;
+
+  $("title").textContent = CONFIG.title;
+  $("intro").textContent = CONFIG.intro;
+
+  function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function renderCard(focus) {
+    answered = false;
+    const c = CONFIG.cards[idx];
+    stage.innerHTML = "";
+    const card = el("section", "card");
+    card.setAttribute("aria-labelledby", "q");
+
+    const top = el("div", "top");
+    top.appendChild(el("p", "eyebrow", "Question " + (idx + 1) + " of " + total));
+    const bar = el("div", "bar");
+    bar.setAttribute("aria-hidden", "true");
+    for (let i = 0; i < total; i++) bar.appendChild(el("span", "seg" + (i <= idx ? " on" : "")));
+    top.appendChild(bar);
+    card.appendChild(top);
+
+    const h = el("h2", null, fill(c.q));
+    h.id = "q";
+    h.tabIndex = -1;
+    card.appendChild(h);
+
+    const group = el("div", "answers");
+    group.setAttribute("role", "group");
+    group.setAttribute("aria-labelledby", "q");
+    const keys = ["pm", "mentor", "peers"].concat(c.extra ? ["none"] : []);
+    keys.forEach((k) => {
+      const b = el("button", "ans");
+      b.type = "button";
+      b.dataset.key = k;
+      b.appendChild(el("span", "label", CONFIG.options[k]));
+      b.addEventListener("click", () => choose(k));
+      group.appendChild(b);
+    });
+    card.appendChild(group);
+
+    const fb = el("div", "feedback");
+    fb.id = "fb";
+    card.appendChild(fb);
+    stage.appendChild(card);
+    if (focus) h.focus();
+  }
+
+  function choose(k) {
+    if (answered) return;
+    answered = true;
+    const c = CONFIG.cards[idx];
+    const ok = k === c.answer;
+    if (ok) score++;
+
+    stage.querySelectorAll(".ans").forEach((b) => {
+      b.setAttribute("aria-disabled", "true");
+      const key = b.dataset.key;
+      if (key === c.answer) {
+        b.classList.add("is-right");
+        const t = el("span", "tag");
+        t.innerHTML = '<span class="icon" aria-hidden="true">&#10003;</span>';
+        t.appendChild(document.createTextNode(key === k ? "Your answer, correct" : "Correct answer"));
+        b.appendChild(t);
+      } else if (key === k) {
+        b.classList.add("is-wrong");
+        const t = el("span", "tag");
+        t.innerHTML = '<span class="icon" aria-hidden="true">&#10007;</span>';
+        t.appendChild(document.createTextNode("Your answer"));
+        b.appendChild(t);
+      } else {
+        b.classList.add("dim");
+      }
+    });
+
+    const fbBox = el("div", "fb " + (ok ? "good" : "bad"));
+    const p = el("p");
+    const v = el("span", "verdict");
+    v.innerHTML = '<span class="icon" aria-hidden="true">' + (ok ? "&#10003;" : "&#10007;") + "</span>";
+    v.appendChild(document.createTextNode(ok ? "Correct." : "Not quite."));
+    p.appendChild(v);
+    const rest = (ok ? "" : " The best answer is " + lowerFirst(CONFIG.options[c.answer]) + ". ") + (ok ? " " : "") + fill(c.why);
+    p.appendChild(document.createTextNode(rest));
+    fbBox.appendChild(p);
+    const fb = $("fb");
+    fb.appendChild(fbBox);
+
+    const actions = el("div", "actions");
+    const last = idx === total - 1;
+    const next = el("button", "primary", last ? "See your score" : "Next");
+    next.type = "button";
+    next.addEventListener("click", () => {
+      if (last) renderEnd(); else { idx++; renderCard(true); }
+    });
+    actions.appendChild(next);
+    fb.appendChild(actions);
+
+    live.textContent = "";
+    setTimeout(() => { live.textContent = (ok ? "Correct. " : "Not quite.") + rest; }, 50);
+    next.focus();
+  }
+
+  function lowerFirst(s) {
+    return s === CONFIG.options.none ? "none of them" : s.charAt(0).toLowerCase() + s.slice(1);
+  }
+
+  function renderEnd() {
+    stage.innerHTML = "";
+    const card = el("section", "card");
+    card.setAttribute("aria-labelledby", "score");
+    const top = el("div", "top");
+    top.appendChild(el("p", "eyebrow", "All done"));
+    card.appendChild(top);
+    const h = el("h2", "score", "You got " + score + " of " + total);
+    h.id = "score";
+    h.tabIndex = -1;
+    card.appendChild(h);
+    card.appendChild(el("p", null, "Here's who to go to for what."));
+    const ul = el("ul", "summary");
+    CONFIG.summary.forEach((r) => {
+      const li = el("li");
+      li.appendChild(el("b", null, r.who + ": "));
+      li.appendChild(document.createTextNode(r.what));
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+    const actions = el("div", "actions");
+    const again = el("button", "primary", "Try again");
+    again.type = "button";
+    again.addEventListener("click", () => { idx = 0; score = 0; renderCard(true); live.textContent = "Question 1 of " + total; });
+    actions.appendChild(again);
+    card.appendChild(actions);
+    stage.appendChild(card);
+    h.focus();
+  }
+
+  renderCard(false);
+})();
+</script>
+</body>
+</html>
