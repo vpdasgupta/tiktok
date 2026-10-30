@@ -129,9 +129,10 @@ const CONFIG = {
     dark:  { co: "#FFFFFF", coOn: "#0F0F10", coSoft: "#26272A", coInk: "#FFFFFF", coAccent: "linear-gradient(90deg,#FFD643,#FF5117,#FF3D9E)" }
   },
   title: "What you'll build",
+  totalWeeks: "All 8 weeks",
   stages: [
     {
-      range: "Projects 1–2", name: "Research",
+      range: "Projects 1–2", name: "Research", weeks: "Weeks 1–3",
       projects: [
         { num: "Project 1", title: "Your First BeReal Teardown", desc: "Map the BeReal user journey and spot delight vs. friction points." },
         { num: "Project 2", title: "Benchmark BeReal's competitors", desc: "Find which features actually drive growth." }
@@ -142,7 +143,7 @@ const CONFIG = {
       ]
     },
     {
-      range: "Projects 3–4", name: "Build and test",
+      range: "Projects 3–4", name: "Build and test", weeks: "Weeks 4–7",
       projects: [
         { num: "Project 3", title: "Design a new app feature", desc: "Prototype one idea that could grow BeReal's monthly active users (MAUs)." },
         { num: "Project 4", title: "Test your feature", desc: "Run focus groups and use the feedback to refine it." }
@@ -154,7 +155,7 @@ const CONFIG = {
       ]
     },
     {
-      range: "Project 5", name: "Pitch",
+      range: "Project 5", name: "Pitch", weeks: "Week 8",
       projects: [
         { num: "Project 5", title: "Pitch your feature", desc: "A short, data-backed, persuasive presentation." }
       ],
@@ -202,7 +203,6 @@ const CONFIG = {
   const $ = (id) => document.getElementById(id);
   const tablist = $("tablist"), panels = $("panels"), bar = $("bar");
   const n = CONFIG.stages.length;
-  const nStages = CONFIG.stages.filter((s) => !s.example).length;
   $("title").textContent = CONFIG.title;
   $("walk").textContent = CONFIG.walkAway;
   $("foot").textContent = CONFIG.footnote;
@@ -328,11 +328,11 @@ const CONFIG = {
       if (segs[j]) segs[j].classList.toggle("on", j <= i);
     });
     const isEx = !!CONFIG.stages[i].example;
-    $("barLabel").textContent = isEx ? "All " + nStages + " stages" : "Stage " + (i + 1) + " of " + nStages;
+    $("barLabel").textContent = isEx ? CONFIG.totalWeeks : CONFIG.stages[i].weeks;
     if (focus) tabs[i].focus();
     if (announce) $("live").textContent = isEx
       ? "Showing the example final project."
-      : "Showing stage " + (i + 1) + " of " + nStages + ": " + CONFIG.stages[i].range + ", " + CONFIG.stages[i].name + ".";
+      : "Showing " + CONFIG.stages[i].weeks + ": " + CONFIG.stages[i].range + ", " + CONFIG.stages[i].name + ".";
   }
 
   tablist.addEventListener("keydown", (e) => {
