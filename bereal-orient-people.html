@@ -15,7 +15,7 @@
   --green:#0B7431; --green-soft:#DDF9E4;
   --gray-soft:#EFEDE9;
   --focus:#2A4EEF;
-  --co:#1C1B1B; --co-on:#FFFFFF;
+  --co:#0F0F10; --co-on:#FFFFFF; --co-soft:#F0F0F0; --co-ink:#0F0F10; --co-accent:linear-gradient(90deg,#FFD643,#FF5117,#FF3D9E);
   --r-card:14px; --r-inner:12px;
   --body:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
   color-scheme:light;
@@ -28,13 +28,13 @@
     --green:#5BE58A; --green-soft:#173826;
     --gray-soft:#26292C;
     --focus:#93A6FF;
-    --co:#ECEAE5; --co-on:#121416;
+    --co:#FFFFFF; --co-on:#0F0F10; --co-soft:#26272A; --co-ink:#FFFFFF; --co-accent:linear-gradient(90deg,#FFD643,#FF5117,#FF3D9E);
     color-scheme:dark;
   }
 }
 *{box-sizing:border-box}
 html,body{background:var(--bg)}
-body{margin:0;padding:14px 12px 12px;color:var(--ink);font:400 15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+body{margin:0;padding:14px 12px 12px;position:relative;color:var(--ink);font:400 15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 h1{margin:0 0 10px;font:700 22px/1.2 var(--body);letter-spacing:-.01em;color:var(--co)}
@@ -50,6 +50,8 @@ p{margin:0}
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);
   padding:18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px;align-items:start}
 .slide.pm{background:var(--brand-softer);border-color:var(--brand-soft)}
+.slide.co{background:var(--co-soft);border-color:var(--co-soft)}
+.co .tag{color:var(--co-ink)}
 .slide.peers{background:var(--green-soft);border-color:transparent}
 
 .tag{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
@@ -66,6 +68,11 @@ li{margin:0 0 6px}
 li:last-child{margin-bottom:0}
 .note{margin-top:12px;padding:10px 12px;border-radius:var(--r-inner);background:var(--surface);font-size:14px}
 .peers .note{color:var(--ink)}
+
+/* Company brand layer (BeReal) */
+.co-strip{position:absolute;top:0;left:0;right:0;height:4px;background:var(--co-accent);pointer-events:none}
+.top{display:flex;justify-content:flex-end;margin:0 0 8px}
+.co-chip{display:inline-flex;align-items:center;min-height:24px;padding:3px 10px;border-radius:999px;background:var(--co-soft);color:var(--co-ink);font:600 12.5px/1.2 var(--body);white-space:nowrap}
 
 /* Controls */
 .controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
@@ -88,7 +95,9 @@ li:last-child{margin-bottom:0}
 </style>
 </head>
 <body>
+<div class="co-strip" aria-hidden="true"></div>
 <h1 class="sr-only">Meet your people</h1>
+<div class="top"><span class="co-chip" aria-hidden="true">Extern × BeReal</span></div>
 
 <section class="carousel" aria-roledescription="carousel" aria-label="Your people">
   <div class="track" id="track">
@@ -115,7 +124,7 @@ li:last-child{margin-bottom:0}
       </div>
     </div>
 
-    <div class="slide" role="group" aria-roledescription="slide" aria-label="2 of 3: Company Mentor" id="s2">
+    <div class="slide co" role="group" aria-roledescription="slide" aria-label="2 of 3: Company Mentor" id="s2">
       <div>
         <div class="media"><img src="bereal-orient-assets/bereal-mentor-ben.jpg" alt="Ben Moore, smiling, in a headshot"></div>
       </div>
