@@ -67,6 +67,18 @@ a{color:var(--link)}
 .handin{border-top:1px solid var(--line);padding-top:10px}
 .handin b{font-weight:600}
 
+.sect{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
+.sect h3{margin:0 0 8px;font:600 15px/1.3 var(--body);color:var(--ink)}
+.panel ul.tools{margin:0;gap:8px}
+.panel ul.tools li{grid-template-columns:160px 1fr;align-items:center}
+.tname{justify-self:start;display:inline-flex;align-items:center;min-height:28px;padding:3px 12px;border-radius:999px;background:var(--co-soft);color:var(--co-ink);font-weight:600;font-size:14px;white-space:nowrap}
+.example{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:start}
+.example video{display:block;width:100%;aspect-ratio:420/800;border-radius:var(--r-inner);background:#000;border:1px solid var(--ui-line)}
+.example p{margin:0 0 8px}
+.example details{margin-top:4px}
+.example summary{cursor:pointer;font-weight:600;color:var(--link);padding:4px 0}
+.example ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+
 .walk{margin-top:12px;background:var(--co-soft);border-radius:var(--r-card);padding:12px 16px}
 .walk b{color:var(--co-ink);font-weight:600}
 .foot{margin-top:10px;font-size:13.5px;color:var(--muted)}
@@ -83,6 +95,9 @@ a{color:var(--link)}
   .tab{min-height:52px}
   h1{font-size:28px}
   .panel li{grid-template-columns:1fr;gap:0}
+  .panel ul.tools li{grid-template-columns:1fr;gap:4px}
+  .example{grid-template-columns:1fr}
+  .example video{max-width:220px}
 }
 @media (prefers-reduced-motion: no-preference){
   .seg{transition:background-color .25s ease}
@@ -120,7 +135,10 @@ const CONFIG = {
         { num: "Project 1", title: "Your First BeReal Teardown", desc: "Map the BeReal user journey and spot delight vs. friction points." },
         { num: "Project 2", title: "Benchmark BeReal's competitors", desc: "Find which features actually drive growth." }
       ],
-      handIn: "a user journey map and a competitor benchmark."
+      handIn: "a user journey map and a competitor benchmark.",
+      tools: [
+        { name: "ChatGPT", use: "Sort competitor app reviews into themes (Project 2)." }
+      ]
     },
     {
       range: "Projects 3–4", name: "Build and test",
@@ -128,18 +146,40 @@ const CONFIG = {
         { num: "Project 3", title: "Design a new app feature", desc: "Prototype one idea that could grow BeReal's monthly active users (MAUs)." },
         { num: "Project 4", title: "Test your feature", desc: "Run focus groups and use the feedback to refine it." }
       ],
-      handIn: "a clickable prototype and focus group findings."
+      handIn: "a clickable prototype and focus group findings.",
+      tools: [
+        { name: "ChatGPT", use: "Brainstorm feature ideas, find gaps in your one-page PRD and plan your test." },
+        { name: "Canva", use: "Build your clickable prototype from a starter template (free plan is fine)." }
+      ]
     },
     {
       range: "Project 5", name: "Pitch",
       projects: [
         { num: "Project 5", title: "Pitch your feature", desc: "A short, data-backed, persuasive presentation." }
       ],
-      handIn: "your pitch deck."
+      handIn: "your pitch deck.",
+      tools: [
+        { name: "ChatGPT or Claude", use: "Draft your pitch script, then rewrite it in your own words." },
+        { name: "Canva", use: "Build your pitch slides." },
+        { name: "Loom", use: "Record your pitch with your slides on screen. Zoom or Canva's \"Present and record\" work too." }
+      ],
+      example: {
+        heading: "See an example final project",
+        intro: "A past extern's feature, 30 Days of Real Moments, shown as a clickable prototype. The video is 30 seconds and has no sound.",
+        video: "bereal-orient-assets/bereal-example-prototype.mp4",
+        poster: "bereal-orient-assets/bereal-example-prototype-poster.jpg",
+        label: "Example final project: 30 Days of Real Moments prototype walkthrough, 30 seconds, no sound",
+        steps: [
+          "The BeReal feed shows a friend's post. A notification bell opens a \"Something New!\" pop-up inviting you to 30 Days of Real Moments: a new photo theme every day for a month.",
+          "Tapping \"Tell Me More\" opens the challenge page. It shows friends' answers to today's theme (a plant corner, a reading nook, a coffee spot, a workspace), three \"How it works\" steps, and Join Now or Skip for Now buttons.",
+          "After joining, Day 1's theme is \"Favorite Corner at Home.\" The usual front and back camera screen opens with the 2:00 countdown, and you take the photo.",
+          "A progress screen says \"You've completed 1 of 30 Real Moments!\" and teases tomorrow's theme, \"Morning Ritual.\" Below it, your photo and your friends' photos for today's theme appear in one feed."
+        ]
+      }
     }
   ],
   walkAway: "a tested feature prototype, a data-backed pitch, and real product management work to show on your résumé and LinkedIn.",
-  footnote: "Each project pairs with an episode of Lenny's Podcast, plus AI tools to speed up your work."
+  footnote: "Each project also pairs with an episode of Lenny's Podcast."
 };
 
 // Company brand layer: sets the --co-* tokens (light + dark) and chip text from CONFIG.brand.
@@ -209,6 +249,58 @@ const CONFIG = {
     hi.innerHTML = "<b>What you'll hand in:</b> ";
     hi.appendChild(document.createTextNode(s.handIn));
     p.appendChild(hi);
+
+    if (s.tools && s.tools.length) {
+      const sec = document.createElement("div");
+      sec.className = "sect";
+      const h3 = document.createElement("h3");
+      h3.textContent = "AI tools you'll use";
+      const tl = document.createElement("ul");
+      tl.className = "tools";
+      s.tools.forEach((tool) => {
+        const li = document.createElement("li");
+        const nm = document.createElement("span");
+        nm.className = "tname";
+        nm.textContent = tool.name;
+        const use = document.createElement("span");
+        use.textContent = tool.use;
+        li.append(nm, use);
+        tl.appendChild(li);
+      });
+      sec.append(h3, tl);
+      p.appendChild(sec);
+    }
+
+    if (s.example) {
+      const ex = s.example;
+      const sec = document.createElement("div");
+      sec.className = "sect";
+      const h3 = document.createElement("h3");
+      h3.textContent = ex.heading;
+      const wrap = document.createElement("div");
+      wrap.className = "example";
+      const v = document.createElement("video");
+      v.controls = true;
+      v.muted = true;
+      v.playsInline = true;
+      v.preload = "none";
+      v.poster = ex.poster;
+      v.src = ex.video;
+      v.setAttribute("aria-label", ex.label);
+      const txt = document.createElement("div");
+      const intro = document.createElement("p");
+      intro.textContent = ex.intro;
+      const det = document.createElement("details");
+      const sum = document.createElement("summary");
+      sum.textContent = "What happens in the video";
+      const ol = document.createElement("ol");
+      ex.steps.forEach((st) => { const li = document.createElement("li"); li.textContent = st; ol.appendChild(li); });
+      det.append(sum, ol);
+      txt.append(intro, det);
+      wrap.append(v, txt);
+      sec.append(h3, wrap);
+      p.appendChild(sec);
+    }
     panels.appendChild(p);
     pans.push(p);
 
