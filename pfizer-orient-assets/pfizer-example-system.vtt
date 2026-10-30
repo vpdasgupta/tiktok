@@ -1,0 +1,125 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:04.880
+This is what the final output of this extension might look like.
+
+2
+00:00:04.880 --> 00:00:10.980
+It's unpolished. It's a sample, just to showcase
+what type of technology you'll be working on.
+
+3
+00:00:10.980 --> 00:00:16.820
+In the Pfizer Intelligent Document Analysis extension,
+you're working with SDF documents,
+
+4
+00:00:16.820 --> 00:00:21.440
+so you need a way to upload these documents
+and then process them.
+
+5
+00:00:21.440 --> 00:00:26.720
+So let's upload one of the sample documents
+we've been working with and see what it looks like.
+
+6
+00:00:26.720 --> 00:00:32.400
+So we'll just process this here.
+
+7
+00:00:32.400 --> 00:00:39.040
+If you don't remember what that document looks like,
+let me quickly open it up for you.
+
+8
+00:00:39.040 --> 00:00:41.440
+This is the sample document. It's just three pages.
+
+9
+00:00:41.440 --> 00:00:49.360
+As you can see, the first one is basically a letter
+describing the products, with contact information.
+
+10
+00:00:49.360 --> 00:00:52.960
+Then we have a certificate of quality.
+So, two certificates of quality.
+
+11
+00:00:52.960 --> 00:00:55.940
+And what we're looking for is the expiration date.
+
+12
+00:00:55.940 --> 00:01:03.000
+So we want this extracted. We want the date of manufacture.
+We want to get what product it is.
+
+13
+00:01:03.000 --> 00:01:06.040
+So you want all of that information to be extracted.
+
+14
+00:01:06.040 --> 00:01:12.080
+And as we can see, this information was extracted.
+It says that we have three things:
+
+15
+00:01:12.080 --> 00:01:19.680
+a vendor letter, a certificate of quality and another one.
+So two certificates of quality and a vendor letter.
+
+16
+00:01:19.680 --> 00:01:25.280
+We can open the database and see what it produces.
+The document type is vendor letter.
+
+17
+00:01:25.280 --> 00:01:28.280
+The product is ÄKTA ready Flow Kit.
+
+18
+00:01:28.280 --> 00:01:35.220
+The vendor letter doesn't have a manufacturing date
+or expiration date, but this one does.
+
+19
+00:01:35.220 --> 00:01:43.200
+So for the certificate of quality on page three,
+we had the date of manufacture.
+
+20
+00:01:43.200 --> 00:01:47.200
+The date of manufacture and the expiration date
+have been extracted.
+
+21
+00:01:47.200 --> 00:01:51.680
+And we can see that this one is current right now.
+
+22
+00:01:51.680 --> 00:01:55.740
+The age is old, but it's still current. It's still usable.
+
+23
+00:01:55.740 --> 00:02:00.360
+We can start saying "attention is required"
+or "this needs immediate review."
+
+24
+00:02:00.360 --> 00:02:04.320
+Why? Because this one is almost expired, according to this.
+
+25
+00:02:04.320 --> 00:02:07.920
+Is it expired? The expiration date?
+
+26
+00:02:07.920 --> 00:02:15.780
+Yes, it's actually expired, because the expiration date,
+as you can see, is 2023-01-26.
+
+27
+00:02:15.780 --> 00:02:17.200
+So we need to review it.
