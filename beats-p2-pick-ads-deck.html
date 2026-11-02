@@ -158,21 +158,27 @@ body {
 
 /* P2 additions (CSS only, no new widgets):
    .copy  = a copy-paste text block that wraps at any width (no sideways scroll at 320px)
-   .tall  = a slide whose content is longer than 16:9; it grows instead of clipping */
-.copy { margin: .4cqi 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: .88em; line-height: 1.45; }
+   .tall  = a slide whose content is longer than 16:9; it grows instead of clipping
+   .sample-list inside cards/rows = a short real list in place of a middot-separated line */
+.copy { margin: .4cqi 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 1em; line-height: 1.45; }
 .slide.tall { aspect-ratio: auto; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .95em; }
+.sample h3.lbl { margin: 0; }
+.cards .sample-list, .rows .sample-list { margin: .3cqi 0 0; }
+.cards .sample-list { color: var(--muted); font-size: .9em; list-style: disc; }
+.cards .sample-list li { border-left: 0; background: none; padding: 0; border-radius: 0; }
 </style>
 </head>
 <body>
 <main class="wrap">
   <header class="deck-head">
     <h1>Pick Your Ads and Questions</h1>
-    <p>5 steps · 7 slides · use Next or swipe</p>
+    <p>5 steps · 8 slides · use Next or swipe</p>
   </header>
   <section aria-roledescription="carousel" aria-label="Pick Your Ads and Questions steps">
   <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
 
-    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 7">
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 8">
       <article class="slide dense" aria-labelledby="s1">
 <div class="top"><div><p class="kicker">1.3 Pick Your Ads and Questions</p><h2 id="s1">Add a P2 Survey Plan tab to your Ad Repository</h2>
           <p class="sub">You'll do all of this in your Project 1 Ad Repository.</p></div></div>
@@ -185,7 +191,7 @@ body {
       </article>
     </div>
 
-    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 7">
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 8">
       <article class="slide" aria-labelledby="s2">
 <div class="top"><div><p class="kicker">Step 1 of 5</p><h2 id="s2">Add the tab and the ad headers</h2></div></div>
         <ol class="steps">
@@ -201,7 +207,7 @@ body {
       </article>
     </div>
 
-    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 7">
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 8">
       <article class="slide dense tight" aria-labelledby="s3">
 <div class="top"><div><p class="kicker">Step 2 of 5</p><h2 id="s3">Pick your 4 ads and a backup</h2></div></div>
         <p class="lead">Filter your Ad Repository tab by Brand. Pick 2 Beats ads and 2 rival ads that differ in something you want to test. Copy their Ad ID, Brand and Link into rows 2–5. Add a backup in row 6.</p>
@@ -224,7 +230,7 @@ body {
       </article>
     </div>
 
-    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 7">
+    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 8">
       <article class="slide dense tight" aria-labelledby="s4">
 <div class="top"><div><p class="kicker">Step 3 of 5</p><h2 id="s4">Write 3 research questions</h2></div></div>
         <p class="lead">In row 8, add 3 headers: #, Research question, P1 pattern it tests. Base each question on a different finding.</p>
@@ -246,10 +252,10 @@ body {
       </article>
     </div>
 
-    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 7">
-      <article class="slide dense tall" aria-labelledby="s5">
+    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 8">
+      <article class="slide dense tight tall" aria-labelledby="s5">
 <div class="top"><div><p class="kicker">Step 4 of 5</p><h2 id="s5">Pressure-test your questions with AI</h2></div></div>
-        <p class="lead">Paste this prompt into an AI tool such as ChatGPT, Claude or Gemini. Fill in the brackets first.</p>
+        <p class="lead">Fill in the brackets, then paste this into ChatGPT, Claude or Gemini.</p>
         <div class="sample"><span class="lbl">Prompt to copy</span>
           <p class="copy">I'm a student running a short survey (about 15 people) on 4 headphone video ads: [list your 4 ads and what each one tests].
 
@@ -264,6 +270,13 @@ For each question, tell me:
 4. Is the wording neutral?
 Suggest one short rewrite if a question needs it.</p>
         </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 8">
+      <article class="slide dense" aria-labelledby="s6">
+<div class="top"><div><p class="kicker">Step 4 of 5</p><h2 id="s6">Decide what to keep</h2></div></div>
+        <p class="lead">Read the AI's answer for each question. Keep the question as it is or rewrite it in your P2 Survey Plan tab.</p>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> You kept or changed each question on purpose, and you can say why.</p>
           <p class="check stuck"><b>If you're stuck…</b> AI may suggest bigger questions. Keep yours small enough for a survey of about 15 people.</p>
@@ -271,9 +284,9 @@ Suggest one short rewrite if a question needs it.</p>
       </article>
     </div>
 
-    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 7">
-      <article class="slide dense" aria-labelledby="s6">
-<div class="top"><div><p class="kicker">Step 5 of 5</p><h2 id="s6">Set your launch and close dates</h2></div></div>
+    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 8">
+      <article class="slide dense" aria-labelledby="s7">
+<div class="top"><div><p class="kicker">Step 5 of 5</p><h2 id="s7">Set your launch and close dates</h2></div></div>
         <p class="lead">Under your questions, add two rows: Launch date and Close date. Launch at the end of Step 2 and close about 4 days later. Check sharing is still "Anyone with the link can view."</p>
         <div class="sample"><span class="lbl">Sample (made up)</span>
           <dl class="rows">
@@ -288,9 +301,9 @@ Suggest one short rewrite if a question needs it.</p>
       </article>
     </div>
 
-    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 7">
-      <article class="slide" aria-labelledby="s7">
-<div class="top"><div><p class="kicker">How it will be evaluated</p><h2 id="s7">What a strong survey plan looks like</h2></div></div>
+    <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 8">
+      <article class="slide" aria-labelledby="s8">
+<div class="top"><div><p class="kicker">How it will be evaluated</p><h2 id="s8">What a strong survey plan looks like</h2></div></div>
         <dl class="rows">
             <dt>The tab</dt><dd>P2 Survey Plan, inside your Ad Repository</dd>
             <dt>4 ads</dt><dd>2 Beats and 2 rivals, each with a working link and a reason, plus 1 backup</dd>
@@ -303,7 +316,7 @@ Suggest one short rewrite if a question needs it.</p>
   </div>
   <div class="controls">
     <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
-    <p class="count" id="count" aria-hidden="true">1 of 7</p>
+    <p class="count" id="count" aria-hidden="true">1 of 8</p>
     <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
   </div>
   <p class="sr-only" id="announce" role="status" aria-live="polite"></p>

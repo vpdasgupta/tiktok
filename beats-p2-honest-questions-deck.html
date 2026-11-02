@@ -158,9 +158,15 @@ body {
 
 /* P2 additions (CSS only, no new widgets):
    .copy  = a copy-paste text block that wraps at any width (no sideways scroll at 320px)
-   .tall  = a slide whose content is longer than 16:9; it grows instead of clipping */
-.copy { margin: .4cqi 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: .88em; line-height: 1.45; }
+   .tall  = a slide whose content is longer than 16:9; it grows instead of clipping
+   .sample-list inside cards/rows = a short real list in place of a middot-separated line */
+.copy { margin: .4cqi 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 1em; line-height: 1.45; }
 .slide.tall { aspect-ratio: auto; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .95em; }
+.sample h3.lbl { margin: 0; }
+.cards .sample-list, .rows .sample-list { margin: .3cqi 0 0; }
+.cards .sample-list { color: var(--muted); font-size: .9em; list-style: disc; }
+.cards .sample-list li { border-left: 0; background: none; padding: 0; border-radius: 0; }
 </style>
 </head>
 <body>
@@ -198,7 +204,7 @@ body {
 <div class="top"><div><p class="kicker">The rules in action</p><h2 id="s3">Weak questions and better ones</h2></div></div>
         <div class="sample">
           <table class="tbl">
-            <caption>Before and after</caption>
+            <caption>Before and after: 4 common wording problems</caption>
             <thead><tr><th scope="col">Problem</th><th scope="col">Weak</th><th scope="col">Better</th></tr></thead>
             <tbody>
               <tr><th scope="row">Two in one</th><td>"How creative and engaging was the ad?"</td><td>"How creative was the ad?" and "How engaging was the ad?"</td></tr>
@@ -232,7 +238,7 @@ body {
         <dl class="rows">
             <dt>Watch the ad</dt><dd>A YouTube video in the form, or a link plus "Yes, I watched it"</dd>
             <dt>Overall rating</dt><dd>"How much did you like this ad?" 1 (Not at all) to 5 (A lot)</dd>
-            <dt>Agree grid</dt><dd>Grabs my attention · Easy to remember · Believable · Makes me want to learn more</dd>
+            <dt>Agree grid</dt><dd><ul class="sample-list"><li>Grabs my attention</li><li>Easy to remember</li><li>Believable</li><li>Makes me want to learn more</li></ul></dd>
             <dt>Grid scale</dt><dd>5 points, Strongly disagree to Strongly agree</dd>
             <dt>Optional</dt><dd>"What stood out to you, good or bad?"</dd>
           </dl>

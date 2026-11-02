@@ -154,6 +154,16 @@ body {
   .sample .rows dt { padding: 6px 0 0; }
   .sample .rows dd { padding: 2px 0 6px; }
 }
+
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .95em; }
+.sample h3.lbl { margin: 0; }
+.key { color: var(--muted); font-size: .85em; }
+/* 6-column averages table: at phone width, break headers only at the soft hyphens (&shy;) in
+   the markup, never mid-word, and keep short ad labels whole. */
+@container (max-width: 560px) {
+  .tbl.avg { font-size: .8125rem; }
+  .tbl.avg th, .tbl.avg td { overflow-wrap: normal; hyphens: manual; padding: 6px 3px; }
+}
 </style>
 </head>
 <body>
@@ -202,18 +212,17 @@ body {
       <article class="slide dense tight" aria-labelledby="s3">
         <div class="top"><div><p class="kicker">Step 2 of 6</p><h2 id="s3">Build your ad averages table</h2></div></div>
         <p class="lead">One row per ad. Each cell: <code>=ROUND(AVERAGE(Clean!C2:C13),1)</code> for that column.</p>
-        <div class="sample">
-          <table class="tbl">
+        <p class="key">Key: Beats&nbsp;YT = Beats_YouTube_01; Beats&nbsp;TT = Beats_TikTok_01; Skull&nbsp;TT = Skullcandy_TikTok_01; Sony&nbsp;YT = Sony_YouTube_01</p>
+          <table class="tbl avg">
             <caption>Example (made up): average scores, 1–5, from 12 responses</caption>
-            <thead><tr><th scope="col">Ad</th><th scope="col">Overall</th><th scope="col">Attention</th><th scope="col">Memorable</th><th scope="col">Believable</th><th scope="col">Learn more</th></tr></thead>
+            <thead><tr><th scope="col">Ad</th><th scope="col">Over&shy;all</th><th scope="col">At&shy;ten&shy;tion</th><th scope="col">Mem&shy;o&shy;ra&shy;ble</th><th scope="col">Be&shy;liev&shy;a&shy;ble</th><th scope="col">Learn more</th></tr></thead>
             <tbody>
-              <tr><th scope="row">Beats_YouTube_01</th><td>4.1</td><td>4.5</td><td>4.2</td><td>3.0</td><td>3.4</td></tr>
-              <tr><th scope="row">Beats_TikTok_01</th><td>3.8</td><td>3.9</td><td>3.5</td><td>3.9</td><td>3.6</td></tr>
-              <tr><th scope="row">Skullcandy_TikTok_01</th><td>3.9</td><td>3.8</td><td>3.4</td><td>4.2</td><td>3.7</td></tr>
-              <tr><th scope="row">Sony_YouTube_01</th><td>3.3</td><td>3.0</td><td>3.1</td><td>3.8</td><td>3.2</td></tr>
+              <tr><th scope="row">Beats YT</th><td>4.1</td><td>4.5</td><td>4.2</td><td>3.0</td><td>3.4</td></tr>
+              <tr><th scope="row">Beats TT</th><td>3.8</td><td>3.9</td><td>3.5</td><td>3.9</td><td>3.6</td></tr>
+              <tr><th scope="row">Skull TT</th><td>3.9</td><td>3.8</td><td>3.4</td><td>4.2</td><td>3.7</td></tr>
+              <tr><th scope="row">Sony YT</th><td>3.3</td><td>3.0</td><td>3.1</td><td>3.8</td><td>3.2</td></tr>
             </tbody>
           </table>
-        </div>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> Every cell is between 1 and 5.</p>
           <p class="check stuck"><b>If you're stuck…</b> #DIV/0! means an empty range. Check the column letter.</p>
@@ -265,8 +274,12 @@ body {
       <article class="slide dense tight" aria-labelledby="s6">
         <div class="top"><div><p class="kicker">Step 5 of 6</p><h2 id="s6">Code the written answers</h2></div></div>
         <p class="lead">Add 3 headers below your tables: Ad ID, Answer, Code. Paste every written answer from Clean, one per row, and give each a code from your list of 5–8.</p>
-        <div class="sample"><span class="lbl">Sample (made up): Ad ID · Answer · Code</span>
-          <p>Beats_YouTube_01 · "Cool, but I'd never buy headphones because of that." · Feels like an ad</p>
+        <div class="sample"><span class="lbl">Sample (made up): one coded row</span>
+          <dl class="rows">
+            <dt>Ad ID</dt><dd>Beats_YouTube_01</dd>
+            <dt>Answer</dt><dd>"Cool, but I'd never buy headphones because of that."</dd>
+            <dt>Code</dt><dd>Feels like an ad</dd>
+          </dl>
         </div>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> Every answer has one code. <code>=COUNTIFS</code> can count each code per ad.</p>

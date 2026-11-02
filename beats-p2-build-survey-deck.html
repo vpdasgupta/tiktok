@@ -158,21 +158,27 @@ body {
 
 /* P2 additions (CSS only, no new widgets):
    .copy  = a copy-paste text block that wraps at any width (no sideways scroll at 320px)
-   .tall  = a slide whose content is longer than 16:9; it grows instead of clipping */
-.copy { margin: .4cqi 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: .88em; line-height: 1.45; }
+   .tall  = a slide whose content is longer than 16:9; it grows instead of clipping
+   .sample-list inside cards/rows = a short real list in place of a middot-separated line */
+.copy { margin: .4cqi 0 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 1em; line-height: 1.45; }
 .slide.tall { aspect-ratio: auto; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .95em; }
+.sample h3.lbl { margin: 0; }
+.cards .sample-list, .rows .sample-list { margin: .3cqi 0 0; }
+.cards .sample-list { color: var(--muted); font-size: .9em; list-style: disc; }
+.cards .sample-list li { border-left: 0; background: none; padding: 0; border-radius: 0; }
 </style>
 </head>
 <body>
 <main class="wrap">
   <header class="deck-head">
     <h1>Build and Test Your Survey</h1>
-    <p>7 steps · 9 slides · use Next or swipe</p>
+    <p>7 steps · 10 slides · use Next or swipe</p>
   </header>
   <section aria-roledescription="carousel" aria-label="Build and Test Your Survey steps">
   <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
 
-    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 9">
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 10">
       <article class="slide dense" aria-labelledby="s1">
 <div class="top"><div><p class="kicker">2.2 Build and Test Your Survey</p><h2 id="s1">Build your survey in Google Forms</h2>
           <p class="sub">The question list is ready. Your job is to build it, add your 4 ads and test it.</p></div></div>
@@ -185,7 +191,7 @@ body {
       </article>
     </div>
 
-    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 9">
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 10">
       <article class="slide dense" aria-labelledby="s2">
 <div class="top"><div><p class="kicker">Step 1 of 7</p><h2 id="s2">Start a new Form and set it up</h2></div></div>
         <ol class="steps">
@@ -201,11 +207,11 @@ body {
       </article>
     </div>
 
-    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 9">
-      <article class="slide dense tall" aria-labelledby="s3">
-<div class="top"><div><p class="kicker">Step 2 of 7</p><h2 id="s3">Copy the question list</h2>
-          <p class="sub">Build sections 1–4 from this list. Add a section with the Add section icon in the floating toolbar.</p></div></div>
-        <div class="sample"><span class="lbl">Question list to copy</span>
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 10">
+      <article class="slide dense tight tall" aria-labelledby="s3">
+<div class="top"><div><p class="kicker">Step 2 of 7</p><h2 id="s3">Copy Sections 1–2</h2>
+          <p class="sub">Add each section with the Add section icon in the floating toolbar.</p></div></div>
+        <div class="sample"><span class="lbl">Question list to copy: Sections 1–2</span>
           <p class="copy">SECTION 1 · Welcome
 Form description: This anonymous survey takes about 8 minutes. It's for a student project on video ads. You'll watch 4 short ads and answer a few questions about each.
 Q: Are you 18 or older?
@@ -220,9 +226,16 @@ Q: How much do you agree?
    Rows: Grabs my attention / Easy to remember / Believable / Makes me want to learn more
    Columns: Strongly disagree / Disagree / Neither agree nor disagree / Agree / Strongly agree
 Q: What stood out to you, good or bad?
-   Paragraph. Not required.
+   Paragraph. Not required.</p>
+        </div>
+      </article>
+    </div>
 
-SECTION 3 · Compare
+    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 10">
+      <article class="slide dense tight tall" aria-labelledby="s4">
+<div class="top"><div><p class="kicker">Step 2 of 7</p><h2 id="s4">Copy Sections 3–4 and set the screener</h2></div></div>
+        <div class="sample"><span class="lbl">Question list to copy: Sections 3–4</span>
+          <p class="copy">SECTION 3 · Compare
 Section description: Think about all 4 ads you just watched.
 Q: Which ad was the most memorable?
 Q: Which was the most believable?
@@ -235,17 +248,17 @@ Q: What is your age range?
 Q: Which platform do you use most for videos?
    Multiple choice: TikTok / Instagram / YouTube / Other</p>
         </div>
-        <p class="lead">Last, set the screener. On the 18+ question, click ⋮ &gt; Go to section based on answer. Set No to Submit form.</p>
+        <p class="lead">Last, set the screener. On the 18+ question, click ⋮ (More options) &gt; Go to section based on answer. Set No to Submit form.</p>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> Your form has 4 sections in this order: Welcome, Ad 1, Compare, About you.</p>
-          <p class="check stuck"><b>If you're stuck…</b> Lost your place? The same list is in the text version under the slides.</p>
+          <p class="check stuck"><b>If you're stuck…</b> The same list is in the text version on the Notion page, under these slides.</p>
         </div>
       </article>
     </div>
 
-    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 9">
-      <article class="slide dense tight" aria-labelledby="s4">
-<div class="top"><div><p class="kicker">Step 3 of 7</p><h2 id="s4">Add your first ad</h2></div></div>
+    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 10">
+      <article class="slide dense tight" aria-labelledby="s5">
+<div class="top"><div><p class="kicker">Step 3 of 7</p><h2 id="s5">Add your first ad</h2></div></div>
         <ul class="cards one" role="list">
           <li><b>YouTube link</b><span>In the Ad 1 section, click Add video in the floating toolbar. Paste the YouTube link and click Select. The video plays inside the form.</span></li>
           <li><b>TikTok or Instagram link</b><span>In the Ad 1 description, write "Watch the ad here, then come back:" and paste the link. Add a required question, "Did you watch the whole ad?", with one option: Yes, I watched it.</span></li>
@@ -257,25 +270,25 @@ Q: Which platform do you use most for videos?
       </article>
     </div>
 
-    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 9">
-      <article class="slide dense" aria-labelledby="s5">
-<div class="top"><div><p class="kicker">Step 4 of 7</p><h2 id="s5">Copy the section for Ads 2, 3 and 4</h2></div></div>
+    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 10">
+      <article class="slide dense" aria-labelledby="s6">
+<div class="top"><div><p class="kicker">Step 4 of 7</p><h2 id="s6">Copy the section for Ads 2, 3 and 4</h2></div></div>
         <ol class="steps">
-          <li>At the top of the Ad 1 section, click ⋮ &gt; Duplicate section. Do this 3 times.</li>
+          <li>At the top of the Ad 1 section, click ⋮ (More options) &gt; Duplicate section. Do this 3 times.</li>
           <li>Rename the copies Ad 2, Ad 3 and Ad 4, in order.</li>
           <li>In each copy, swap in the next ad from your P2 Survey Plan tab.</li>
           <li>In Ad 3's grid only, add a fifth row: For this row, pick Agree.</li>
         </ol>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> Ads 1–4 sit between Welcome and Compare, each with its own ad.</p>
-          <p class="check stuck"><b>If you're stuck…</b> A copy landed in the wrong place? Click ⋮ &gt; Move section.</p>
+          <p class="check stuck"><b>If you're stuck…</b> A copy landed in the wrong place? Click ⋮ (More options) &gt; Move section.</p>
         </div>
       </article>
     </div>
 
-    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 9">
-      <article class="slide dense tight" aria-labelledby="s6">
-<div class="top"><div><p class="kicker">Step 5 of 7</p><h2 id="s6">Add 1–2 of your own questions</h2></div></div>
+    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 10">
+      <article class="slide dense tight" aria-labelledby="s7">
+<div class="top"><div><p class="kicker">Step 5 of 7</p><h2 id="s7">Add 1–2 of your own questions</h2></div></div>
         <p class="lead">Look at your 3 research questions. If the core questions can't answer one of them, add a question to the Compare section. Skip this if they're all covered.</p>
         <div class="sample"><span class="lbl">Sample (made up)</span>
           <dl class="rows">
@@ -290,9 +303,9 @@ Q: Which platform do you use most for videos?
       </article>
     </div>
 
-    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 9">
-      <article class="slide" aria-labelledby="s7">
-<div class="top"><div><p class="kicker">Step 6 of 7</p><h2 id="s7">Send responses to a Google Sheet</h2></div></div>
+    <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 10">
+      <article class="slide" aria-labelledby="s8">
+<div class="top"><div><p class="kicker">Step 6 of 7</p><h2 id="s8">Send responses to a Google Sheet</h2></div></div>
         <ol class="steps">
           <li>Open the Responses tab and click Link to Sheets.</li>
           <li>Choose Create a new spreadsheet. Name it Headphone Ad Survey Responses, [Your Name].</li>
@@ -305,14 +318,14 @@ Q: Which platform do you use most for videos?
       </article>
     </div>
 
-    <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 9">
-      <article class="slide dense tight" aria-labelledby="s8">
-<div class="top"><div><p class="kicker">Step 7 of 7</p><h2 id="s8">Test it, fix it, then clear the test answers</h2></div></div>
+    <div class="frame" id="slide-9" role="group" aria-roledescription="slide" aria-label="9 of 10">
+      <article class="slide dense tight" aria-labelledby="s9">
+<div class="top"><div><p class="kicker">Step 7 of 7</p><h2 id="s9">Test it, fix it, then clear the test answers</h2></div></div>
         <ol class="steps">
           <li>Click Send, copy the link and open it on your phone. Check each video plays and each grid fits the screen.</li>
           <li>Ask 2 people to take it. Ask them: How long did it take? Was any question confusing? Did every ad play?</li>
           <li>Fix what they found. Write down one thing you changed.</li>
-          <li>In the Responses tab, click ⋮ &gt; Delete all responses. Then delete the test rows in your Sheet too. Keep row 1.</li>
+          <li>In the Responses tab, click ⋮ (More options) &gt; Delete all responses. Then delete the test rows in your Sheet too. Keep row 1.</li>
         </ol>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> Your survey takes about 8 minutes, and both the Form and the Sheet show 0 responses.</p>
@@ -321,9 +334,9 @@ Q: Which platform do you use most for videos?
       </article>
     </div>
 
-    <div class="frame" id="slide-9" role="group" aria-roledescription="slide" aria-label="9 of 9">
-      <article class="slide" aria-labelledby="s9">
-<div class="top"><div><p class="kicker">How it will be evaluated</p><h2 id="s9">What a strong survey looks like</h2></div></div>
+    <div class="frame" id="slide-10" role="group" aria-roledescription="slide" aria-label="10 of 10">
+      <article class="slide" aria-labelledby="s10">
+<div class="top"><div><p class="kicker">How it will be evaluated</p><h2 id="s10">What a strong survey looks like</h2></div></div>
         <dl class="rows">
             <dt>Same core questions</dt><dd>All 4 ads use the same block. The compare and About you questions are there too.</dd>
             <dt>Quality checks</dt><dd>An 18+ screener that ends the form, and one attention-check row</dd>
@@ -336,7 +349,7 @@ Q: Which platform do you use most for videos?
   </div>
   <div class="controls">
     <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
-    <p class="count" id="count" aria-hidden="true">1 of 9</p>
+    <p class="count" id="count" aria-hidden="true">1 of 10</p>
     <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
   </div>
   <p class="sr-only" id="announce" role="status" aria-live="polite"></p>

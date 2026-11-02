@@ -154,6 +154,16 @@ body {
   .sample .rows dt { padding: 6px 0 0; }
   .sample .rows dd { padding: 2px 0 6px; }
 }
+
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .95em; }
+.sample h3.lbl { margin: 0; }
+.key { color: var(--muted); font-size: .85em; }
+/* 6-column averages table: at phone width, break headers only at the soft hyphens (&shy;) in
+   the markup, never mid-word, and keep short ad labels whole. */
+@container (max-width: 560px) {
+  .tbl.avg { font-size: .8125rem; }
+  .tbl.avg th, .tbl.avg td { overflow-wrap: normal; hyphens: manual; padding: 6px 3px; }
+}
 </style>
 </head>
 <body>

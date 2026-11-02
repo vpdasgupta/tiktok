@@ -154,6 +154,16 @@ body {
   .sample .rows dt { padding: 6px 0 0; }
   .sample .rows dd { padding: 2px 0 6px; }
 }
+
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .95em; }
+.sample h3.lbl { margin: 0; }
+.key { color: var(--muted); font-size: .85em; }
+/* 6-column averages table: at phone width, break headers only at the soft hyphens (&shy;) in
+   the markup, never mid-word, and keep short ad labels whole. */
+@container (max-width: 560px) {
+  .tbl.avg { font-size: .8125rem; }
+  .tbl.avg th, .tbl.avg td { overflow-wrap: normal; hyphens: manual; padding: 6px 3px; }
+}
 </style>
 </head>
 <body>
@@ -270,15 +280,22 @@ body {
       <article class="slide dense tight" aria-labelledby="s8">
         <div class="top"><div><p class="kicker">Sample</p><h2 id="s8">A finished 1-page report (made up)</h2></div></div>
         <div class="sample">
-          <p><span class="lbl">What I tested</span>12 people (14 in, 2 dropped) rated 2 Beats ads, 1 Skullcandy ad and 1 Sony ad, Oct 6–9. Most were friends and classmates, so these are early signals.</p>
-          <p><span class="lbl">Headline insight</span>Beats' star-led ad won attention but not trust. The creator-led TikTok felt like a friend talking and got the most "I'd buy" votes.</p>
-          <p><span class="lbl">3 findings</span></p>
+          <h3 class="lbl">What I tested</h3>
+          <p>12 people (14 in, 2 dropped) rated 2 Beats ads, 1 Skullcandy ad and 1 Sony ad, Oct 6–9. Most were friends and classmates, so these are early signals.</p>
+          <h3 class="lbl">Headline insight</h3>
+          <p>Beats' star-led ad won attention but not trust. The creator-led TikTok felt like a friend talking and got the most "I'd buy" votes.</p>
+          <h3 class="lbl">3 findings</h3>
           <ol class="sample-list">
             <li><b>Stars get attention, not trust.</b> Attention 4.5, believable 3.0. "Cool, but I'd never buy headphones because of that."</li>
             <li><b>Creators earn trust.</b> Skullcandy_TikTok_01: believable 4.2; 5 of 12 would most want to buy. "It felt like a friend showing me something."</li>
             <li><b>Tech facts are trusted but forgotten.</b> Sony_YouTube_01: believable 3.8, memorable 3.1.</li>
           </ol>
-          <p><span class="lbl">Beats could…</span>pair the star with a real fan · test more creator-led TikToks · put one product fact inside a story</p>
+          <h3 class="lbl">Beats could…</h3>
+          <ol class="sample-list">
+            <li>pair the star with a real fan</li>
+            <li>test more creator-led TikToks</li>
+            <li>put one product fact inside a story</li>
+          </ol>
         </div>
       </article>
     </div>
