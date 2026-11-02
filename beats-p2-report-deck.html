@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Write Your Consumer Feedback Report - Beats Project 2</title>
+<!-- 5.1 [Task] Write Your Consumer Feedback Report. Engine copied from module-01/step-04/01a-analyze-deck.html. -->
+<style>
+:root {
+  --ink: #141414; --muted: #4f4f55; --line: #dedede; --card: #ffffff; --bg: #f1f1f2;
+  --accent: #e01e37; --accent-ink: #b0102a; --soft: #fcefef; --chip-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1f1f2; --muted: #b9b9c0; --line: #36363b; --card: #1b1b1e; --bg: #0f0f11;
+    --accent: #ff4d63; --accent-ink: #ff8a99; --soft: #2b1519; --chip-ink: #1b1b1e;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: 1.35;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px 16px 32px; }
+.deck-head { margin: 0 0 14px; }
+.deck-head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
+.deck-head p { margin: 0; font-size: 15px; color: var(--muted); }
+.slides {
+  display: flex; align-items: flex-start; margin: 0; padding: 4px 0 6px;
+  overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.slides::-webkit-scrollbar { display: none; }
+.slides:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; border-radius: 10px; }
+.frame { container-type: inline-size; flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; padding: 0 2px; }
+.controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.navbtn {
+  min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+  background: var(--card); border: 2px solid var(--muted);
+}
+.navbtn:hover { border-color: var(--accent-ink); }
+.navbtn:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+.navbtn[aria-disabled="true"] { opacity: .45; cursor: default; border-style: dashed; }
+.count { margin: 0; font-size: 15px; font-weight: 700; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .slides { scroll-behavior: auto; } }
+@media (forced-colors: active) { .navbtn[aria-disabled="true"] { border-color: GrayText; color: GrayText; } }
+
+.slide {
+  aspect-ratio: 16 / 9; background: var(--card); border-top: 1.1cqi solid var(--accent);
+  border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  padding: 3.6cqi 5cqi 3cqi; display: flex; flex-direction: column; gap: 1.8cqi;
+  font-size: max(2.5cqi, 1rem); position: relative; overflow-wrap: anywhere;
+}
+.slide.dense { font-size: max(2.2cqi, .9375rem); gap: 1.4cqi; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2cqi; }
+.kicker { margin: 0 0 .5cqi; font-size: max(1.85cqi, .8125rem); font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent-ink); }
+.slide h2 { font-size: max(4.3cqi, 1.375rem); line-height: 1.1; margin: 0; }
+.sub { margin: .6cqi 0 0; color: var(--muted); }
+.chip {
+  flex: 0 0 auto; margin: 0; background: var(--accent-ink); color: var(--chip-ink);
+  font-weight: 800; font-size: max(1.85cqi, .8125rem); padding: .8cqi 1.8cqi; border-radius: 999px; white-space: nowrap;
+}
+.slide p { margin: 0; }
+.lead { font-size: 1.05em; }
+
+/* card grid */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqi 2.4cqi; }
+.cards.one { grid-template-columns: 1fr; }
+.cards li { border-left: .7cqi solid var(--accent); background: var(--soft); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+.cards b { display: block; }
+.cards span { color: var(--muted); font-size: .9em; }
+.cards.plain li { background: transparent; border-left-color: var(--line); }
+
+/* creative implication */
+.impl { margin-top: auto !important; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1.2cqi 1.8cqi; border-radius: 0 6px 6px 0; }
+.impl b { color: var(--accent-ink); }
+
+/* summary rows */
+.rows { margin: 0; display: grid; grid-template-columns: 34% 1fr; border-top: 2px solid var(--ink); }
+.rows dt, .rows dd { margin: 0; padding: 1cqi 0; border-bottom: 1px solid var(--line); }
+.rows dt { font-weight: 800; padding-right: 1.6cqi; }
+
+/* numbered steps */
+.steps { margin: 0; padding-left: 1.4em; display: grid; gap: .6cqi; }
+.steps li { padding-left: .2em; }
+/* sample / on-track / stuck (task deck) */
+.sample { margin: 0; background: var(--bg); border: 1px dashed var(--muted); border-radius: 6px; padding: 1.2cqi 1.8cqi; font-size: .92em; }
+.sample p + p { margin-top: .5cqi; }
+.sample-list { margin: .5cqi 0 0; padding-left: 1.2em; }
+.sample .lbl, .check b { display: block; font-size: .8em; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-ink); }
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6cqi; margin-top: auto; }
+.check { margin: 0; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; font-size: .92em; }
+.check.stuck { background: transparent; border-left-color: var(--line); }
+
+/* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
+@container (max-width: 560px) {
+  .slide, .slide.dense { aspect-ratio: auto; font-size: 1rem; padding: 18px 18px 22px; gap: 12px; border-top-width: 6px; }
+  .slide h2 { font-size: 1.4375rem; }
+  .kicker, .chip { font-size: .8125rem; }
+  .chip { padding: 4px 10px; }
+  .top { flex-wrap: wrap; }
+  .cards { grid-template-columns: 1fr; gap: 8px; }
+  .cards li { border-left-width: 4px; padding: 6px 10px; }
+  .impl { border-left-width: 5px; padding: 8px 12px; }
+  .rows { grid-template-columns: 1fr; }
+  .rows dt { padding: 8px 0 0; border-bottom: 0; }
+  .rows dd { padding: 2px 0 8px; }
+  .checks { grid-template-columns: 1fr; }
+  .check { border-left-width: 5px; padding: 8px 12px; }
+  .sample { padding: 8px 12px; }
+}
+@media (forced-colors: active) {
+  .cards li, .impl { border-left-color: CanvasText; }
+  .check { border-color: CanvasText; }
+}
+
+/* small tables (from 02a-positioning-deck.html) */
+.tbl { width: 100%; border-collapse: collapse; font-size: .9em; }
+.tbl caption { text-align: left; color: var(--muted); font-size: .9em; padding-bottom: .6cqi; }
+.tbl th, .tbl td { text-align: left; padding: .7cqi 1cqi; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl thead th { border-bottom: 2px solid var(--ink); }
+.tbl tbody th { font-weight: 800; }
+.tbl th, .tbl td { overflow-wrap: break-word; } /* let columns size to whole words instead of splitting them */
+@container (max-width: 560px) {
+  .tbl { font-size: .875rem; } .tbl th, .tbl td { overflow-wrap: anywhere; hyphens: auto; padding: 6px 4px; }
+}
+
+/* See the example button */
+.btn-example {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px;
+  font-size: 15px; font-weight: 700; color: var(--accent-ink); background: var(--card);
+  border: 2px solid var(--accent-ink); text-decoration: none; margin-top: 8px;
+}
+.btn-example:hover { background: var(--soft); }
+.btn-example:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+@media (forced-colors: active) { .btn-example { border-color: LinkText; } }
+
+/* compact layouts so dense task slides fit 16:9 */
+.cards.three { grid-template-columns: repeat(3, 1fr); }
+.slide.dense.tight { gap: .9cqi; padding-top: 3cqi; padding-bottom: 2.6cqi; }
+.tight .sample { padding: .9cqi 1.8cqi; }
+.sample .rows { grid-template-columns: max-content 1fr; border-top: 1px solid var(--line); margin-top: .4cqi; }
+.sample .rows dt, .sample .rows dd { padding: .3cqi 0; }
+.sample .rows dt { padding-right: 2cqi; }
+@container (max-width: 560px) {
+  .cards.three { grid-template-columns: 1fr; }
+  .slide.dense.tight { gap: 12px; padding: 18px 18px 22px; }
+  .tight .sample { padding: 8px 12px; }
+  .sample .rows { grid-template-columns: 1fr; }
+  .sample .rows dt { padding: 6px 0 0; }
+  .sample .rows dd { padding: 2px 0 6px; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="deck-head">
+    <h1>Write Your Consumer Feedback Report</h1>
+    <p>6 steps · 9 slides · use Next or swipe</p>
+  </header>
+  <section aria-roledescription="carousel" aria-label="Write Your Consumer Feedback Report steps">
+  <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
+
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 9">
+      <article class="slide dense" aria-labelledby="s1">
+        <div class="top"><div><p class="kicker">5.1 Write Your Consumer Feedback Report</p><h2 id="s1">Your findings on one page</h2></div></div>
+        <p class="sub">A 1-page Google Doc that someone at Beats could read in 2 minutes. You'll copy most of it from your Findings tab.</p>
+        <ul class="cards" role="list">
+          <li><b>What I tested</b><span>1–2 lines: N, the ads, dates, 1 limitation</span></li>
+          <li><b>Headline insight</b><span>2 sentences</span></li>
+          <li><b>3 findings</b><span>A bold line, a number and a quote each</span></li>
+          <li><b>Beats could…</b><span>2–3 lines</span></li>
+        </ul>
+        <p class="impl"><b>Optional:</b> 1 chart. All samples in this deck are made up.</p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 9">
+      <article class="slide dense tight" aria-labelledby="s2">
+        <div class="top"><div><p class="kicker">Step 1 of 6</p><h2 id="s2">Create your Doc</h2></div></div>
+        <ol class="steps">
+          <li>Create a Google Doc named <code>P2_ConsumerFeedbackReport_&lt;YourName&gt;</code>.</li>
+          <li>Add 4 headings with Format &gt; Paragraph styles &gt; Heading 2: What I Tested, Headline Insight, Findings, Beats Could…</li>
+          <li>Open your Findings tab in another browser tab. You'll copy from it.</li>
+        </ol>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Your Doc has the right name and 4 headings.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Use real heading styles, not bold text. Screen readers and the outline panel need them.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 9">
+      <article class="slide dense tight" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">Step 2 of 6</p><h2 id="s3">Write "What I tested"</h2></div></div>
+        <p class="lead">1–2 lines. How many people, which ads, when, and 1 limitation.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span><p>12 people (14 in, 2 dropped) rated 4 ads: 2 from Beats, 1 from Skullcandy and 1 from Sony, Oct 6–9. Most were friends and classmates, so these are early signals.</p></div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> A reader knows N, the ads, the dates and 1 limitation.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Pick the limitation that matters most. Usually it's sample size or who you asked.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 9">
+      <article class="slide dense tight" aria-labelledby="s4">
+        <div class="top"><div><p class="kicker">Step 3 of 6</p><h2 id="s4">Add your 3 findings</h2></div></div>
+        <p class="lead">For each: a bold line, one number and one quote. Copy them from your Findings tab and trim.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <p><b>Stars get attention, not trust.</b> Beats_YouTube_01 scored 4.5 on attention but 3.0 on believable. "Cool, but I'd never buy headphones because of that."</p>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Each finding fits in 2 lines and has a number and a quote.</p>
+          <p class="check stuck"><b>If you're stuck…</b> One finding has no quote? Keep the number and leave the quote out.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 9">
+      <article class="slide dense tight" aria-labelledby="s5">
+        <div class="top"><div><p class="kicker">Step 4 of 6</p><h2 id="s5">Write your headline insight</h2></div></div>
+        <p class="lead">Write this after your findings. 2 sentences: the pattern across them, and what it means for Beats.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span><p>Beats' star-led ad won attention but not trust. The creator-led TikTok felt like a friend talking and got the most "I'd buy" votes.</p></div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Someone who reads only this knows your main point.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Ask: if Beats remembers one thing, what should it be?</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 9">
+      <article class="slide dense tight" aria-labelledby="s6">
+        <div class="top"><div><p class="kicker">Step 5 of 6</p><h2 id="s6">Add 2–3 "Beats could…" lines</h2></div></div>
+        <p class="lead">Copy them from your Findings tab. Each one should tie back to a finding above.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <ol class="sample-list">
+            <li>Beats could pair the star with a real fan.</li>
+            <li>Beats could test more creator-led TikToks.</li>
+            <li>Beats could put one product fact inside a story.</li>
+          </ol>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Each line names something you would see in the ad.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Too vague? Ask what changes on screen.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 9">
+      <article class="slide dense tight" aria-labelledby="s7">
+        <div class="top"><div><p class="kicker">Step 6 of 6</p><h2 id="s7">Optional chart, then fit it on one page</h2></div></div>
+        <ol class="steps">
+          <li>Optional: in your Results tab, select the believable column and choose Insert &gt; Chart. Copy it into your Doc.</li>
+          <li>Give the chart a title that says the point, like "Believable score by ad (1–5)."</li>
+          <li>Check File &gt; Print preview. Cut words until it fits on 1 page.</li>
+          <li>Set sharing to "Anyone with the link can view."</li>
+        </ol>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> It fits on 1 page and the link opens for anyone.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Over a page? Cut the chart first, then trim each finding to one line.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 9">
+      <article class="slide dense tight" aria-labelledby="s8">
+        <div class="top"><div><p class="kicker">Sample</p><h2 id="s8">A finished 1-page report (made up)</h2></div></div>
+        <div class="sample">
+          <p><span class="lbl">What I tested</span>12 people (14 in, 2 dropped) rated 2 Beats ads, 1 Skullcandy ad and 1 Sony ad, Oct 6–9. Most were friends and classmates, so these are early signals.</p>
+          <p><span class="lbl">Headline insight</span>Beats' star-led ad won attention but not trust. The creator-led TikTok felt like a friend talking and got the most "I'd buy" votes.</p>
+          <p><span class="lbl">3 findings</span></p>
+          <ol class="sample-list">
+            <li><b>Stars get attention, not trust.</b> Attention 4.5, believable 3.0. "Cool, but I'd never buy headphones because of that."</li>
+            <li><b>Creators earn trust.</b> Skullcandy_TikTok_01: believable 4.2; 5 of 12 would most want to buy. "It felt like a friend showing me something."</li>
+            <li><b>Tech facts are trusted but forgotten.</b> Sony_YouTube_01: believable 3.8, memorable 3.1.</li>
+          </ol>
+          <p><span class="lbl">Beats could…</span>pair the star with a real fan · test more creator-led TikToks · put one product fact inside a story</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-9" role="group" aria-roledescription="slide" aria-label="9 of 9">
+      <article class="slide dense" aria-labelledby="s9">
+        <div class="top"><div><p class="kicker">How it will be evaluated</p><h2 id="s9">What a strong report has</h2></div></div>
+        <dl class="rows">
+          <dt>What I tested</dt><dd>N, the ads, dates and 1 limitation</dd>
+          <dt>Headline insight</dt><dd>2 sentences that connect your findings and say what they mean for Beats</dd>
+          <dt>3 findings</dt><dd>A bold line, a number and a quote, matching your Findings tab</dd>
+          <dt>Beats could…</dt><dd>2–3 specific ideas tied to the findings</dd>
+          <dt>Length and tone</dt><dd>1 page; sure about facts, careful about meaning</dd>
+        </dl>
+      </article>
+    </div>
+
+  </div>
+  <div class="controls">
+    <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
+    <p class="count" id="count" aria-hidden="true">1 of 9</p>
+    <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
+  </div>
+  <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
+  </section>
+</main>
+<script>
+(function () {
+  var track = document.getElementById('track');
+  var slides = Array.prototype.slice.call(track.querySelectorAll('.frame'));
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var countEl = document.getElementById('count');
+  var announceEl = document.getElementById('announce');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var current = -1;
+
+  function setActive(i, speak) {
+    if (i === current) return;
+    current = i;
+    slides.forEach(function (sl, si) {
+      if (si === i) { sl.removeAttribute('inert'); sl.removeAttribute('aria-hidden'); }
+      else { sl.setAttribute('inert', ''); sl.setAttribute('aria-hidden', 'true'); }
+    });
+    prevBtn.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
+    nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
+    countEl.textContent = (i + 1) + ' of ' + slides.length;
+    if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+  }
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    jumpUntil = Date.now() + 700;
+    track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft, behavior: reduce.matches ? 'auto' : 'smooth' });
+    setActive(i, true);
+  }
+  prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
+  nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
+  track.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+    else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+    else if (k === 'Home') { e.preventDefault(); goTo(0); }
+    else if (k === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+  var t, jumpUntil = 0;
+  track.addEventListener('scroll', function () {
+    clearTimeout(t);
+    if (Date.now() < jumpUntil) return;
+    t = setTimeout(function () { setActive(Math.round(track.scrollLeft / track.clientWidth), true); }, 90);
+  }, { passive: true });
+  window.addEventListener('resize', function () { track.scrollLeft = current * track.clientWidth; });
+  setActive(0, false);
+})();
+</script>
+</body>
+</html>
