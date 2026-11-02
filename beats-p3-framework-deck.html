@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>A Framework Turns Taste into a Standard - Beats Project 3</title>
+<!-- 16:9 slide carousel for the Beats Project 3 Overview page. Engine copied from beats-p1-ecosystem-deck.html. -->
+<style>
+:root {
+  --ink: #141414; --muted: #4f4f55; --line: #dedede; --card: #ffffff; --bg: #f1f1f2;
+  --accent: #e01e37; --accent-ink: #b0102a; --soft: #fcefef; --chip-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1f1f2; --muted: #b9b9c0; --line: #36363b; --card: #1b1b1e; --bg: #0f0f11;
+    --accent: #ff4d63; --accent-ink: #ff8a99; --soft: #2b1519; --chip-ink: #1b1b1e;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: 1.35;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px 16px 32px; }
+.deck-head { margin: 0 0 14px; }
+.deck-head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
+.deck-head p { margin: 0; font-size: 15px; color: var(--muted); }
+.slides {
+  display: flex; align-items: flex-start; margin: 0; padding: 4px 0 6px;
+  overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.slides::-webkit-scrollbar { display: none; }
+.slides:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; border-radius: 10px; }
+.frame { container-type: inline-size; flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; padding: 0 2px; }
+.controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.navbtn {
+  min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+  background: var(--card); border: 2px solid var(--muted);
+}
+.navbtn:hover { border-color: var(--accent-ink); }
+.navbtn:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+.navbtn[aria-disabled="true"] { opacity: .45; cursor: default; border-style: dashed; }
+.count { margin: 0; font-size: 15px; font-weight: 700; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .slides { scroll-behavior: auto; } }
+@media (forced-colors: active) { .navbtn[aria-disabled="true"] { border-color: GrayText; color: GrayText; } }
+
+.slide {
+  aspect-ratio: 16 / 9; background: var(--card); border-top: 1.1cqi solid var(--accent);
+  border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  padding: 3.6cqi 5cqi 3cqi; display: flex; flex-direction: column; gap: 1.8cqi;
+  font-size: max(2.5cqi, 1rem); position: relative; overflow-wrap: anywhere;
+}
+.slide.dense { font-size: max(2.2cqi, .9375rem); gap: 1.4cqi; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2cqi; }
+.kicker { margin: 0 0 .5cqi; font-size: max(1.85cqi, .8125rem); font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent-ink); }
+.slide h2 { font-size: max(4.3cqi, 1.375rem); line-height: 1.1; margin: 0; }
+.sub { margin: .6cqi 0 0; color: var(--muted); }
+.chip {
+  flex: 0 0 auto; margin: 0; background: var(--accent-ink); color: var(--chip-ink);
+  font-weight: 800; font-size: max(1.85cqi, .8125rem); padding: .8cqi 1.8cqi; border-radius: 999px; white-space: nowrap;
+}
+.slide p { margin: 0; }
+.lead { font-size: 1.05em; }
+
+/* card grid */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqi 2.4cqi; }
+.cards.one { grid-template-columns: 1fr; }
+.cards li { border-left: .7cqi solid var(--accent); background: var(--soft); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+.cards b { display: block; }
+.cards span { color: var(--muted); font-size: .9em; }
+.cards.plain li { background: transparent; border-left-color: var(--line); }
+
+/* creative implication */
+.impl { margin-top: auto !important; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1.2cqi 1.8cqi; border-radius: 0 6px 6px 0; }
+.impl b { color: var(--accent-ink); }
+
+/* summary rows */
+.rows { margin: 0; display: grid; grid-template-columns: 34% 1fr; border-top: 2px solid var(--ink); }
+.rows dt, .rows dd { margin: 0; padding: 1cqi 0; border-bottom: 1px solid var(--line); }
+.rows dt { font-weight: 800; padding-right: 1.6cqi; }
+
+/* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
+@container (max-width: 560px) {
+  .slide, .slide.dense { aspect-ratio: auto; font-size: 1rem; padding: 18px 18px 22px; gap: 12px; border-top-width: 6px; }
+  .slide h2 { font-size: 1.4375rem; }
+  .kicker, .chip { font-size: .8125rem; }
+  .chip { padding: 4px 10px; }
+  .top { flex-wrap: wrap; }
+  .cards { grid-template-columns: 1fr; gap: 8px; }
+  .cards li { border-left-width: 4px; padding: 6px 10px; }
+  .impl { border-left-width: 5px; padding: 8px 12px; }
+  .rows { grid-template-columns: 1fr; }
+  .rows dt { padding: 8px 0 0; border-bottom: 0; }
+  .rows dd { padding: 2px 0 8px; }
+}
+@media (forced-colors: active) {
+  .cards li, .impl { border-left-color: CanvasText; }
+}
+
+/* two-up compare */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4cqi; }
+.compare > div { border: 2px solid var(--line); border-radius: 8px; padding: 1.4cqi 1.8cqi; }
+.compare > div.hl { border-color: var(--accent); background: var(--soft); }
+.compare h3 { margin: 0 0 .6cqi; font-size: 1em; }
+.compare p { color: var(--muted); }
+.rows.wide { grid-template-columns: 22% 1fr; }
+@container (max-width: 560px) {
+  .compare { grid-template-columns: 1fr; gap: 8px; }
+  .compare > div { padding: 8px 12px; }
+  .rows.wide { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="deck-head">
+    <h1>A Framework Turns Taste into a Standard</h1>
+    <p>The big idea for Project 3 · 6 slides · use Next or swipe</p>
+  </header>
+  <section aria-roledescription="carousel" aria-label="A Framework Turns Taste into a Standard">
+  <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
+
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 6">
+      <article class="slide" aria-labelledby="s1">
+        <div class="top"><div><p class="kicker">Why this project</p><h2 id="s1">“I like it” doesn't scale</h2></div></div>
+        <p class="lead">When one person says an ad feels right, nobody else can repeat that call. A team making Beats ads needs shared criteria to judge creative before it ships.</p>
+        <p class="sub">In Project 1 you collected ads. In Project 2 you heard how real people react to them. Project 3 turns both into something an agency or internal team can use.</p>
+        <p class="impl"><b>The big idea:</b> a framework turns taste into a standard. It writes down what good looks like, so anyone can check their work against it.</p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 6">
+      <article class="slide dense" aria-labelledby="s2">
+        <div class="top"><div><p class="kicker">What goes in</p><h2 id="s2">Your framework stands on three inputs</h2></div></div>
+        <dl class="rows wide">
+          <dt>Platform rules</dt><dd>What YouTube, TikTok and Meta publish about what works on their platforms. You'll check each source with the CRAAP test.</dd>
+          <dt>Consumer evidence</dt><dd>What your Project 2 Consumer Feedback Report showed about how people respond to ads.</dd>
+          <dt>Competitive landscape</dt><dd>What your Project 1 Ad Repository showed about how Beats and its rivals advertise.</dd>
+        </dl>
+        <p class="impl"><b>Use all three.</b> Platform rules alone give you generic ads. Your own research is what makes the framework fit Beats.</p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 6">
+      <article class="slide" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">What comes out</p><h2 id="s3">Four documents, four questions</h2></div></div>
+        <ul class="cards " role="list">
+          <li><b>Platform Best Practices Guide</b><span>What works on each platform?</span></li>
+          <li><b>Beats Brand Creative Standards</b><span>What makes an ad feel like Beats?</span></li>
+          <li><b>Creative Effectiveness Rubric</b><span>How do you score an ad?</span></li>
+          <li><b>Competitive Creative Analysis</b><span>Where can Beats stand apart from AirPods, Sony and Bose?</span></li>
+        </ul>
+        <p class="impl">You'll build one document per step, from <b>Step 2</b> through <b>Step 5</b>.</p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 6">
+      <article class="slide dense" aria-labelledby="s4">
+        <div class="top"><div><p class="kicker">The rubric</p><h2 id="s4">The rubric is where your framework gets tested</h2></div></div>
+        <dl class="rows wide">
+          <dt>Criteria</dt><dd>What you score. Example: “The product appears in the first 3 seconds.”</dd>
+          <dt>Scoring definitions</dt><dd>What a low, middle and high score look like for each criterion, in plain words.</dd>
+          <dt>Pass/fail threshold</dt><dd>The score an ad needs before it ships. Example: at least 3 out of 5 on every criterion.</dd>
+        </dl>
+        <p class="impl"><b>The test:</b> two people score the same ad with your rubric and land close. If their scores are far apart, tighten the definitions and try again.</p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 6">
+      <article class="slide" aria-labelledby="s5">
+        <div class="top"><div><p class="kicker">The one-page summary</p><h2 id="s5">AI spots patterns. You decide what stays.</h2></div></div>
+        <div class="compare">
+          <div><h3>What Claude helps with</h3><p>Reading your four documents side by side, pointing out ideas that repeat and drafting a first version of the summary.</p></div>
+          <div class="hl"><h3>What you decide</h3><p>Which patterns your evidence supports, what to cut and which recommendations you would defend in front of Beats.</p></div>
+        </div>
+        <p class="impl"><b>Your judgment is the deliverable.</b> If you can't explain why a line is in the summary, take it out.</p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 6">
+      <article class="slide dense" aria-labelledby="s6">
+        <div class="top"><div><p class="kicker">Where this goes</p><h2 id="s6">Your framework feeds Project 4</h2></div></div>
+        <p class="lead">You'll hand Beats the Creative Strategy Framework Package: your four documents plus the one-page summary.</p>
+        <dl class="rows wide">
+          <dt>Project 1</dt><dd>What brands do</dd>
+          <dt>Project 2</dt><dd>What works with people</dd>
+          <dt>Project 3</dt><dd>What Beats should do</dd>
+          <dt>Project 4</dt><dd>Present it to Beats leadership in 6 minutes</dd>
+        </dl>
+        <p class="impl">This package is the main deliverable of your externship and a piece you can show in your portfolio.</p>
+      </article>
+    </div>
+
+
+  </div>
+  <div class="controls">
+    <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
+    <p class="count" id="count" aria-hidden="true">1 of 6</p>
+    <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
+  </div>
+  <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
+  </section>
+</main>
+<script>
+(function () {
+  var track = document.getElementById('track');
+  var slides = Array.prototype.slice.call(track.querySelectorAll('.frame'));
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var countEl = document.getElementById('count');
+  var announceEl = document.getElementById('announce');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var current = -1;
+
+  function setActive(i, speak) {
+    if (i === current) return;
+    current = i;
+    slides.forEach(function (sl, si) {
+      if (si === i) { sl.removeAttribute('inert'); sl.removeAttribute('aria-hidden'); }
+      else { sl.setAttribute('inert', ''); sl.setAttribute('aria-hidden', 'true'); }
+    });
+    prevBtn.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
+    nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
+    countEl.textContent = (i + 1) + ' of ' + slides.length;
+    if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+  }
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    jumpUntil = Date.now() + 700;
+    track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft, behavior: reduce.matches ? 'auto' : 'smooth' });
+    setActive(i, true);
+  }
+  prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
+  nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
+  track.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+    else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+    else if (k === 'Home') { e.preventDefault(); goTo(0); }
+    else if (k === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+  var t, jumpUntil = 0;
+  track.addEventListener('scroll', function () {
+    clearTimeout(t);
+    if (Date.now() < jumpUntil) return;
+    t = setTimeout(function () { setActive(Math.round(track.scrollLeft / track.clientWidth), true); }, 90);
+  }, { passive: true });
+  window.addEventListener('resize', function () { track.scrollLeft = current * track.clientWidth; });
+  setActive(0, false);
+})();
+</script>
+</body>
+</html>
