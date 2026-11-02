@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Beats Story - Beats Project 1</title>
+<!-- 16:9 slide carousel for Beats Project 1. Engine copied from beats-p1-brand-dna-deck.html. -->
+<style>
+:root {
+  --ink: #141414; --muted: #4f4f55; --line: #dedede; --card: #ffffff; --bg: #f1f1f2;
+  --accent: #e01e37; --accent-ink: #b0102a; --soft: #fcefef; --chip-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1f1f2; --muted: #b9b9c0; --line: #36363b; --card: #1b1b1e; --bg: #0f0f11;
+    --accent: #ff4d63; --accent-ink: #ff8a99; --soft: #2b1519; --chip-ink: #1b1b1e;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: 1.35;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px 16px 32px; }
+.deck-head { margin: 0 0 14px; }
+.deck-head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
+.deck-head p { margin: 0; font-size: 15px; color: var(--muted); }
+.slides {
+  display: flex; align-items: flex-start; margin: 0; padding: 4px 0 6px;
+  overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.slides::-webkit-scrollbar { display: none; }
+.slides:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; border-radius: 10px; }
+.frame { container-type: inline-size; flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; padding: 0 2px; }
+.controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.navbtn {
+  min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+  background: var(--card); border: 2px solid var(--muted);
+}
+.navbtn:hover { border-color: var(--accent-ink); }
+.navbtn:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+.navbtn[aria-disabled="true"] { opacity: .45; cursor: default; border-style: dashed; }
+.count { margin: 0; font-size: 15px; font-weight: 700; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .slides { scroll-behavior: auto; } }
+@media (forced-colors: active) { .navbtn[aria-disabled="true"] { border-color: GrayText; color: GrayText; } }
+
+.slide {
+  aspect-ratio: 16 / 9; background: var(--card); border-top: 1.1cqi solid var(--accent);
+  border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  padding: 3.6cqi 5cqi 3cqi; display: flex; flex-direction: column; gap: 1.8cqi;
+  font-size: max(2.5cqi, 1rem); position: relative; overflow-wrap: anywhere;
+}
+.slide.dense { font-size: max(2.2cqi, .9375rem); gap: 1.4cqi; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2cqi; }
+.kicker { margin: 0 0 .5cqi; font-size: max(1.85cqi, .8125rem); font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent-ink); }
+.slide h2 { font-size: max(4.3cqi, 1.375rem); line-height: 1.1; margin: 0; }
+.sub { margin: .6cqi 0 0; color: var(--muted); }
+.chip {
+  flex: 0 0 auto; margin: 0; background: var(--accent-ink); color: var(--chip-ink);
+  font-weight: 800; font-size: max(1.85cqi, .8125rem); padding: .8cqi 1.8cqi; border-radius: 999px; white-space: nowrap;
+}
+.slide p { margin: 0; }
+.lead { font-size: 1.05em; }
+
+/* card grid */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqi 2.4cqi; }
+.cards.one { grid-template-columns: 1fr; }
+.cards li { border-left: .7cqi solid var(--accent); background: var(--soft); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+.cards b { display: block; }
+.cards span { color: var(--muted); font-size: .9em; }
+.cards.plain li { background: transparent; border-left-color: var(--line); }
+
+/* creative implication */
+.impl { margin-top: auto !important; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1.2cqi 1.8cqi; border-radius: 0 6px 6px 0; }
+.impl b { color: var(--accent-ink); }
+
+/* summary rows */
+.rows { margin: 0; display: grid; grid-template-columns: 34% 1fr; border-top: 2px solid var(--ink); }
+.rows dt, .rows dd { margin: 0; padding: 1cqi 0; border-bottom: 1px solid var(--line); }
+.rows dt { font-weight: 800; padding-right: 1.6cqi; }
+
+/* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
+@container (max-width: 560px) {
+  .slide, .slide.dense { aspect-ratio: auto; font-size: 1rem; padding: 18px 18px 22px; gap: 12px; border-top-width: 6px; }
+  .slide h2 { font-size: 1.4375rem; }
+  .kicker, .chip { font-size: .8125rem; }
+  .chip { padding: 4px 10px; }
+  .top { flex-wrap: wrap; }
+  .cards { grid-template-columns: 1fr; gap: 8px; }
+  .cards li { border-left-width: 4px; padding: 6px 10px; }
+  .impl { border-left-width: 5px; padding: 8px 12px; }
+  .rows { grid-template-columns: 1fr; }
+  .rows dt { padding: 8px 0 0; border-bottom: 0; }
+  .rows dd { padding: 2px 0 8px; }
+}
+@media (forced-colors: active) {
+  .cards li, .impl { border-left-color: CanvasText; }
+}
+
+/* two-up compare */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4cqi; }
+.compare > div { border: 2px solid var(--line); border-radius: 8px; padding: 1.4cqi 1.8cqi; }
+.compare > div.hl { border-color: var(--accent); background: var(--soft); }
+.compare h3 { margin: 0 0 .6cqi; font-size: 1em; }
+.compare p { color: var(--muted); }
+.rows.wide { grid-template-columns: 22% 1fr; }
+@container (max-width: 560px) {
+  .compare { grid-template-columns: 1fr; gap: 8px; }
+  .compare > div { padding: 8px 12px; }
+  .rows.wide { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="deck-head">
+    <h1>The Beats Story</h1>
+    <p>From the studio to Apple · 6 slides · use Next or swipe</p>
+  </header>
+  <section aria-roledescription="carousel" aria-label="The Beats Story">
+  <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
+
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 6">
+      <article class="slide" aria-labelledby="s1">
+        <div class="top"><div><p class="kicker">Before Beats</p><h2 id="s1">Headphones used to be an afterthought</h2></div></div>
+        <p class="lead">They came free in the box, ended up in junk drawers and were treated as disposable.</p>
+        <p class="sub">Then two music-industry veterans asked a simple question: <b>what if people could hear music the way artists actually create it?</b></p>
+        <p class="impl">That question launched a brand now worth billions, worn by everyone from LeBron James to students on your campus.</p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 6">
+      <article class="slide" aria-labelledby="s2">
+        <div class="top"><div><p class="kicker">The founders</p><h2 id="s2">When music met business</h2></div></div>
+        <ul class="cards " role="list">
+          <li><b>Dr. Dre (Andre Young)</b><span>Hip-hop producer who shaped Snoop Dogg, Eminem and Kendrick Lamar</span></li>
+          <li><b>Jimmy Iovine</b><span>Interscope Records co-founder who built careers from U2 to Lady Gaga</span></li>
+        </ul>
+        <p class="sub">Their frustration: fans heard music made on million-dollar studio gear through cheap, tinny earbuds.</p>
+        <p class="impl"><b>2006 mission:</b> bring studio-quality sound to everyday listeners.</p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 6">
+      <article class="slide dense" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">Timeline</p><h2 id="s3">Key milestones</h2></div></div>
+        <dl class="rows wide">
+          <dt>2006</dt><dd>Beats Electronics founded</dd>
+          <dt>2008</dt><dd>First product: Beats Studio headphones at $350</dd>
+          <dt>2008–2012</dt><dd>Explosive growth through celebrity seeding and cultural placement</dd>
+          <dt>2012</dt><dd>Passes $1 billion in annual revenue</dd>
+          <dt>2014</dt><dd>Apple buys Beats for $3 billion, its largest acquisition ever</dd>
+          <dt>2016–today</dt><dd>New products under Apple, with Beats' own identity intact</dd>
+        </dl>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 6">
+      <article class="slide dense" aria-labelledby="s4">
+        <div class="top"><div><p class="kicker">The Apple chapter</p><h2 id="s4">Apple kept Beats distinct, on purpose</h2></div></div>
+        <p class="sub">Skeptics expected Apple to absorb Beats. Instead, Apple kept it separate because Beats reaches people Apple's own products don't.</p>
+        <div class="compare">
+          <div><h3>AirPods</h3><p>Seamless integration and minimalist design</p></div>
+          <div class="hl"><h3>Beats</h3><p>Boldness, self-expression and cultural connection</p></div>
+        </div>
+        <p class="impl">Beats uses Apple's technology, supply chain and stores but keeps its own voice, marketing and creative direction. That's <b>brand architecture</b>.</p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 6">
+      <article class="slide" aria-labelledby="s5">
+        <div class="top"><div><p class="kicker">Your responsibility</p><h2 id="s5">What you're working with</h2></div></div>
+        <ul class="cards " role="list">
+          <li><b>$3 billion</b><span>Value at acquisition</span></li>
+          <li><b>Decades of credibility</b><span>Built by industry legends</span></li>
+          <li><b>A distinct identity</b><span>Inside one of the world's largest companies</span></li>
+          <li><b>Millions of fans</b><span>Who see Beats as part of who they are</span></li>
+        </ul>
+        <p class="impl">Every creative choice you make should <b>honor this legacy while pushing the brand forward</b>.</p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 6">
+      <article class="slide dense" aria-labelledby="s6">
+        <div class="top"><div><p class="kicker">The hard part</p><h2 id="s6">Challenges only Beats has</h2></div></div>
+        <ul class="cards plain" role="list">
+          <li><b>Competing with its parent</b><span>Standing apart from Apple's AirPods</span></li>
+          <li><b>Staying authentic</b><span>Reaching young audiences who tune out anything corporate</span></li>
+          <li><b>Using celebrities wisely</b><span>Without depending on them</span></li>
+          <li><b>Standing out</b><span>When products in the category look more and more alike</span></li>
+        </ul>
+        <p class="impl">As you learn each idea in Project 1, ask: <b>how does this apply to Beats specifically?</b></p>
+      </article>
+    </div>
+
+  </div>
+  <div class="controls">
+    <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
+    <p class="count" id="count" aria-hidden="true">1 of 6</p>
+    <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
+  </div>
+  <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
+  </section>
+</main>
+<script>
+(function () {
+  var track = document.getElementById('track');
+  var slides = Array.prototype.slice.call(track.querySelectorAll('.frame'));
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var countEl = document.getElementById('count');
+  var announceEl = document.getElementById('announce');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var current = -1;
+
+  function setActive(i, speak) {
+    if (i === current) return;
+    current = i;
+    slides.forEach(function (sl, si) {
+      if (si === i) { sl.removeAttribute('inert'); sl.removeAttribute('aria-hidden'); }
+      else { sl.setAttribute('inert', ''); sl.setAttribute('aria-hidden', 'true'); }
+    });
+    prevBtn.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
+    nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
+    countEl.textContent = (i + 1) + ' of ' + slides.length;
+    if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+  }
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    jumpUntil = Date.now() + 700;
+    track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft, behavior: reduce.matches ? 'auto' : 'smooth' });
+    setActive(i, true);
+  }
+  prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
+  nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
+  track.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+    else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+    else if (k === 'Home') { e.preventDefault(); goTo(0); }
+    else if (k === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+  var t, jumpUntil = 0;
+  track.addEventListener('scroll', function () {
+    clearTimeout(t);
+    if (Date.now() < jumpUntil) return;
+    t = setTimeout(function () { setActive(Math.round(track.scrollLeft / track.clientWidth), true); }, 90);
+  }, { passive: true });
+  window.addEventListener('resize', function () { track.scrollLeft = current * track.clientWidth; });
+  setActive(0, false);
+})();
+</script>
+</body>
+</html>
