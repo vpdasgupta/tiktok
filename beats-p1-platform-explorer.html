@@ -29,8 +29,7 @@ body {
 .head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
 .head p { margin: 0 0 12px; font-size: 15px; color: var(--muted); }
 
-[role="tablist"] { display: flex; gap: 6px; border-bottom: 2px solid var(--line); overflow-x: auto; scrollbar-width: none; }
-[role="tablist"]::-webkit-scrollbar { display: none; }
+[role="tablist"] { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 2px solid var(--line); }
 [role="tab"] {
   flex: 0 0 auto; min-height: 44px; padding: 8px 16px; margin-bottom: -2px; cursor: pointer;
   font: inherit; font-weight: 700; color: var(--muted); background: transparent;
@@ -58,10 +57,10 @@ body {
 
 .formats { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .formats li { border-left: 5px solid var(--accent); background: var(--soft); border-radius: 0 6px 6px 0; padding: 8px 12px; }
-.formats b { display: block; }
+.formats > li > b { display: block; }
 .formats span { display: block; color: var(--muted); font-size: 15px; }
 .formats .best { color: var(--ink); }
-.formats .best::before { content: "Best for: "; font-weight: 700; }
+.formats .best b { font-weight: 700; }
 
 .rules { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
 .rules b { color: var(--ink); }
@@ -114,10 +113,10 @@ tbody th { font-weight: 800; }
     </dl>
     <h3>Key ad formats</h3>
     <ul class="formats">
-      <li><b>In-Feed Ads</b><span>Appear between organic videos in the For You feed</span><span class="best">Clicks, conversions, app installs</span></li>
-      <li><b>TopView</b><span>The first video people see when they open the app</span><span class="best">Maximum awareness, product launches</span></li>
-      <li><b>Branded Mission</b><span>The brand invites creators to make videos for a campaign, then boosts the best ones as ads</span><span class="best">Community engagement, creator-made content</span></li>
-      <li><b>Spark Ads</b><span>Boosted organic posts from the brand or a creator</span><span class="best">An authentic feel, reusing content that already works</span></li>
+      <li><b>In-Feed Ads</b><span>Appear between organic videos in the For You feed</span><span class="best"><b>Best for:</b> Clicks, conversions, app installs</span></li>
+      <li><b>TopView</b><span>The first video people see when they open the app</span><span class="best"><b>Best for:</b> Maximum awareness, product launches</span></li>
+      <li><b>Branded Mission</b><span>The brand invites creators to make videos for a campaign, then boosts the best ones as ads</span><span class="best"><b>Best for:</b> Community engagement, creator-made content</span></li>
+      <li><b>Spark Ads</b><span>Boosted organic posts from the brand or a creator</span><span class="best"><b>Best for:</b> An authentic feel, reusing content that already works</span></li>
     </ul>
     <h3>Golden rules</h3>
     <ol class="rules">
@@ -140,10 +139,10 @@ tbody th { font-weight: 800; }
     </dl>
     <h3>Key ad formats</h3>
     <ul class="formats">
-      <li><b>Feed Ads</b><span>Square 1:1, portrait 4:5 or landscape 16:9</span><span class="best">Detailed storytelling, product showcases</span></li>
-      <li><b>Stories Ads</b><span>Vertical 9:16, full screen between Stories</span><span class="best">Urgency, time-sensitive offers</span></li>
-      <li><b>Reels Ads</b><span>Vertical 9:16, between Reels</span><span class="best">Entertainment-first content, younger audiences</span></li>
-      <li><b>Explore Ads</b><span>Appear as people browse Explore</span><span class="best">Discovery, reaching new audiences</span></li>
+      <li><b>Feed Ads</b><span>Square 1:1, portrait 4:5 or landscape 16:9</span><span class="best"><b>Best for:</b> Detailed storytelling, product showcases</span></li>
+      <li><b>Stories Ads</b><span>Vertical 9:16, full screen between Stories</span><span class="best"><b>Best for:</b> Urgency, time-sensitive offers</span></li>
+      <li><b>Reels Ads</b><span>Vertical 9:16, between Reels</span><span class="best"><b>Best for:</b> Entertainment-first content, younger audiences</span></li>
+      <li><b>Explore Ads</b><span>Appear as people browse Explore</span><span class="best"><b>Best for:</b> Discovery, reaching new audiences</span></li>
     </ul>
     <h3>Golden rules</h3>
     <ol class="rules">
@@ -166,10 +165,10 @@ tbody th { font-weight: 800; }
     </dl>
     <h3>Key ad formats</h3>
     <ul class="formats">
-      <li><b>Skippable in-stream</b><span>No set maximum (Google suggests under 3 minutes), with a Skip button after 5 seconds</span><span class="best">Storytelling, tutorials, longer content</span></li>
-      <li><b>Non-skippable in-stream</b><span>Usually 15 seconds (up to 60 on some TV campaigns), no skip</span><span class="best">A guaranteed full view, broad awareness</span></li>
-      <li><b>Bumper Ads</b><span>6 seconds max, no skip</span><span class="best">Reinforcement, brand recall</span></li>
-      <li><b>Masthead</b><span>Top of the YouTube home feed</span><span class="best">Massive reach, product launches</span></li>
+      <li><b>Skippable in-stream</b><span>No set maximum (Google suggests under 3 minutes), with a Skip button after 5 seconds</span><span class="best"><b>Best for:</b> Storytelling, tutorials, longer content</span></li>
+      <li><b>Non-skippable in-stream</b><span>Usually 15 seconds (up to 60 on some TV campaigns), no skip</span><span class="best"><b>Best for:</b> A guaranteed full view, broad awareness</span></li>
+      <li><b>Bumper Ads</b><span>6 seconds max, no skip</span><span class="best"><b>Best for:</b> Reinforcement, brand recall</span></li>
+      <li><b>Masthead</b><span>Top of the YouTube home feed</span><span class="best"><b>Best for:</b> Massive reach, product launches</span></li>
     </ul>
     <h3>Golden rules</h3>
     <ol class="rules">
