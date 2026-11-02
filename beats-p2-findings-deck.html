@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Write Your 3 Findings - Beats Project 2</title>
+<!-- 4.2 [Task] Write Your 3 Findings. Engine copied from module-01/step-04/01a-analyze-deck.html. -->
+<style>
+:root {
+  --ink: #141414; --muted: #4f4f55; --line: #dedede; --card: #ffffff; --bg: #f1f1f2;
+  --accent: #e01e37; --accent-ink: #b0102a; --soft: #fcefef; --chip-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1f1f2; --muted: #b9b9c0; --line: #36363b; --card: #1b1b1e; --bg: #0f0f11;
+    --accent: #ff4d63; --accent-ink: #ff8a99; --soft: #2b1519; --chip-ink: #1b1b1e;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: 1.35;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px 16px 32px; }
+.deck-head { margin: 0 0 14px; }
+.deck-head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
+.deck-head p { margin: 0; font-size: 15px; color: var(--muted); }
+.slides {
+  display: flex; align-items: flex-start; margin: 0; padding: 4px 0 6px;
+  overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.slides::-webkit-scrollbar { display: none; }
+.slides:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; border-radius: 10px; }
+.frame { container-type: inline-size; flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; padding: 0 2px; }
+.controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.navbtn {
+  min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+  background: var(--card); border: 2px solid var(--muted);
+}
+.navbtn:hover { border-color: var(--accent-ink); }
+.navbtn:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+.navbtn[aria-disabled="true"] { opacity: .45; cursor: default; border-style: dashed; }
+.count { margin: 0; font-size: 15px; font-weight: 700; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .slides { scroll-behavior: auto; } }
+@media (forced-colors: active) { .navbtn[aria-disabled="true"] { border-color: GrayText; color: GrayText; } }
+
+.slide {
+  aspect-ratio: 16 / 9; background: var(--card); border-top: 1.1cqi solid var(--accent);
+  border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  padding: 3.6cqi 5cqi 3cqi; display: flex; flex-direction: column; gap: 1.8cqi;
+  font-size: max(2.5cqi, 1rem); position: relative; overflow-wrap: anywhere;
+}
+.slide.dense { font-size: max(2.2cqi, .9375rem); gap: 1.4cqi; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2cqi; }
+.kicker { margin: 0 0 .5cqi; font-size: max(1.85cqi, .8125rem); font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent-ink); }
+.slide h2 { font-size: max(4.3cqi, 1.375rem); line-height: 1.1; margin: 0; }
+.sub { margin: .6cqi 0 0; color: var(--muted); }
+.chip {
+  flex: 0 0 auto; margin: 0; background: var(--accent-ink); color: var(--chip-ink);
+  font-weight: 800; font-size: max(1.85cqi, .8125rem); padding: .8cqi 1.8cqi; border-radius: 999px; white-space: nowrap;
+}
+.slide p { margin: 0; }
+.lead { font-size: 1.05em; }
+
+/* card grid */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqi 2.4cqi; }
+.cards.one { grid-template-columns: 1fr; }
+.cards li { border-left: .7cqi solid var(--accent); background: var(--soft); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+.cards b { display: block; }
+.cards span { color: var(--muted); font-size: .9em; }
+.cards.plain li { background: transparent; border-left-color: var(--line); }
+
+/* creative implication */
+.impl { margin-top: auto !important; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1.2cqi 1.8cqi; border-radius: 0 6px 6px 0; }
+.impl b { color: var(--accent-ink); }
+
+/* summary rows */
+.rows { margin: 0; display: grid; grid-template-columns: 34% 1fr; border-top: 2px solid var(--ink); }
+.rows dt, .rows dd { margin: 0; padding: 1cqi 0; border-bottom: 1px solid var(--line); }
+.rows dt { font-weight: 800; padding-right: 1.6cqi; }
+
+/* numbered steps */
+.steps { margin: 0; padding-left: 1.4em; display: grid; gap: .6cqi; }
+.steps li { padding-left: .2em; }
+/* sample / on-track / stuck (task deck) */
+.sample { margin: 0; background: var(--bg); border: 1px dashed var(--muted); border-radius: 6px; padding: 1.2cqi 1.8cqi; font-size: .92em; }
+.sample p + p { margin-top: .5cqi; }
+.sample-list { margin: .5cqi 0 0; padding-left: 1.2em; }
+.sample .lbl, .check b { display: block; font-size: .8em; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-ink); }
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6cqi; margin-top: auto; }
+.check { margin: 0; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; font-size: .92em; }
+.check.stuck { background: transparent; border-left-color: var(--line); }
+
+/* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
+@container (max-width: 560px) {
+  .slide, .slide.dense { aspect-ratio: auto; font-size: 1rem; padding: 18px 18px 22px; gap: 12px; border-top-width: 6px; }
+  .slide h2 { font-size: 1.4375rem; }
+  .kicker, .chip { font-size: .8125rem; }
+  .chip { padding: 4px 10px; }
+  .top { flex-wrap: wrap; }
+  .cards { grid-template-columns: 1fr; gap: 8px; }
+  .cards li { border-left-width: 4px; padding: 6px 10px; }
+  .impl { border-left-width: 5px; padding: 8px 12px; }
+  .rows { grid-template-columns: 1fr; }
+  .rows dt { padding: 8px 0 0; border-bottom: 0; }
+  .rows dd { padding: 2px 0 8px; }
+  .checks { grid-template-columns: 1fr; }
+  .check { border-left-width: 5px; padding: 8px 12px; }
+  .sample { padding: 8px 12px; }
+}
+@media (forced-colors: active) {
+  .cards li, .impl { border-left-color: CanvasText; }
+  .check { border-color: CanvasText; }
+}
+
+/* small tables (from 02a-positioning-deck.html) */
+.tbl { width: 100%; border-collapse: collapse; font-size: .9em; }
+.tbl caption { text-align: left; color: var(--muted); font-size: .9em; padding-bottom: .6cqi; }
+.tbl th, .tbl td { text-align: left; padding: .7cqi 1cqi; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl thead th { border-bottom: 2px solid var(--ink); }
+.tbl tbody th { font-weight: 800; }
+.tbl th, .tbl td { overflow-wrap: break-word; } /* let columns size to whole words instead of splitting them */
+@container (max-width: 560px) {
+  .tbl { font-size: .875rem; } .tbl th, .tbl td { overflow-wrap: anywhere; hyphens: auto; padding: 6px 4px; }
+}
+
+/* See the example button */
+.btn-example {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px;
+  font-size: 15px; font-weight: 700; color: var(--accent-ink); background: var(--card);
+  border: 2px solid var(--accent-ink); text-decoration: none; margin-top: 8px;
+}
+.btn-example:hover { background: var(--soft); }
+.btn-example:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+@media (forced-colors: active) { .btn-example { border-color: LinkText; } }
+
+/* compact layouts so dense task slides fit 16:9 */
+.cards.three { grid-template-columns: repeat(3, 1fr); }
+.slide.dense.tight { gap: .9cqi; padding-top: 3cqi; padding-bottom: 2.6cqi; }
+.tight .sample { padding: .9cqi 1.8cqi; }
+.sample .rows { grid-template-columns: max-content 1fr; border-top: 1px solid var(--line); margin-top: .4cqi; }
+.sample .rows dt, .sample .rows dd { padding: .3cqi 0; }
+.sample .rows dt { padding-right: 2cqi; }
+@container (max-width: 560px) {
+  .cards.three { grid-template-columns: 1fr; }
+  .slide.dense.tight { gap: 12px; padding: 18px 18px 22px; }
+  .tight .sample { padding: 8px 12px; }
+  .sample .rows { grid-template-columns: 1fr; }
+  .sample .rows dt { padding: 6px 0 0; }
+  .sample .rows dd { padding: 2px 0 6px; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="deck-head">
+    <h1>Write Your 3 Findings</h1>
+    <p>6 steps · 8 slides · use Next or swipe</p>
+  </header>
+  <section aria-roledescription="carousel" aria-label="Write Your 3 Findings steps">
+  <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
+
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 8">
+      <article class="slide dense" aria-labelledby="s1">
+        <div class="top"><div><p class="kicker">4.2 Write Your 3 Findings</p><h2 id="s1">Add a Findings tab to your response Sheet</h2></div></div>
+        <p class="sub">Same Sheet as your Results tab. One Sample line on top, then 3 rows.</p>
+        <table class="tbl">
+          <caption>The 5 columns of your Findings tab</caption>
+          <thead><tr><th scope="col">Finding</th><th scope="col">Evidence</th><th scope="col">Quote</th><th scope="col">Backed up / Challenged / One source</th><th scope="col">Beats could…</th></tr></thead>
+          <tbody><tr><td>Number + comparison + so what</td><td>The numbers behind it</td><td>One exact quote</td><td>How sure you are</td><td>One idea to try</td></tr></tbody>
+        </table>
+        <p class="impl"><b>All sample rows in this deck are made up.</b></p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 8">
+      <article class="slide dense tight" aria-labelledby="s2">
+        <div class="top"><div><p class="kicker">Step 1 of 6</p><h2 id="s2">Set up your Findings tab</h2></div></div>
+        <ol class="steps">
+          <li>Click + at the bottom left of your Sheet. Name the tab Findings.</li>
+          <li>In A1, write your Sample line: number of responses, your 4 ads and your dates.</li>
+          <li>In row 3, type the 5 headers: Finding, Evidence, Quote, Backed up / Challenged / One source, Beats could…</li>
+        </ol>
+        <div class="sample"><span class="lbl">Sample (made up)</span><p>Sample: 12 responses (14 in, 2 dropped) · Beats_YouTube_01, Beats_TikTok_01, Skullcandy_TikTok_01, Sony_YouTube_01 · Oct 6–9</p></div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Your Sample line has a number, 4 ad names and dates.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Choose View &gt; Freeze &gt; 3 rows so the headers stay put.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 8">
+      <article class="slide dense tight" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">Step 2 of 6</p><h2 id="s3">Pick your 3 findings</h2></div></div>
+        <p class="lead">Reread your 3 research questions from Step 1. Then scan your Results tab for clear gaps (over 0.5), split votes and codes that show up again and again.</p>
+        <ul class="cards three" role="list">
+          <li><b>Answers a question</b><span>Each finding speaks to one of your research questions.</span></li>
+          <li><b>About Beats</b><span>At least 2 of the 3 say something about a Beats ad.</span></li>
+          <li><b>A real gap</b><span>Skip ties under 0.2. They aren't findings yet.</span></li>
+        </ul>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> You have 3 short notes, one per finding, before you write anything polished.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Start with Beats' strongest and weakest attribute from your Results tab.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 8">
+      <article class="slide dense tight" aria-labelledby="s4">
+        <div class="top"><div><p class="kicker">Step 3 of 6</p><h2 id="s4">Write the Finding column</h2></div></div>
+        <p class="lead">One or two sentences. Number + comparison + so what.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <p><b>Stars get attention, not trust.</b> Beats_YouTube_01 scored highest on attention (4.5) but lowest on believable (3.0). In my 12 responses, the star got people to look but not to believe.</p>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> A classmate could read it and know the ad, the number and why it matters.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Start with a short bold line that says the idea in 5 words. Then add the numbers.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 8">
+      <article class="slide dense tight" aria-labelledby="s5">
+        <div class="top"><div><p class="kicker">Step 4 of 6</p><h2 id="s5">Add Evidence and a Quote</h2></div></div>
+        <p class="lead">Evidence is the numbers from your Results tab. Quote is one exact answer from your 6 quotes.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <dl class="rows">
+            <dt>Evidence</dt><dd>Attention 4.5 vs. believable 3.0. 8 of 12 coded "Feels like an ad." 7 of 12 picked it as most memorable, 1 of 12 as most believable.</dd>
+            <dt>Quote</dt><dd>"Cool, but I'd never buy headphones because of that."</dd>
+          </dl>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Every number in Evidence matches your Results tab.</p>
+          <p class="check stuck"><b>If you're stuck…</b> No quote fits? Leave the cell blank rather than force one.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 8">
+      <article class="slide dense tight" aria-labelledby="s6">
+        <div class="top"><div><p class="kicker">Step 5 of 6</p><h2 id="s6">Label how sure you are</h2></div></div>
+        <p class="lead">Did a second source agree? If you did the comment check in 3.3, compare. If not, write "One source."</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <dl class="rows">
+            <dt>Finding 1</dt><dd>Backed up: 6 of 10 comments on Beats_YouTube_01 were about the athlete, not the headphones.</dd>
+            <dt>Finding 2</dt><dd>One source (survey).</dd>
+          </dl>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Each row has one label and, if backed up or challenged, says by what.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Comments disagree with your survey? Write "Challenged" and keep the finding. That's honest, not wrong.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 8">
+      <article class="slide dense tight" aria-labelledby="s7">
+        <div class="top"><div><p class="kicker">Step 6 of 6</p><h2 id="s7">Write the "Beats could…" line</h2></div></div>
+        <p class="lead">One idea a creative team could try. Name what changes in the ad.</p>
+        <div class="sample"><span class="lbl">Sample (made up), all 3 findings</span>
+          <dl class="rows">
+            <dt>1 · Stars get attention, not trust</dt><dd>Beats could pair the star with a real fan.</dd>
+            <dt>2 · Creators earn trust</dt><dd>Beats could test more creator-led TikToks.</dd>
+            <dt>3 · Tech facts are trusted but forgotten</dt><dd>Beats could put one product fact inside a story.</dd>
+          </dl>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Each line is specific enough to sketch an ad from it.</p>
+          <p class="check stuck"><b>If you're stuck…</b> "Be more authentic" is too vague. Ask: what would we see on screen?</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 8">
+      <article class="slide dense" aria-labelledby="s8">
+        <div class="top"><div><p class="kicker">How it will be evaluated</p><h2 id="s8">What strong findings look like</h2></div></div>
+        <dl class="rows">
+          <dt>Sample line</dt><dd>Number of responses, your 4 ads and your dates</dd>
+          <dt>3 findings</dt><dd>Each has a number, a comparison and a so what, and answers a research question</dd>
+          <dt>Evidence and quote</dt><dd>Numbers match your Results tab; quotes are exact</dd>
+          <dt>Honest labels</dt><dd>Backed up, challenged or one source; "early signals" wording under 30 responses</dd>
+          <dt>Beats could…</dt><dd>One specific idea per finding</dd>
+        </dl>
+      </article>
+    </div>
+
+  </div>
+  <div class="controls">
+    <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
+    <p class="count" id="count" aria-hidden="true">1 of 8</p>
+    <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
+  </div>
+  <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
+  </section>
+</main>
+<script>
+(function () {
+  var track = document.getElementById('track');
+  var slides = Array.prototype.slice.call(track.querySelectorAll('.frame'));
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var countEl = document.getElementById('count');
+  var announceEl = document.getElementById('announce');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var current = -1;
+
+  function setActive(i, speak) {
+    if (i === current) return;
+    current = i;
+    slides.forEach(function (sl, si) {
+      if (si === i) { sl.removeAttribute('inert'); sl.removeAttribute('aria-hidden'); }
+      else { sl.setAttribute('inert', ''); sl.setAttribute('aria-hidden', 'true'); }
+    });
+    prevBtn.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
+    nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
+    countEl.textContent = (i + 1) + ' of ' + slides.length;
+    if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+  }
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    jumpUntil = Date.now() + 700;
+    track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft, behavior: reduce.matches ? 'auto' : 'smooth' });
+    setActive(i, true);
+  }
+  prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
+  nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
+  track.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+    else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+    else if (k === 'Home') { e.preventDefault(); goTo(0); }
+    else if (k === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+  var t, jumpUntil = 0;
+  track.addEventListener('scroll', function () {
+    clearTimeout(t);
+    if (Date.now() < jumpUntil) return;
+    t = setTimeout(function () { setActive(Math.round(track.scrollLeft / track.clientWidth), true); }, 90);
+  }, { passive: true });
+  window.addEventListener('resize', function () { track.scrollLeft = current * track.clientWidth; });
+  setActive(0, false);
+})();
+</script>
+</body>
+</html>
