@@ -96,6 +96,8 @@ body {
 .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6cqi; margin-top: auto; }
 .check { margin: 0; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; font-size: .92em; }
 .check.stuck { background: transparent; border-left-color: var(--line); }
+.check a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 2px; }
+.check a:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; border-radius: 2px; }
 
 /* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
 @container (max-width: 560px) {
@@ -192,7 +194,7 @@ body {
         </ol>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> Each brand's row adds up to 100% in the Grand Total column.</p>
-          <p class="check stuck"><b>If you're stuck…</b> A hook nobody used won't get a column. That's fine, and it might be a finding.</p>
+          <p class="check stuck"><b>If you're stuck…</b> New to pivot tables? <a href="https://www.youtube.com/watch?v=9zFWq3F5FYg" target="_blank" rel="noopener">Watch the Google Sheets pivot tables video<span class="sr-only"> (YouTube, opens in a new tab)</span></a>. A hook nobody used won't get a column. That's fine, and it might be a finding.</p>
         </div>
       </article>
     </div>
