@@ -3,10 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Where Beats Stands - Beats Project 1</title>
-<!-- 16:9 slide carousel for 3.2 [Training] Compare Competitive Positioning.
-     Copied from step-02/02a-what-to-capture-deck.html (What to Capture, 2.2).
-     Engine copied from thd-merchandising-service/scripts/build-p3-pg2-decks.py. -->
+<title>Compare Competitive Positioning - Beats Project 1</title>
+<!-- 16:9 slide carousel for 3.2 [Task] Compare Competitive Positioning.
+     Engine and CSS copied from 03a-exec-summary-deck.html; .tbl CSS from the previous 02a deck. -->
 <style>
 :root {
   --ink: #141414; --muted: #4f4f55; --line: #dedede; --card: #ffffff; --bg: #f1f1f2;
@@ -86,23 +85,43 @@ body {
 .rows dt, .rows dd { margin: 0; padding: 1cqi 0; border-bottom: 1px solid var(--line); }
 .rows dt { font-weight: 800; padding-right: 1.6cqi; }
 
+/* numbered steps */
+.steps { margin: 0; padding-left: 1.4em; display: grid; gap: .6cqi; }
+.steps li { padding-left: .2em; }
+/* sample / on-track / stuck (task deck) */
+.sample { margin: 0; background: var(--bg); border: 1px dashed var(--muted); border-radius: 6px; padding: 1.2cqi 1.8cqi; font-size: .92em; }
+.sample p + p { margin-top: .5cqi; }
+.sample-list { margin: .5cqi 0 0; padding-left: 1.2em; }
+.sample .lbl, .check b { display: block; font-size: .8em; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-ink); }
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6cqi; margin-top: auto; }
+.check { margin: 0; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; font-size: .92em; }
+.check.stuck { background: transparent; border-left-color: var(--line); }
+
 /* data table */
 .tbl { width: 100%; border-collapse: collapse; font-size: .9em; }
 .tbl caption { text-align: left; color: var(--muted); font-size: .9em; padding-bottom: .6cqi; }
 .tbl th, .tbl td { text-align: left; padding: .7cqi 1cqi; border-bottom: 1px solid var(--line); vertical-align: top; }
 .tbl thead th { border-bottom: 2px solid var(--ink); }
+.tbl thead td { border-bottom: 2px solid var(--ink); }
 .tbl tbody th { font-weight: 800; }
 .tbl th, .tbl td { overflow-wrap: break-word; } /* let columns size to whole words instead of splitting them */
-/* 2x2 map */
-.map { display: grid; grid-template-columns: auto 1fr 1fr; grid-template-rows: 1fr 1fr auto; gap: .8cqi; flex: 1; min-height: 0; }
-.map .ylab { grid-row: 1 / 3; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-weight: 800; color: var(--muted); font-size: .85em; }
-.map .xlab { grid-column: 2 / 4; display: flex; justify-content: space-between; font-weight: 800; color: var(--muted); font-size: .85em; }
-.map .q { border: 2px solid var(--line); border-radius: 8px; padding: 1cqi 1.4cqi; }
-.map .q h3 { margin: 0 0 .4cqi; font-size: .8em; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
-.map .q.beats { border-color: var(--accent); background: var(--soft); }
-.map .q p { margin: 0; font-weight: 800; }
-/* vertical axis: two ends, Everyday at bottom, Premium at top (rotated text reads bottom to top) */
-.map .ylab { display: flex; justify-content: space-between; }
+
+/* sample rows: label column sized to its content */
+.sample .rows { grid-template-columns: max-content 1fr; margin-top: 0; border-top-width: 1px; }
+.sample .rows dt, .sample .rows dd { padding: .25cqi 0; line-height: 1.25; }
+/* checks with a longer "stuck" note: give it more of the width */
+.checks.wide-stuck { grid-template-columns: 2fr 3fr; }
+.sample .rows dt { padding-right: 2cqi; }
+
+/* example link */
+.btn-example {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px;
+  font-size: 15px; font-weight: 700; color: var(--accent-ink); background: var(--card);
+  border: 2px solid var(--accent-ink); text-decoration: none; margin-top: 8px;
+}
+.btn-example:hover { background: var(--soft); }
+.btn-example:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+@media (forced-colors: active) { .btn-example { border-color: LinkText; } }
 
 /* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
 @container (max-width: 560px) {
@@ -118,134 +137,138 @@ body {
   .rows { grid-template-columns: 1fr; }
   .rows dt { padding: 8px 0 0; border-bottom: 0; }
   .rows dd { padding: 2px 0 8px; }
-  .map { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-  .map .ylab, .map .xlab { display: none; }
+  .checks, .checks.wide-stuck { grid-template-columns: 1fr; }
+  .sample .rows { grid-template-columns: 1fr; }
+  .check { border-left-width: 5px; padding: 8px 12px; }
+  .sample { padding: 8px 12px; }
 }
 @media (forced-colors: active) {
   .cards li, .impl { border-left-color: CanvasText; }
-  .map .q.beats { border-color: CanvasText; }
+  .check { border-color: CanvasText; }
 }
 </style>
 </head>
 <body>
 <main class="wrap">
   <header class="deck-head">
-    <h1>Where Beats Stands</h1>
-    <p>3 steps · 8 slides · use Next or swipe</p>
+    <h1>Compare Competitive Positioning</h1>
+    <p>5 steps · 7 slides · use Next or swipe</p>
+    <a class="btn-example" href="https://vpdasgupta.github.io/tiktok/beats-p1-repository-example.html#positioning" target="_blank" rel="noopener">See the example<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
   </header>
-  <section aria-roledescription="carousel" aria-label="Where Beats Stands">
+  <section aria-roledescription="carousel" aria-label="Compare Competitive Positioning steps">
   <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
 
-    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 8">
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 7">
       <article class="slide dense" aria-labelledby="s1">
-        <div class="top"><div><p class="kicker">3.2 Compare Competitive Positioning</p><h2 id="s1">Where does Beats stand in the market?</h2>
+        <div class="top"><div><p class="kicker">3.2 Compare Competitive Positioning</p><h2 id="s1">Add a Positioning tab to your sheet</h2>
           <p class="sub">Positioning is the spot a brand owns in buyers' minds. Every choice in its ads shows it.</p></div></div>
         <ul class="cards one" role="list">
-          <li><b>1 · Profile</b><span>Sum up each brand's ads in one row</span></li>
-          <li><b>2 · Map</b><span>Place the brands on a simple 2×2</span></li>
-          <li><b>3 · Threat and opening</b><span>Name one risk and one chance for Beats</span></li>
+          <li><b>Brand profiles</b><span>One row per brand</span></li>
+          <li><b>A 2×2 map</b><span>Where each brand sits</span></li>
+          <li><b>Rival, threat and opening</b><span>Three lines about Beats</span></li>
         </ul>
         <p class="impl"><b>Where it goes:</b> Section 4, Competitive Positioning, of your Executive Summary.</p>
       </article>
     </div>
 
-    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 8">
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 7">
       <article class="slide dense" aria-labelledby="s2">
-        <div class="top"><div><p class="kicker">Step 1 · Profile</p><h2 id="s2">One row per brand</h2>
-          <p class="sub">Use your Hooks by Brand and Talent by Brand tabs. For production and score, filter the Ad Repository to one brand.</p></div></div>
+        <div class="top"><div><p class="kicker">Step 1 of 5</p><h2 id="s2">Set up your profile table</h2></div></div>
+        <p class="lead">Add a tab named Positioning. In row 1, type these 6 headers. In column A, list Beats, Apple AirPods, Sony and Bose, plus any brand you logged 3 or more ads for.</p>
         <table class="tbl">
-          <caption>Example (made up). Fill in your own rows.</caption>
-          <thead><tr><th scope="col">Brand</th><th scope="col">Top hook</th><th scope="col">Top talent</th><th scope="col">Usual production</th><th scope="col">Avg score</th><th scope="col">Their ads say…</th></tr></thead>
+          <caption>Row 1 of your Positioning tab</caption>
+          <tbody><tr><th scope="row">Row 1</th><td>Brand</td><td>Top hook</td><td>Top talent</td><td>Usual production</td><td>Avg score</td><td>Their ads say…</td></tr></tbody></table>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> You have 6 headers and at least 4 brands.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Not sure a brand has 3 ads? Check By Brand on your Summary Dashboard.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 7">
+      <article class="slide dense" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">Step 2 of 5</p><h2 id="s3">Fill in each brand's row</h2></div></div>
+        <dl class="rows">
+          <dt>Top hook</dt><dd>The biggest % in that brand's row on Hooks by Brand</dd>
+          <dt>Top talent</dt><dd>The biggest % on Talent by Brand</dd>
+          <dt>Usual production</dt><dd>Filter the Ad Repository to the brand. Which Production Level (M) shows up most?</dd>
+          <dt>Avg score</dt><dd>With the filter on, select the brand's scores in column N. Click the Sum at the bottom right and pick Average.</dd>
+        </dl>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Every cell is filled except Their ads say…</p>
+          <p class="check stuck"><b>If you're stuck…</b> Two options tied? Write both.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 7">
+      <article class="slide" aria-labelledby="s4">
+        <div class="top"><div><p class="kicker">Step 3 of 5</p><h2 id="s4">Write what each brand's ads say</h2></div></div>
+        <p class="lead">In the last column, write one short line on what the brand wants you to believe. Base it on the ads you logged, not on what you already knew.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <p><b>Sony:</b> "Nothing sounds better or blocks more noise."</p>
+          <p><b>Beats:</b> "Wear what the stars wear."</p>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Each line fits only that one brand.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Read the brand's top hook and top talent together. What do they promise?</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 7">
+      <article class="slide dense" aria-labelledby="s5">
+        <div class="top"><div><p class="kicker">Step 4 of 5</p><h2 id="s5">Build your 2×2 map</h2></div></div>
+        <p class="lead">A few rows below your table, make a 2×2 grid. Label the columns Sound and tech and Style and culture, and the rows Premium and Everyday. Type each brand into one box.</p>
+        <table class="tbl">
+          <caption>Sample (made up)</caption>
+          <thead><tr><th scope="col"><span class="sr-only">Price</span></th><th scope="col">Sound and tech</th><th scope="col">Style and culture</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Beats</th><td>Celebrity/Influencer</td><td>Celebrity</td><td>High (Studio)</td><td>4.2</td><td>"Wear what the stars wear"</td></tr>
-            <tr><th scope="row">Apple AirPods</th><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+            <tr><th scope="row">Premium</th><td>Sony, Bose, Apple AirPods</td><td>Beats</td></tr>
+            <tr><th scope="row">Everyday</th><td>(empty)</td><td>Skullcandy</td></tr>
           </tbody>
         </table>
-        <p class="impl"><b>Must-have rows:</b> Beats, Apple AirPods, Sony and Bose. Add JBL, Samsung or Skullcandy if you logged 3 or more of their ads.</p>
-      </article>
-    </div>
-
-    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 8">
-      <article class="slide dense" aria-labelledby="s3">
-        <div class="top"><div><p class="kicker">Step 1 · Profile</p><h2 id="s3">Write the last column in plain words</h2>
-          <p class="sub">"Their ads say…" is one short line on what the brand wants you to believe.</p></div></div>
-        <ul class="cards one" role="list">
-          <li><b>Sony</b><span>"Nothing sounds better or blocks more noise."</span></li>
-          <li><b>Apple AirPods</b><span>"It just works with your iPhone."</span></li>
-          <li><b>Beats</b><span>"This is what the people you admire wear."</span></li>
-        </ul>
-        <p class="impl"><b>Go by your ads,</b> not what you already knew. If your data disagrees with 1.4 Meet the Competition, trust your data.</p>
-      </article>
-    </div>
-
-    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 8">
-      <article class="slide" aria-labelledby="s4">
-        <div class="top"><div><p class="kicker">Step 2 · Map</p><h2 id="s4">Two questions place every brand</h2>
-          <p class="sub">These match the questions you answered in 1.4 Meet the Competition.</p></div></div>
-        <dl class="rows">
-          <dt>Left to right</dt><dd>Does it sell on sound and tech, or on style and culture?</dd>
-          <dt>Top to bottom</dt><dd>Does it feel premium, or everyday?</dd>
-        </dl>
-        <p class="impl"><b>Clues in your data:</b> Problem/Pain Point hooks and product-only ads point to sound and tech. Celebrity, creator and music-led hooks point to style and culture. Studio production points to premium. UGC style and Get Offer CTAs point to everyday.</p>
-      </article>
-    </div>
-
-    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 8">
-      <article class="slide" aria-labelledby="s5">
-        <div class="top"><div><p class="kicker">Step 2 · Map</p><h2 id="s5">An example map</h2>
-          <p class="sub">Built only from the 1.4 tables. Your ad data may move brands.</p></div></div>
-        <div class="map" role="group" aria-label="Example positioning map">
-          <div class="ylab" aria-hidden="true"><span>← Everyday</span><span>Premium →</span></div>
-          <div class="q"><h3>Premium · Sound and tech</h3><p>Sony, Bose</p></div>
-          <div class="q beats"><h3>Premium · Style and culture</h3><p>Beats</p></div>
-          <div class="q"><h3>Everyday · Sound and tech</h3><p>JBL</p></div>
-          <div class="q"><h3>Everyday · Style and culture</h3><p>Skullcandy</p></div>
-          <div class="xlab" aria-hidden="true"><span>← Sound and tech</span><span>Style and culture →</span></div>
+        <div class="checks wide-stuck">
+          <p class="check"><b>You're on track if…</b> Every brand in your table sits in exactly one box.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Problem/Pain Point hooks and product-only ads point to sound and tech. Celebrity and creator talent point to style and culture. Studio production points to premium; UGC style points to everyday.</p>
         </div>
-        <p class="impl"><b>Your turn:</b> Where would you put Apple AirPods? Let your ads decide.</p>
       </article>
     </div>
 
-    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 8">
-      <article class="slide" aria-labelledby="s6">
-        <div class="top"><div><p class="kicker">Step 2 · Map</p><h2 id="s6">Read your map</h2></div></div>
-        <ul class="cards one" role="list">
-          <li><b>Same box as Beats</b><span>Its closest rival: same buyers, same pitch</span></li>
-          <li><b>The box next door</b><span>A brand that could move into Beats' space. Watch it.</span></li>
-          <li><b>An empty box</b><span>A possible opening, or a spot nobody wants. Say which you think and why.</span></li>
-        </ul>
-        <p class="impl"><b>Keep it simple:</b> A 2×2 table in your Google Doc is enough. No design tools needed.</p>
+    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 7">
+      <article class="slide dense" aria-labelledby="s6">
+        <div class="top"><div><p class="kicker">Step 5 of 5</p><h2 id="s6">Name Beats' rival, threat and opening</h2></div></div>
+        <p class="lead">Under your map, write 3 lines. Each one needs a box on your map or a number from your sheet behind it.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <dl class="rows">
+            <dt>Closest rival</dt><dd>Skullcandy, the only other style-and-culture brand, one box down at a lower price.</dd>
+            <dt>Threat</dt><dd>Skullcandy's creator ads averaged 4.1, close to Beats' 4.2. Beats' style edge may be easier to copy than it looks.</dd>
+            <dt>Opening</dt><dd>None of my 25 ads used a Question hook. Beats could test one to stand out in the feed.</dd>
+          </dl>
+        </div>
+        <div class="checks wide-stuck">
+          <p class="check"><b>You're on track if…</b> A reader could check each line against your sheet.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Closest rival = the brand in Beats' box or the nearest one. An empty box can be an opening.</p>
+        </div>
       </article>
     </div>
 
-    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 8">
-      <article class="slide dense" aria-labelledby="s7">
-        <div class="top"><div><p class="kicker">Step 3 · Threat and opening</p><h2 id="s7">Name one risk and one chance for Beats</h2>
-          <p class="sub">Each one needs a number from your sheet behind it.</p></div></div>
+    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 7">
+      <article class="slide" aria-labelledby="s7">
+        <div class="top"><div><p class="kicker">How it will be evaluated</p><h2 id="s7">What a strong Positioning tab looks like</h2></div></div>
         <dl class="rows">
-          <dt>Threat (made up)</dt><dd>Skullcandy's creator ads averaged 4.1, close to Beats' 4.2, at a lower price. Beats' style edge may be easier to copy than it looks.</dd>
-          <dt>Opening (made up)</dt><dd>No brand in my sample used a Question hook. Beats could test one to stand out in the feed.</dd>
+          <dt>Profile table</dt><dd>Beats, Apple AirPods, Sony and Bose, with every cell filled</dd>
+          <dt>Based on your data</dt><dd>Rows match your pivot tabs and Ad Repository</dd>
+          <dt>2×2 map</dt><dd>Every profiled brand in one box</dd>
+          <dt>Rival, threat and opening</dt><dd>Each backed by your map or a number</dd>
         </dl>
-        <p class="impl"><b>A direction, not a campaign.</b> You'll build campaign ideas in Project 2.</p>
-      </article>
-    </div>
-
-    <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 8">
-      <article class="slide" aria-labelledby="s8">
-        <div class="top"><div><p class="kicker">Recap</p><h2 id="s8">What you'll have when you're done</h2></div></div>
-        <dl class="rows">
-          <dt>Brand profile table</dt><dd>Beats, Apple AirPods, Sony and Bose, plus any brand with 3+ ads</dd>
-          <dt>Positioning map</dt><dd>A 2×2 with every profiled brand placed</dd>
-          <dt>1 threat and 1 opening</dt><dd>Each backed by a number from your sheet</dd>
-        </dl>
-        <p class="impl"><b>Save these in your sheet or a doc.</b> They become Section 4 of your Executive Summary.</p>
       </article>
     </div>
 
   </div>
   <div class="controls">
     <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
-    <p class="count" id="count" aria-hidden="true">1 of 8</p>
+    <p class="count" id="count" aria-hidden="true">1 of 7</p>
     <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
   </div>
   <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
