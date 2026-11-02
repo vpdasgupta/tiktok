@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Platform Explorer - Beats Project 1</title>
+<!-- Tabbed, scrollable explorer for 1.3 How Video Ads Win Attention, Part 1 (TikTok, Instagram, YouTube + Compare).
+     Colors match beats-p1-brand-dna-deck.html. WAI-ARIA tabs pattern with automatic activation. -->
+<style>
+:root {
+  --ink: #141414; --muted: #4f4f55; --line: #dedede; --card: #ffffff; --bg: #f1f1f2;
+  --accent: #e01e37; --accent-ink: #b0102a; --soft: #fcefef;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1f1f2; --muted: #b9b9c0; --line: #36363b; --card: #1b1b1e; --bg: #0f0f11;
+    --accent: #ff4d63; --accent-ink: #ff8a99; --soft: #2b1519;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: 1.4; font-size: 16px;
+}
+.wrap { max-width: 760px; height: 100%; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; }
+.head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
+.head p { margin: 0 0 12px; font-size: 15px; color: var(--muted); }
+
+[role="tablist"] { display: flex; gap: 6px; border-bottom: 2px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+[role="tablist"]::-webkit-scrollbar { display: none; }
+[role="tab"] {
+  flex: 0 0 auto; min-height: 44px; padding: 8px 16px; margin-bottom: -2px; cursor: pointer;
+  font: inherit; font-weight: 700; color: var(--muted); background: transparent;
+  border: 0; border-bottom: 4px solid transparent; border-radius: 8px 8px 0 0;
+}
+[role="tab"]:hover { color: var(--ink); background: var(--card); }
+[role="tab"][aria-selected="true"] { color: var(--ink); background: var(--card); border-bottom-color: var(--accent); }
+[role="tab"]:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: -3px; }
+
+.panel {
+  flex: 1; min-height: 0; overflow-y: auto; background: var(--card); border-radius: 0 0 10px 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.12); padding: 20px 22px 28px;
+}
+.panel:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: -3px; }
+.panel[hidden] { display: none; }
+.kicker { margin: 0 0 4px; font-size: 13px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent-ink); }
+.panel h2 { font-size: 24px; line-height: 1.15; margin: 0 0 6px; }
+.lede { margin: 0 0 16px; color: var(--muted); }
+.panel h3 { font-size: 17px; margin: 22px 0 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+
+.glance { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; }
+.glance div { background: var(--soft); border-radius: 8px; padding: 8px 12px; }
+.glance dt { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-ink); }
+.glance dd { margin: 2px 0 0; font-weight: 700; }
+
+.formats { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.formats li { border-left: 5px solid var(--accent); background: var(--soft); border-radius: 0 6px 6px 0; padding: 8px 12px; }
+.formats b { display: block; }
+.formats span { display: block; color: var(--muted); font-size: 15px; }
+.formats .best { color: var(--ink); }
+.formats .best::before { content: "Best for: "; font-weight: 700; }
+
+.rules { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.rules b { color: var(--ink); }
+
+.impl { margin: 18px 0 0; background: var(--soft); border-left: 6px solid var(--accent); padding: 10px 14px; border-radius: 0 6px 6px 0; }
+.impl b { color: var(--accent-ink); }
+
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+caption { text-align: left; color: var(--muted); padding-bottom: 8px; }
+th, td { text-align: left; vertical-align: top; padding: 8px 8px; border-bottom: 1px solid var(--line); }
+thead th { border-bottom: 2px solid var(--ink); font-size: 14px; }
+tbody th { font-weight: 800; }
+.hint { margin: 10px 0 0; font-size: 14px; color: var(--muted); }
+
+@media (max-width: 560px) {
+  .wrap { padding: 12px; }
+  .panel { padding: 16px 14px 22px; }
+  .glance { grid-template-columns: 1fr 1fr; }
+  table { font-size: 14px; }
+  th, td { padding: 6px 4px; }
+}
+@media (forced-colors: active) {
+  [role="tab"][aria-selected="true"] { border-bottom-color: Highlight; }
+  .formats li, .impl { border-left-color: CanvasText; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="head">
+    <h1>One Brand, Three Different Worlds</h1>
+    <p>Pick a platform to see its ad formats and rules. Each tab scrolls.</p>
+  </header>
+
+  <div role="tablist" aria-label="Platforms">
+    <button role="tab" id="tab-tiktok" aria-controls="panel-tiktok" aria-selected="true">TikTok</button>
+    <button role="tab" id="tab-instagram" aria-controls="panel-instagram" aria-selected="false" tabindex="-1">Instagram</button>
+    <button role="tab" id="tab-youtube" aria-controls="panel-youtube" aria-selected="false" tabindex="-1">YouTube</button>
+    <button role="tab" id="tab-compare" aria-controls="panel-compare" aria-selected="false" tabindex="-1">Compare all 3</button>
+  </div>
+
+  <section class="panel" id="panel-tiktok" role="tabpanel" aria-labelledby="tab-tiktok" tabindex="0">
+    <p class="kicker">TikTok</p>
+    <h2>The native content playground</h2>
+    <p class="lede">TikTok ads don't look like ads. They feel personal, and that's the point.</p>
+    <dl class="glance">
+      <div><dt>Format</dt><dd>Vertical 9:16</dd></div>
+      <div><dt>Sound</dt><dd>On by default</dd></div>
+      <div><dt>Hook window</dt><dd>1–3 seconds</dd></div>
+    </dl>
+    <h3>Key ad formats</h3>
+    <ul class="formats">
+      <li><b>In-Feed Ads</b><span>Appear between organic videos in the For You feed</span><span class="best">Clicks, conversions, app installs</span></li>
+      <li><b>TopView</b><span>The first video people see when they open the app</span><span class="best">Maximum awareness, product launches</span></li>
+      <li><b>Branded Mission</b><span>The brand invites creators to make videos for a campaign, then boosts the best ones as ads</span><span class="best">Community engagement, creator-made content</span></li>
+      <li><b>Spark Ads</b><span>Boosted organic posts from the brand or a creator</span><span class="best">An authentic feel, reusing content that already works</span></li>
+    </ul>
+    <h3>Golden rules</h3>
+    <ol class="rules">
+      <li><b>Vertical only.</b> 9:16, full screen.</li>
+      <li><b>Sound on.</b> Music and audio are central to the experience.</li>
+      <li><b>The first 1–3 seconds matter most.</b> People scroll past in milliseconds.</li>
+      <li><b>Native wins.</b> Ads that look like TikToks beat polished commercials.</li>
+    </ol>
+    <p class="impl"><b>For Beats:</b> make it feel like something a friend posted, not a commercial.</p>
+  </section>
+
+  <section class="panel" id="panel-instagram" role="tabpanel" aria-labelledby="tab-instagram" tabindex="0" hidden>
+    <p class="kicker">Instagram</p>
+    <h2>The visual storyteller</h2>
+    <p class="lede">Instagram ads live across several surfaces, and each has its own rules.</p>
+    <dl class="glance">
+      <div><dt>Format</dt><dd>Varies by placement</dd></div>
+      <div><dt>Sound</dt><dd>Often off</dd></div>
+      <div><dt>Hook window</dt><dd>3 seconds</dd></div>
+    </dl>
+    <h3>Key ad formats</h3>
+    <ul class="formats">
+      <li><b>Feed Ads</b><span>Square 1:1, portrait 4:5 or landscape 16:9</span><span class="best">Detailed storytelling, product showcases</span></li>
+      <li><b>Stories Ads</b><span>Vertical 9:16, full screen between Stories</span><span class="best">Urgency, time-sensitive offers</span></li>
+      <li><b>Reels Ads</b><span>Vertical 9:16, between Reels</span><span class="best">Entertainment-first content, younger audiences</span></li>
+      <li><b>Explore Ads</b><span>Appear as people browse Explore</span><span class="best">Discovery, reaching new audiences</span></li>
+    </ul>
+    <h3>Golden rules</h3>
+    <ol class="rules">
+      <li><b>Visual quality matters.</b> Higher production value than TikTok.</li>
+      <li><b>Assume sound off.</b> Many people scroll without audio, so captions are essential.</li>
+      <li><b>The first 3 seconds are critical.</b> The hook has to work visually, with no sound.</li>
+      <li><b>Stories feel temporary.</b> Casual and behind-the-scenes content fits.</li>
+    </ol>
+    <p class="impl"><b>For Beats:</b> the ad has to look great and make sense on mute.</p>
+  </section>
+
+  <section class="panel" id="panel-youtube" role="tabpanel" aria-labelledby="tab-youtube" tabindex="0" hidden>
+    <p class="kicker">YouTube</p>
+    <h2>The long-form arena</h2>
+    <p class="lede">YouTube is where brands tell complete stories, but viewers are ready to skip.</p>
+    <dl class="glance">
+      <div><dt>Format</dt><dd>Landscape 16:9</dd></div>
+      <div><dt>Sound</dt><dd>On, expected</dd></div>
+      <div><dt>Hook window</dt><dd>5 seconds, before skip</dd></div>
+    </dl>
+    <h3>Key ad formats</h3>
+    <ul class="formats">
+      <li><b>Skippable in-stream</b><span>No set maximum (Google suggests under 3 minutes), with a Skip button after 5 seconds</span><span class="best">Storytelling, tutorials, longer content</span></li>
+      <li><b>Non-skippable in-stream</b><span>Usually 15 seconds (up to 60 on some TV campaigns), no skip</span><span class="best">A guaranteed full view, broad awareness</span></li>
+      <li><b>Bumper Ads</b><span>6 seconds max, no skip</span><span class="best">Reinforcement, brand recall</span></li>
+      <li><b>Masthead</b><span>Top of the YouTube home feed</span><span class="best">Massive reach, product launches</span></li>
+    </ul>
+    <h3>Golden rules</h3>
+    <ol class="rules">
+      <li><b>The first 5 seconds are everything.</b> Hook before the Skip button appears.</li>
+      <li><b>Assume sound on.</b> Music, voice-over and dialogue are expected.</li>
+      <li><b>Landscape leads.</b> 16:9 is standard, though Shorts are changing this.</li>
+      <li><b>Story arcs are welcome.</b> Viewers accept longer narratives.</li>
+    </ol>
+    <p class="impl"><b>For Beats:</b> earn the next 25 seconds in the first 5.</p>
+  </section>
+
+  <section class="panel" id="panel-compare" role="tabpanel" aria-labelledby="tab-compare" tabindex="0" hidden>
+    <p class="kicker">Side by side</p>
+    <h2>Platform comparison at a glance</h2>
+    <p class="lede">Same product, same brand, same goal, and three completely different ads.</p>
+    <table>
+      <caption>How TikTok, Instagram and YouTube differ for video ads</caption>
+      <thead><tr><th scope="col">Feature</th><th scope="col">TikTok</th><th scope="col">Instagram</th><th scope="col">YouTube</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Format</th><td>Vertical 9:16</td><td>Varies by placement</td><td>Landscape 16:9</td></tr>
+        <tr><th scope="row">Sound</th><td>On by default</td><td>Often off</td><td>On, expected</td></tr>
+        <tr><th scope="row">Typical length</th><td>15–60 sec</td><td>15–30 sec</td><td>15 sec–3 min</td></tr>
+        <tr><th scope="row">Creative style</th><td>Native, lo-fi, authentic</td><td>Polished, aesthetic</td><td>Cinematic, narrative</td></tr>
+        <tr><th scope="row">Hook window</th><td>1–3 sec</td><td>3 sec</td><td>5 sec, before skip</td></tr>
+        <tr><th scope="row">Viewer mindset</th><td>Entertainment</td><td>Browsing and discovery</td><td>Intentional viewing</td></tr>
+      </tbody>
+    </table>
+    <p class="impl"><b>The platform is the message.</b> Before you judge whether an ad works, know the container it lives in.</p>
+  </section>
+</main>
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function select(tab, focus) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      panel.hidden = !on;
+      if (on) panel.scrollTop = 0;
+    });
+    if (focus) tab.focus();
+  }
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { select(tab, false); });
+    tab.addEventListener('keydown', function (e) {
+      var n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      else if (e.key === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
+      else if (e.key === 'Home') n = tabs[0];
+      else if (e.key === 'End') n = tabs[tabs.length - 1];
+      if (n) { e.preventDefault(); select(n, true); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
