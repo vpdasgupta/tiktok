@@ -3,11 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>From Data to Findings - Beats Project 1</title>
-<!-- 16:9 slide carousel for 3.1 [Training] Analyze Your Repository.
-     Copied from step-02/02a-what-to-capture-deck.html (What to Capture, 2.2).
-     Engine copied from thd-merchandising-service/scripts/build-p3-pg2-decks.py.
-     GH Pages name: beats-p1-analyze-deck.html -->
+<title>Analyze Your Repository - Beats Project 1</title>
+<!-- 16:9 slide carousel for 3.1 [Task] Analyze Your Repository.
+     Base engine and CSS copied from 03a-exec-summary-deck.html; .tbl CSS from 02a-positioning-deck.html. -->
 <style>
 :root {
   --ink: #141414; --muted: #4f4f55; --line: #dedede; --card: #ffffff; --bg: #f1f1f2;
@@ -90,6 +88,14 @@ body {
 /* numbered steps */
 .steps { margin: 0; padding-left: 1.4em; display: grid; gap: .6cqi; }
 .steps li { padding-left: .2em; }
+/* sample / on-track / stuck (task deck) */
+.sample { margin: 0; background: var(--bg); border: 1px dashed var(--muted); border-radius: 6px; padding: 1.2cqi 1.8cqi; font-size: .92em; }
+.sample p + p { margin-top: .5cqi; }
+.sample-list { margin: .5cqi 0 0; padding-left: 1.2em; }
+.sample .lbl, .check b { display: block; font-size: .8em; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-ink); }
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6cqi; margin-top: auto; }
+.check { margin: 0; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; font-size: .92em; }
+.check.stuck { background: transparent; border-left-color: var(--line); }
 
 /* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
 @container (max-width: 560px) {
@@ -104,162 +110,215 @@ body {
   .rows { grid-template-columns: 1fr; }
   .rows dt { padding: 8px 0 0; border-bottom: 0; }
   .rows dd { padding: 2px 0 8px; }
+  .checks { grid-template-columns: 1fr; }
+  .check { border-left-width: 5px; padding: 8px 12px; }
+  .sample { padding: 8px 12px; }
 }
 @media (forced-colors: active) {
   .cards li, .impl { border-left-color: CanvasText; }
+  .check { border-color: CanvasText; }
+}
+
+/* small tables (from 02a-positioning-deck.html) */
+.tbl { width: 100%; border-collapse: collapse; font-size: .9em; }
+.tbl caption { text-align: left; color: var(--muted); font-size: .9em; padding-bottom: .6cqi; }
+.tbl th, .tbl td { text-align: left; padding: .7cqi 1cqi; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl thead th { border-bottom: 2px solid var(--ink); }
+.tbl tbody th { font-weight: 800; }
+.tbl th, .tbl td { overflow-wrap: break-word; } /* let columns size to whole words instead of splitting them */
+@container (max-width: 560px) {
+  .tbl { font-size: .875rem; } .tbl th, .tbl td { overflow-wrap: anywhere; hyphens: auto; padding: 6px 4px; }
+}
+
+/* See the example button */
+.btn-example {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px;
+  font-size: 15px; font-weight: 700; color: var(--accent-ink); background: var(--card);
+  border: 2px solid var(--accent-ink); text-decoration: none; margin-top: 8px;
+}
+.btn-example:hover { background: var(--soft); }
+.btn-example:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+@media (forced-colors: active) { .btn-example { border-color: LinkText; } }
+
+/* compact layouts so dense task slides fit 16:9 */
+.cards.three { grid-template-columns: repeat(3, 1fr); }
+.slide.dense.tight { gap: .9cqi; padding-top: 3cqi; padding-bottom: 2.6cqi; }
+.tight .sample { padding: .9cqi 1.8cqi; }
+.sample .rows { grid-template-columns: max-content 1fr; border-top: 1px solid var(--line); margin-top: .4cqi; }
+.sample .rows dt, .sample .rows dd { padding: .3cqi 0; }
+.sample .rows dt { padding-right: 2cqi; }
+@container (max-width: 560px) {
+  .cards.three { grid-template-columns: 1fr; }
+  .slide.dense.tight { gap: 12px; padding: 18px 18px 22px; }
+  .tight .sample { padding: 8px 12px; }
+  .sample .rows { grid-template-columns: 1fr; }
+  .sample .rows dt { padding: 6px 0 0; }
+  .sample .rows dd { padding: 2px 0 6px; }
 }
 </style>
 </head>
 <body>
 <main class="wrap">
   <header class="deck-head">
-    <h1>From Data to Findings</h1>
-    <p>Count, compare, so what · 11 slides · use Next or swipe</p>
+    <h1>Analyze Your Repository</h1>
+    <p>6 steps · 9 slides · use Next or swipe</p>
+    <a class="btn-example" href="https://vpdasgupta.github.io/tiktok/beats-p1-repository-example.html#findings" target="_blank" rel="noopener">See the example<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
   </header>
-  <section aria-roledescription="carousel" aria-label="From Data to Findings">
+  <section aria-roledescription="carousel" aria-label="Analyze Your Repository steps">
   <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
 
-    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 11">
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 9">
       <article class="slide dense" aria-labelledby="s1">
-        <div class="top"><div><p class="kicker">3.1 Analyze Your Repository</p><h2 id="s1">Turn 25 rows into 4–6 findings</h2>
-          <p class="sub">A finding is something your data shows that Beats should care about.</p></div></div>
-        <ul class="cards one" role="list">
-          <li><b>1 · Count</b><span>Read the numbers your sheet already has</span></li>
-          <li><b>2 · Compare</b><span>Put Beats next to its competitors</span></li>
-          <li><b>3 · So what</b><span>Say what the difference means for Beats</span></li>
+        <div class="top"><div><p class="kicker">3.1 Analyze Your Repository</p><h2 id="s1">Add 3 tabs to your Ad Repository</h2>
+          <p class="sub">You'll do all of this in your own sheet. Click See the example at the top any time to see a finished version.</p></div></div>
+        <ul class="cards three" role="list">
+          <li><b>Hooks by Brand</b><span>A pivot table of each brand's hooks</span></li>
+          <li><b>Talent by Brand</b><span>The same, for talent</span></li>
+          <li><b>Findings</b><span>4–6 findings, one per row</span></li>
         </ul>
-        <p class="impl"><b>Where they go:</b> Your findings become the Key Findings section of your Executive Summary in 3.3.</p>
+        <p class="impl"><b>A finding = number + comparison + so what.</b> "6 of 10 Beats ads open with a famous face, vs. 2 of 15 competitor ads. Beats sells who wears the headphones." (made up)</p>
       </article>
     </div>
 
-    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 11">
-      <article class="slide" aria-labelledby="s2">
-        <div class="top"><div><p class="kicker">Description vs. analysis</p><h2 id="s2">Don't just report it. Explain it.</h2></div></div>
-        <ul class="cards" role="list">
-          <li><b>Description (what)</b><span>"Beats used Celebrity/Influencer hooks in 6 of 10 ads."</span></li>
-          <li><b>Analysis (so what)</b><span>"Beats used Celebrity/Influencer hooks in 6 of 10 ads, versus 2 of 15 for competitors. Beats is selling who wears the headphones, not how they sound."</span></li>
-        </ul>
-        <p class="impl"><b>Made-up numbers.</b> Your findings will use your own data.</p>
-      </article>
-    </div>
-
-    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 11">
-      <article class="slide" aria-labelledby="s3">
-        <div class="top"><div><p class="kicker">The finding formula</p><h2 id="s3">Number + comparison + so what</h2></div></div>
-        <dl class="rows">
-          <dt>Number</dt><dd>6 of 10 Beats ads open on a famous face</dd>
-          <dt>Comparison</dt><dd>vs. 2 of 15 competitor ads</dd>
-          <dt>So what</dt><dd>Beats leans on fame to stop the scroll, while rivals lead with the product</dd>
-        </dl>
-        <p class="impl"><b>Quick check:</b> If your sentence has no comparison, it's still a description.</p>
-      </article>
-    </div>
-
-    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 11">
-      <article class="slide dense" aria-labelledby="s4">
-        <div class="top"><div><p class="kicker">Step 1 · Count</p><h2 id="s4">Your Summary Dashboard already did the math</h2>
-          <p class="sub">Open the Summary Dashboard tab. For every hook type, talent strategy, production level and platform, it shows:</p></div></div>
-        <ul class="cards" role="list">
-          <li><b>Count</b><span>How many ads</span></li>
-          <li><b>% of ads</b><span>Share of all the ads you logged</span></li>
-          <li><b>Avg effectiveness</b><span>The average of your 1–5 scores</span></li>
-        </ul>
-        <p class="impl"><b>Use it, don't rebuild it.</b> The averages already answer "which hooks score highest?"</p>
-      </article>
-    </div>
-
-    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 11">
-      <article class="slide dense" aria-labelledby="s5">
-        <div class="top"><div><p class="kicker">Step 2 · Compare</p><h2 id="s5">Split the counts by brand with a pivot table</h2>
-          <p class="sub">The dashboard counts all brands together. A pivot table shows Beats next to everyone else.</p></div></div>
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 9">
+      <article class="slide dense" aria-labelledby="s2">
+        <div class="top"><div><p class="kicker">Step 1 of 6</p><h2 id="s2">Build your Hooks by Brand tab</h2></div></div>
         <ol class="steps">
-          <li>On the Ad Repository tab, click any cell in your data. Then choose Insert &gt; Pivot table &gt; New sheet &gt; Create.</li>
-          <li>Rows: click Add and pick Brand.</li>
-          <li>Columns: click Add and pick Hook Type.</li>
-          <li>Values: click Add and pick Ad ID. It counts your ads. Set "Show as" to "% of row".</li>
-          <li>Rename the new tab "Hooks by Brand".</li>
+          <li>On the Ad Repository tab, click any cell in your data.</li>
+          <li>Choose Insert &gt; Pivot table &gt; New sheet &gt; Create.</li>
+          <li>In the panel on the right: Rows &gt; Add &gt; Brand. Columns &gt; Add &gt; Hook Type. Values &gt; Add &gt; Ad ID.</li>
+          <li>Under Values, set "Show as" to "% of row".</li>
+          <li>Double-click the new tab's name and rename it Hooks by Brand.</li>
         </ol>
-        <p class="impl"><b>Then repeat</b> with Talent Strategy in Columns, and name that tab "Talent by Brand".</p>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Each brand's row adds up to 100% in the Grand Total column.</p>
+          <p class="check stuck"><b>If you're stuck…</b> A hook nobody used won't get a column. That's fine, and it might be a finding.</p>
+        </div>
       </article>
     </div>
 
-    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 11">
-      <article class="slide" aria-labelledby="s6">
-        <div class="top"><div><p class="kicker">Question 1 · Hooks</p><h2 id="s6">How does Beats grab attention?</h2></div></div>
-        <ul class="cards one plain" role="list">
-          <li><b>Which hook does Beats use most? Which does it never use?</b></li>
-          <li><b>How does that compare with competitors?</b><span>Your Hooks by Brand tab</span></li>
-          <li><b>Which hooks have the highest average score?</b><span>Your Summary Dashboard</span></li>
-        </ul>
-        <p class="impl"><b>What Beats skips matters too.</b> A brand that never uses Problem/Pain Point hooks is choosing not to sell headphones as a fix for a problem.</p>
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 9">
+      <article class="slide dense" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">Step 2 of 6</p><h2 id="s3">Build your Talent by Brand tab</h2></div></div>
+        <p class="lead">Repeat Step 1, but pick Talent Strategy under Columns. Name the tab Talent by Brand.</p>
+        <div class="sample">
+          <table class="tbl">
+            <caption>Sample (made up): two rows of the finished tab</caption>
+            <thead><tr><th scope="col">Brand</th><th scope="col">Celebrity</th><th scope="col">Creator/Influencer</th><th scope="col">No Talent (Product Only)</th><th scope="col">Real People (UGC-Style)</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Beats by Dre</th><td>60%</td><td>20%</td><td>10%</td><td>10%</td></tr>
+              <tr><th scope="row">Skullcandy</th><td>0%</td><td>100%</td><td>0%</td><td>0%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> You have two new tabs, and Beats by Dre is a row in both.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Brand missing? Check that column B uses the dropdown names exactly.</p>
+        </div>
       </article>
     </div>
 
-    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 11">
-      <article class="slide dense" aria-labelledby="s7">
-        <div class="top"><div><p class="kicker">Question 2 · Talent and production</p><h2 id="s7">Who's in the ad, and how polished is it?</h2>
-          <p class="sub">Look at the two together. Filter your sheet to one brand and read the Talent and Production columns side by side.</p></div></div>
-        <dl class="rows">
-          <dt>Celebrity + High (Studio)</dt><dd>A big, carefully controlled brand campaign</dd>
-          <dt>Creator + Low (UGC-style)</dt><dd>Feels real, like a regular post in the feed</dd>
-          <dt>Real People + Medium</dt><dd>Relatable but still polished</dd>
-          <dt>Product Only + High (Studio)</dt><dd>Lets the design do the talking</dd>
-        </dl>
-        <p class="impl"><b>Ask:</b> Which pairing does Beats use most? Which do its competitors use?</p>
+    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 9">
+      <article class="slide" aria-labelledby="s4">
+        <div class="top"><div><p class="kicker">Step 3 of 6</p><h2 id="s4">Set up your Findings tab</h2></div></div>
+        <p class="lead">Click + at the bottom left of your sheet to add a tab. Name it Findings. In row 1, type these 4 headers:</p>
+        <div class="sample">
+          <table class="tbl">
+            <caption>Row 1 of your Findings tab</caption>
+            <tbody><tr><th scope="row">Row 1</th><td>Question</td><td>Number</td><td>Comparison</td><td>So what</td></tr></tbody></table>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Your Findings tab has these 4 headers in row 1.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Choose View &gt; Freeze &gt; 1 row so the headers stay in place as you scroll.</p>
+        </div>
       </article>
     </div>
 
-    <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 11">
-      <article class="slide" aria-labelledby="s8">
-        <div class="top"><div><p class="kicker">Question 3 · Platforms</p><h2 id="s8">Does each brand make ads for each platform?</h2></div></div>
-        <ul class="cards one plain" role="list">
-          <li><b>Filter by Platform. Are the TikTok ads shorter or rougher than the YouTube ads?</b></li>
-          <li><b>Does any brand post the same polished ad everywhere?</b></li>
-          <li><b>Where does Beats fit?</b></li>
-        </ul>
-        <p class="impl"><b>Why it matters:</b> In 1.1 you saw that TikTok favors ads that look like regular posts. A brand posting studio ads there may be missing attention.</p>
+    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 9">
+      <article class="slide dense tight" aria-labelledby="s5">
+        <div class="top"><div><p class="kicker">Step 4 of 6</p><h2 id="s5">Write 1–2 hook findings</h2></div></div>
+        <p class="lead">Open Hooks by Brand. Find Beats' biggest %, then compare it with the other brands. On the Summary Dashboard, check Avg effectiveness by Hook Type to see which hooks scored highest.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <dl class="rows">
+            <dt>Question</dt><dd>Hooks</dd>
+            <dt>Number</dt><dd>6 of 10 Beats ads (60%) open with Celebrity/Influencer</dd>
+            <dt>Comparison</dt><dd>vs. 2 of 15 competitor ads (13%)</dd>
+            <dt>So what</dt><dd>Beats sells who wears the headphones; rivals lead with the product or a problem.</dd>
+          </dl>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> All 4 cells are filled, and the comparison names other brands.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Look for a hook Beats never uses. What Beats skips can be a finding too.</p>
+        </div>
       </article>
     </div>
 
-    <div class="frame" id="slide-9" role="group" aria-roledescription="slide" aria-label="9 of 11">
-      <article class="slide dense" aria-labelledby="s9">
-        <div class="top"><div><p class="kicker">Question 4 · Standout ads</p><h2 id="s9">What do your best ads have in common?</h2>
-          <p class="sub">Sort the Ad Repository by Effectiveness Score, highest first. Pick your top 2–3 and say what made each one work.</p></div></div>
-        <dl class="rows">
-          <dt>Weak</dt><dd>"It works because it has a celebrity."</dd>
-          <dt>Strong (made up)</dt><dd>"The athlete is mid-workout before we see a logo, so it feels like real footage, not an ad. The bass drops right as the earbuds go in."</dd>
-        </dl>
-        <p class="impl"><b>Name the specific choice, not the label.</b> This becomes your Standout Ads finding.</p>
+    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 9">
+      <article class="slide dense tight" aria-labelledby="s6">
+        <div class="top"><div><p class="kicker">Step 5 of 6</p><h2 id="s6">Write a talent finding and a platform finding</h2></div></div>
+        <p class="lead">Choose Data &gt; Create a filter. Filter Brand to Beats by Dre and read Talent (I) next to Production (M), then try a competitor. Next, filter Platform to TikTok, then YouTube, and compare Production (M) and Duration (E).</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <dl class="rows">
+            <dt>Question</dt><dd>Platforms</dd>
+            <dt>Number</dt><dd>2 of Beats' 3 TikTok ads are Low (UGC-style)</dd>
+            <dt>Comparison</dt><dd>vs. Sony's and Bose's TikTok ads, both Medium (Professional)</dd>
+            <dt>So what</dt><dd>Beats changes its look for TikTok; Sony and Bose post polished ads there too.</dd>
+          </dl>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> One row is about talent and production, and one is about platforms.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Pairs to look for: Celebrity + High (Studio) is a big campaign. Creator/Influencer + Low (UGC-style) feels like a regular post.</p>
+        </div>
       </article>
     </div>
 
-    <div class="frame" id="slide-10" role="group" aria-roledescription="slide" aria-label="10 of 11">
-      <article class="slide" aria-labelledby="s10">
-        <div class="top"><div><p class="kicker">Before you write</p><h2 id="s10">Three traps to avoid</h2></div></div>
-        <ul class="cards one" role="list">
-          <li><b>Reading too much into small numbers</b><span>You have about 25 ads. A 4.2 vs. 4.1 average is a tie. Say "in my 4 Sony ads," not "Sony always."</span></li>
+    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 9">
+      <article class="slide dense tight" aria-labelledby="s7">
+        <div class="top"><div><p class="kicker">Step 6 of 6</p><h2 id="s7">Write a standout ad finding</h2></div></div>
+        <p class="lead">Clear your filters. Click the filter icon on Effectiveness Score (N) and choose Sort Z → A. Look at your top 2–3 ads and name the specific choice that made each one work.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <dl class="rows">
+            <dt>Question</dt><dd>Standout ads</dd>
+            <dt>Number</dt><dd>Beats_YouTube_01 scored 4.8</dd>
+            <dt>Comparison</dt><dd>vs. Beats' average of 4.2</dd>
+            <dt>So what</dt><dd>The athlete is mid-workout before any logo, so it feels like real footage, not an ad.</dd>
+          </dl>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Your so what names something a viewer would see or hear.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Reread your Key Observations (O) for your top ads. They're a head start.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 9">
+      <article class="slide dense" aria-labelledby="s8">
+        <div class="top"><div><p class="kicker">Before you submit</p><h2 id="s8">Check your findings for three traps</h2></div></div>
+        <ul class="cards three" role="list">
+          <li><b>Reading too much into small numbers</b><span>You have about 25 ads. A 4.2 vs. 4.1 average is a tie. Say "in my 3 Sony ads," not "Sony always."</span></li>
           <li><b>Assuming one thing causes another</b><span>Celebrity ads might score higher because they also have bigger budgets. Say "goes with," not "causes."</span></li>
           <li><b>Stating the obvious</b><span>"Headphone ads show headphones" isn't a finding. Skip it.</span></li>
         </ul>
+        <p class="impl"><b>Keep or drop:</b> Compare with your 3 first patterns from 2.5. Keep the ones your data backs up.</p>
       </article>
     </div>
 
-    <div class="frame" id="slide-11" role="group" aria-roledescription="slide" aria-label="11 of 11">
-      <article class="slide" aria-labelledby="s11">
-        <div class="top"><div><p class="kicker">Recap</p><h2 id="s11">What you'll have when you're done</h2></div></div>
+    <div class="frame" id="slide-9" role="group" aria-roledescription="slide" aria-label="9 of 9">
+      <article class="slide" aria-labelledby="s9">
+        <div class="top"><div><p class="kicker">How it will be evaluated</p><h2 id="s9">What strong analysis looks like</h2></div></div>
         <dl class="rows">
-          <dt>Hooks by Brand tab</dt><dd>Pivot table: each brand's hooks as a % of its ads</dd>
-          <dt>Talent by Brand tab</dt><dd>The same, for talent</dd>
-          <dt>4–6 findings</dt><dd>One or two per question, each with a number, a comparison and a so what</dd>
+          <dt>Two pivot tabs</dt><dd>Hooks by Brand and Talent by Brand, shown as % of row</dd>
+          <dt>4–6 findings</dt><dd>Covering hooks, talent and production, platforms and a standout ad</dd>
+          <dt>Complete rows</dt><dd>Every finding has a number, a comparison and a so what</dd>
+          <dt>Honest claims</dt><dd>Nothing bigger than your sample can support</dd>
         </dl>
-        <p class="impl"><b>Start from your 3 first patterns from 2.5.</b> Keep the ones your data backs up and drop the rest.</p>
       </article>
     </div>
 
   </div>
   <div class="controls">
     <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
-    <p class="count" id="count" aria-hidden="true">1 of 11</p>
+    <p class="count" id="count" aria-hidden="true">1 of 9</p>
     <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
   </div>
   <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
