@@ -205,7 +205,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
           <li>Name it <code>Beats_CreativeStrategyFramework_YourName</code>.</li>
           <li>Add these 4 headings with Heading 2 style. Then click Share and set it to "Anyone with the link can view."</li>
         </ol>
-        <div class="sample"><span class="lbl">Type these 4 headings exactly</span><ul class="sample-list"><li>1. Platform Playbook</li><li>2. Beats Creative Standards</li><li>3. Creative Rubric</li><li>4. Strategic Recommendations Summary</li></ul></div>
+        <div class="sample"><span class="lbl">Type these 4 headings exactly</span><ul class="sample-list" style="list-style:none;padding-left:0"><li>1. Platform Playbook</li><li>2. Beats Creative Standards</li><li>3. Creative Rubric</li><li>4. Strategic Recommendations Summary</li></ul></div>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> All 4 headings show in the outline (View &gt; Show outline).</p>
           <p class="check stuck"><b>If you're stuck…</b> Pick Heading 2 from the "Normal text" menu in the toolbar.</p>
@@ -233,7 +233,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
       <article class="slide dense tight" aria-labelledby="s4">
 <div class="top"><div><p class="kicker">Step 3 of 6</p><h2 id="s4">Write 2 rules for each platform</h2></div></div>
         <p class="lead">Under 1. Platform Playbook, add 3 short headings: YouTube, TikTok, Meta. Write 2 rules under each, with a link to the source.</p>
-        <div class="sample"><span class="lbl">Sample (made up)</span><p><b>TikTok:</b> Make it look made for TikTok: sound on, vertical 9:16, not overly polished. (TikTok creative best practices)</p><p><b>Meta:</b> Keep key messages inside the Reels safe zone. (Meta Reels ads)</p></div>
+        <div class="sample"><span class="lbl">Sample (made up)</span><p><b>TikTok:</b> Make it look made for TikTok: sound on, vertical 9:16, not overly polished. (Source: <a href="https://ads.tiktok.com/help/article/creative-best-practices" target="_blank" rel="noopener">TikTok creative best practices<span class="sr-only"> (opens in a new tab)</span></a>)</p><p><b>Meta:</b> Keep key messages inside the Reels safe zone. (Source: <a href="https://www.facebook.com/business/ads/facebook-instagram-reels-ads" target="_blank" rel="noopener">Meta Reels ads<span class="sr-only"> (opens in a new tab)</span></a>)</p></div>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> Someone could watch an ad and say yes or no to each rule.</p>
           <p class="check stuck"><b>If you're stuck…</b> Copy the platform's words first, then cut them to under 12 words.</p>
@@ -321,6 +321,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
     nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
     countEl.textContent = (i + 1) + ' of ' + slides.length;
     if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+    if (slides[i] && !slides[i].contains(document.activeElement) && track.contains(document.activeElement)) track.focus();
   }
   function goTo(i) {
     i = Math.max(0, Math.min(slides.length - 1, i));
@@ -331,6 +332,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
   prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
   nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
   track.addEventListener('keydown', function (e) {
+    if (e.target !== track) return;
     var k = e.key;
     if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
     else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
