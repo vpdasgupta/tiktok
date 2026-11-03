@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Example Consumer Feedback Report</title>
+<!-- Made-up example Google Doc for Beats Project 2, Step 5 ([Task] Write Your Consumer Feedback Report).
+     Shows the 4 sections with 1–2 sample lines each; the rest is marked "To fill in".
+     Numbers and quotes match the P2 decks and beats-p2-findings-example.html. -->
+<style>
+:root {
+  --ink: #141414; --muted: #4f4f55; --line: #c4c4c9; --bg: #eef0f3; --chrome: #f9fbfd;
+  --paper: #ffffff; --paper-ink: #1f1f1f; --paper-muted: #55555c; --paper-line: #b7b7be;
+  --docs: #1a62d6; --todo-bg: #f4f5f7; --focus: #0b57d0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1f1f2; --muted: #b9b9c0; --line: #4a4a52; --bg: #121315; --chrome: #1d1e21;
+    --docs: #8ab4f8; --focus: #8ab4f8;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #f1f1f2; --muted: #b9b9c0; --line: #4a4a52; --bg: #121315; --chrome: #1d1e21;
+  --docs: #8ab4f8; --focus: #8ab4f8;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.45;
+}
+.wrap { max-width: 960px; margin: 0 auto; padding: 16px 16px 40px; }
+.page-head h1 { font-size: 22px; margin: 0 0 4px; line-height: 1.2; }
+.page-head p { margin: 0 0 4px; font-size: 15px; color: var(--muted); }
+.todo-key { display: inline-block; padding: 0 6px; border: 1px dashed var(--paper-line); border-radius: 4px;
+  background: var(--todo-bg); color: var(--paper-muted); font-style: italic; }
+
+/* Docs chrome (decorative) */
+.doc { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.titlebar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--chrome);
+  border-bottom: 1px solid var(--line); }
+.titlebar .ico { flex: 0 0 auto; width: 18px; height: 24px; border-radius: 2px 6px 2px 2px; background: var(--docs);
+  position: relative; }
+.titlebar .ico::after { content: ""; position: absolute; left: 4px; right: 4px; top: 8px; height: 9px;
+  border-top: 2px solid var(--chrome); border-bottom: 2px solid var(--chrome); }
+.titlebar .name { margin: 0; font-size: 16px; overflow-wrap: anywhere; }
+.titlebar > div { min-width: 0; }
+.titlebar .menu { margin: 2px 0 0; font-size: 13px; color: var(--muted); word-spacing: 6px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 6px 14px; background: var(--chrome);
+  border-bottom: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.toolbar span { padding: 3px 8px; border-radius: 4px; border: 1px solid var(--line); }
+
+/* Canvas + page */
+.canvas { display: grid; grid-template-columns: 180px 1fr; gap: 16px; padding: 20px 16px 28px; }
+.canvas > * { min-width: 0; }
+.outline { font-size: 13px; color: var(--muted); }
+.outline p { margin: 0 0 8px; font-weight: 700; color: var(--ink); }
+.outline ol { list-style: none; margin: 0; padding: 0; }
+.outline li { padding: 4px 0 4px 8px; border-left: 2px solid var(--line); }
+.paper { background: var(--paper); color: var(--paper-ink); max-width: 680px; width: 100%;
+  padding: 48px 56px 56px; box-shadow: 0 1px 3px rgba(0,0,0,.25); font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+.paper .doc-title { font-size: 26px; margin: 0 0 2px; line-height: 1.2; }
+.paper .byline { margin: 0 0 18px; color: var(--paper-muted); font-size: 14px; }
+.paper h2 { font-size: 18px; font-weight: 400; color: var(--paper-ink); margin: 22px 0 6px; }
+.paper p { margin: 0 0 8px; }
+.paper ol { margin: 0 0 8px; padding-left: 22px; }
+.paper li { margin: 0 0 8px; }
+.todo { display: block; margin: 4px 0 8px; padding: 6px 10px; border: 1px dashed var(--paper-line); border-radius: 4px;
+  background: var(--todo-bg); color: var(--paper-muted); font-style: italic; font-size: 14px; }
+.todo b { font-style: normal; }
+li .todo { margin-top: 0; }
+.chart { margin: 10px 0 4px; }
+.chart figcaption { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.bars { margin: 0; padding: 0; list-style: none; }
+.bars li { display: grid; grid-template-columns: 150px 1fr; gap: 8px; align-items: center; margin: 0 0 4px; font-size: 13px; }
+.bar { height: 14px; background: #3c6fd1; position: relative; }
+.bar span { position: absolute; left: calc(100% + 6px); top: -2px; font-size: 13px; color: var(--paper-ink); }
+
+@media (max-width: 760px) {
+  .canvas { grid-template-columns: 1fr; padding: 12px 8px 20px; }
+  .outline { display: none; }
+  .paper { padding: 24px 18px 28px; }
+  .bars li { grid-template-columns: 1fr; gap: 2px; }
+  .bar { margin-right: 36px; }
+}
+@media (forced-colors: active) { .todo, .todo-key { border-color: CanvasText; } .bar { background: CanvasText; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="page-head">
+    <h1>Example Consumer Feedback Report</h1>
+    <p>A made-up example of the 1-page Google Doc. Each section has 1–2 sample lines to show the shape. Boxes marked <span class="todo-key">To fill in</span> are parts you'd finish in your own report.</p>
+  </header>
+
+  <div class="doc">
+    <div class="titlebar" aria-hidden="true">
+      <span class="ico"></span>
+      <div>
+        <p class="name">P2_ConsumerFeedbackReport_Alex</p>
+        <p class="menu">File Edit View Insert Format Tools Extensions Help</p>
+      </div>
+    </div>
+    <div class="toolbar" aria-hidden="true">
+      <span>100%</span><span>Heading 2 ▾</span><span>Arial ▾</span><span>11</span><span><b>B</b></span><span><i>I</i></span><span>Insert chart</span>
+    </div>
+
+    <div class="canvas">
+      <nav class="outline" aria-label="Document outline">
+        <p>Outline</p>
+        <ol>
+          <li><a href="#what-i-tested">What I Tested</a></li>
+          <li><a href="#headline-insight">Headline Insight</a></li>
+          <li><a href="#findings">Findings</a></li>
+          <li><a href="#beats-could">Beats Could…</a></li>
+        </ol>
+      </nav>
+
+      <article class="paper" aria-label="Example report">
+        <p class="doc-title">Consumer Feedback Report: Beats Video Ads</p>
+        <p class="byline">Alex Rivera · Project 2 · Oct 10</p>
+
+        <h2 id="what-i-tested">What I Tested</h2>
+        <p>12 people (14 in, 2 dropped) rated 4 ads: 2 from Beats, 1 from Skullcandy and 1 from Sony, Oct 6–9.</p>
+        <span class="todo"><b>To fill in:</b> 1 limitation, like who you asked or how many.</span>
+
+        <h2 id="headline-insight">Headline Insight</h2>
+        <p>Beats' star-led ad won attention but not trust.</p>
+        <span class="todo"><b>To fill in:</b> sentence 2, what this means for Beats.</span>
+
+        <h2 id="findings">Findings</h2>
+        <ol>
+          <li><b>Stars get attention, not trust.</b> Beats_YouTube_01 scored 4.5 on attention but 3.0 on believable. "Cool, but I'd never buy headphones because of that."</li>
+          <li><b>Creators earn trust.</b> Skullcandy_TikTok_01 scored 4.2 on believable.
+            <span class="todo"><b>To fill in:</b> 1 more number and a quote.</span></li>
+          <li><span class="todo"><b>To fill in:</b> Finding 3 with a bold line, a number and a quote.</span></li>
+        </ol>
+        <figure class="chart">
+          <figcaption>Optional chart: Believable score by ad (1–5)</figcaption>
+          <ul class="bars">
+            <li>Beats_YouTube_01 <div class="bar" style="width:60%"><span>3.0</span></div></li>
+            <li>Beats_TikTok_01 <div class="bar" style="width:78%"><span>3.9</span></div></li>
+            <li>Skullcandy_TikTok_01 <div class="bar" style="width:84%"><span>4.2</span></div></li>
+            <li>Sony_YouTube_01 <div class="bar" style="width:76%"><span>3.8</span></div></li>
+          </ul>
+        </figure>
+
+        <h2 id="beats-could">Beats Could…</h2>
+        <ol>
+          <li>Pair the star with a real fan who says why they wear them.</li>
+          <li><span class="todo"><b>To fill in:</b> 1–2 more ideas, each tied to a finding.</span></li>
+        </ol>
+      </article>
+    </div>
+  </div>
+</main>
+</body>
+</html>
