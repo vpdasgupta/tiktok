@@ -279,6 +279,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
     nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
     countEl.textContent = (i + 1) + ' of ' + slides.length;
     if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+    if (slides[i] && !slides[i].contains(document.activeElement) && track.contains(document.activeElement)) track.focus();
   }
   function goTo(i) {
     i = Math.max(0, Math.min(slides.length - 1, i));
@@ -289,6 +290,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
   prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
   nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
   track.addEventListener('keydown', function (e) {
+    if (e.target !== track) return;
     var k = e.key;
     if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
     else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
