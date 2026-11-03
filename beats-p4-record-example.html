@@ -85,9 +85,11 @@ li .todo { margin-top: 0; }
 }
 @media (forced-colors: active) { .todo, .todo-key { border-color: CanvasText; } .bar { background: CanvasText; } }
 
+:root { --paper-focus: #0b57d0; }
+.outline a { color: var(--docs); text-decoration: underline; }
 /* slide-plan / run-of-show tables inside the doc */
 .tbl-wrap { overflow-x: auto; margin: 6px 0 10px; }
-.tbl-wrap:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.tbl-wrap:focus-visible { outline: 3px solid var(--paper-focus); outline-offset: 2px; }
 .dtbl { width: 100%; min-width: 520px; border-collapse: collapse; font-size: 14px; }
 .dtbl caption { text-align: left; font-weight: 700; padding-bottom: 6px; }
 .dtbl th, .dtbl td { border: 1px solid var(--paper-line); padding: 6px 8px; text-align: left; vertical-align: top; }
@@ -109,11 +111,11 @@ li .todo { margin-top: 0; }
   </header>
 
   <div class="doc">
-    <div class="titlebar" aria-hidden="true">
-      <span class="ico"></span>
+    <div class="titlebar">
+      <span class="ico" aria-hidden="true"></span>
       <div>
         <p class="name">Beats_FinalPresentationOutline_Alex</p>
-        <p class="menu">File Edit View Insert Format Tools Extensions Help</p>
+        <p class="menu" aria-hidden="true">File Edit View Insert Format Tools Extensions Help</p>
       </div>
     </div>
     <div class="toolbar" aria-hidden="true">
