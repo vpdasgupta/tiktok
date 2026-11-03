@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Build and Test Your Rubric - Beats Project 3</title>
+<!-- P3 Step 3 [Task] Build and Test Your Rubric. Engine copied from module-02/step-04/beats-p2-findings-deck.html. -->
+<style>
+:root {
+  --ink: #141414; --muted: #4f4f55; --line: #dedede; --card: #ffffff; --bg: #f1f1f2;
+  --accent: #e01e37; --accent-ink: #b0102a; --soft: #fcefef; --chip-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1f1f2; --muted: #b9b9c0; --line: #36363b; --card: #1b1b1e; --bg: #0f0f11;
+    --accent: #ff4d63; --accent-ink: #ff8a99; --soft: #2b1519; --chip-ink: #1b1b1e;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: 1.35;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px 16px 32px; }
+.deck-head { margin: 0 0 14px; }
+.deck-head h1 { font-size: 20px; margin: 0 0 2px; line-height: 1.2; }
+.deck-head p { margin: 0; font-size: 15px; color: var(--muted); }
+.slides {
+  display: flex; align-items: flex-start; margin: 0; padding: 4px 0 6px;
+  overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.slides::-webkit-scrollbar { display: none; }
+.slides:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; border-radius: 10px; }
+.frame { container-type: inline-size; flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; padding: 0 2px; }
+.controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.navbtn {
+  min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 15px; font-weight: 700; color: var(--ink);
+  background: var(--card); border: 2px solid var(--muted);
+}
+.navbtn:hover { border-color: var(--accent-ink); }
+.navbtn:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+.navbtn[aria-disabled="true"] { opacity: .45; cursor: default; border-style: dashed; }
+.count { margin: 0; font-size: 15px; font-weight: 700; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .slides { scroll-behavior: auto; } }
+@media (forced-colors: active) { .navbtn[aria-disabled="true"] { border-color: GrayText; color: GrayText; } }
+
+.slide {
+  aspect-ratio: 16 / 9; background: var(--card); border-top: 1.1cqi solid var(--accent);
+  border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  padding: 3.6cqi 5cqi 3cqi; display: flex; flex-direction: column; gap: 1.8cqi;
+  font-size: max(2.5cqi, 1rem); position: relative; overflow-wrap: anywhere;
+}
+.slide.dense { font-size: max(2.2cqi, .9375rem); gap: 1.4cqi; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 2cqi; }
+.kicker { margin: 0 0 .5cqi; font-size: max(1.85cqi, .8125rem); font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--accent-ink); }
+.slide h2 { font-size: max(4.3cqi, 1.375rem); line-height: 1.1; margin: 0; }
+.sub { margin: .6cqi 0 0; color: var(--muted); }
+.chip {
+  flex: 0 0 auto; margin: 0; background: var(--accent-ink); color: var(--chip-ink);
+  font-weight: 800; font-size: max(1.85cqi, .8125rem); padding: .8cqi 1.8cqi; border-radius: 999px; white-space: nowrap;
+}
+.slide p { margin: 0; }
+.lead { font-size: 1.05em; }
+
+/* card grid */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2cqi 2.4cqi; }
+.cards.one { grid-template-columns: 1fr; }
+.cards li { border-left: .7cqi solid var(--accent); background: var(--soft); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; }
+.cards b { display: block; }
+.cards span { color: var(--muted); font-size: .9em; }
+.cards.plain li { background: transparent; border-left-color: var(--line); }
+
+/* creative implication */
+.impl { margin-top: auto !important; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1.2cqi 1.8cqi; border-radius: 0 6px 6px 0; }
+.impl b { color: var(--accent-ink); }
+
+/* summary rows */
+.rows { margin: 0; display: grid; grid-template-columns: 34% 1fr; border-top: 2px solid var(--ink); }
+.rows dt, .rows dd { margin: 0; padding: 1cqi 0; border-bottom: 1px solid var(--line); }
+.rows dt { font-weight: 800; padding-right: 1.6cqi; }
+
+/* numbered steps */
+.steps { margin: 0; padding-left: 1.4em; display: grid; gap: .6cqi; }
+.steps li { padding-left: .2em; }
+/* sample / on-track / stuck (task deck) */
+.sample { margin: 0; background: var(--bg); border: 1px dashed var(--muted); border-radius: 6px; padding: 1.2cqi 1.8cqi; font-size: .92em; }
+.sample p + p { margin-top: .5cqi; }
+.sample-list { margin: .5cqi 0 0; padding-left: 1.2em; }
+.sample .lbl, .check b { display: block; font-size: .8em; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-ink); }
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6cqi; margin-top: auto; }
+.check { margin: 0; background: var(--soft); border-left: .9cqi solid var(--accent); padding: 1cqi 1.6cqi; border-radius: 0 6px 6px 0; font-size: .92em; }
+.check.stuck { background: transparent; border-left-color: var(--line); }
+
+/* Narrow column or phone: drop the fixed 16:9 frame and use real-size text. */
+@container (max-width: 560px) {
+  .slide, .slide.dense { aspect-ratio: auto; font-size: 1rem; padding: 18px 18px 22px; gap: 12px; border-top-width: 6px; }
+  .slide h2 { font-size: 1.4375rem; }
+  .kicker, .chip { font-size: .8125rem; }
+  .chip { padding: 4px 10px; }
+  .top { flex-wrap: wrap; }
+  .cards { grid-template-columns: 1fr; gap: 8px; }
+  .cards li { border-left-width: 4px; padding: 6px 10px; }
+  .impl { border-left-width: 5px; padding: 8px 12px; }
+  .rows { grid-template-columns: 1fr; }
+  .rows dt { padding: 8px 0 0; border-bottom: 0; }
+  .rows dd { padding: 2px 0 8px; }
+  .checks { grid-template-columns: 1fr; }
+  .check { border-left-width: 5px; padding: 8px 12px; }
+  .sample { padding: 8px 12px; }
+}
+@media (forced-colors: active) {
+  .cards li, .impl { border-left-color: CanvasText; }
+  .check { border-color: CanvasText; }
+}
+
+/* small tables (from 02a-positioning-deck.html) */
+.tbl { width: 100%; border-collapse: collapse; font-size: .9em; }
+.tbl caption { text-align: left; color: var(--muted); font-size: .9em; padding-bottom: .6cqi; }
+.tbl th, .tbl td { text-align: left; padding: .7cqi 1cqi; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl thead th { border-bottom: 2px solid var(--ink); }
+.tbl tbody th { font-weight: 800; }
+.tbl th, .tbl td { overflow-wrap: break-word; } /* let columns size to whole words instead of splitting them */
+@container (max-width: 560px) {
+  .tbl { font-size: .875rem; } .tbl th, .tbl td { overflow-wrap: anywhere; hyphens: auto; padding: 6px 4px; }
+}
+
+/* See the example button */
+.btn-example {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px;
+  font-size: 15px; font-weight: 700; color: var(--accent-ink); background: var(--card);
+  border: 2px solid var(--accent-ink); text-decoration: none; margin-top: 8px;
+}
+.btn-example:hover { background: var(--soft); }
+.btn-example:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 2px; }
+@media (forced-colors: active) { .btn-example { border-color: LinkText; } }
+
+/* compact layouts so dense task slides fit 16:9 */
+.cards.three { grid-template-columns: repeat(3, 1fr); }
+.slide.dense.tight { gap: .9cqi; padding-top: 3cqi; padding-bottom: 2.6cqi; }
+.tight .sample { padding: .9cqi 1.8cqi; }
+.sample .rows { grid-template-columns: max-content 1fr; border-top: 1px solid var(--line); margin-top: .4cqi; }
+.sample .rows dt, .sample .rows dd { padding: .3cqi 0; }
+.sample .rows dt { padding-right: 2cqi; }
+@container (max-width: 560px) {
+  .cards.three { grid-template-columns: 1fr; }
+  .slide.dense.tight { gap: 12px; padding: 18px 18px 22px; }
+  .tight .sample { padding: 8px 12px; }
+  .sample .rows { grid-template-columns: 1fr; }
+  .sample .rows dt { padding: 6px 0 0; }
+  .sample .rows dd { padding: 2px 0 6px; }
+}
+
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .95em; }
+.sample h3.lbl { margin: 0; }
+.key { color: var(--muted); font-size: .85em; }
+/* 6-column averages table: at phone width, break headers only at the soft hyphens (&shy;) in
+   the markup, never mid-word, and keep short ad labels whole. */
+@container (max-width: 560px) {
+  .tbl.avg { font-size: .8125rem; }
+  .tbl.avg th, .tbl.avg td { overflow-wrap: normal; hyphens: manual; padding: 6px 3px; }
+}
+.prompt { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="deck-head">
+    <h1>Build and Test Your Rubric</h1>
+    <p>7 steps · 9 slides · use Next or swipe</p>
+    <a class="btn-example" href="https://vpdasgupta.github.io/tiktok/beats-p3-rubric-example.html#rubric" target="_blank" rel="noopener">See the example<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+  </header>
+  <section aria-roledescription="carousel" aria-label="Build and Test Your Rubric steps">
+  <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
+
+    <div class="frame" id="slide-1" role="group" aria-roledescription="slide" aria-label="1 of 9">
+      <article class="slide dense" aria-labelledby="s1">
+        <div class="top"><div><p class="kicker">Build and Test Your Rubric</p><h2 id="s1">Add Section 3 to your Framework doc: Creative Rubric</h2></div></div>
+        <p class="sub">Same Google Doc as your Platform Playbook and Beats Creative Standards. Click See the example at the top any time.</p>
+        <table class="tbl">
+          <caption>The 3 parts of Section 3</caption>
+          <thead><tr><th scope="col">Rubric</th><th scope="col">Test scores</th><th scope="col">Where Beats can stand apart</th></tr></thead>
+          <tbody><tr><td>5 criteria with 1 / 3 / 5 definitions and a pass rule</td><td>2 Beats ads and 2 rival ads, scored</td><td>2–3 lines on where Beats leads and where it can win</td></tr></tbody>
+        </table>
+        <p class="impl"><b>All samples in this deck are made up.</b></p>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-2" role="group" aria-roledescription="slide" aria-label="2 of 9">
+      <article class="slide dense tight" aria-labelledby="s2">
+        <div class="top"><div><p class="kicker">Step 1 of 7</p><h2 id="s2">Name your 5 criteria</h2></div></div>
+        <ol class="steps">
+          <li>Under the heading <b>3. Creative Rubric</b>, add a table with 4 columns: Criterion, 1, 3, 5.</li>
+          <li>Reread Sections 1 and 2. Pick 5 things every Beats ad should get right.</li>
+          <li>Give each a short name and one question.</li>
+        </ol>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <p>Hook · Brand · Feels real · Sound leads · Platform fit</p>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Each criterion traces back to a rule or standard in your doc.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Start with your 3 universal rules from the Playbook, then add 2 from your Standards.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-3" role="group" aria-roledescription="slide" aria-label="3 of 9">
+      <article class="slide dense tight" aria-labelledby="s3">
+        <div class="top"><div><p class="kicker">Step 2 of 7</p><h2 id="s3">Write a 1, a 3 and a 5 for each one</h2></div></div>
+        <p class="lead">Describe what you'd see or hear. 2 and 4 mean "in between."</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <dl class="rows">
+            <dt>Feels real: 1</dt><dd>No person, or a voiceover that sounds like an ad.</dd>
+            <dt>Feels real: 3</dt><dd>A person is there but sounds scripted.</dd>
+            <dt>Feels real: 5</dt><dd>A real fan or creator speaks in their own words.</dd>
+          </dl>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Someone else could score an ad using only your words.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Write the 5 first, then its opposite as the 1. The 3 sits in between.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 9">
+      <article class="slide dense tight" aria-labelledby="s4">
+        <div class="top"><div><p class="kicker">Step 3 of 7</p><h2 id="s4">Set your pass rule</h2></div></div>
+        <p class="lead">One line under your table: a total to reach and a floor no criterion can drop below.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <p><b>Pass = 18 or more out of 25, and no criterion below 3.</b></p>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> You can say in one sentence why each number is there.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Use the sample rule. It works for most rubrics.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-5" role="group" aria-roledescription="slide" aria-label="5 of 9">
+      <article class="slide dense tight" aria-labelledby="s5">
+        <div class="top"><div><p class="kicker">Step 4 of 7</p><h2 id="s5">Pick your 4 test ads</h2></div></div>
+        <p class="lead">2 Beats ads and 2 rival ads from your Ad Repository. If you can, use the 4 ads from your Project 2 survey so you can compare with what people said.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <p>Beats_YouTube_01 · Beats_TikTok_01 · Skullcandy_TikTok_01 · Sony_YouTube_01</p>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> You expect at least one ad to pass and one to fail.</p>
+          <p class="check stuck"><b>If you're stuck…</b> An ad was taken down? Swap in another from the same brand and platform.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 9">
+      <article class="slide dense tight" aria-labelledby="s6">
+        <div class="top"><div><p class="kicker">Step 5 of 7</p><h2 id="s6">Watch, score and apply your pass rule</h2></div></div>
+        <p class="key">Key: YT = YouTube_01, TT = TikTok_01, Skull = Skullcandy. Real = Feels real, Sound = Sound leads, Fit = Platform fit.</p>
+        <table class="tbl avg">
+          <caption>Made up, out of 25</caption>
+          <thead><tr><th scope="col">Ad</th><th scope="col">Hook</th><th scope="col">Brand</th><th scope="col">Real</th><th scope="col">Sound</th><th scope="col">Fit</th><th scope="col">Total</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Beats YT</th><td>5</td><td>4</td><td>2</td><td>5</td><td>3</td><td>19 Fail</td></tr>
+            <tr><th scope="row">Beats TT</th><td>4</td><td>3</td><td>4</td><td>4</td><td>5</td><td>20 Pass</td></tr>
+            <tr><th scope="row">Skull TT</th><td>4</td><td>3</td><td>5</td><td>3</td><td>5</td><td>20 Pass</td></tr>
+            <tr><th scope="row">Sony YT</th><td>2</td><td>5</td><td>4</td><td>2</td><td>3</td><td>16 Fail</td></tr>
+          </tbody>
+        </table>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> You watched each ad twice, and each score of 2 or lower has a one-line reason.</p>
+          <p class="check stuck"><b>If you're stuck…</b> Torn between 2 numbers? Pick the closer definition.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-7" role="group" aria-roledescription="slide" aria-label="7 of 9">
+      <article class="slide dense tight" aria-labelledby="s7">
+        <div class="top"><div><p class="kicker">Step 6 of 7</p><h2 id="s7">Check the scores against your evidence</h2></div></div>
+        <p class="lead">Do your scores agree with what you found in Projects 1 and 2? Write one line per ad.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <dl class="rows">
+            <dt>Beats_YouTube_01</dt><dd>Fails on Feels real (2). Matches Project 2: lowest on believable (3.0), and 8 of 12 said it felt like an ad.</dd>
+            <dt>Sony_YouTube_01</dt><dd>Hook is a 2. Matches Project 2: least memorable of the 4 (3.1).</dd>
+          </dl>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> You have one line per ad, and each names a number from Project 1 or 2.</p>
+          <p class="check stuck"><b>If you're stuck…</b> A score doesn't match? Check the wording. If it was unclear, fix it, score again and note what changed.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-8" role="group" aria-roledescription="slide" aria-label="8 of 9">
+      <article class="slide dense tight" aria-labelledby="s8">
+        <div class="top"><div><p class="kicker">Step 7 of 7</p><h2 id="s8">Write "Where Beats can stand apart"</h2></div></div>
+        <p class="lead">Start from the threat and opening on your Positioning tab from Project 1. Then use your scores to answer 3 questions.</p>
+        <div class="sample"><span class="lbl">Sample (made up)</span>
+          <dl class="rows">
+            <dt>Where Beats leads</dt><dd>Sound leads: 5 and 4 for Beats vs. 3 and 2 for rivals.</dd>
+            <dt>Where rivals match or beat Beats</dt><dd>Feels real: Skullcandy_TikTok_01 got a 5. Beats got a 2 and a 4.</dd>
+            <dt>The opening</dt><dd>Sound-led ads with real fans.</dd>
+          </dl>
+        </div>
+        <div class="checks">
+          <p class="check"><b>You're on track if…</b> Each line names a criterion and the scores behind it.</p>
+          <p class="check stuck"><b>If you're stuck…</b> List each criterion with Beats scores on one side and rival scores on the other. Look for the biggest gap.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="frame" id="slide-9" role="group" aria-roledescription="slide" aria-label="9 of 9">
+      <article class="slide dense" aria-labelledby="s9">
+        <div class="top"><div><p class="kicker">How it will be evaluated</p><h2 id="s9">What a strong Creative Rubric section looks like</h2></div></div>
+        <dl class="rows">
+          <dt>5 criteria</dt><dd>Each comes from your Playbook or Standards and asks one question</dd>
+          <dt>Definitions and pass rule</dt><dd>1 / 3 / 5 describe what you'd see or hear; the rule has a total and a floor</dd>
+          <dt>Test scores</dt><dd>2 Beats and 2 rival ads; totals add up; low scores explained</dd>
+          <dt>Evidence check</dt><dd>One line per ad, tied to Project 1 or 2</dd>
+          <dt>Where Beats can stand apart</dt><dd>Names criteria and scores; ends with one opening</dd>
+        </dl>
+      </article>
+    </div>
+
+  </div>
+  <div class="controls">
+    <button type="button" class="navbtn" id="prev"><span aria-hidden="true">‹ </span>Previous</button>
+    <p class="count" id="count" aria-hidden="true">1 of 9</p>
+    <button type="button" class="navbtn" id="next">Next<span aria-hidden="true"> ›</span></button>
+  </div>
+  <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
+  </section>
+</main>
+<script>
+(function () {
+  var track = document.getElementById('track');
+  var slides = Array.prototype.slice.call(track.querySelectorAll('.frame'));
+  var prevBtn = document.getElementById('prev');
+  var nextBtn = document.getElementById('next');
+  var countEl = document.getElementById('count');
+  var announceEl = document.getElementById('announce');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var current = -1;
+
+  function setActive(i, speak) {
+    if (i === current) return;
+    current = i;
+    slides.forEach(function (sl, si) {
+      if (si === i) { sl.removeAttribute('inert'); sl.removeAttribute('aria-hidden'); }
+      else { sl.setAttribute('inert', ''); sl.setAttribute('aria-hidden', 'true'); }
+    });
+    prevBtn.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
+    nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
+    countEl.textContent = (i + 1) + ' of ' + slides.length;
+    if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+  }
+  function goTo(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    jumpUntil = Date.now() + 700;
+    track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft, behavior: reduce.matches ? 'auto' : 'smooth' });
+    setActive(i, true);
+  }
+  prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
+  nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
+  track.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+    else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+    else if (k === 'Home') { e.preventDefault(); goTo(0); }
+    else if (k === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+  var t, jumpUntil = 0;
+  track.addEventListener('scroll', function () {
+    clearTimeout(t);
+    if (Date.now() < jumpUntil) return;
+    t = setTimeout(function () { setActive(Math.round(track.scrollLeft / track.clientWidth), true); }, 90);
+  }, { passive: true });
+  window.addEventListener('resize', function () { track.scrollLeft = current * track.clientWidth; });
+  setActive(0, false);
+})();
+</script>
+</body>
+</html>
