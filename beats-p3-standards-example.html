@@ -86,6 +86,9 @@ li .todo { margin-top: 0; }
 }
 @media (forced-colors: active) { .todo, .todo-key { border-color: CanvasText; } .bar { background: CanvasText; } }
 
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.outline a { color: var(--docs); text-decoration: underline; }
+.outline a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .paper h3 { font-size: 15px; font-weight: 700; margin: 14px 0 4px; }
 .paper .src { color: var(--paper-muted); font-size: 14px; }
 .paper .rule-list { padding-left: 22px; }
@@ -104,11 +107,11 @@ li .todo { margin-top: 0; }
   </header>
 
   <div class="doc">
-    <div class="titlebar" aria-hidden="true">
-      <span class="ico"></span>
+    <div class="titlebar">
+      <span class="ico" aria-hidden="true"></span>
       <div>
         <p class="name">Beats_CreativeStrategyFramework_Alex</p>
-        <p class="menu">File Edit View Insert Format Tools Extensions Help</p>
+        <p class="menu" aria-hidden="true">File Edit View Insert Format Tools Extensions Help</p>
       </div>
     </div>
     <div class="toolbar" aria-hidden="true">
@@ -138,7 +141,7 @@ li .todo { margin-top: 0; }
         <span class="todo"><b>To fill in:</b> a Do, a Don't and a Why for Sound.</span>
         <h3>Talent</h3>
         <dl class="std"><dt>Do</dt><dd>Pair stars with real fans or creators.</dd><dt>Don't</dt><dd>No star-only ad with no real voice.</dd>
-          <dt>Why</dt><dd>Beats_YouTube_01 scored 4.5 on attention but 3.0 on believable. Skullcandy_TikTok_01, a creator ad, scored 4.2.</dd></dl>
+          <dt>Why</dt><dd>Beats_YouTube_01 scored 4.5 on attention but 3.0 on believable. Skullcandy_TikTok_01, a creator ad, scored 4.2 on believable.</dd></dl>
         <h2 id="creative-rubric">3. Creative Rubric</h2>
         <span class="todo"><b>To fill in:</b> you'll write this section in Step 3.</span>
         <h2 id="strategic-recommendations-summary">4. Strategic Recommendations Summary</h2>
