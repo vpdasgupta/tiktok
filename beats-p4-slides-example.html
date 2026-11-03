@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Example Presentation Slides</title>
+<!-- Made-up example Google Slides deck for Beats Project 4, Step 2 ([Task] Build Your Presentation Slides).
+     8 slides built from the P3 outline example; numbers match the shared made-up dataset in module-03/SPEC-P3-P4.md. -->
+<style>
+:root {
+  --ink: #141414; --muted: #4f4f55; --line: #c4c4c9; --bg: #eef0f3; --chrome: #f9fbfd;
+  --sl-bg: #111113; --sl-ink: #ffffff; --sl-muted: #d0d0d6; --sl-accent: #e01e37; --sl-accent-ink: #ff6b7d;
+  --sl-card: #1f1f23; --notes-bg: #ffffff; --notes-ink: #1f1f1f; --slides: #f4b400; --focus: #0b57d0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1f1f2; --muted: #b9b9c0; --line: #4a4a52; --bg: #121315; --chrome: #1d1e21;
+    --notes-bg: #1d1e21; --notes-ink: #f1f1f2; --focus: #8ab4f8;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #f1f1f2; --muted: #b9b9c0; --line: #4a4a52; --bg: #121315; --chrome: #1d1e21;
+  --notes-bg: #1d1e21; --notes-ink: #f1f1f2; --focus: #8ab4f8;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.45; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 16px 16px 40px; }
+.page-head h1 { font-size: 22px; margin: 0 0 4px; line-height: 1.2; }
+.page-head p { margin: 0 0 4px; font-size: 15px; color: var(--muted); }
+.app { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.titlebar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--chrome); border-bottom: 1px solid var(--line); }
+.titlebar .ico { flex: 0 0 auto; width: 18px; height: 24px; border-radius: 2px 6px 2px 2px; background: var(--slides); position: relative; }
+.titlebar .ico::after { content: ""; position: absolute; left: 4px; right: 4px; top: 8px; height: 8px; border: 2px solid var(--chrome); border-radius: 1px; }
+.titlebar .name { margin: 0; font-size: 16px; overflow-wrap: anywhere; }
+.titlebar > div { min-width: 0; }
+.titlebar .menu { margin: 2px 0 0; font-size: 13px; color: var(--muted); word-spacing: 6px; }
+.jump { padding: 10px 14px; background: var(--chrome); border-bottom: 1px solid var(--line); font-size: 14px; }
+.jump ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.jump a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 10px;
+  border: 1px solid var(--line); border-radius: 6px; color: var(--ink); text-decoration: none; font-weight: 700; }
+.jump a:hover { border-color: var(--focus); }
+a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.stack { padding: 16px; display: grid; gap: 22px; }
+.gslide { container-type: inline-size; scroll-margin-top: 12px; }
+.num { margin: 0 0 6px; font-size: 14px; font-weight: 700; color: var(--muted); }
+.canvas16 { aspect-ratio: 16 / 9; background: var(--sl-bg); color: var(--sl-ink); border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.3);
+  padding: 4.5cqi 5.5cqi; display: flex; flex-direction: column; gap: 2cqi; font-size: max(2.4cqi, 1rem); border-left: 1.2cqi solid var(--sl-accent);
+  overflow-wrap: anywhere; }
+.canvas16 h2 { margin: 0; font-size: max(4.4cqi, 1.375rem); line-height: 1.1; }
+.canvas16 p { margin: 0; }
+.canvas16 .kick { font-size: max(1.8cqi, .8125rem); font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--sl-accent-ink); }
+.canvas16 .src { margin-top: auto; font-size: max(1.6cqi, .8125rem); color: var(--sl-muted); }
+.canvas16 .muted { color: var(--sl-muted); }
+.title-slide { justify-content: center; }
+.title-slide h2 { font-size: max(5.6cqi, 1.625rem); }
+.tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqi; }
+.tiles li { background: var(--sl-card); border-radius: 6px; padding: 1.6cqi 2cqi; }
+.tiles b { display: block; font-size: 1.9em; line-height: 1.05; }
+.tiles span { color: var(--sl-muted); }
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.4cqi; }
+.bars li { display: grid; grid-template-columns: 30% 1fr; align-items: center; gap: 2cqi; }
+.bar { height: 3.4cqi; min-height: 16px; background: var(--sl-accent); border-radius: 2px; position: relative; }
+.bar.alt { background: #8d8d96; }
+.bar span { position: absolute; left: calc(100% + 1.2cqi); top: 50%; transform: translateY(-50%); font-weight: 800; white-space: nowrap; }
+.pts { margin: 0; padding-left: 1.2em; display: grid; gap: .8cqi; }
+.score { width: 100%; border-collapse: collapse; font-size: .92em; }
+.score th, .score td { text-align: left; padding: .7cqi 1cqi; border-bottom: 1px solid #3a3a40; }
+.score thead th { border-bottom: 2px solid var(--sl-ink); }
+.frames { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqi; }
+.frames li { border: 2px dashed var(--sl-muted); border-radius: 6px; padding: 1.4cqi 1.8cqi; }
+.frames b { display: block; color: var(--sl-accent-ink); }
+.notes { margin-top: 8px; background: var(--notes-bg); color: var(--notes-ink); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; font-size: 15px; }
+.notes h3 { margin: 0 0 2px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+.notes p { margin: 0; }
+@container (max-width: 560px) {
+  .canvas16 { aspect-ratio: auto; font-size: 1rem; padding: 16px 16px 18px; gap: 10px; border-left-width: 6px; }
+  .canvas16 h2, .title-slide h2 { font-size: 1.375rem; }
+  .canvas16 .kick, .canvas16 .src { font-size: .8125rem; }
+  .tiles, .frames { grid-template-columns: 1fr; gap: 8px; }
+  .tiles li, .frames li { padding: 8px 10px; }
+  .bars li { grid-template-columns: 1fr; gap: 2px; }
+  .bar { height: 16px; margin-right: 44px; }
+  .bar span { left: calc(100% + 6px); }
+  .score th, .score td { padding: 5px 4px; }
+}
+@media (forced-colors: active) { .bar, .bar.alt { background: CanvasText; } .canvas16 { border-left-color: CanvasText; } .frames li { border-color: CanvasText; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="page-head">
+    <h1>Example Presentation Slides</h1>
+    <p>A made-up example of an 8-slide final presentation in Google Slides, with the speaker notes under each slide. All names, numbers and quotes are made up. Times in the notes add up to 6:00.</p>
+  </header>
+  <div class="app">
+    <div class="titlebar" aria-hidden="true">
+      <span class="ico"></span>
+      <div>
+        <p class="name">Beats_Creative_Strategy_Presentation_Alex</p>
+        <p class="menu">File Edit View Insert Format Slide Arrange Tools Help</p>
+      </div>
+    </div>
+    <nav class="jump" aria-label="Jump to a slide"><ol><li><a href="#slide-1" aria-label="Slide 1: Stars get Beats noticed. Real fans get Beats believed.">1</a></li><li><a href="#slide-2" aria-label="Slide 2: I studied 25 ads and asked 12 people what they believed">2</a></li><li><a href="#slide-3" aria-label="Slide 3: Stars get attention, not trust">3</a></li><li><a href="#slide-4" aria-label="Slide 4: My rubric flags the same gap">4</a></li><li><a href="#slide-5" aria-label="Slide 5: Rivals are catching up with creators">5</a></li><li><a href="#slide-6" aria-label="Slide 6: Pair a star with a real fan in the first 3 seconds">6</a></li><li><a href="#slide-7" aria-label="Slide 7: What it could look like: a 3-frame storyboard">7</a></li><li><a href="#slide-8" aria-label="Slide 8: Next step: test one star-plus-fan TikTok against a star-only version">8</a></li></ol></nav>
+    <div class="stack">
+      <section class="gslide" id="slide-1" aria-labelledby="t1">
+        <p class="num">Slide 1 of 8</p>
+        <div class="canvas16 title-slide"><h2 id="t1">Stars get Beats noticed. Real fans get Beats believed.</h2><p class="muted">Creative Strategy Final Presentation · Alex Rivera · Prepared for Beats by Dre</p></div>
+        <div class="notes"><h3>Speaker notes</h3><p>Hi, I'm Alex. In 6 minutes I'll show you how Beats can turn attention into trust. (0:15)</p></div>
+      </section>
+      <section class="gslide" id="slide-2" aria-labelledby="t2">
+        <p class="num">Slide 2 of 8</p>
+        <div class="canvas16"><p class="kick">Context</p><h2 id="t2">I studied 25 ads and asked 12 people what they believed</h2><ul class="tiles" role="list"><li><b>25</b><span>ads studied: 10 Beats, 15 rivals</span></li><li><b>12</b><span>people surveyed about 4 ads</span></li><li><b>1</b><span>Creative Strategy Framework: playbook, standards, rubric, recommendations</span></li></ul><p class="src">Sources: my Ad Repository (Project 1), survey (Project 2), Framework doc (Project 3)</p></div>
+        <div class="notes"><h3>Speaker notes</h3><p>I studied 25 ads from Beats and its rivals, then asked 12 people about 4 of them. I wanted to know what makes Beats ads work, and where they don't. (0:45)</p></div>
+      </section>
+      <section class="gslide" id="slide-3" aria-labelledby="t3">
+        <p class="num">Slide 3 of 8</p>
+        <div class="canvas16"><p class="kick">Insight 1</p><h2 id="t3">Stars get attention, not trust</h2><p>Beats_YouTube_01, scores out of 5</p><ul class="bars" role="list"><li>Attention <div class="bar" style="width:90%"><span>4.5</span></div></li><li>Believable <div class="bar alt" style="width:60%"><span>3.0</span></div></li></ul><p>8 of 12 people said it "felt like an ad."</p><p class="src">Source: Project 2 survey, 12 responses</p></div>
+        <div class="notes"><h3>Speaker notes</h3><p>Our athlete ad got the most attention of the 4 ads I tested, 4.5 out of 5. It was also the least believable, 3.0. 8 of 12 people said it felt like an ad. (1:00)</p></div>
+      </section>
+      <section class="gslide" id="slide-4" aria-labelledby="t4">
+        <p class="num">Slide 4 of 8</p>
+        <div class="canvas16"><p class="kick">Insight 1 · Evidence</p><h2 id="t4">My rubric flags the same gap</h2><table class="score"><caption class="muted" style="text-align:left">Beats_YouTube_01 on my Creative Rubric (out of 5 per criterion)</caption><thead><tr><th scope="col">Hook</th><th scope="col">Brand</th><th scope="col">Feels real</th><th scope="col">Sound leads</th><th scope="col">Platform fit</th><th scope="col">Total</th></tr></thead><tbody><tr><td>5</td><td>4</td><td><b>2 (below 3)</b></td><td>5</td><td>3</td><td>19 of 25 · Fails</td></tr></tbody></table><p>6 of 10 Beats ads open with a star, vs. 2 of 15 rival ads.</p><p class="src">Sources: Framework doc, Creative Rubric; Ad Repository</p></div>
+        <div class="notes"><h3>Speaker notes</h3><p>On my rubric, this ad scored 19 of 25, but it failed because Feels real was a 2. And Beats leans on stars much more than rivals do. (0:45)</p></div>
+      </section>
+      <section class="gslide" id="slide-5" aria-labelledby="t5">
+        <p class="num">Slide 5 of 8</p>
+        <div class="canvas16"><p class="kick">Insight 2</p><h2 id="t5">Rivals are catching up with creators</h2><ul class="tiles" role="list"><li><b>4.1 vs 4.2</b><span>Skullcandy vs. Beats, average ad score in my repository</span></li><li><b>6 of 12</b><span>picked Skullcandy_TikTok_01 as the most believable ad</span></li><li><b>Sound</b><span>Where Beats still leads: Sound leads scores of 5 and 4 vs. 3 and 2</span></li></ul><p class="src">Sources: Ad Repository, Project 2 survey, Framework doc</p></div>
+        <div class="notes"><h3>Speaker notes</h3><p>In my repository, Skullcandy's ads scored 4.1 on average, almost the same as Beats at 4.2. In my survey, 6 of 12 people picked a Skullcandy creator ad as the most believable. Beats' style edge is easier to copy than it looks. (1:15)</p></div>
+      </section>
+      <section class="gslide" id="slide-6" aria-labelledby="t6">
+        <p class="num">Slide 6 of 8</p>
+        <div class="canvas16"><p class="kick">Application</p><h2 id="t6">Pair a star with a real fan in the first 3 seconds</h2><ul class="pts"><li><b>From Insight 1:</b> the star brings attention, the fan brings trust.</li><li><b>Principle #1:</b> Show a real person in the first 3 seconds.</li><li><b>Principle #2:</b> Let the music lead. It's where Beats still stands apart.</li></ul><p class="src">Source: Strategic Recommendations Summary in my Framework doc</p></div>
+        <div class="notes"><h3>Speaker notes</h3><p>So Beats could pair a star with a real fan in the first 3 seconds. The star gets people to look. The fan gives them a reason to believe. (0:45)</p></div>
+      </section>
+      <section class="gslide" id="slide-7" aria-labelledby="t7">
+        <p class="num">Slide 7 of 8</p>
+        <div class="canvas16"><p class="kick">Creative sample (optional)</p><h2 id="t7">What it could look like: a 3-frame storyboard</h2><ol class="frames" role="list"><li><b>Frame 1 · 0–3 s</b>A real fan mid-run. The music drops in.</li><li><b>Frame 2 · 3–5 s</b>The star joins the run. Beats is on screen by 5 seconds.</li><li><b>Frame 3 · 5–15 s</b>The fan says, in their own words, why they wear them.</li></ol><p class="src">Concept sketch for this presentation, not a real Beats ad</p></div>
+        <div class="notes"><h3>Speaker notes</h3><p>Here's a quick sketch. The fan comes first, then the star joins, and the fan gets the last word. (0:45)</p></div>
+      </section>
+      <section class="gslide" id="slide-8" aria-labelledby="t8">
+        <p class="num">Slide 8 of 8</p>
+        <div class="canvas16"><p class="kick">Next step</p><h2 id="t8">Next step: test one star-plus-fan TikTok against a star-only version</h2><ul class="pts"><li>Run both versions with the same song and length.</li><li>Ask the same questions: Grabs my attention and Believable.</li><li>Keep the star-plus-fan version if it holds attention and scores higher on believable.</li></ul><p><b>Thank you. Questions?</b></p></div>
+        <div class="notes"><h3>Speaker notes</h3><p>Beats could test this with one TikTok and the same 2 survey questions I used. Thank you. I'm happy to take questions. (0:30)</p></div>
+      </section>
+    </div>
+  </div>
+</main>
+</body>
+</html>
