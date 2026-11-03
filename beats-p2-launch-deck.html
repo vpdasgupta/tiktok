@@ -295,7 +295,13 @@ Thank you!</p>
     prevBtn.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
     nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
     countEl.textContent = (i + 1) + ' of ' + slides.length;
+    fitHeight();
     if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+  }
+  /* Size the track to the visible slide so a taller slide elsewhere doesn't leave a gap above the buttons. */
+  function fitHeight() {
+    if (current < 0) return;
+    track.style.height = (slides[current].offsetHeight + 10) + 'px';
   }
   function goTo(i) {
     i = Math.max(0, Math.min(slides.length - 1, i));
@@ -318,7 +324,7 @@ Thank you!</p>
     if (Date.now() < jumpUntil) return;
     t = setTimeout(function () { setActive(Math.round(track.scrollLeft / track.clientWidth), true); }, 90);
   }, { passive: true });
-  window.addEventListener('resize', function () { track.scrollLeft = current * track.clientWidth; });
+  window.addEventListener('resize', function () { track.scrollLeft = current * track.clientWidth; fitHeight(); });
   setActive(0, false);
 })();
 </script>
