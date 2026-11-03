@@ -65,7 +65,10 @@ a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .bar.alt { background: #8d8d96; }
 .bar span { position: absolute; left: calc(100% + 1.2cqi); top: 50%; transform: translateY(-50%); font-weight: 800; white-space: nowrap; }
 .pts { margin: 0; padding-left: 1.2em; display: grid; gap: .8cqi; }
-.score { width: 100%; border-collapse: collapse; font-size: .92em; }
+.scroll { overflow-x: auto; }
+.scroll:focus-visible { outline: 3px solid var(--sl-accent-ink); outline-offset: 2px; }
+.score { width: 100%; min-width: 420px; border-collapse: collapse; font-size: .92em; }
+.score th, .score td { overflow-wrap: normal; }
 .score th, .score td { text-align: left; padding: .7cqi 1cqi; border-bottom: 1px solid #3a3a40; }
 .score thead th { border-bottom: 2px solid var(--sl-ink); }
 .frames { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqi; }
@@ -95,14 +98,14 @@ a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
     <p>A made-up example of an 8-slide final presentation in Google Slides, with the speaker notes under each slide. All names, numbers and quotes are made up. Times in the notes add up to 6:00.</p>
   </header>
   <div class="app">
-    <div class="titlebar" aria-hidden="true">
-      <span class="ico"></span>
+    <div class="titlebar">
+      <span class="ico" aria-hidden="true"></span>
       <div>
         <p class="name">Beats_Creative_Strategy_Presentation_Alex</p>
-        <p class="menu">File Edit View Insert Format Slide Arrange Tools Help</p>
+        <p class="menu" aria-hidden="true">File Edit View Insert Format Slide Arrange Tools Help</p>
       </div>
     </div>
-    <nav class="jump" aria-label="Jump to a slide"><ol><li><a href="#slide-1" aria-label="Slide 1: Stars get Beats noticed. Real fans get Beats believed.">1</a></li><li><a href="#slide-2" aria-label="Slide 2: I studied 25 ads and asked 12 people what they believed">2</a></li><li><a href="#slide-3" aria-label="Slide 3: Stars get attention, not trust">3</a></li><li><a href="#slide-4" aria-label="Slide 4: My rubric flags the same gap">4</a></li><li><a href="#slide-5" aria-label="Slide 5: Rivals are catching up with creators">5</a></li><li><a href="#slide-6" aria-label="Slide 6: Pair a star with a real fan in the first 3 seconds">6</a></li><li><a href="#slide-7" aria-label="Slide 7: What it could look like: a 3-frame storyboard">7</a></li><li><a href="#slide-8" aria-label="Slide 8: Next step: test one star-plus-fan TikTok against a star-only version">8</a></li></ol></nav>
+    <nav class="jump" aria-label="Jump to a slide"><ol role="list"><li><a href="#slide-1" aria-label="Slide 1: Stars get Beats noticed. Real fans get Beats believed.">1</a></li><li><a href="#slide-2" aria-label="Slide 2: I studied 25 ads and asked 12 people what they believed">2</a></li><li><a href="#slide-3" aria-label="Slide 3: Stars get attention, not trust">3</a></li><li><a href="#slide-4" aria-label="Slide 4: My rubric flags the same gap">4</a></li><li><a href="#slide-5" aria-label="Slide 5: Rivals are catching up with creators">5</a></li><li><a href="#slide-6" aria-label="Slide 6: Pair a star with a real fan in the first 3 seconds">6</a></li><li><a href="#slide-7" aria-label="Slide 7: What it could look like: a 3-frame storyboard">7</a></li><li><a href="#slide-8" aria-label="Slide 8: Next step: test one star-plus-fan TikTok against a star-only version">8</a></li></ol></nav>
     <div class="stack">
       <section class="gslide" id="slide-1" aria-labelledby="t1">
         <p class="num">Slide 1 of 8</p>
@@ -121,7 +124,7 @@ a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
       </section>
       <section class="gslide" id="slide-4" aria-labelledby="t4">
         <p class="num">Slide 4 of 8</p>
-        <div class="canvas16"><p class="kick">Insight 1 · Evidence</p><h2 id="t4">My rubric flags the same gap</h2><table class="score"><caption class="muted" style="text-align:left">Beats_YouTube_01 on my Creative Rubric (out of 5 per criterion)</caption><thead><tr><th scope="col">Hook</th><th scope="col">Brand</th><th scope="col">Feels real</th><th scope="col">Sound leads</th><th scope="col">Platform fit</th><th scope="col">Total</th></tr></thead><tbody><tr><td>5</td><td>4</td><td><b>2 (below 3)</b></td><td>5</td><td>3</td><td>19 of 25 · Fails</td></tr></tbody></table><p>6 of 10 Beats ads open with a star, vs. 2 of 15 rival ads.</p><p class="src">Sources: Framework doc, Creative Rubric; Ad Repository</p></div>
+        <div class="canvas16"><p class="kick">Insight 1 · Evidence</p><h2 id="t4">My rubric flags the same gap</h2><p class="muted" id="rubric-cap">Beats_YouTube_01 on my Creative Rubric (out of 5 per criterion)</p><div class="scroll" role="region" aria-label="Rubric scores table" tabindex="0"><table class="score" aria-labelledby="rubric-cap"><thead><tr><th scope="col">Hook</th><th scope="col">Brand</th><th scope="col">Feels real</th><th scope="col">Sound leads</th><th scope="col">Platform fit</th><th scope="col">Total</th></tr></thead><tbody><tr><td>5</td><td>4</td><td><b>2 (below 3)</b></td><td>5</td><td>3</td><td>19 of 25 · Fails</td></tr></tbody></table></div><p>6 of 10 Beats ads open with a star, vs. 2 of 15 rival ads.</p><p class="src">Sources: Framework doc, Creative Rubric; Ad Repository</p></div>
         <div class="notes"><h3>Speaker notes</h3><p>On my rubric, this ad scored 19 of 25, but it failed because Feels real was a 2. And Beats leans on stars much more than rivals do. (0:45)</p></div>
       </section>
       <section class="gslide" id="slide-5" aria-labelledby="t5">
