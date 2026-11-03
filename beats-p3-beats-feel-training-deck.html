@@ -198,7 +198,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
 <div class="top"><div><p class="kicker">Voice</p><h2 id="s2">Confident, short, direct</h2></div></div>
         <table class="tbl">
           <caption>Made-up lines to compare</caption>
-          <thead><tr><th scope="col">Sounds like Beats</th><th scope="col">Doesn't</th></tr></thead>
+          <thead><tr><th scope="col">Sounds like Beats</th><th scope="col">Doesn't sound like Beats</th></tr></thead>
           <tbody>
             <tr><td>"Turn it up."</td><td>"Elevate your listening experience today."</td></tr>
             <tr><td>"Built for game day."</td><td>"40-hour battery, 3 noise modes and fast charging."</td></tr>
@@ -306,6 +306,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
     nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
     countEl.textContent = (i + 1) + ' of ' + slides.length;
     if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+    if (slides[i] && !slides[i].contains(document.activeElement) && track.contains(document.activeElement)) track.focus();
   }
   function goTo(i) {
     i = Math.max(0, Math.min(slides.length - 1, i));
@@ -316,6 +317,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
   prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
   nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
   track.addEventListener('keydown', function (e) {
+    if (e.target !== track) return;
     var k = e.key;
     if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
     else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
