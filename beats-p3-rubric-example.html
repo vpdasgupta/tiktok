@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Example Creative Rubric Section</title>
+<!-- Made-up example for Beats P3 Step 3 [Task] Build and Test Your Rubric. Scores match SPEC-P3-P4.md. -->
+<style>
+:root {
+  --ink: #141414; --muted: #4f4f55; --line: #c4c4c9; --bg: #eef0f3; --chrome: #f9fbfd;
+  --paper: #ffffff; --paper-ink: #1f1f1f; --paper-muted: #55555c; --paper-line: #b7b7be;
+  --docs: #1a62d6; --todo-bg: #f4f5f7; --focus: #0b57d0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1f1f2; --muted: #b9b9c0; --line: #4a4a52; --bg: #121315; --chrome: #1d1e21;
+    --docs: #8ab4f8; --focus: #8ab4f8;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #f1f1f2; --muted: #b9b9c0; --line: #4a4a52; --bg: #121315; --chrome: #1d1e21;
+  --docs: #8ab4f8; --focus: #8ab4f8;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.45;
+}
+.wrap { max-width: 960px; margin: 0 auto; padding: 16px 16px 40px; }
+.page-head h1 { font-size: 22px; margin: 0 0 4px; line-height: 1.2; }
+.page-head p { margin: 0 0 4px; font-size: 15px; color: var(--muted); }
+.todo-key { display: inline-block; padding: 0 6px; border: 1px dashed var(--paper-line); border-radius: 4px;
+  background: var(--todo-bg); color: var(--paper-muted); font-style: italic; }
+
+/* Docs chrome (decorative) */
+.doc { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.titlebar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--chrome);
+  border-bottom: 1px solid var(--line); }
+.titlebar .ico { flex: 0 0 auto; width: 18px; height: 24px; border-radius: 2px 6px 2px 2px; background: var(--docs);
+  position: relative; }
+.titlebar .ico::after { content: ""; position: absolute; left: 4px; right: 4px; top: 8px; height: 9px;
+  border-top: 2px solid var(--chrome); border-bottom: 2px solid var(--chrome); }
+.titlebar .name { margin: 0; font-size: 16px; overflow-wrap: anywhere; }
+.titlebar > div { min-width: 0; }
+.titlebar .menu { margin: 2px 0 0; font-size: 13px; color: var(--muted); word-spacing: 6px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 6px 14px; background: var(--chrome);
+  border-bottom: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.toolbar span { padding: 3px 8px; border-radius: 4px; border: 1px solid var(--line); }
+
+/* Canvas + page */
+.canvas { display: grid; grid-template-columns: 180px 1fr; gap: 16px; padding: 20px 16px 28px; }
+.canvas > * { min-width: 0; }
+.outline { font-size: 13px; color: var(--muted); }
+.outline p { margin: 0 0 8px; font-weight: 700; color: var(--ink); }
+.outline ol { list-style: none; margin: 0; padding: 0; }
+.outline li { padding: 4px 0 4px 8px; border-left: 2px solid var(--line); }
+.paper { background: var(--paper); color: var(--paper-ink); max-width: 680px; width: 100%;
+  padding: 48px 56px 56px; box-shadow: 0 1px 3px rgba(0,0,0,.25); font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+.paper .doc-title { font-size: 26px; margin: 0 0 2px; line-height: 1.2; }
+.paper .byline { margin: 0 0 18px; color: var(--paper-muted); font-size: 14px; }
+.paper h2 { font-size: 18px; font-weight: 400; color: var(--paper-ink); margin: 22px 0 6px; }
+.paper p { margin: 0 0 8px; }
+.paper ol { margin: 0 0 8px; padding-left: 22px; }
+.paper li { margin: 0 0 8px; }
+.todo { display: block; margin: 4px 0 8px; padding: 6px 10px; border: 1px dashed var(--paper-line); border-radius: 4px;
+  background: var(--todo-bg); color: var(--paper-muted); font-style: italic; font-size: 14px; }
+.todo b { font-style: normal; }
+li .todo { margin-top: 0; }
+.paper h3 { font-size: 15px; font-weight: 700; margin: 16px 0 6px; }
+.done { margin: 0 0 8px; color: var(--paper-muted); font-size: 14px; }
+.dtbl { width: 100%; border-collapse: collapse; margin: 4px 0 10px; font-size: 14px; }
+.dtbl caption { text-align: left; font-size: 13px; color: var(--paper-muted); padding-bottom: 4px; }
+.dtbl th, .dtbl td { border: 1px solid var(--paper-line); padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: normal; }
+.dtbl.scores { min-width: 560px; }
+.dtbl.scores td { text-align: center; }
+.dtbl thead th { background: var(--todo-bg); }
+.dtbl .todo { margin: 0; }
+.scroll { overflow-x: auto; }
+.scroll:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 760px) {
+  .canvas { grid-template-columns: 1fr; padding: 12px 8px 20px; }
+  .outline { display: none; }
+  .paper { padding: 24px 18px 28px; }
+  .dtbl { font-size: 13px; }
+  .dtbl th, .dtbl td { padding: 4px 5px; }
+}
+@media (forced-colors: active) { .todo, .todo-key { border-color: CanvasText; } .dtbl th, .dtbl td { border-color: CanvasText; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="page-head">
+    <h1>Example Creative Rubric Section</h1>
+    <p>A made-up example of Section 3 in the Creative Strategy Framework doc. It shows the shape with sample lines; boxes marked <span class="todo-key">To fill in</span> are parts you'd finish in your own doc. All scores are made up.</p>
+  </header>
+
+  <div class="doc">
+    <div class="titlebar" aria-hidden="true">
+      <span class="ico"></span>
+      <div>
+        <p class="name">Beats_CreativeStrategyFramework_Alex</p>
+        <p class="menu">File Edit View Insert Format Tools Extensions Help</p>
+      </div>
+    </div>
+    <div class="toolbar" aria-hidden="true">
+      <span>100%</span><span>Heading 2 ▾</span><span>Arial ▾</span><span>11</span><span><b>B</b></span><span><i>I</i></span><span>Insert table</span>
+    </div>
+
+    <div class="canvas">
+      <nav class="outline" aria-label="Document outline">
+        <p>Outline</p>
+        <ol>
+          <li><a href="#playbook">1. Platform Playbook</a></li>
+          <li><a href="#standards">2. Beats Creative Standards</a></li>
+          <li><a href="#rubric">3. Creative Rubric</a></li>
+          <li><a href="#summary">4. Strategic Recommendations Summary</a></li>
+        </ol>
+      </nav>
+
+      <article class="paper" aria-label="Example Framework doc, Creative Rubric section">
+        <p class="doc-title">Beats Creative Strategy Framework</p>
+        <p class="byline">Alex Rivera · Project 3</p>
+
+        <h2 id="playbook">1. Platform Playbook</h2>
+        <p class="done">Done in Step 1. Universal rules: hook in the first 3 seconds · show or say the brand early · design for sound on and sound off.</p>
+
+        <h2 id="standards">2. Beats Creative Standards</h2>
+        <p class="done">Done in Step 2. Voice, Look, Sound and Talent, with 1 Do and 1 Don't each.</p>
+
+        <h2 id="rubric">3. Creative Rubric</h2>
+        <h3>Rubric</h3>
+        <div class="scroll" tabindex="0" role="region" aria-label="Rubric table">
+        <table class="dtbl">
+          <caption>Score each criterion 1–5. 2 and 4 mean "in between."</caption>
+          <thead><tr><th scope="col">Criterion</th><th scope="col">1</th><th scope="col">3</th><th scope="col">5</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Hook: stops the scroll in 3 seconds</th><td>Nothing in the first 3 seconds gives a reason to stay</td><td>Catches the eye, but slowly</td><td>Movement, a face or a sound grabs you in 3 seconds</td></tr>
+            <tr><th scope="row">Brand: Beats seen or heard by 5 seconds</th><td>Brand only at the end, or not at all</td><td>Logo or product by 5 seconds, easy to miss</td><td>Beats clear by 5 seconds, product in use</td></tr>
+            <tr><th scope="row">Feels real: a believable person or voice</th><td>No person, or a voiceover that sounds like an ad</td><td>A person, but scripted</td><td>A real fan or creator in their own words</td></tr>
+            <tr><th scope="row">Sound leads: music or sound is part of the idea</th><td colspan="3"><span class="todo"><b>To fill in:</b> 1, 3 and 5 for Sound leads.</span></td></tr>
+            <tr><th scope="row">Platform fit: native format, length, captions</th><td colspan="3"><span class="todo"><b>To fill in:</b> 1, 3 and 5 for Platform fit.</span></td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p><b>Pass rule:</b> 18 or more out of 25, and no criterion below 3.</p>
+
+        <h3>Test scores</h3>
+        <div class="scroll" tabindex="0" role="region" aria-label="Test scores table">
+        <table class="dtbl scores">
+          <caption>2 Beats ads and 2 rival ads from my Ad Repository, the same 4 I used in my Project 2 survey</caption>
+          <thead><tr><th scope="col">Ad</th><th scope="col">Hook</th><th scope="col">Brand</th><th scope="col">Feels real</th><th scope="col">Sound leads</th><th scope="col">Platform fit</th><th scope="col">Total</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Beats_YouTube_01</th><td>5</td><td>4</td><td>2</td><td>5</td><td>3</td><td>19, fails</td></tr>
+            <tr><th scope="row">Beats_TikTok_01</th><td>4</td><td>3</td><td>4</td><td>4</td><td>5</td><td>20, passes</td></tr>
+            <tr><th scope="row">Skullcandy_TikTok_01</th><td>4</td><td>3</td><td>5</td><td>3</td><td>5</td><td>20, passes</td></tr>
+            <tr><th scope="row">Sony_YouTube_01</th><td>2</td><td>5</td><td>4</td><td>2</td><td>3</td><td>16, fails</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p><b>Why the low scores:</b></p>
+        <ul>
+          <li>Beats_YouTube_01, Feels real 2: the star reads lines like a spokesperson. No real fan.</li>
+          <li>Sony_YouTube_01, Hook 2 and Sound leads 2: <span class="todo"><b>To fill in:</b> a reason for each.</span></li>
+        </ul>
+        <p><b>Evidence check:</b> Beats_YouTube_01 fails on Feels real. That matches Project 2, where it was lowest on believable (3.0) and 8 of 12 said it felt like an ad.</p>
+        <span class="todo"><b>To fill in:</b> one evidence line for each of the other 3 ads.</span>
+
+        <h3>Where Beats can stand apart</h3>
+        <ul>
+          <li><b>Where Beats leads:</b> Sound leads, 5 and 4 for Beats vs. 3 and 2 for rivals.</li>
+          <li><b>Where rivals match or beat Beats:</b> Feels real. Skullcandy_TikTok_01 got a 5; Beats got a 2 and a 4. This backs up the threat on my Positioning tab.</li>
+          <li><b>The opening:</b> sound-led ads with real fans.</li>
+        </ul>
+
+        <h2 id="summary">4. Strategic Recommendations Summary</h2>
+        <p class="done">Coming in Step 4.</p>
+      </article>
+    </div>
+  </div>
+</main>
+</body>
+</html>
