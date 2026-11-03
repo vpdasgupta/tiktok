@@ -223,7 +223,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
         <dl class="rows">
           <dt>Made for TikTok</dt><dd>Use sound or music, shoot vertical 9:16 and keep key content inside the safe zone.</dd>
           <dt>The look</dt><dd>Go for a DIY style that isn't overly polished. Feature people such as creators or customers.</dd>
-          <dt>The hook</dt><dd>Introduce what you're selling in the first 3 seconds. Hook people within the first 6.</dd>
+          <dt>The hook</dt><dd>Introduce what you're selling in the first 3 seconds, for better recall. Hook people within the first 6.</dd>
           <dt>Captions</dt><dd>Use captions or text overlays to give context.</dd>
         </dl>
       </article>
@@ -244,12 +244,12 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
     <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 8">
       <article class="slide dense" aria-labelledby="s6">
 <div class="top"><div><p class="kicker">Where all three agree</p><h2 id="s6">3 rules for every platform</h2></div></div>
-        <table class="tbl avg">
-          <caption>A rule counts for every platform only if all 3 sources say it</caption>
+        <table class="tbl">
+          <caption>All 3 say hook people fast. TikTok gives the number: 3 seconds.</caption>
           <thead><tr><th scope="col">Rule</th><th scope="col">YouTube</th><th scope="col">TikTok</th><th scope="col">Meta</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Hook in the first 3 seconds</th><td>Jump in</td><td>Show what you sell in the first 3 seconds</td><td>Hook people right away</td></tr>
-            <tr><th scope="row">Show or say the brand early</th><td>Brand early, often, richly</td><td>Same rule: it helps people remember</td><td>Bring in your brand early</td></tr>
+            <tr><th scope="row">Hook in the first 3 seconds</th><td>Jump in: get to the story fast</td><td>Show what you sell in the first 3 seconds</td><td>Hook people right away</td></tr>
+            <tr><th scope="row">Show or say the brand early</th><td>Brand early, often, richly</td><td>Introduce your product in the first 3 seconds, for recall</td><td>Bring in your brand early</td></tr>
             <tr><th scope="row">Design for sound on and sound off</th><td>Audio plus on-screen text</td><td>Sound or music plus captions</td><td>Build for sound off, delight with sound on</td></tr>
           </tbody>
         </table>
@@ -313,6 +313,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
     nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
     countEl.textContent = (i + 1) + ' of ' + slides.length;
     if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+    if (slides[i] && !slides[i].contains(document.activeElement) && track.contains(document.activeElement)) track.focus();
   }
   function goTo(i) {
     i = Math.max(0, Math.min(slides.length - 1, i));
@@ -323,6 +324,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
   prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
   nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
   track.addEventListener('keydown', function (e) {
+    if (e.target !== track) return;
     var k = e.key;
     if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
     else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
