@@ -86,6 +86,9 @@ li .todo { margin-top: 0; }
 }
 @media (forced-colors: active) { .todo, .todo-key { border-color: CanvasText; } .bar { background: CanvasText; } }
 
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.outline a { color: var(--docs); text-decoration: underline; }
+.outline a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .paper h3 { font-size: 15px; font-weight: 700; margin: 14px 0 4px; }
 .paper .src { color: var(--paper-muted); font-size: 14px; }
 .paper .rule-list { padding-left: 22px; }
@@ -104,11 +107,11 @@ li .todo { margin-top: 0; }
   </header>
 
   <div class="doc">
-    <div class="titlebar" aria-hidden="true">
-      <span class="ico"></span>
+    <div class="titlebar">
+      <span class="ico" aria-hidden="true"></span>
       <div>
         <p class="name">Beats_CreativeStrategyFramework_Alex</p>
-        <p class="menu">File Edit View Insert Format Tools Extensions Help</p>
+        <p class="menu" aria-hidden="true">File Edit View Insert Format Tools Extensions Help</p>
       </div>
     </div>
     <div class="toolbar" aria-hidden="true">
@@ -126,22 +129,22 @@ li .todo { margin-top: 0; }
         <p class="byline">Alex Rivera · Project 3 · Oct 20</p>
 
         <h2 id="platform-playbook">1. Platform Playbook</h2>
-        <p class="src">Sources read Oct 20: Google Ads Help (ABCDs), TikTok Ads Help (creative best practices), Meta for Business (Reels ads; mobile video tips).</p>
+        <p class="src">Sources read Oct 20: <a href="https://support.google.com/google-ads/answer/14783551" target="_blank" rel="noopener">Google Ads Help (ABCDs)<span class="sr-only"> (opens in a new tab)</span></a>, <a href="https://ads.tiktok.com/help/article/creative-best-practices" target="_blank" rel="noopener">TikTok Ads Help (creative best practices)<span class="sr-only"> (opens in a new tab)</span></a>, Meta for Business (<a href="https://www.facebook.com/business/ads/facebook-instagram-reels-ads" target="_blank" rel="noopener">Reels ads<span class="sr-only"> (opens in a new tab)</span></a>; <a href="https://www.facebook.com/business/news/want-to-better-video-ads-for-mobile-well-show-you-how" target="_blank" rel="noopener">mobile video tips<span class="sr-only"> (opens in a new tab)</span></a>).</p>
         <h3>For every platform</h3>
         <ol class="rule-list">
-          <li><b>Hook in the first 3 seconds.</b> <span class="src">Google, TikTok, Meta.</span><br />For Beats: 6 of 10 Beats ads in my repository open with a celebrity or influencer hook, and Beats_YouTube_01 scored 4.5 on attention in my survey. Beats hooks well. Keep it.</li>
-          <li><b>Show or say the brand early.</b> <span class="src">Google, TikTok, Meta.</span>
+          <li><b>Hook in the first 3 seconds.</b> <span class="src">Sources: <a href="https://support.google.com/google-ads/answer/14783551" target="_blank" rel="noopener">Google<span class="sr-only"> (opens in a new tab)</span></a>, <a href="https://ads.tiktok.com/help/article/creative-best-practices" target="_blank" rel="noopener">TikTok<span class="sr-only"> (opens in a new tab)</span></a>, <a href="https://www.facebook.com/business/news/want-to-better-video-ads-for-mobile-well-show-you-how" target="_blank" rel="noopener">Meta<span class="sr-only"> (opens in a new tab)</span></a>.</span><br />For Beats: 6 of 10 Beats ads in my repository open with a celebrity or influencer hook, and Beats_YouTube_01 scored 4.5 on attention in my survey. Beats hooks well. Keep it.</li>
+          <li><b>Show or say the brand early.</b> <span class="src">Sources: <a href="https://support.google.com/google-ads/answer/14783551" target="_blank" rel="noopener">Google<span class="sr-only"> (opens in a new tab)</span></a>, <a href="https://ads.tiktok.com/help/article/creative-best-practices" target="_blank" rel="noopener">TikTok<span class="sr-only"> (opens in a new tab)</span></a>, <a href="https://www.facebook.com/business/news/want-to-better-video-ads-for-mobile-well-show-you-how" target="_blank" rel="noopener">Meta<span class="sr-only"> (opens in a new tab)</span></a>.</span>
             <span class="todo"><b>To fill in:</b> the For Beats line, tied to an ad or number from your research.</span></li>
           <li><span class="todo"><b>To fill in:</b> rule 3 (it should be in all 3 sources), its sources and a For Beats line.</span></li>
         </ol>
         <h3>YouTube</h3>
         <ol class="rule-list">
-          <li>Jump in: get to the heart of the story fast, with tight framing. <span class="src">(Google ABCDs)</span></li>
-          <li>End with a clear call to action, said out loud and shown on screen. <span class="src">(Google ABCDs)</span></li>
+          <li>Jump in: get to the heart of the story fast, with tight framing. <span class="src">(Source: <a href="https://support.google.com/google-ads/answer/14783551" target="_blank" rel="noopener">Google ABCDs<span class="sr-only"> (opens in a new tab)</span></a>)</span></li>
+          <li>End with a clear call to action, said out loud and shown on screen. <span class="src">(Source: <a href="https://support.google.com/google-ads/answer/14783551" target="_blank" rel="noopener">Google ABCDs<span class="sr-only"> (opens in a new tab)</span></a>)</span></li>
         </ol>
         <h3>TikTok</h3>
         <ol class="rule-list">
-          <li>Make it look made for TikTok: sound on, vertical 9:16, not overly polished. <span class="src">(TikTok creative best practices)</span></li>
+          <li>Make it look made for TikTok: sound on, vertical 9:16, not overly polished. <span class="src">(Source: <a href="https://ads.tiktok.com/help/article/creative-best-practices" target="_blank" rel="noopener">TikTok creative best practices<span class="sr-only"> (opens in a new tab)</span></a>)</span></li>
           <li><span class="todo"><b>To fill in:</b> rule 2 and its source link.</span></li>
         </ol>
         <h3>Meta</h3>
