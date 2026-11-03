@@ -200,7 +200,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
       <article class="slide dense tight" aria-labelledby="s2">
 <div class="top"><div><p class="kicker">Step 1 of 6</p><h2 id="s2">Set up section 2</h2></div></div>
         <ol class="steps">
-          <li>Open your Framework doc. Click under the heading 2. Beats Creative Standards.</li>
+          <li>Open your Framework doc. Click under the "2. Beats Creative Standards" heading.</li>
           <li>Add 4 short headings: Voice, Look, Sound, Talent.</li>
           <li>Under each, type 3 lines: Do:, Don't:, Why:.</li>
         </ol>
@@ -225,7 +225,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
     <div class="frame" id="slide-4" role="group" aria-roledescription="slide" aria-label="4 of 8">
       <article class="slide dense tight" aria-labelledby="s4">
 <div class="top"><div><p class="kicker">Step 3 of 6</p><h2 id="s4">Look</h2></div></div>
-        <div class="sample"><span class="lbl">Sample (made up)</span><dl class="rows"><dt>Do</dt><dd>Bold, high-contrast, product in motion.</dd><dt>Don't</dt><dd>No static packshot opener.</dd><dt>Why</dt><dd>All 3 platforms say hook in the first 3 seconds. A still product shot gives people nothing to stop for.</dd></dl></div>
+        <div class="sample"><span class="lbl">Sample (made up)</span><dl class="rows"><dt>Do</dt><dd>Bold, high-contrast, product in motion.</dd><dt>Don't</dt><dd>No static packshot opener.</dd><dt>Why</dt><dd>All 3 platforms say hook people fast, and TikTok says within 3 seconds. A still product shot gives people nothing to stop for.</dd></dl></div>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> Your Don't names something you could spot in the first 3 seconds.</p>
           <p class="check stuck"><b>If you're stuck…</b> Pause 3 Beats ads from your repository at second 2. What do you see?</p>
@@ -247,7 +247,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
     <div class="frame" id="slide-6" role="group" aria-roledescription="slide" aria-label="6 of 8">
       <article class="slide dense tight" aria-labelledby="s6">
 <div class="top"><div><p class="kicker">Step 5 of 6</p><h2 id="s6">Talent</h2></div></div>
-        <div class="sample"><span class="lbl">Sample (made up)</span><dl class="rows"><dt>Do</dt><dd>Pair stars with real fans or creators.</dd><dt>Don't</dt><dd>No star-only ad with no real voice.</dd><dt>Why</dt><dd>Beats_YouTube_01 scored 4.5 on attention but 3.0 on believable. Skullcandy_TikTok_01, a creator ad, scored 4.2.</dd></dl></div>
+        <div class="sample"><span class="lbl">Sample (made up)</span><dl class="rows"><dt>Do</dt><dd>Pair stars with real fans or creators.</dd><dt>Don't</dt><dd>No star-only ad with no real voice.</dd><dt>Why</dt><dd>Beats_YouTube_01 scored 4.5 on attention but 3.0 on believable. Skullcandy_TikTok_01, a creator ad, scored 4.2 on believable.</dd></dl></div>
         <div class="checks">
           <p class="check"><b>You're on track if…</b> Your Why uses a number or finding from Project 2.</p>
           <p class="check stuck"><b>If you're stuck…</b> Start from your strongest Project 2 finding about who was in the ad.</p>
@@ -311,6 +311,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
     nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
     countEl.textContent = (i + 1) + ' of ' + slides.length;
     if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
+    if (slides[i] && !slides[i].contains(document.activeElement) && track.contains(document.activeElement)) track.focus();
   }
   function goTo(i) {
     i = Math.max(0, Math.min(slides.length - 1, i));
@@ -321,6 +322,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
   prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
   nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
   track.addEventListener('keydown', function (e) {
+    if (e.target !== track) return;
     var k = e.key;
     if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
     else if (k === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
