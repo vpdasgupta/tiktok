@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+TASK STEPS SLIDES — template (test format, 2026-10-19)
+================================================================================
+Design source: https://curious-tanuki-b3a260.netlify.app/ (Task view, the
+"one step per slide" slider). The side and bottom panels from that design (people
+panel, journey drawer, submission bar) are NOT here. Notion can't host them.
+
+WHAT IT IS
+  The steps of ONE task page, one step per slide. Each slide has:
+    - a short instruction (1–3 sentences)
+    - a sample (optional): what this step's output looks like, or code to copy
+    - "You're on track if…" (one line)
+    - "If you're stuck…" (1–2 bullets)
+  An optional last slide shows how the task is evaluated.
+
+HOW TO CUSTOMIZE
+  Edit ONLY the TASK object below. Everything under "DO NOT EDIT" is the engine.
+  - deckId: unique kebab-case slug (remembers the learner's place per task)
+  - steps[]: 3–6 steps. Strings may contain simple inline HTML (<b>, <code>, <a>).
+  - sample: { label, kind: "text" | "code", body }   (omit if the step has none)
+  - items: [ "…", "…" ]   (optional) a numbered list shown right after the
+    instruction, as a real <ol>. Use it for questions or ordered sub-steps; never
+    fake a list with <br>.
+  - evaluation: omit it entirely if the task isn't graded.
+  The default content is the design's own example (dataset fitness), so the file
+  opens as a working demo. Replace all of it.
+
+DEPLOY
+  github-pages-deployer → vpdasgupta/tiktok, then on the Notion task page:
+  <embed src="https://vpdasgupta.github.io/tiktok/{program}-{task}-steps.html"></embed>
+  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  page (see task-page-v2-template.md).
+
+ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
+  - Inactive slides use `hidden` (removed from the accessibility tree and tab order).
+  - On Back/Next/dot navigation, focus moves to the new slide's heading.
+  - A polite live region announces "Step K of N".
+  - Progress dots are real buttons with aria-label and aria-current="step"; state is
+    shown by shape and fill (not color alone) and the text counter.
+  - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
+  - Arrow keys change step except inside links and scrollable samples.
+  - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+
+A11Y FIXES 2026-11-04 (engine only; TASK format unchanged):
+  - Every link inside the slides opens in a new tab and says so: the engine adds
+    target="_blank", rel="noopener", a visual ↗ (aria-hidden) and sr-only
+    "(opens in a new tab)", same pattern as "See the example". Don't add these by hand.
+  - Multi-line text samples (body contains "\n") render as a real list
+    (<ul class="sample-text sample-lines" role="list">, one <li> per non-empty
+    line, no bullets). Single-line samples stay a <p>. Code samples unchanged.
+  - The "You're on track if…" / "If you're stuck…" labels use .check-label, so
+    plain <b>/<strong> inside on-track and stuck text now renders inline.
+  - Copy-code fallback (clipboard blocked): selects the code and announces
+    "Code selected. Press Control+C or Command+C to copy."
+  - Visible keyboard hint under the nav; aria-keyshortcuts="ArrowLeft ArrowRight"
+    on the nav.
+  - Evaluation table carries explicit table/rowgroup/row/columnheader/rowheader/cell
+    roles, so it keeps table semantics when it reflows to blocks on narrow screens.
+    Its row headers now use the full width at ≤ 420px (were squeezed to 30%).
+================================================================================
+-->
+<title>Task Steps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* ============================ EDIT THIS ============================ */
+const TASK = {
+  "deckId": "amazon-p2-clean-walkthrough-steps",
+  "title": "Clean the Glassdoor dataset with pandas",
+  "exampleUrl": "",
+  "steps": [
+    {
+      "title": "Open the notebook and save a copy",
+      "instruction": "Open the Project 2 notebook, <b>p2-clean-reviews.ipynb</b> (link coming). Click <b>File</b>, then <b>Save a copy in Drive</b> so your work saves. Then run one cell at a time with <b>Shift + Enter</b> as you go through these slides.",
+      "sample": {
+        "label": "The notebook's 7 steps",
+        "kind": "text",
+        "body": "Step 1: Load the data\nStep 2: Drop columns that can't help you\nStep 3: Fix messy text and fake zeros\nStep 4: Keep US and Canada reviews\nStep 5: Make three clear reviewer columns\nStep 6: Remove empty and duplicate reviews\nStep 7: Tidy up and save"
+      },
+      "onTrack": "the notebook title at the top left starts with \"Copy of\".",
+      "stuck": [
+        "These are headings in the notebook, not steps of this project."
+      ]
+    },
+    {
+      "title": "Notebook step 1: Load the data",
+      "instruction": "<code>load_csv</code> is a small helper written at the top of the cell. If you uploaded your own <code>glass_reviews.csv</code>, it uses yours. If not, it downloads the original from Google Drive.",
+      "sample": {
+        "label": "From the notebook",
+        "kind": "code",
+        "body": "CHECKPOINT_URL = \"https://drive.google.com/uc?export=download&id=1NFJcm7B2zkN_cypMJUMOSvtsrvNfhd8t\"\nLOCAL_FILE = \"glass_reviews.csv\"\n\ndf = load_csv(CHECKPOINT_URL, LOCAL_FILE)\nprint(df.shape)"
+      },
+      "onTrack": "you see <code>(125, 28)</code>. Then <code>df.head()</code> shows the first rows and <code>df.info()</code> shows how many values each column has.",
+      "stuck": [
+        "<code>FileNotFoundError</code>? Delete any upload with a different name and let the notebook use the original from Drive."
+      ]
+    },
+    {
+      "title": "Notebook step 2: Drop columns that can't help you",
+      "instruction": "A column that's <b>completely empty</b>, or has the <b>same value in every row</b>, can't tell reviews apart. pandas finds them, so you don't have to guess.",
+      "sample": {
+        "label": "From the notebook",
+        "kind": "code",
+        "body": "all_empty = [col for col in df.columns if df[col].isna().all()]\none_value = [col for col in df.columns if df[col].nunique() == 1]\n\nprint(\"Completely empty:\", all_empty)\nprint(\"Same value in every row:\", one_value)\n\ndf = df.drop(columns=all_empty + one_value, errors=\"ignore\")\nprint(df.shape)"
+      },
+      "onTrack": "7 columns go (2 empty, 5 with one value) and you see <code>(125, 21)</code>.",
+      "stuck": [
+        "<code>errors=\"ignore\"</code> means \"skip any name that isn't there\", so the line won't crash if your copy of the file is a little different."
+      ]
+    },
+    {
+      "title": "Notebook step 3: Fix web code and #NAME?",
+      "instruction": "Two fingerprints sit in the text columns: <code>&amp;amp;</code> instead of <code>&amp;</code>, and <code>#NAME?</code>, a spreadsheet error that no reviewer wrote. This cell fixes both and trims extra spaces.",
+      "sample": {
+        "label": "From the notebook",
+        "kind": "code",
+        "body": "import html\ntext_cols = [\"summary\", \"review_pros\", \"review_cons\", \"advice_to_management\"]\n\nfor col in text_cols:\n    df[col] = df[col].astype(\"string\").map(html.unescape, na_action=\"ignore\").str.strip()\n    df[col] = df[col].replace({\"#NAME?\": pd.NA, \"\": pd.NA})\n\ndf[text_cols].isna().sum()"
+      },
+      "onTrack": "the blank counts are <code>summary</code> 1, <code>review_pros</code> 2, <code>review_cons</code> 2 and <code>advice_to_management</code> 88.",
+      "stuck": [
+        "Different blank counts? If you added your own reviews, that's expected. If not, run the cells above this one again, in order."
+      ]
+    },
+    {
+      "title": "Notebook step 3, continued: Fake zeros and dates",
+      "instruction": "Glassdoor ratings run from 1 to 5, so a sub-rating of 0 means \"skipped\". Left in, every average comes out too low. The last line trims dates like <code>2025-06-03T00:00:00.000Z</code> to <code>2025-06-03</code>.",
+      "sample": {
+        "label": "From the notebook",
+        "kind": "code",
+        "body": "sub_ratings = [col for col in df.columns if col.startswith(\"rating_\") and col not in (\"rating_overall\", \"rating_date\")]\ndf[sub_ratings] = df[sub_ratings].replace(0, float(\"nan\"))\n\ndf[\"rating_date\"] = pd.to_datetime(df[\"rating_date\"]).dt.strftime(\"%Y-%m-%d\")"
+      },
+      "onTrack": "the notebook prints <code>Zeros before: 235</code> and <code>Zeros after: 0</code>, and the dates run <code>2024-11-18 to 2025-06-03</code>.",
+      "stuck": [
+        "<code>rating_overall</code> is left alone on purpose. Every review has an overall rating."
+      ]
+    },
+    {
+      "title": "Notebook step 4: Keep US and Canada reviews",
+      "instruction": "<code>employee_location</code> looks like <code>Brampton, ON</code> or <code>Dallas, TX</code>. The notebook's <code>get_country</code> reads the two letters after the comma. US and Canada warehouses work in similar ways, so other countries' labor rules would muddy the picture.",
+      "sample": {
+        "label": "From the notebook",
+        "kind": "code",
+        "body": "df[\"country\"] = df[\"employee_location\"].apply(get_country)\ndf[\"country\"].value_counts()\n\ndf = df[df[\"country\"].isin([\"US\", \"Canada\"])]\nprint(df.shape)"
+      },
+      "onTrack": "you see US 69, Canada 32, Other 16, Unknown 8, then <code>(101, 22)</code>.",
+      "stuck": [
+        "0 rows left? Check that locations look like <code>Dallas, TX</code>: city, comma, two capital letters."
+      ]
+    },
+    {
+      "title": "Notebook step 5: Look before you decide",
+      "instruction": "This is the most important step for later projects. Before building new columns, line up <code>employee_type</code> against <code>employee_length</code> (years worked).",
+      "sample": {
+        "label": "From the notebook",
+        "kind": "code",
+        "body": "pd.crosstab(df[\"employee_type\"], df[\"employee_length\"])"
+      },
+      "onTrack": "you notice the \"less than 1 year\" rows have <code>employee_length</code> 1, not 0. The 29 rows with 0 (14 current, 15 former) never said how long they worked. So 0 means \"not stated\".",
+      "stuck": [
+        "Read across one row of the table at a time. Each number is how many reviews have that pair of values."
+      ]
+    },
+    {
+      "title": "Notebook step 5, continued: Three clear reviewer columns",
+      "instruction": "The notebook turns two confusing columns into three clear ones. <code>get_tenure_band</code> returns <code>&lt;1 yr</code>, <code>1+ yr</code> or <code>Not stated</code>. <code>job_types</code> turns codes like REGULAR into words like Full-time.",
+      "sample": {
+        "label": "From the notebook",
+        "kind": "code",
+        "body": "df[\"is_former\"] = df[\"employee_type\"].str.contains(\"former\", case=False)\ndf[\"tenure_band\"] = df.apply(get_tenure_band, axis=1)\ndf[\"employment_type\"] = df[\"employee_status\"].map(job_types).fillna(\"Not stated\")"
+      },
+      "onTrack": "<code>is_former</code>: 51 True, 50 False. <code>tenure_band</code>: 24 <code>&lt;1 yr</code>, 48 <code>1+ yr</code>, 29 Not stated. <code>employment_type</code>: 75 Full-time, 19 Part-time.",
+      "stuck": [
+        "Projects 3 to 5 expect these exact column names. Don't rename them."
+      ]
+    },
+    {
+      "title": "Notebook step 6: Remove empty and duplicate reviews",
+      "instruction": "A review with no summary, no pros and no cons has nothing to analyze. <code>how=\"all\"</code> drops a row only if all three are blank. The duplicate check compares the review text, not every column.",
+      "sample": {
+        "label": "From the notebook",
+        "kind": "code",
+        "body": "before = len(df)\ndf = df.dropna(subset=[\"summary\", \"review_pros\", \"review_cons\"], how=\"all\")\ndf = df.drop_duplicates(subset=[\"summary\", \"review_pros\", \"review_cons\"])\nprint(\"Removed\", before - len(df), \"rows. Rows left:\", len(df))"
+      },
+      "onTrack": "you see <code>Removed 0 rows. Rows left: 101</code>.",
+      "stuck": [
+        "Two reviews looked like duplicates in the raw file: both had <code>#NAME?</code> in the pros and the same cons. They have different summaries and locations, so they're two people. Fixing <code>#NAME?</code> in Step 3 keeps both."
+      ]
+    },
+    {
+      "title": "Notebook step 7: Tidy up, check and save",
+      "instruction": "The notebook drops the two raw columns you replaced, renames the misspelled flags (<code>flags_recommend_frend</code> becomes <code>recommend_friend</code>) and adds <code>source</code> = <code>glassdoor</code>. Then it runs a last check and saves.",
+      "sample": {
+        "label": "From the notebook",
+        "kind": "code",
+        "body": "print(\"Rows:\", len(df))\nprint(df[\"review_id\"].is_unique)\nprint(df[\"country\"].isin([\"US\", \"Canada\"]).all())\nprint((df[sub_ratings] == 0).sum().sum() == 0)\nprint(df[\"tenure_band\"].isin([\"<1 yr\", \"1+ yr\", \"Not stated\"]).all())\n\ndf.to_csv(\"reviews_clean.csv\", index=False)"
+      },
+      "onTrack": "you see <code>Rows: 101</code> and four lines of <code>True</code>. Then click the folder icon, right-click <code>reviews_clean.csv</code> and choose <strong>Download</strong>.",
+      "stuck": [
+        "Save <code>reviews_clean.csv</code> in your Google Drive too. You'll start Project 3 with it."
+      ]
+    },
+    {
+      "title": "If a cell fails",
+      "instruction": "Find your error below:",
+      "items": [
+        "<code>KeyError: 'some_column'</code>: run <code>print(df.columns.tolist())</code> to see the real names. This pipeline uses one name per idea, like <code>review_pros</code> (never <code>pros</code>).",
+        "<b>0 rows:</b> run <code>df.shape</code> after each step to find the one that emptied the table.",
+        "<code>FileNotFoundError</code>: click the folder icon and check the upload is named exactly <code>glass_reviews.csv</code>, or delete it and use the original.",
+        "<code>NameError</code>: you skipped a cell. Run all the cells above, in order."
+      ],
+      "onTrack": "the cell runs and prints what the slide for that step says.",
+      "stuck": [
+        "Still stuck after 15 minutes? Paste the cell and the full error into Claude with the debugging prompt from the Colab Quickstart page, or post in Slack."
+      ]
+    }
+  ]
+};
+/* ======================= DO NOT EDIT BELOW ======================== */
+</script>
+<style>
+  :root {
+    --eggshell: #F3EEDF;
+    --paper: #FBF8F0;
+    --white: #FFFFFF;
+    --ink: #1D2420;
+    --ink-soft: #55605A;   /* 6.5:1 on white, 5.6:1 on eggshell */
+    --line: #E2DBC6;       /* decorative only */
+    --edge: #7A7F76;       /* UI borders, 4.1:1 on white, 3.5:1 on eggshell */
+    --green: #2F6B45;      /* 6.3:1 on white */
+    --green-dark: #1F4D31;
+    --green-tint: #E3EEE5;
+    --amber: #8A5E0F;      /* 5.6:1 on white */
+    --code-bg: #1D2420;
+    --code-ink: #E3EEE5;
+    --focus: #1F4D31;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: var(--eggshell);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck { max-width: 880px; margin: 0 auto; }
+  .deck-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .deck-title { font-size: 15px; font-weight: 700; margin: 0; }
+  .btn-example {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
+    border: 2px solid var(--green); color: var(--green); background: var(--white);
+    border-radius: 10px; padding: 8px 14px; font-size: 14px; font-weight: 700; text-decoration: none;
+  }
+  .btn-example:hover { background: var(--green); color: var(--white); }
+
+  .slide {
+    overflow-wrap: anywhere;
+    background: var(--white); border: 1px solid var(--line); border-radius: 16px;
+    padding: 28px 32px 24px;
+  }
+  .step-num { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--green); margin: 0; }
+  .slide h2 { font-size: 22px; line-height: 1.25; margin: 4px 0 10px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 16px; margin: 0 0 16px; }
+  .step-items { font-size: 16px; margin: -8px 0 16px; padding-left: 24px; }
+  .step-items li { margin-bottom: 6px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--green-tint); padding: 1px 5px; border-radius: 4px; }
+
+  .sample { margin: 0 0 16px; }
+  .sample-label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 6px; }
+  .sample-text {
+    margin: 0; background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--green);
+    border-radius: 10px; padding: 12px 16px; font-size: 15px; white-space: pre-wrap;
+  }
+  .sample-lines { list-style: none; white-space: normal; }
+  .sample-lines li { margin: 0; padding: 0; white-space: pre-wrap; }
+  .sample pre {
+    margin: 0; background: var(--code-bg); color: var(--code-ink); border-radius: 10px; padding: 14px 16px;
+    font-size: 14px; overflow-x: auto; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .sample pre code { background: none; padding: 0; color: inherit; }
+  .copy-btn {
+    margin-top: 8px; min-height: 44px; border: 1px solid var(--edge); background: var(--white); color: var(--ink);
+    border-radius: 10px; padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .copy-btn:hover { border-color: var(--green); color: var(--green); }
+
+  .check { font-size: 15px; padding: 8px 0 8px 14px; border-left: 4px solid; margin-bottom: 8px; }
+  .check .check-label { display: block; font-size: 13px; letter-spacing: .02em; margin-bottom: 2px; }
+  .check.ok { border-color: var(--green); }
+  .check.ok .check-label { color: var(--green); }
+  .check.stuck { border-color: var(--amber); }
+  .check.stuck .check-label { color: var(--amber); }
+  .check ul { margin: 4px 0 0; padding-left: 18px; }
+
+  .eval-table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 15px; }
+  .eval-table caption { text-align: left; }
+  .eval-table th, .eval-table td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .eval-table thead th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .eval-table tbody th { width: 30%; }
+  .finish { background: var(--green-tint); border-radius: 10px; padding: 12px 16px; font-weight: 600; margin: 0; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--white); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 10px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .nav-btn.primary { background: var(--ink); color: var(--white); border-color: var(--ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--green-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .dot {
+    /* 44px hit area around a small visual dot */
+    width: 32px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer;
+    display: grid; place-items: center;
+  }
+  .dot::before {
+    content: ""; width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--ink-soft); background: var(--white);
+  }
+  .dot.seen::before { border-color: var(--green); background: var(--green); } /* filled = visited, outline = not yet */
+  .dot[aria-current="step"]::before { width: 26px; border-radius: 6px; border-color: var(--green); background: var(--green); }
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+  .kbd-hint { font-size: 13px; color: var(--ink-soft); text-align: center; margin: 2px 0 0; }
+
+  @media (max-width: 420px) {
+    .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .eval-table tr, .eval-table th, .eval-table td { display: block; width: auto; }
+    .eval-table tbody th { width: auto; padding-bottom: 0; border-bottom: 0; }
+  }
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .slide { padding: 20px 18px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; justify-content: center; }
+    .nav-btn { flex: 1; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <div class="deck-head">
+    <h1 class="deck-title" id="deckTitle"></h1>
+    <a class="btn-example" id="exampleLink" target="_blank" rel="noopener" hidden>See the example<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+  </div>
+
+  <div id="slides"></div>
+
+  <nav class="slide-nav" aria-label="Task steps" aria-keyshortcuts="ArrowLeft ArrowRight">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next step<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <p class="kbd-hint">Tip: use the <span aria-hidden="true">← and →</span><span class="sr-only">left and right arrow</span> keys to move between steps</p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const steps = TASK.steps, ev = TASK.evaluation;
+  const total = steps.length + (ev ? 1 : 0);
+  const KEY = "task-steps:" + TASK.deckId;
+
+  $("deckTitle").textContent = TASK.title;
+  document.title = TASK.title + " · Steps";
+  if (TASK.exampleUrl) { $("exampleLink").href = TASK.exampleUrl; $("exampleLink").hidden = false; }
+
+  const label = i => (ev && i === total - 1) ? "How it's evaluated" : `Step ${i + 1} of ${steps.length}`;
+
+  function sampleHtml(s, i) {
+    if (!s) return "";
+    const lbl = `<p class="sample-label" id="sl-${i}">${s.label || "Sample"}</p>`;
+    if (s.kind === "code") {
+      const esc = s.body.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      return `<div class="sample">${lbl}<pre role="region" tabindex="0" aria-labelledby="sl-${i}"><code>${esc}</code></pre>
+        <button type="button" class="copy-btn" data-copy="${i}">Copy code</button></div>`;
+    }
+    if (s.body.includes("\n")) {
+      const lines = s.body.split("\n").filter(l => l.trim());
+      return `<div class="sample">${lbl}<ul class="sample-text sample-lines" role="list">${lines.map(l => `<li>${l}</li>`).join("")}</ul></div>`;
+    }
+    return `<div class="sample">${lbl}<p class="sample-text">${s.body}</p></div>`;
+  }
+
+  const html = steps.map((s, i) => `
+    <section class="slide" aria-labelledby="h-${i}" hidden>
+      <p class="step-num">${label(i)}</p>
+      <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
+      <p>${s.instruction}</p>
+      ${s.items && s.items.length ? `<ol class="step-items">${s.items.map(x => `<li>${x}</li>`).join("")}</ol>` : ""}
+      ${sampleHtml(s.sample, i)}
+      ${s.onTrack ? `<div class="check ok"><b class="check-label">You're on track if…</b>${s.onTrack}</div>` : ""}
+      ${s.stuck && s.stuck.length ? `<div class="check stuck"><b class="check-label">If you're stuck…</b><ul>${s.stuck.map(x => `<li>${x}</li>`).join("")}</ul></div>` : ""}
+    </section>`);
+
+  if (ev) {
+    const i = total - 1;
+    html.push(`
+    <section class="slide" aria-labelledby="h-${i}" hidden>
+      <p class="step-num">${label(i)}</p>
+      <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
+      ${ev.intro ? `<p>${ev.intro}</p>` : ""}
+      <table class="eval-table" role="table">
+        <caption class="sr-only">Evaluation criteria</caption>
+        <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Criterion</th><th scope="col" role="columnheader">What reviewers look for</th></tr></thead>
+        <tbody role="rowgroup">${ev.criteria.map(c => `<tr role="row"><th scope="row" role="rowheader">${c.name}</th><td role="cell">${c.lookFor}</td></tr>`).join("")}</tbody>
+      </table>
+      ${ev.finish ? `<p class="finish">${ev.finish}</p>` : ""}
+    </section>`);
+  }
+  $("slides").innerHTML = html.join("");
+  // Every link in the slides opens in a new tab, and says so (same pattern as "See the example").
+  document.querySelectorAll("#slides a[href]").forEach(a => {
+    a.target = "_blank";
+    a.rel = "noopener";
+    if (!/opens in a new tab/.test(a.textContent)) {
+      a.insertAdjacentHTML("beforeend", '<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span>');
+    }
+  });
+
+  const slides = [...document.querySelectorAll(".slide")];
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0, announceTimer;
+  // Clear the live region, then set it after 40ms, so a repeated message is announced again.
+  function announce(msg) {
+    clearTimeout(announceTimer);
+    $("status").textContent = "";
+    announceTimer = setTimeout(() => { $("status").textContent = msg; }, 40);
+  }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = saved.step || 0; seen = saved.seen || 0; } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    $("nextBtn").innerHTML = last ? "Last step" : 'Next step<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (moveFocus) { $("h-" + step).focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => goTo(step + 1, true);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.step, true));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, pre, input, textarea")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+  document.addEventListener("click", async e => {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    let msg;
+    try { await navigator.clipboard.writeText(steps[+b.dataset.copy].sample.body); b.textContent = msg = "Copied"; }
+    catch (err) {
+      // Clipboard blocked (e.g. inside an embed): select the code so the learner can copy it.
+      const code = b.closest(".sample").querySelector("pre code");
+      const range = document.createRange();
+      range.selectNodeContents(code);
+      const sel = window.getSelection();
+      sel.removeAllRanges(); sel.addRange(range);
+      b.textContent = "Code selected";
+      msg = "Code selected. Press Control+C or Command+C to copy.";
+    }
+    announce(msg);
+    setTimeout(() => b.textContent = "Copy code", 2500);
+  });
+
+  goTo(step, false);
+})();
+</script>
+</body>
+</html>

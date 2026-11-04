@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+TASK STEPS SLIDES — template (test format, 2026-10-19)
+================================================================================
+Design source: https://curious-tanuki-b3a260.netlify.app/ (Task view, the
+"one step per slide" slider). The side and bottom panels from that design (people
+panel, journey drawer, submission bar) are NOT here. Notion can't host them.
+
+WHAT IT IS
+  The steps of ONE task page, one step per slide. Each slide has:
+    - a short instruction (1–3 sentences)
+    - a sample (optional): what this step's output looks like, or code to copy
+    - "You're on track if…" (one line)
+    - "If you're stuck…" (1–2 bullets)
+  An optional last slide shows how the task is evaluated.
+
+HOW TO CUSTOMIZE
+  Edit ONLY the TASK object below. Everything under "DO NOT EDIT" is the engine.
+  - deckId: unique kebab-case slug (remembers the learner's place per task)
+  - steps[]: 3–6 steps. Strings may contain simple inline HTML (<b>, <code>, <a>).
+  - sample: { label, kind: "text" | "code", body }   (omit if the step has none)
+  - items: [ "…", "…" ]   (optional) a numbered list shown right after the
+    instruction, as a real <ol>. Use it for questions or ordered sub-steps; never
+    fake a list with <br>.
+  - evaluation: omit it entirely if the task isn't graded.
+  The default content is the design's own example (dataset fitness), so the file
+  opens as a working demo. Replace all of it.
+
+DEPLOY
+  github-pages-deployer → vpdasgupta/tiktok, then on the Notion task page:
+  <embed src="https://vpdasgupta.github.io/tiktok/{program}-{task}-steps.html"></embed>
+  Set the Notion embed height to about 960px. Keep the text fallback toggle on the
+  page (see task-page-v2-template.md).
+
+ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
+  - Inactive slides use `hidden` (removed from the accessibility tree and tab order).
+  - On Back/Next/dot navigation, focus moves to the new slide's heading.
+  - A polite live region announces "Step K of N".
+  - Progress dots are real buttons with aria-label and aria-current="step"; state is
+    shown by shape and fill (not color alone) and the text counter.
+  - All text ≥ 4.5:1, UI borders ≥ 3:1; visible focus ring; 44px targets.
+  - Arrow keys change step except inside links and scrollable samples.
+  - prefers-reduced-motion disables transitions. Reflows to one column ≤ 640px.
+
+A11Y FIXES 2026-11-04 (engine only; TASK format unchanged):
+  - Every link inside the slides opens in a new tab and says so: the engine adds
+    target="_blank", rel="noopener", a visual ↗ (aria-hidden) and sr-only
+    "(opens in a new tab)", same pattern as "See the example". Don't add these by hand.
+  - Multi-line text samples (body contains "\n") render as a real list
+    (<ul class="sample-text sample-lines" role="list">, one <li> per non-empty
+    line, no bullets). Single-line samples stay a <p>. Code samples unchanged.
+  - The "You're on track if…" / "If you're stuck…" labels use .check-label, so
+    plain <b>/<strong> inside on-track and stuck text now renders inline.
+  - Copy-code fallback (clipboard blocked): selects the code and announces
+    "Code selected. Press Control+C or Command+C to copy."
+  - Visible keyboard hint under the nav; aria-keyshortcuts="ArrowLeft ArrowRight"
+    on the nav.
+  - Evaluation table carries explicit table/rowgroup/row/columnheader/rowheader/cell
+    roles, so it keeps table semantics when it reflows to blocks on narrow screens.
+    Its row headers now use the full width at ≤ 420px (were squeezed to 30%).
+================================================================================
+-->
+<title>Task Steps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* ============================ EDIT THIS ============================ */
+const TASK = {
+  "deckId": "amazon-p2-employee-voice-quotes-steps",
+  "title": "Spot and explain strong employee voice quotes",
+  "exampleUrl": "",
+  "steps": [
+    {
+      "title": "What you'll hand in",
+      "instruction": "A Google Doc with 6 quotes from the project dataset: 3 strong and 3 weak. Each quote gets a short note on why it's strong or weak, and one idea for what Amazon could do.",
+      "sample": {
+        "label": "Each of your 6 entries has 5 fields",
+        "kind": "text",
+        "body": "1. <code>review_id</code> and job title\n2. The exact quote, word for word\n3. Strong or weak\n4. Why, in 1–2 sentences\n5. What Amazon could do, in 1 sentence"
+      },
+      "onTrack": "you can say what a strong quote does: it gives a manager something specific to act on.",
+      "stuck": [
+        "A strong quote can be praise. You can mix positive and negative feedback."
+      ]
+    },
+    {
+      "title": "Open the dataset in Google Sheets",
+      "instruction": "Open the <a href=\"https://drive.google.com/file/d/1NFJcm7B2zkN_cypMJUMOSvtsrvNfhd8t/view?usp=sharing\" target=\"_blank\" rel=\"noopener\">Glassdoor reviews file</a> and click <b>Open with</b>, then <b>Google Sheets</b>. Read the text in <code>summary</code>, <code>review_pros</code> and <code>review_cons</code>. Read <code>advice_to_management</code> too when it's filled in.",
+      "sample": {
+        "label": "Check employee_location first",
+        "kind": "text",
+        "body": "Dallas, TX → keep (US)\nBrampton, ON → keep (Canada)\nWinsen (Luhe) → skip (Germany)"
+      },
+      "onTrack": "you can sort and filter your copy, and you're reading reviews from the US or Canada.",
+      "stuck": [
+        "No <strong>Open with</strong> button? Click the three dots at the top right, then <strong>Open with</strong>, then <strong>Google Sheets</strong>.",
+        "Text cut off in a cell? Select the column, then <strong>Format</strong>, then <strong>Wrapping</strong>, then <strong>Wrap</strong>."
+      ]
+    },
+    {
+      "title": "Test each quote: strong or weak?",
+      "instruction": "Ask three questions about each quote:",
+      "items": [
+        "Does it name a <b>cause</b>, like a rule, a task, a manager habit or a schedule?",
+        "Does it say <b>where, when or to whom</b> it happens?",
+        "Does it hint at a <b>result</b>, like being tired, quitting or getting written up?"
+      ],
+      "sample": {
+        "label": "Scoring",
+        "kind": "text",
+        "body": "2 or 3 yes answers → strong\n0 or 1 yes answer → weak"
+      },
+      "onTrack": "you can point to the exact words in the quote that earn each yes.",
+      "stuck": [
+        "Not sure what counts as a cause? It's something Amazon controls."
+      ]
+    },
+    {
+      "title": "Example: a strong quote",
+      "instruction": "Here's a real review from the file, scored with the three questions.",
+      "sample": {
+        "label": "Review 16, Order Picker",
+        "kind": "text",
+        "body": "Quote: \"fired without notification, one day my badge just didnt work, wasting my time and my bus fare\"\nStrong or weak: Strong\nWhy: Names the cause (no notice before termination), the moment (badge stopped working at the door) and the cost (wasted trip and fare).\nWhat Amazon could do: Tell associates about a termination before their next shift, by text or app message."
+      },
+      "onTrack": "each of your strong quotes also gets at least 2 yes answers.",
+      "stuck": [
+        "Pick your own 6. Don't reuse reviews 16 or 4, or the two quotes on the \"What is Employee Voice Data\" page."
+      ]
+    },
+    {
+      "title": "Example: a weak quote",
+      "instruction": "A weak quote can still be true. It's weak because a manager can't tell what to change.",
+      "sample": {
+        "label": "Review 4, Employee",
+        "kind": "text",
+        "body": "Quote: \"Tough on the body / Labor intensive\"\nStrong or weak: Weak\nWhy: True, but it names no task, shift or result. A manager can't tell which part of the job causes the strain.\nWhat Amazon could do: Ask a follow-up in a survey: \"Which task is hardest on your body?\""
+      },
+      "onTrack": "each \"why\" for a weak quote says what's missing, not that the reviewer is wrong.",
+      "stuck": [
+        "Weak quotes are often short: a few words in <code>summary</code> or a one-line con."
+      ]
+    },
+    {
+      "title": "Fill in the template",
+      "instruction": "Make a copy of the <b>Employee Voice Quotes template</b> (link coming). Click <b>Make a copy</b> and work in your copy. Fill in 6 entries: 3 strong, 3 weak.",
+      "sample": {
+        "label": "Sample entry layout",
+        "kind": "text",
+        "body": "Review: [review_id], [job title]\nQuote: \"[copied word for word]\"\nStrong or weak:\nWhy:\nWhat Amazon could do:"
+      },
+      "onTrack": "every quote is copied word for word and has its <code>review_id</code>.",
+      "stuck": [
+        "Paste only the review text. The dataset has no usernames, and your doc shouldn't either.",
+        "Every \"why\" should use at least one of the three questions."
+      ]
+    },
+    {
+      "title": "Share your doc and submit",
+      "instruction": "Click <b>Share</b> (top right). Under General access choose <b>Anyone with the link</b>, role <b>Viewer</b>, then <b>Copy link</b>. Paste the link in the task box below this deck.",
+      "onTrack": "the link opens in a private browser window without asking you to sign in.",
+      "stuck": [
+        "Paste your link into a private (incognito) browser window. If it asks you to sign in, General access is still set to Restricted."
+      ]
+    }
+  ]
+};
+/* ======================= DO NOT EDIT BELOW ======================== */
+</script>
+<style>
+  :root {
+    --eggshell: #F3EEDF;
+    --paper: #FBF8F0;
+    --white: #FFFFFF;
+    --ink: #1D2420;
+    --ink-soft: #55605A;   /* 6.5:1 on white, 5.6:1 on eggshell */
+    --line: #E2DBC6;       /* decorative only */
+    --edge: #7A7F76;       /* UI borders, 4.1:1 on white, 3.5:1 on eggshell */
+    --green: #2F6B45;      /* 6.3:1 on white */
+    --green-dark: #1F4D31;
+    --green-tint: #E3EEE5;
+    --amber: #8A5E0F;      /* 5.6:1 on white */
+    --code-bg: #1D2420;
+    --code-ink: #E3EEE5;
+    --focus: #1F4D31;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: var(--eggshell);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck { max-width: 880px; margin: 0 auto; }
+  .deck-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .deck-title { font-size: 15px; font-weight: 700; margin: 0; }
+  .btn-example {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
+    border: 2px solid var(--green); color: var(--green); background: var(--white);
+    border-radius: 10px; padding: 8px 14px; font-size: 14px; font-weight: 700; text-decoration: none;
+  }
+  .btn-example:hover { background: var(--green); color: var(--white); }
+
+  .slide {
+    overflow-wrap: anywhere;
+    background: var(--white); border: 1px solid var(--line); border-radius: 16px;
+    padding: 28px 32px 24px;
+  }
+  .step-num { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--green); margin: 0; }
+  .slide h2 { font-size: 22px; line-height: 1.25; margin: 4px 0 10px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 16px; margin: 0 0 16px; }
+  .step-items { font-size: 16px; margin: -8px 0 16px; padding-left: 24px; }
+  .step-items li { margin-bottom: 6px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .92em; background: var(--green-tint); padding: 1px 5px; border-radius: 4px; }
+
+  .sample { margin: 0 0 16px; }
+  .sample-label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 6px; }
+  .sample-text {
+    margin: 0; background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--green);
+    border-radius: 10px; padding: 12px 16px; font-size: 15px; white-space: pre-wrap;
+  }
+  .sample-lines { list-style: none; white-space: normal; }
+  .sample-lines li { margin: 0; padding: 0; white-space: pre-wrap; }
+  .sample pre {
+    margin: 0; background: var(--code-bg); color: var(--code-ink); border-radius: 10px; padding: 14px 16px;
+    font-size: 14px; overflow-x: auto; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .sample pre code { background: none; padding: 0; color: inherit; }
+  .copy-btn {
+    margin-top: 8px; min-height: 44px; border: 1px solid var(--edge); background: var(--white); color: var(--ink);
+    border-radius: 10px; padding: 8px 14px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .copy-btn:hover { border-color: var(--green); color: var(--green); }
+
+  .check { font-size: 15px; padding: 8px 0 8px 14px; border-left: 4px solid; margin-bottom: 8px; }
+  .check .check-label { display: block; font-size: 13px; letter-spacing: .02em; margin-bottom: 2px; }
+  .check.ok { border-color: var(--green); }
+  .check.ok .check-label { color: var(--green); }
+  .check.stuck { border-color: var(--amber); }
+  .check.stuck .check-label { color: var(--amber); }
+  .check ul { margin: 4px 0 0; padding-left: 18px; }
+
+  .eval-table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 15px; }
+  .eval-table caption { text-align: left; }
+  .eval-table th, .eval-table td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .eval-table thead th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .eval-table tbody th { width: 30%; }
+  .finish { background: var(--green-tint); border-radius: 10px; padding: 12px 16px; font-weight: 600; margin: 0; }
+
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn {
+    min-height: 44px; min-width: 44px; background: var(--white); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 10px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .nav-btn.primary { background: var(--ink); color: var(--white); border-color: var(--ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--green-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .dot {
+    /* 44px hit area around a small visual dot */
+    width: 32px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer;
+    display: grid; place-items: center;
+  }
+  .dot::before {
+    content: ""; width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--ink-soft); background: var(--white);
+  }
+  .dot.seen::before { border-color: var(--green); background: var(--green); } /* filled = visited, outline = not yet */
+  .dot[aria-current="step"]::before { width: 26px; border-radius: 6px; border-color: var(--green); background: var(--green); }
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+  .kbd-hint { font-size: 13px; color: var(--ink-soft); text-align: center; margin: 2px 0 0; }
+
+  @media (max-width: 420px) {
+    .eval-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .eval-table tr, .eval-table th, .eval-table td { display: block; width: auto; }
+    .eval-table tbody th { width: auto; padding-bottom: 0; border-bottom: 0; }
+  }
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .slide { padding: 20px 18px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; justify-content: center; }
+    .nav-btn { flex: 1; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <div class="deck-head">
+    <h1 class="deck-title" id="deckTitle"></h1>
+    <a class="btn-example" id="exampleLink" target="_blank" rel="noopener" hidden>See the example<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+  </div>
+
+  <div id="slides"></div>
+
+  <nav class="slide-nav" aria-label="Task steps" aria-keyshortcuts="ArrowLeft ArrowRight">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next step<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <p class="kbd-hint">Tip: use the <span aria-hidden="true">← and →</span><span class="sr-only">left and right arrow</span> keys to move between steps</p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const steps = TASK.steps, ev = TASK.evaluation;
+  const total = steps.length + (ev ? 1 : 0);
+  const KEY = "task-steps:" + TASK.deckId;
+
+  $("deckTitle").textContent = TASK.title;
+  document.title = TASK.title + " · Steps";
+  if (TASK.exampleUrl) { $("exampleLink").href = TASK.exampleUrl; $("exampleLink").hidden = false; }
+
+  const label = i => (ev && i === total - 1) ? "How it's evaluated" : `Step ${i + 1} of ${steps.length}`;
+
+  function sampleHtml(s, i) {
+    if (!s) return "";
+    const lbl = `<p class="sample-label" id="sl-${i}">${s.label || "Sample"}</p>`;
+    if (s.kind === "code") {
+      const esc = s.body.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      return `<div class="sample">${lbl}<pre role="region" tabindex="0" aria-labelledby="sl-${i}"><code>${esc}</code></pre>
+        <button type="button" class="copy-btn" data-copy="${i}">Copy code</button></div>`;
+    }
+    if (s.body.includes("\n")) {
+      const lines = s.body.split("\n").filter(l => l.trim());
+      return `<div class="sample">${lbl}<ul class="sample-text sample-lines" role="list">${lines.map(l => `<li>${l}</li>`).join("")}</ul></div>`;
+    }
+    return `<div class="sample">${lbl}<p class="sample-text">${s.body}</p></div>`;
+  }
+
+  const html = steps.map((s, i) => `
+    <section class="slide" aria-labelledby="h-${i}" hidden>
+      <p class="step-num">${label(i)}</p>
+      <h2 id="h-${i}" tabindex="-1">${s.title}</h2>
+      <p>${s.instruction}</p>
+      ${s.items && s.items.length ? `<ol class="step-items">${s.items.map(x => `<li>${x}</li>`).join("")}</ol>` : ""}
+      ${sampleHtml(s.sample, i)}
+      ${s.onTrack ? `<div class="check ok"><b class="check-label">You're on track if…</b>${s.onTrack}</div>` : ""}
+      ${s.stuck && s.stuck.length ? `<div class="check stuck"><b class="check-label">If you're stuck…</b><ul>${s.stuck.map(x => `<li>${x}</li>`).join("")}</ul></div>` : ""}
+    </section>`);
+
+  if (ev) {
+    const i = total - 1;
+    html.push(`
+    <section class="slide" aria-labelledby="h-${i}" hidden>
+      <p class="step-num">${label(i)}</p>
+      <h2 id="h-${i}" tabindex="-1">${ev.title || "How it will be evaluated"}</h2>
+      ${ev.intro ? `<p>${ev.intro}</p>` : ""}
+      <table class="eval-table" role="table">
+        <caption class="sr-only">Evaluation criteria</caption>
+        <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Criterion</th><th scope="col" role="columnheader">What reviewers look for</th></tr></thead>
+        <tbody role="rowgroup">${ev.criteria.map(c => `<tr role="row"><th scope="row" role="rowheader">${c.name}</th><td role="cell">${c.lookFor}</td></tr>`).join("")}</tbody>
+      </table>
+      ${ev.finish ? `<p class="finish">${ev.finish}</p>` : ""}
+    </section>`);
+  }
+  $("slides").innerHTML = html.join("");
+  // Every link in the slides opens in a new tab, and says so (same pattern as "See the example").
+  document.querySelectorAll("#slides a[href]").forEach(a => {
+    a.target = "_blank";
+    a.rel = "noopener";
+    if (!/opens in a new tab/.test(a.textContent)) {
+      a.insertAdjacentHTML("beforeend", '<span aria-hidden="true"> ↗</span><span class="sr-only"> (opens in a new tab)</span>');
+    }
+  });
+
+  const slides = [...document.querySelectorAll(".slide")];
+  $("dots").innerHTML = slides.map((_, i) =>
+    `<li><button type="button" class="dot" data-step="${i}" aria-label="${label(i)}"></button></li>`).join("");
+  const dots = [...document.querySelectorAll(".dot")];
+
+  let step = 0, seen = 0, announceTimer;
+  // Clear the live region, then set it after 40ms, so a repeated message is announced again.
+  function announce(msg) {
+    clearTimeout(announceTimer);
+    $("status").textContent = "";
+    announceTimer = setTimeout(() => { $("status").textContent = msg; }, 40);
+  }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || "{}"); step = saved.step || 0; seen = saved.seen || 0; } catch (e) {}
+
+  function goTo(i, moveFocus) {
+    step = Math.max(0, Math.min(total - 1, i));
+    seen = Math.max(seen, step);
+    slides.forEach((s, n) => s.hidden = n !== step);
+    dots.forEach((d, n) => {
+      d.classList.toggle("seen", n <= seen);
+      d.setAttribute("aria-label", label(n) + (n !== step && n <= seen ? ", visited" : ""));
+      if (n === step) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = step === 0;
+    const last = step === total - 1;
+    $("nextBtn").disabled = last;
+    $("nextBtn").innerHTML = last ? "Last step" : 'Next step<span aria-hidden="true"> →</span>';
+    $("counter").textContent = label(step);
+    if (moveFocus) { $("h-" + step).focus(); announce(label(step)); }
+    try { localStorage.setItem(KEY, JSON.stringify({ step, seen })); } catch (e) {}
+  }
+
+  $("prevBtn").onclick = () => goTo(step - 1, true);
+  $("nextBtn").onclick = () => goTo(step + 1, true);
+  dots.forEach(d => d.onclick = () => goTo(+d.dataset.step, true));
+  document.addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.target.closest("a, pre, input, textarea")) return;
+    if (e.key === "ArrowRight" && step < total - 1) { e.preventDefault(); goTo(step + 1, true); }
+    if (e.key === "ArrowLeft" && step > 0) { e.preventDefault(); goTo(step - 1, true); }
+  });
+  document.addEventListener("click", async e => {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    let msg;
+    try { await navigator.clipboard.writeText(steps[+b.dataset.copy].sample.body); b.textContent = msg = "Copied"; }
+    catch (err) {
+      // Clipboard blocked (e.g. inside an embed): select the code so the learner can copy it.
+      const code = b.closest(".sample").querySelector("pre code");
+      const range = document.createRange();
+      range.selectNodeContents(code);
+      const sel = window.getSelection();
+      sel.removeAllRanges(); sel.addRange(range);
+      b.textContent = "Code selected";
+      msg = "Code selected. Press Control+C or Command+C to copy.";
+    }
+    announce(msg);
+    setTimeout(() => b.textContent = "Copy code", 2500);
+  });
+
+  goTo(step, false);
+})();
+</script>
+</body>
+</html>
