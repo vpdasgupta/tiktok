@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What You'll Build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Text&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F7F5F2; --surface:#FFFFFF; --ink:#1C1B1B; --muted:#5B666D; --line:#DAD6CE;
+  --ui-line:#7A8288; --track:#7A8288;
+  --brand:#241A6B; --brand-soft:#E6E4FF; --brand-softer:#F3F2FF;
+  --green:#0B7431; --green-soft:#DDF9E4; --link:#2A4EEF;
+  --focus:#2A4EEF;
+  --co:#1C1B1B; --co-on:#FFFFFF; --co-soft:#EFEDE9; --co-ink:#1C1B1B; --co-accent:#1C1B1B;
+  --r-card:14px; --r-inner:12px;
+  --display:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --body:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#121416; --surface:#1B1E21; --ink:#ECEAE5; --muted:#A3ACB2; --line:#33383D;
+    --ui-line:#7D868C; --track:#5E666C;
+    --brand:#C9C3FF; --brand-soft:#2B2650; --brand-softer:#211E38;
+    --green:#5BE58A; --green-soft:#173826; --link:#93A6FF;
+    --focus:#93A6FF;
+    --co:#ECEAE5; --co-on:#121416; --co-soft:#26292C; --co-ink:#ECEAE5; --co-accent:#ECEAE5;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;padding:14px 12px 12px;color:var(--ink);font:400 15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+h1{margin:0;font:700 28px/1.15 var(--display);letter-spacing:-.01em;color:var(--co);letter-spacing:-.005em}
+h2{margin:0 0 8px;font:600 17px/1.3 var(--body);color:var(--ink)}
+p{margin:0}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tab{appearance:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;
+  background:var(--surface);border:1px solid var(--ui-line);border-radius:var(--r-card);
+  padding:12px 14px;min-height:64px;display:flex;flex-direction:column;justify-content:center;gap:2px;position:relative}
+.tab .t1{font-weight:600;font-size:15px}
+.tab .t2{color:var(--muted);font-size:14px}
+.tab .sel{display:none}
+.tab:hover{border-color:var(--co)}
+.tab[aria-selected="true"]{border:2px solid var(--co);padding:11px 13px;background:var(--co-soft)}
+.tab[aria-selected="true"] .t2{color:var(--ink)}
+.tab[aria-selected="true"] .sel{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-top:2px;color:var(--co-ink)}
+
+.progress{display:flex;align-items:center;gap:10px;margin:12px 0 12px}
+.bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;flex:1}
+.seg{height:6px;border-radius:999px;background:var(--line);box-shadow:inset 0 0 0 1px var(--track)}
+.seg.on{background:var(--green);box-shadow:none}
+.progress .lbl{font-size:13px;color:var(--muted);font-weight:500;white-space:nowrap}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:14px 16px}
+.panel ul{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:6px}
+.panel li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline}
+.pnum{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);white-space:nowrap}
+.ptitle{font-weight:600}
+.handin{border-top:1px solid var(--line);padding-top:10px}
+.handin b{font-weight:600}
+
+.sect{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
+.sect h3{margin:0 0 8px;font:600 15px/1.3 var(--body);color:var(--ink)}
+.panel ul.tools{margin:0;gap:8px}
+.panel ul.tools li{grid-template-columns:160px 1fr;align-items:center}
+.tname{justify-self:start;display:inline-flex;align-items:center;min-height:28px;padding:3px 12px;border-radius:999px;background:var(--co-soft);color:var(--co-ink);font-weight:600;font-size:14px;white-space:nowrap}
+.example{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:start}
+.example video{display:block;width:100%;aspect-ratio:420/800;border-radius:var(--r-inner);background:#000;border:1px solid var(--ui-line)}
+.example p{margin:0 0 8px}
+.panel.ex h2{margin-bottom:12px}
+.example details{margin-top:4px}
+.example summary{cursor:pointer;font-weight:600;color:var(--link);padding:4px 0}
+.example ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+
+.walk{margin-top:12px;background:var(--co-soft);border-radius:var(--r-card);padding:12px 16px}
+.walk b{color:var(--co-ink);font-weight:600}
+.foot{margin-top:10px;font-size:13.5px;color:var(--muted)}
+
+/* Company brand layer (tokens set from CONFIG.brand) */
+.co-strip{position:absolute;top:0;left:0;right:0;height:4px;background:var(--co-accent);pointer-events:none}
+.co-chip{display:inline-flex;align-items:center;min-height:24px;padding:3px 10px;border-radius:999px;background:var(--co-soft);color:var(--co-ink);font:600 12.5px/1.2 var(--body);white-space:nowrap}
+.co-chip:empty{display:none}
+.head{display:flex;flex-wrap:wrap-reverse;align-items:center;justify-content:space-between;gap:6px 12px}
+.head{margin:0 0 12px}
+
+@media (max-width:520px){
+  .tabs{grid-template-columns:1fr;gap:8px}
+  .tab{min-height:52px}
+  h1{font-size:28px}
+  .panel li{grid-template-columns:1fr;gap:0}
+  .panel ul.tools li{grid-template-columns:1fr;gap:4px}
+  .example{grid-template-columns:1fr}
+  .example video{max-width:220px}
+}
+@media (prefers-reduced-motion: no-preference){
+  .seg{transition:background-color .25s ease}
+  .tab{transition:border-color .15s ease,background-color .15s ease}
+}
+
+/* 2026-11-05 BeReal widget skin (P1 Step 1): white canvas, black outlines, BeReal green, DM Serif Text headings.
+   Light only, like minna-srwt.github.io/BeReal-widgets. Green #18DD4C is decorative only; text stays black/#4D4D4D/#0B7431. */
+:root{--bg:#FFFFFF;--surface:#FFFFFF;--ink:#000000;--muted:#4D4D4D;--line:#000000;--ui-line:#000000;--track:#000000;
+  --green:#0B7431;--green-soft:#ECFDF1;--link:#000000;--focus:#000000;
+  --co:#000000;--co-on:#FFFFFF;--co-soft:#ECFDF1;--co-ink:#000000;--co-accent:transparent;--r-card:20px;--r-inner:14px;color-scheme:light}
+@media (prefers-color-scheme: dark){:root{--bg:#FFFFFF;--surface:#FFFFFF;--ink:#000000;--muted:#4D4D4D;--line:#000000;--ui-line:#000000;--track:#000000;
+  --green:#0B7431;--green-soft:#ECFDF1;--link:#000000;--focus:#000000;
+  --co:#000000;--co-on:#FFFFFF;--co-soft:#ECFDF1;--co-ink:#000000;--co-accent:transparent;--r-card:20px;--r-inner:14px;color-scheme:light}}
+html,body{background:#FFFFFF}
+h1{font:400 30px/1.15 'DM Serif Text',Georgia,serif;letter-spacing:0;color:#000}
+.co-strip{display:none}
+.co-chip{background:#ECFDF1;border:1.5px solid #000;color:#000}
+:focus-visible{outline:3px solid #000;outline-offset:3px}
+
+.panel{border:2.5px solid #000}
+.panel h2{font:400 22px/1.2 'DM Serif Text',Georgia,serif}
+.tab{border:2px solid #000}
+.tab:hover{border-color:#000;background:#F6FEF8}
+.tab[aria-selected="true"]{border:3px solid #000;padding:11px 13px;background:#ECFDF1;box-shadow:0 4px 0 #000}
+.seg{background:#FFFFFF;box-shadow:inset 0 0 0 1.5px #000;height:8px}
+.seg.on{background:#18DD4C;box-shadow:inset 0 0 0 1.5px #000}
+.handin,.sect{border-top-color:#E4E4E4}
+.tname{border:1.5px solid #000}
+.walk{border:2.5px solid #000;background:#ECFDF1}
+.example summary{color:#000;text-decoration:underline;text-decoration-color:#18DD4C;text-decoration-thickness:3px;text-underline-offset:4px}
+</style>
+</head>
+<body>
+<div class="co-strip" aria-hidden="true"></div>
+<main>
+  <div class="head"><h1 id="title"></h1><span class="co-chip" aria-hidden="true" data-co-chip></span></div>
+  <div class="tabs" role="tablist" id="tablist" aria-labelledby="title"></div>
+  <div class="progress" aria-hidden="true">
+    <div class="bar" id="bar"></div>
+    <span class="lbl" id="barLabel"></span>
+  </div>
+  <div id="panels"></div>
+  <p class="walk"><b>You'll walk away with</b> <span id="walk"></span></p>
+  <div class="sr-only" aria-live="polite" id="live"></div>
+</main>
+<script>
+const CONFIG = {
+  brand: {
+    chip: "Extern × BeReal",
+    shape: { rCard: "20px", rInner: "14px" },
+    light: { co: "#000000", coOn: "#FFFFFF", coSoft: "#ECFDF1", coInk: "#000000", coAccent: "transparent" },
+    dark:  { co: "#000000", coOn: "#FFFFFF", coSoft: "#ECFDF1", coInk: "#000000", coAccent: "transparent" }
+  },
+  title: "What you'll build",
+  totalWeeks: "All 8 weeks",
+  stages: [
+    {
+      range: "Projects 1–2", name: "Research", weeks: "Weeks 1–3",
+      projects: [
+        { num: "Project 1", title: "Your First BeReal Teardown", desc: "Map the BeReal user journey and spot delight vs. friction points." },
+        { num: "Project 2", title: "Benchmark BeReal's competitors", desc: "Find which features actually drive growth." }
+      ],
+      handIn: "a user journey map and a competitor benchmark.",
+      tools: [
+        { name: "ChatGPT", use: "Sort competitor app reviews into themes (Project 2)." }
+      ]
+    },
+    {
+      range: "Projects 3–4", name: "Build and test", weeks: "Weeks 4–7",
+      projects: [
+        { num: "Project 3", title: "Design a new app feature", desc: "Prototype one idea that could grow BeReal's monthly active users (MAUs)." },
+        { num: "Project 4", title: "Test your feature", desc: "Run focus groups and use the feedback to refine it." }
+      ],
+      handIn: "a clickable prototype and focus group findings.",
+      tools: [
+        { name: "ChatGPT", use: "Brainstorm feature ideas, find gaps in your one-page PRD and plan your test." },
+        { name: "Canva", use: "Build your clickable prototype from a starter template (free plan is fine)." }
+      ]
+    },
+    {
+      range: "Project 5", name: "Pitch", weeks: "Week 8",
+      projects: [
+        { num: "Project 5", title: "Pitch your feature", desc: "A short, data-backed, persuasive presentation." }
+      ],
+      handIn: "your pitch deck.",
+      tools: [
+        { name: "ChatGPT or Claude", use: "Draft your pitch script, then rewrite it in your own words." },
+        { name: "Canva", use: "Build your pitch slides." },
+        { name: "Loom", use: "Record your pitch with your slides on screen. Zoom or Canva's \"Present and record\" work too." }
+      ]
+    },
+    {
+      range: "Example", name: "Final project",
+      example: {
+        heading: "See an example final project",
+        intro: "A past extern's feature, 30 Days of Real Moments, shown as a clickable prototype. The video is 30 seconds and has no sound.",
+        video: "bereal-orient-assets/bereal-example-prototype.mp4",
+        poster: "bereal-orient-assets/bereal-example-prototype-poster.jpg",
+        label: "Example final project: 30 Days of Real Moments prototype walkthrough, 30 seconds, no sound",
+        steps: [
+          "The BeReal feed shows a friend's post. A notification bell opens a \"Something New!\" pop-up inviting you to 30 Days of Real Moments: a new photo theme every day for a month.",
+          "Tapping \"Tell Me More\" opens the challenge page. It shows friends' answers to today's theme (a plant corner, a reading nook, a coffee spot, a workspace), three \"How it works\" steps, and Join Now or Skip for Now buttons.",
+          "After joining, Day 1's theme is \"Favorite Corner at Home.\" The usual front and back camera screen opens with the 2:00 countdown, and you take the photo.",
+          "A progress screen says \"You've completed 1 of 30 Real Moments!\" and teases tomorrow's theme, \"Morning Ritual.\" Below it, your photo and your friends' photos for today's theme appear in one feed."
+        ]
+      }
+    }
+  ],
+  walkAway: "a tested feature prototype, a data-backed pitch, and real product management work to show on your résumé and LinkedIn."
+};
+
+// Company brand layer: sets the --co-* tokens (light + dark) and chip text from CONFIG.brand.
+(function (b) {
+  if (!b) return;
+  const map = { co: "--co", coOn: "--co-on", coSoft: "--co-soft", coInk: "--co-ink", coAccent: "--co-accent", rCard: "--r-card", rInner: "--r-inner" };
+  const decl = (t) => Object.keys(map).filter((k) => t && t[k]).map((k) => map[k] + ":" + t[k]).join(";");
+  const s = document.createElement("style");
+  s.textContent = ":root{" + decl(Object.assign({}, b.shape, b.light)) + "}" +
+    "@media (prefers-color-scheme: dark){:root{" + decl(b.dark) + "}}";
+  document.head.appendChild(s);
+  document.querySelectorAll("[data-co-chip]").forEach((e) => { e.textContent = b.chip; });
+})(CONFIG.brand);
+
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const tablist = $("tablist"), panels = $("panels"), bar = $("bar");
+  const n = CONFIG.stages.length;
+  $("title").textContent = CONFIG.title;
+  $("walk").textContent = CONFIG.walkAway;
+
+  const tabs = [], pans = [], segs = [];
+  CONFIG.stages.forEach((s, i) => {
+    const tab = document.createElement("button");
+    tab.type = "button";
+    tab.className = "tab";
+    tab.id = "tab-" + i;
+    tab.setAttribute("role", "tab");
+    tab.setAttribute("aria-controls", "panel-" + i);
+    tab.innerHTML = '<span class="t1"></span><span class="sr-only"> · </span><span class="t2"></span><span class="sel"><span aria-hidden="true">&#10003;</span> Showing</span>';
+    tab.querySelector(".t1").textContent = s.range;
+    tab.querySelector(".t2").textContent = s.name;
+    tab.querySelector(".sel").setAttribute("aria-hidden", "true");
+    tablist.appendChild(tab);
+    tabs.push(tab);
+
+    const p = document.createElement("section");
+    p.className = "panel";
+    p.id = "panel-" + i;
+    p.setAttribute("role", "tabpanel");
+    p.setAttribute("aria-labelledby", "tab-" + i);
+    p.tabIndex = 0;
+    const h = document.createElement("h2");
+    h.textContent = s.example ? s.example.heading : s.range + ": " + s.name;
+    p.appendChild(h);
+    if (s.example) p.classList.add("ex");
+    if (s.projects) {
+    const ul = document.createElement("ul");
+    s.projects.forEach((pr) => {
+      const li = document.createElement("li");
+      const num = document.createElement("span");
+      num.className = "pnum";
+      num.textContent = pr.num;
+      const body = document.createElement("span");
+      if (pr.title) {
+        const t = document.createElement("span");
+        t.className = "ptitle";
+        t.textContent = pr.title + ". ";
+        body.appendChild(t);
+      }
+      body.appendChild(document.createTextNode(pr.desc));
+      li.append(num, body);
+      ul.appendChild(li);
+    });
+    p.appendChild(ul);
+    const hi = document.createElement("p");
+    hi.className = "handin";
+    hi.innerHTML = "<b>What you'll hand in:</b> ";
+    hi.appendChild(document.createTextNode(s.handIn));
+    p.appendChild(hi);
+    }
+
+    if (s.tools && s.tools.length) {
+      const sec = document.createElement("div");
+      sec.className = "sect";
+      const h3 = document.createElement("h3");
+      h3.textContent = "Tools You'll Use";
+      const tl = document.createElement("ul");
+      tl.className = "tools";
+      s.tools.forEach((tool) => {
+        const li = document.createElement("li");
+        const nm = document.createElement("span");
+        nm.className = "tname";
+        nm.textContent = tool.name;
+        const use = document.createElement("span");
+        use.textContent = tool.use;
+        li.append(nm, use);
+        tl.appendChild(li);
+      });
+      sec.append(h3, tl);
+      p.appendChild(sec);
+    }
+
+    if (s.example) {
+      const ex = s.example;
+      const wrap = document.createElement("div");
+      wrap.className = "example";
+      const v = document.createElement("video");
+      v.controls = true;
+      v.muted = true;
+      v.playsInline = true;
+      v.preload = "none";
+      v.poster = ex.poster;
+      v.src = ex.video;
+      v.setAttribute("aria-label", ex.label);
+      const txt = document.createElement("div");
+      const intro = document.createElement("p");
+      intro.textContent = ex.intro;
+      const det = document.createElement("details");
+      const sum = document.createElement("summary");
+      sum.textContent = "What happens in the video";
+      const ol = document.createElement("ol");
+      ex.steps.forEach((st) => { const li = document.createElement("li"); li.textContent = st; ol.appendChild(li); });
+      det.append(sum, ol);
+      txt.append(intro, det);
+      wrap.append(v, txt);
+      p.appendChild(wrap);
+    }
+    panels.appendChild(p);
+    pans.push(p);
+
+    if (!s.example) {
+      const seg = document.createElement("span");
+      seg.className = "seg";
+      bar.appendChild(seg);
+      segs.push(seg);
+    }
+
+    tab.addEventListener("click", () => select(i, false, true));
+  });
+
+  let current = 0;
+  function select(i, focus, announce) {
+    current = i;
+    tabs.forEach((t, j) => {
+      const on = j === i;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      pans[j].hidden = !on;
+      if (segs[j]) segs[j].classList.toggle("on", j <= i);
+    });
+    const isEx = !!CONFIG.stages[i].example;
+    $("barLabel").textContent = isEx ? CONFIG.totalWeeks : CONFIG.stages[i].weeks;
+    if (focus) tabs[i].focus();
+    if (announce) $("live").textContent = isEx
+      ? "Showing the example final project."
+      : "Showing " + CONFIG.stages[i].weeks + ": " + CONFIG.stages[i].range + ", " + CONFIG.stages[i].name + ".";
+  }
+
+  tablist.addEventListener("keydown", (e) => {
+    let next = null;
+    if (e.key === "ArrowRight") next = (current + 1) % n;
+    else if (e.key === "ArrowLeft") next = (current - 1 + n) % n;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = n - 1;
+    if (next !== null) { e.preventDefault(); select(next, true, true); }
+  });
+
+  select(0, false, false);
+})();
+</script>
+</body>
+</html>
