@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600;700&display=swap">
 <style>
 /* Source design: "Extern Onboarding" Claude Design canvas, board "BeReal: full onboarding page (desktop)".
-   Round 2 (2026-11-05): six-step scroll (Intro, Day 0 video, How Extern works, Project overview,
-   Get set up, Ready) with a sticky step tracker. Extern green #18DD4C is used for small accents only;
+   Round 3 (2026-11-05): six steps shown one at a time (Intro, Day 0 video, How Extern works, Project overview,
+   Get set up, Ready) with a clickable step tracker and Back/Next buttons. Extern green #18DD4C is used for small accents only;
    on black it is 11.6:1, so it is also safe for the short eyebrow text. */
 :root{
   --bg:#000000; --fg:#FFFFFF; --muted:#B3B3B3; --subtle:#A6A6A6; --faint:#8C8C8C;
@@ -21,7 +21,7 @@
   --bar-h:104px;
 }
 *{box-sizing:border-box}
-html{color-scheme:dark;scroll-padding-top:calc(var(--bar-h) + 8px)}
+html{color-scheme:dark}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.55}
 a{color:var(--fg)} a:hover{color:#D9D9D9}
 :focus-visible{outline:3px solid var(--fg);outline-offset:3px}
@@ -35,7 +35,7 @@ a{color:var(--fg)} a:hover{color:#D9D9D9}
 .btn:hover{border-color:#6B6B6B;color:var(--fg)}
 .btn-solid{background:var(--fg);color:#000;border-color:var(--fg);font-weight:700}
 .btn-solid:hover{background:#D9D9D9;color:#000}
-.btn-next{margin-top:40px}
+.nav{display:flex;flex-wrap:wrap;gap:12px;margin-top:40px}
 .btn-next .arrow{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--green);color:#000;font-size:13px;line-height:22px;text-align:center}
 
 /* Sticky top bar + step tracker */
@@ -57,8 +57,9 @@ a{color:var(--fg)} a:hover{color:#D9D9D9}
 @media (max-width:420px){ .where{display:none} }
 
 /* Step panels */
-.panel{min-height:calc(100vh - var(--bar-h));padding:56px 0 64px;border-top:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center}
-.panel:first-of-type{border-top:0}
+.panel{padding:48px 0 56px}
+.panel[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){ .panel.enter{animation:in .28s ease-out} @keyframes in{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}} }
 .eyebrow{margin:0 0 14px;display:inline-flex;align-items:center;gap:10px;color:var(--green);font-size:15px;font-weight:700;letter-spacing:.02em}
 .eyebrow::before{content:"";width:22px;height:3px;border-radius:2px;background:var(--green)}
 h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(44px,8vw,80px);line-height:.98;letter-spacing:-.035em}
@@ -169,7 +170,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   :root{--bar-h:96px}
   .steps .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .steps a{min-height:32px}
-  .panel{min-height:0;padding:44px 0 52px}
+  .panel{padding:36px 0 44px}
   .task{gap:12px}
 }
 @media (min-width:641px){ .where{display:none} }
@@ -177,7 +178,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 </style>
 </head>
 <body>
-<a class="skip" href="#s-setup">Skip to the setup checklist</a>
+<a class="skip" href="#s-setup" data-go>Skip to the setup checklist</a>
 
 <div class="topbar">
   <div class="wrap">
@@ -206,12 +207,12 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   <p class="eyebrow">Step 1 of 6 · Intro</p>
   <h1 id="h-intro" tabindex="-1">Welcome to your externship.</h1>
   <p class="lede">You'll do the work of an <span class="hl">Associate Product Manager</span> on a real BeReal challenge: helping BeReal grow its monthly active users without losing what makes it real.</p>
-  <p class="sub">Scroll through six short steps. They show you how the externship works and get you set up for Day 1.</p>
+  <p class="sub">Go through six short steps. They show you how the externship works and get you set up for Day 1.</p>
   <ul class="chips" aria-label="At a glance">
     <li>About 10 minutes</li>
     <li>Project 1 unlocks on Day 1</li>
   </ul>
-  <div><a class="btn btn-solid btn-next" href="#s-video" data-next>Next: Day 0 video <span class="arrow" aria-hidden="true">↓</span></a></div>
+  <div class="nav"><a class="btn btn-solid btn-next" href="#s-video" data-go>Next: Day 0 video <span class="arrow" aria-hidden="true">→</span></a></div>
 </section>
 
 <!-- 2. Day 0 video -->
@@ -236,7 +237,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
       <p>Most importantly, I'll make sure you feel supported as you prepare to gain real work experience and practical skills. I can't wait to start on this journey with you on the team.</p>
     </details>
   </div>
-  <div><a class="btn btn-solid btn-next" href="#s-how" data-next>Next: How Extern works <span class="arrow" aria-hidden="true">↓</span></a></div>
+  <div class="nav"><a class="btn" href="#s-intro" data-go><span aria-hidden="true">←</span> Back<span class="sr-only">: Intro</span></a><a class="btn btn-solid btn-next" href="#s-how" data-go>Next: How Extern works <span class="arrow" aria-hidden="true">→</span></a></div>
 </section>
 
 <!-- 3. How Extern works -->
@@ -249,7 +250,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     <li><span class="who">You</span><h3>Do the work</h3><p>Five projects at a suggested pace, plus live sessions with your cohort.</p></li>
   </ul>
   <div class="note"><p><strong>You're an Extern, not a BeReal employee.</strong> BeReal brought a real challenge, and your company mentor guides your cohort through it. Extern is your home base.</p></div>
-  <div><a class="btn btn-solid btn-next" href="#s-overview" data-next>Next: Project overview <span class="arrow" aria-hidden="true">↓</span></a></div>
+  <div class="nav"><a class="btn" href="#s-video" data-go><span aria-hidden="true">←</span> Back<span class="sr-only">: Day 0 video</span></a><a class="btn btn-solid btn-next" href="#s-overview" data-go>Next: Project overview <span class="arrow" aria-hidden="true">→</span></a></div>
 </section>
 
 <!-- 4. Project overview -->
@@ -279,7 +280,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     <li>Running focus groups</li>
     <li>Pitching with data</li>
   </ul>
-  <div><a class="btn btn-solid btn-next" href="#s-setup" data-next>Next: Get set up for Day 1 <span class="arrow" aria-hidden="true">↓</span></a></div>
+  <div class="nav"><a class="btn" href="#s-how" data-go><span aria-hidden="true">←</span> Back<span class="sr-only">: How Extern works</span></a><a class="btn btn-solid btn-next" href="#s-setup" data-go>Next: Get set up for Day 1 <span class="arrow" aria-hidden="true">→</span></a></div>
 </section>
 
 <!-- 5. Get set up -->
@@ -329,7 +330,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
       </li>
     </ul>
   </div>
-  <div><a class="btn btn-solid btn-next" href="#s-ready" data-next>Next: Ready to get started <span class="arrow" aria-hidden="true">↓</span></a></div>
+  <div class="nav"><a class="btn" href="#s-overview" data-go><span aria-hidden="true">←</span> Back<span class="sr-only">: Project overview</span></a><a class="btn btn-solid btn-next" href="#s-ready" data-go>Next: Ready to get started <span class="arrow" aria-hidden="true">→</span></a></div>
 </section>
 
 <!-- 6. Ready -->
@@ -346,7 +347,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
       <button type="button" class="secondary" data-open-help aria-haspopup="dialog">Get help from your program manager</button>
     </div>
   </div>
-  <div><a class="btn back-top" href="#s-intro" data-next>Back to the start <span aria-hidden="true">↑</span></a></div>
+  <div class="nav"><a class="btn" href="#s-setup" data-go><span aria-hidden="true">←</span> Back<span class="sr-only">: Get set up</span></a><a class="btn" href="#s-intro" data-go>Start over</a></div>
 </section>
 </main>
 
@@ -400,43 +401,42 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     else { a.target = '_blank'; a.rel = 'noopener'; }
   });
 
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Step links (tracker + Next buttons): scroll to the step, then move focus to its heading
-  function go(id){
-    var sec = document.getElementById(id); if (!sec) return;
-    sec.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'});
-    var h = sec.querySelector('h1,h2[tabindex]');
-    if (h) h.focus({preventScroll:true});
-  }
-  document.querySelectorAll('#steps a, [data-next]').forEach(function(a){
-    a.addEventListener('click', function(e){ e.preventDefault(); go(a.getAttribute('href').slice(1)); });
-  });
-
-  // Tracker: mark the step in view as current, earlier steps as seen
+  // One step at a time: show the chosen panel, hide the rest, move focus to its heading
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var stepLinks = Array.prototype.slice.call(document.querySelectorAll('#steps a'));
   var where = document.getElementById('where');
   var names = ['Intro','Day 0 video','How Extern works','Project overview','Get set up','Ready to start'];
-  function setCurrent(i){
+  var STEP_KEY = 'bereal-extern-onboarding-step';
+  function show(i, focus){
+    panels.forEach(function(p, j){
+      p.hidden = j !== i;
+      p.classList.toggle('enter', j === i && focus);
+      if (j !== i) p.querySelectorAll('video').forEach(function(v){ v.pause(); });
+    });
     stepLinks.forEach(function(a, j){
       if (j === i) a.setAttribute('aria-current','step'); else a.removeAttribute('aria-current');
       a.classList.toggle('seen', j < i);
     });
     where.textContent = 'Step ' + (i + 1) + ' of 6: ' + names[i];
+    document.title = names[i] + ' · BeReal Extern Onboarding';
+    try { localStorage.setItem(STEP_KEY, String(i)); } catch(e) {}
+    if (typeof sc !== 'undefined' && sc) fit();
+    if (focus){
+      window.scrollTo(0, 0);
+      var h = panels[i].querySelector('h1[tabindex],h2[tabindex]');
+      if (h) h.focus({preventScroll:true});
+    }
   }
-  function update(){
-    var line = window.innerHeight * 0.35, cur = 0;
-    panels.forEach(function(p, i){ if (p.getBoundingClientRect().top <= line) cur = i; });
-    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = panels.length - 1;
-    setCurrent(cur);
-  }
-  var ticking = false;
-  window.addEventListener('scroll', function(){
-    if (!ticking){ ticking = true; requestAnimationFrame(function(){ ticking = false; update(); }); }
-  }, {passive:true});
-  window.addEventListener('resize', update);
-  update();
+  document.querySelectorAll('#steps a, [data-go]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var i = panels.indexOf(document.getElementById(a.getAttribute('href').slice(1)));
+      if (i > -1) show(i, true);
+    });
+  });
+  var start = 0;
+  try { start = Math.min(panels.length - 1, Math.max(0, parseInt(localStorage.getItem(STEP_KEY), 10) || 0)); } catch(e) {}
+  show(start, false);
 
   // Checklist progress, saved per browser
   var KEY = 'bereal-extern-onboarding-v1';
@@ -470,7 +470,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 
   // Hide the sideways-scroll hint when everything already fits
   var sc = document.querySelector('.scroller'), hint = document.getElementById('scroll-hint');
-  function fit(){ hint.hidden = sc.scrollWidth <= sc.clientWidth + 2; }
+  function fit(){ if (!sc.offsetParent) return; hint.hidden = sc.scrollWidth <= sc.clientWidth + 2; }
   window.addEventListener('resize', fit); fit();
 
   // Help dialog: native modal traps focus and closes on Escape; return focus to opener
