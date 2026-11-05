@@ -335,8 +335,8 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
         <input class="chk" type="checkbox" id="t-linkedin" aria-describedby="d-linkedin">
         <div class="task-body">
           <label for="t-linkedin">Tell your network <span class="opt">Optional</span></label>
-          <p id="d-linkedin">Download the announcement image and post on LinkedIn that you've started your externship.</p>
-          <a class="btn" href="#" data-link="linkedinImage">Download the announcement image</a>
+          <p id="d-linkedin">Download the "I'm In" image and post it on LinkedIn that you've started your externship.</p>
+          <a class="btn" href="#" data-link="linkedinImage">Get the "I'm In" image</a>
         </div>
       </li>
     </ul>
@@ -402,7 +402,9 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 (function(){
   // Fill in real URLs here; "#" links stay inert.
   var LINKS = {
-    slack:'#', availability:'#', linkedinImage:'#',
+    slack:'https://externslackplatform.slack.com/archives/C09GCPRM78R',
+    availability:'https://tally.so/r/ob5b9e',
+    linkedinImage:'https://drive.google.com/file/d/1b_tjAhmMPjcmZyHf8L0Zjz6TBqI8uMtq/view',
     platform:'#', zoom:'#', calendar:'#'
   };
   document.querySelectorAll('[data-link]').forEach(function(a){
