@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your BeReal Mission</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Text&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* BeReal widget skin (P1 Step 1): white canvas, black outlines, DM Serif Text headings.
+   Light only. Green #18DD4C is decorative only; text stays #000 / #4D4D4D / #0B7431. */
+:root{
+  --bg:#FFFFFF; --ink:#000000; --muted:#4D4D4D; --line:#000000;
+  --green:#18DD4C; --green-text:#0B7431; --green-soft:#ECFDF1; --green-mid:#B5F7C9;
+  --miss:#F2F2F2; --r-card:20px; --r-inner:14px;
+  --serif:'DM Serif Text',Georgia,serif; --body:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;padding:14px 12px 12px;color:var(--ink);font:400 15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid #000;outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+button{font:inherit;color:inherit}
+.hl{background:linear-gradient(transparent 58%,var(--green) 58%,var(--green) 90%,transparent 90%);padding:0 2px}
+
+/* Step tabs */
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tab{appearance:none;text-align:left;cursor:pointer;background:#fff;border:1.5px solid var(--line);border-radius:var(--r-inner);padding:9px 12px;min-height:44px;display:flex;flex-direction:column;gap:6px}
+.tab .seg{height:6px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1.5px #000}
+.tab .t1{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tab .t2{font-weight:600;font-size:15px;line-height:1.25}
+.tab[aria-selected="true"]{background:var(--green-soft);border-width:2.5px;padding:8px 11px}
+.tab[aria-selected="true"] .t1{color:var(--green-text)}
+.tab.seen .seg,.tab[aria-selected="true"] .seg{background:var(--green)}
+
+/* Panel */
+.panel{border:1.5px solid var(--line);border-radius:var(--r-card);padding:18px 18px 16px;min-height:430px;display:flex;flex-direction:column}
+.panel[hidden]{display:none}
+.panel h2{margin:0 0 6px;font:400 26px/1.15 var(--serif)}
+.panel h2:focus{outline:none}
+.panel h2:focus-visible{outline:3px solid #000;outline-offset:4px}
+.lead{margin:0 0 14px;color:var(--muted);max-width:60ch}
+.grid{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;flex:1}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1.5px solid #000}
+.btn{min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid #000;background:#fff;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--green-soft)}
+.btn-solid{background:#000;color:#fff}
+.btn-solid:hover{background:#333;color:#fff}
+.btn[disabled]{visibility:hidden}
+
+/* Step 1: phone */
+.phone{flex:0 0 220px;height:330px;border:2px solid #000;border-radius:30px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fff;position:relative}
+.notch{width:70px;height:6px;border-radius:999px;background:#000;align-self:center}
+.clock{text-align:center;font:400 40px/1 var(--serif);margin-top:6px}
+.notif{appearance:none;text-align:left;cursor:pointer;width:100%;border:1.5px solid #000;border-radius:16px;background:var(--green-soft);padding:10px 12px;display:block}
+.notif:hover{background:var(--green-mid)}
+.notif .app{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px}
+.notif .msg{font-weight:700;font-size:14px;line-height:1.3}
+.notif .msg2{font-size:13px;line-height:1.35;margin-top:2px}
+.tap{font-size:12.5px;color:var(--muted);text-align:center;margin-top:auto}
+.cam{flex:1;border:1.5px solid #000;border-radius:16px;position:relative;overflow:hidden;background:repeating-linear-gradient(135deg,#fff 0 10px,#F4F4F4 10px 20px)}
+.cam .back{position:absolute;left:10px;bottom:10px;font-size:12px;font-weight:600;background:#fff;border:1.5px solid #000;border-radius:999px;padding:2px 8px}
+.cam .front{position:absolute;top:8px;left:8px;width:64px;height:86px;border:2px solid #000;border-radius:12px;background:var(--green-mid);display:flex;align-items:flex-end;justify-content:center;font-size:11px;font-weight:600;padding-bottom:4px}
+.timer{display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.timer .t{font-variant-numeric:tabular-nums;background:#000;color:#fff;border-radius:999px;padding:2px 10px;font-size:14px}
+.facts{flex:1 1 260px;min-width:0;display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.facts li{border:1.5px solid #000;border-radius:var(--r-inner);padding:10px 14px;display:flex;gap:12px;align-items:baseline}
+.facts b{font:400 22px/1 var(--serif);min-width:96px;white-space:nowrap}
+.facts span{color:var(--ink)}
+
+/* Step 2: week */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;width:100%;margin:0;padding:0;list-style:none}
+.day{appearance:none;width:100%;cursor:pointer;border:1.5px solid #000;border-radius:var(--r-inner);background:#fff;padding:8px 2px 6px;min-height:84px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.day .d{font-size:12px;font-weight:700;color:var(--muted)}
+.day .dot{width:30px;height:30px;border-radius:50%;border:1.5px solid #000;display:grid;place-items:center;font-size:15px;font-weight:700}
+.day.posted .dot{background:var(--green)}
+.day.late .dot{background:var(--green-mid)}
+.day.missed .dot{background:var(--miss);border-style:dashed}
+.day .s{font-size:11.5px;font-weight:600}
+.day[aria-pressed="true"]{background:var(--green-soft);border-width:2.5px;padding:7px 1px 5px}
+.day:hover{background:var(--green-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin:8px 0 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:50%;border:1.5px solid #000;display:inline-block}
+.thought{width:100%;margin-top:12px;border:1.5px solid #000;border-radius:var(--r-inner);padding:12px 14px;background:#fff;min-height:96px}
+.thought .who{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green-text);margin:0 0 4px}
+.thought p{margin:0}
+.thought .q{margin-top:8px;color:var(--muted)}
+.pick{margin-top:10px}
+
+/* Step 3: mission */
+.mission{margin:0 0 14px;font:400 clamp(20px,3.4vw,24px)/1.25 var(--serif);max-width:44ch}
+.beats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;width:100%;margin:0;padding:0;list-style:none}
+.beats li{border:1.5px solid #000;border-radius:var(--r-inner);padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+.beats .n{width:30px;height:30px;border-radius:50%;background:var(--green);border:1.5px solid #000;display:grid;place-items:center;font-weight:700}
+.beats h3{margin:0;font:400 20px/1.2 var(--serif)}
+.beats p{margin:0;color:var(--muted);font-size:14px}
+.beats .p{margin-top:auto;font-size:12.5px;font-weight:700;color:var(--green-text);letter-spacing:.04em;text-transform:uppercase}
+.goal{width:100%;margin-top:12px;background:var(--green-soft);border-radius:var(--r-inner);padding:12px 14px;border:1.5px solid #000}
+.goal b{font-weight:700}
+
+@media (max-width:520px){
+  .phone{flex-basis:100%;max-width:260px;margin:0 auto}
+  .week{grid-template-columns:repeat(4,1fr)}
+  .panel{min-height:0}
+}
+</style>
+</head>
+<body>
+<div class="tabs" role="tablist" aria-label="Your mission, in 3 parts">
+  <button class="tab" role="tab" id="tab-1" aria-controls="p-1" aria-selected="true"><span class="seg" aria-hidden="true"></span><span class="t1">Part 1</span><span class="t2">The idea</span></button>
+  <button class="tab" role="tab" id="tab-2" aria-controls="p-2" aria-selected="false" tabindex="-1"><span class="seg" aria-hidden="true"></span><span class="t1">Part 2</span><span class="t2">The catch</span></button>
+  <button class="tab" role="tab" id="tab-3" aria-controls="p-3" aria-selected="false" tabindex="-1"><span class="seg" aria-hidden="true"></span><span class="t1">Part 3</span><span class="t2">Your mission</span></button>
+</div>
+
+<!-- Part 1 -->
+<section class="panel" role="tabpanel" id="p-1" aria-labelledby="tab-1">
+  <h2 tabindex="-1">No filters. No fakes.</h2>
+  <p class="lead">BeReal launched in 2020 and flipped social media on its head. Try the ping for yourself.</p>
+  <div class="grid">
+    <div class="phone" id="phone">
+      <div class="notch" aria-hidden="true"></div>
+      <div id="lock">
+        <div class="clock" aria-hidden="true">2:47</div>
+        <button type="button" class="notif" id="notif" style="margin-top:14px">
+          <span class="app"><span>BeReal.</span><span>now</span></span>
+          <span class="msg">⚠️ Time to BeReal. ⚠️</span>
+          <span class="msg2">2 min left to capture a BeReal and see what your friends are up to!</span>
+        </button>
+        <p class="tap" style="margin-top:22px">Tap the notification</p>
+      </div>
+      <div id="shot" hidden style="display:flex;flex-direction:column;gap:8px;flex:1">
+        <div class="timer"><span>Post now</span><span class="t" id="t" aria-hidden="true">2:00</span></div>
+        <div class="cam" role="img" aria-label="A BeReal photo: the back camera shows what's in front of you, with a small front-camera selfie in the corner.">
+          <span class="front">You</span>
+          <span class="back">What's in front of you</span>
+        </div>
+        <button type="button" class="btn" id="reset" style="justify-content:center">Reset</button>
+      </div>
+      <p class="sr-only" id="phone-status" role="status"></p>
+    </div>
+    <ul class="facts">
+      <li><b>1 ping</b><span>at a random time each day, the same moment for everyone</span></li>
+      <li><b>2 min</b><span>to post before you're late, and your friends can see you were late</span></li>
+      <li><b>2 cameras</b><span>front and back at once: you and what's in front of you</span></li>
+      <li><b>0 filters</b><span>no editing, no polished highlight reel</span></li>
+    </ul>
+  </div>
+  <div class="nav"><button type="button" class="btn" disabled>Back</button><button type="button" class="btn btn-solid" data-go="2">Next: The catch →</button></div>
+</section>
+
+<!-- Part 2 -->
+<section class="panel" role="tabpanel" id="p-2" aria-labelledby="tab-2" hidden>
+  <h2 tabindex="-1">People love the idea. The habit is harder.</h2>
+  <p class="lead">A lot of new users drop off before the habit sticks. Here's an example first week (made up, not real data). Tap a day to see what this new user was thinking.</p>
+  <ul class="week" aria-label="An example new user's first week">
+    <li><button type="button" class="day posted" data-day="0" aria-pressed="false"><span class="d">Day 1</span><span class="dot" aria-hidden="true">✓</span><span class="s">Posted</span></button></li>
+    <li><button type="button" class="day posted" data-day="1" aria-pressed="false"><span class="d">Day 2</span><span class="dot" aria-hidden="true">✓</span><span class="s">Posted</span></button></li>
+    <li><button type="button" class="day late" data-day="2" aria-pressed="false"><span class="d">Day 3</span><span class="dot" aria-hidden="true">✓</span><span class="s">Late</span></button></li>
+    <li><button type="button" class="day posted" data-day="3" aria-pressed="false"><span class="d">Day 4</span><span class="dot" aria-hidden="true">✓</span><span class="s">Posted</span></button></li>
+    <li><button type="button" class="day missed" data-day="4" aria-pressed="false"><span class="d">Day 5</span><span class="dot" aria-hidden="true">–</span><span class="s">Missed</span></button></li>
+    <li><button type="button" class="day missed" data-day="5" aria-pressed="false"><span class="d">Day 6</span><span class="dot" aria-hidden="true">–</span><span class="s">Missed</span></button></li>
+    <li><button type="button" class="day missed" data-day="6" aria-pressed="false"><span class="d">Day 7</span><span class="dot" aria-hidden="true">–</span><span class="s">Missed</span></button></li>
+  </ul>
+  <div class="legend" aria-hidden="true"><span><i style="background:#18DD4C"></i>Posted on time</span><span><i style="background:#B5F7C9"></i>Posted late</span><span><i style="background:#F2F2F2;border-style:dashed"></i>Missed</span></div>
+  <div class="thought" aria-live="polite">
+    <p class="who" id="th-who">Pick a day</p>
+    <p id="th-text">Tap any day above to read this user's thoughts.</p>
+  </div>
+  <div class="pick" id="pick" hidden>
+    <p style="margin:0 0 6px;font-weight:600">Where would you step in to keep this user coming back?</p>
+    <p style="margin:0;color:var(--muted)" id="pick-note">Select that day above, then come back here.</p>
+  </div>
+  <div class="nav"><button type="button" class="btn" data-go="1">← Back</button><button type="button" class="btn btn-solid" data-go="3">Next: Your mission →</button></div>
+</section>
+
+<!-- Part 3 -->
+<section class="panel" role="tabpanel" id="p-3" aria-labelledby="tab-3" hidden>
+  <h2 tabindex="-1">Your mission</h2>
+  <p class="mission">Find where BeReal users fall off, come up with a bold new feature, and test whether it gets people to <span class="hl">open the app tomorrow</span> (and the next day).</p>
+  <ul class="beats">
+    <li><span class="n" aria-hidden="true">1</span><h3>Find the drop-off</h3><p>Tear down the app and size up a competitor to see where new users get stuck.</p><span class="p">Projects 1–2</span></li>
+    <li><span class="n" aria-hidden="true">2</span><h3>Build a bold fix</h3><p>Design one new feature and make a clickable prototype.</p><span class="p">Project 3</span></li>
+    <li><span class="n" aria-hidden="true">3</span><h3>Test and pitch it</h3><p>Test it with real people, then pitch it to Ben in under four minutes.</p><span class="p">Projects 4–5</span></li>
+  </ul>
+  <p class="goal"><b>In product terms:</b> you're helping BeReal grow monthly active users, the people who open the app at least once a month.</p>
+  <div class="nav"><button type="button" class="btn" data-go="2">← Back</button><button type="button" class="btn btn-solid" data-go="1">Start over</button></div>
+</section>
+
+<script>
+(function(){
+  /* Tabs: arrow keys move between parts; Next/Back buttons move focus to the new heading */
+  var tabs = [].slice.call(document.querySelectorAll('[role=tab]'));
+  function show(i, focusHeading){
+    tabs.forEach(function(t, j){
+      var on = j === i;
+      t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1;
+      if (j < i) t.classList.add('seen');
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    if (i !== 0) stopTimer();
+    if (focusHeading) document.querySelector('#p-' + (i + 1) + ' h2').focus();
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ show(i); });
+    t.addEventListener('keydown', function(e){
+      var k = e.key, n = null;
+      if (k === 'ArrowRight') n = (i + 1) % tabs.length;
+      else if (k === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+      else if (k === 'Home') n = 0; else if (k === 'End') n = tabs.length - 1;
+      if (n !== null){ e.preventDefault(); show(n); tabs[n].focus(); }
+    });
+  });
+  document.querySelectorAll('[data-go]').forEach(function(b){
+    b.addEventListener('click', function(){ show(+b.getAttribute('data-go') - 1, true); });
+  });
+
+  /* Part 1: tap the ping, 2-minute timer */
+  var lock = document.getElementById('lock'), shot = document.getElementById('shot'),
+      tEl = document.getElementById('t'), status = document.getElementById('phone-status'), timer = null;
+  function stopTimer(){ if (timer){ clearInterval(timer); timer = null; } }
+  document.getElementById('notif').addEventListener('click', function(){
+    var left = 120;
+    lock.hidden = true; shot.hidden = false; shot.style.display = 'flex';
+    status.textContent = 'Camera open. You have 2 minutes to post.';
+    tEl.textContent = '2:00';
+    stopTimer();
+    timer = setInterval(function(){
+      left--;
+      tEl.textContent = Math.floor(left / 60) + ':' + ('0' + (left % 60)).slice(-2);
+      if (left <= 0){ stopTimer(); tEl.textContent = 'Late'; status.textContent = 'Time is up. Your BeReal would now show as late.'; }
+    }, 1000);
+    document.getElementById('reset').focus();
+  });
+  document.getElementById('reset').addEventListener('click', function(){
+    stopTimer(); shot.hidden = true; shot.style.display = ''; lock.hidden = false;
+    status.textContent = 'Back to the lock screen.';
+    document.getElementById('notif').focus();
+  });
+
+  /* Part 2: example week (made up) */
+  var THOUGHTS = [
+    ['Day 1, posted', "This is fun. Three of my friends posted at the same time as me."],
+    ['Day 2, posted', "Caught the ping right away. I like seeing what everyone's really doing."],
+    ['Day 3, posted late', "The ping came in the middle of class. I posted an hour later and got the 'late' tag."],
+    ['Day 4, posted', "Posted, but only one friend did today. The feed felt pretty empty."],
+    ['Day 5, missed', "I saw the notification, swiped it away, and forgot to come back."],
+    ['Day 6, missed', "Didn't notice the ping at all. My other apps send a lot of notifications."],
+    ['Day 7, missed', "Haven't opened BeReal in three days. I'm not sure what I'd be missing."]
+  ];
+  var days = [].slice.call(document.querySelectorAll('.day')), seen = {};
+  days.forEach(function(d){
+    d.addEventListener('click', function(){
+      var i = +d.getAttribute('data-day');
+      days.forEach(function(x){ x.setAttribute('aria-pressed', x === d); });
+      document.getElementById('th-who').textContent = THOUGHTS[i][0];
+      document.getElementById('th-text').textContent = '"' + THOUGHTS[i][1] + '"';
+      seen[i] = true;
+      var pick = document.getElementById('pick');
+      if (Object.keys(seen).length >= 3) pick.hidden = false;
+      document.getElementById('pick-note').textContent = 'You picked Day ' + (i + 1) + '. Good PMs back a pick like that with evidence, which is what Projects 1 and 2 are for.';
+    });
+  });
+})();
+</script>
+</body>
+</html>
