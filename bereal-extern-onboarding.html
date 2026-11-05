@@ -9,87 +9,119 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600;700&display=swap">
 <style>
 /* Source design: "Extern Onboarding" Claude Design canvas, board "BeReal: full onboarding page (desktop)".
-   Sized for a Notion embed (~700px wide) and scales up to the 1120px desktop layout. */
+   Round 2 (2026-11-05): six-step scroll (Intro, Day 0 video, How Extern works, Project overview,
+   Get set up, Ready) with a sticky step tracker. Extern green #18DD4C is used for small accents only;
+   on black it is 11.6:1, so it is also safe for the short eyebrow text. */
 :root{
   --bg:#000000; --fg:#FFFFFF; --muted:#B3B3B3; --subtle:#A6A6A6; --faint:#8C8C8C;
   --card:#161616; --card-line:#2C2C2C; --rule:#262626; --chip:#1C1C1C; --pill-line:#3A3A3A;
+  --green:#18DD4C; --green-soft:#0E2A16; --green-line:#1F5A30;
   --display:'Bricolage Grotesque', Inter, system-ui, sans-serif;
   --body:Inter, system-ui, -apple-system, sans-serif;
+  --bar-h:104px;
 }
 *{box-sizing:border-box}
-html{color-scheme:dark}
+html{color-scheme:dark;scroll-padding-top:calc(var(--bar-h) + 8px)}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.55}
 a{color:var(--fg)} a:hover{color:#D9D9D9}
 :focus-visible{outline:3px solid var(--fg);outline-offset:3px}
 .wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:16px;top:-60px;z-index:20;padding:10px 16px;border-radius:999px;background:var(--fg);color:#000;font-weight:700}
+.skip:focus{top:12px}
 
 /* Pills / buttons */
 .btn{min-height:44px;padding:0 20px;display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:1.5px solid var(--pill-line);background:transparent;color:var(--fg);text-decoration:none;font:600 15px/1.2 var(--body);cursor:pointer}
 .btn:hover{border-color:#6B6B6B;color:var(--fg)}
 .btn-solid{background:var(--fg);color:#000;border-color:var(--fg);font-weight:700}
 .btn-solid:hover{background:#D9D9D9;color:#000}
+.btn-next{margin-top:40px}
+.btn-next .arrow{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--green);color:#000;font-size:13px;line-height:22px;text-align:center}
 
-/* Header */
-header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:24px 0}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px}
+/* Sticky top bar + step tracker */
+.topbar{position:sticky;top:0;z-index:10;background:rgba(0,0,0,.94);border-bottom:1px solid var(--rule);backdrop-filter:blur(6px)}
+.topbar .row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0 8px}
+.brand{margin:0;display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px}
 .brand .x{color:var(--faint);font-weight:400}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--green)}
+.steps{display:flex;gap:6px;margin:0;padding:0 0 12px;list-style:none}
+.steps li{flex:1 1 0;min-width:0}
+.steps a{display:flex;flex-direction:column;gap:6px;min-height:44px;padding-top:6px;text-decoration:none;color:var(--subtle);font-size:13px;font-weight:600}
+.steps .seg{display:block;height:5px;border-radius:999px;background:#3A3A3A}
+.steps .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.steps a.seen .seg{background:var(--green-line)}
+.steps a[aria-current="step"]{color:var(--fg)}
+.steps a[aria-current="step"] .seg{background:var(--green)}
+.steps a:hover{color:var(--fg)}
+.where{margin:0;min-width:0;font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:420px){ .where{display:none} }
 
-/* Hero */
-.hero{display:flex;flex-wrap:wrap;gap:40px;align-items:center;padding:24px 0 64px}
-.hero-copy{flex:999 1 360px;min-width:0}
-.eyebrow{margin:0 0 16px;color:var(--muted);font-size:16px}
+/* Step panels */
+.panel{min-height:calc(100vh - var(--bar-h));padding:56px 0 64px;border-top:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center}
+.panel:first-of-type{border-top:0}
+.eyebrow{margin:0 0 14px;display:inline-flex;align-items:center;gap:10px;color:var(--green);font-size:15px;font-weight:700;letter-spacing:.02em}
+.eyebrow::before{content:"";width:22px;height:3px;border-radius:2px;background:var(--green)}
 h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(44px,8vw,80px);line-height:.98;letter-spacing:-.035em}
-.lede{margin:24px 0 0;font-size:clamp(19px,2.4vw,22px);line-height:1.45;max-width:580px}
-.sub{margin:14px 0 0;font-size:18px;color:var(--muted);max-width:560px}
+h2.title{margin:0 0 18px;font-family:var(--display);font-weight:800;font-size:clamp(32px,5vw,48px);line-height:1.04;letter-spacing:-.03em}
+h1:focus,h2:focus{outline:none}
+h1:focus-visible,h2:focus-visible{outline:3px solid var(--fg);outline-offset:4px}
+.hl{background:linear-gradient(transparent 72%, rgba(24,221,76,.55) 72%, rgba(24,221,76,.55) 94%, transparent 94%)}
+.lede{margin:24px 0 0;font-size:clamp(19px,2.4vw,22px);line-height:1.45;max-width:620px}
+.sub{margin:14px 0 0;font-size:18px;color:var(--muted);max-width:600px}
 .chips{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 0;padding:0;list-style:none}
-.chips li{padding:8px 16px;border-radius:999px;background:var(--chip);font-size:15px;font-weight:500}
-.hero-media{flex:1 1 260px;display:flex;justify-content:center}
-.video{position:relative;width:280px;height:500px;border-radius:32px;background:var(--card);border:1px solid var(--card-line);overflow:hidden;display:flex;align-items:center;justify-content:center;padding:32px;text-align:center;color:var(--subtle);font-size:15px}
-.video .tag{position:absolute;top:18px;left:18px;padding:6px 12px;border-radius:999px;background:var(--fg);color:#000;font-size:13px;font-weight:700}
-.video .title{position:absolute;left:20px;right:20px;bottom:88px;margin:0;text-align:left;color:var(--fg);font-family:var(--display);font-weight:800;font-size:24px;line-height:1.08}
-.video .btn{position:absolute;left:20px;right:20px;bottom:20px;min-height:48px;justify-content:center}
+.chips li{padding:8px 16px;border-radius:999px;background:var(--chip);font-size:15px;font-weight:500;display:inline-flex;align-items:center;gap:8px}
+.chips li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green)}
 
-/* Sections */
-section.block{padding:56px 0;border-top:1px solid var(--rule)}
-.how h2{margin:0 0 18px;font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:0}
+/* Video */
+.video-wrap{max-width:820px}
+.video-frame{border-radius:24px;overflow:hidden;border:1px solid var(--card-line);background:var(--card);position:relative}
+.video-frame::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--green);z-index:1}
+.video-frame video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000}
+.video-meta{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:14px 0 0;color:var(--muted);font-size:15px}
+.tag{padding:4px 12px;border-radius:999px;background:var(--green);color:#000;font-size:13px;font-weight:700}
+details.transcript{margin-top:16px;border-top:1px solid var(--rule)}
+details.transcript summary{padding:14px 0;font-weight:700;cursor:pointer;min-height:44px}
+details.transcript p{margin:0 0 12px;color:var(--muted);max-width:720px}
+
+/* How Extern works */
 .cards{display:flex;flex-wrap:wrap;gap:12px;margin:0;padding:0;list-style:none}
-.cards li{flex:1 1 200px;background:var(--card);border:1px solid var(--card-line);border-radius:20px;padding:20px}
-.cards h3{margin:0 0 4px;font-size:17px;font-weight:700}
+.cards li{flex:1 1 220px;background:var(--card);border:1px solid var(--card-line);border-top:3px solid var(--green);border-radius:20px;padding:22px}
+.cards .who{display:block;margin-bottom:6px;color:var(--green);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.cards h3{margin:0 0 6px;font-size:19px;font-weight:700}
 .cards p{margin:0;color:var(--muted);font-size:15px}
+.note{margin:20px 0 0;padding:16px 20px;border-radius:16px;background:var(--green-soft);border:1px solid var(--green-line);max-width:760px}
+.note p{margin:0}
 
-.step-head{display:flex;align-items:center;gap:16px;margin-bottom:24px}
-.step-num{width:40px;height:40px;border-radius:50%;background:var(--fg);color:#000;display:grid;place-items:center;font-weight:800;flex:none}
-.step-head h2{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(28px,4vw,36px);letter-spacing:-.02em}
-.challenge{margin:0 0 16px;font-family:var(--display);font-weight:600;font-size:clamp(26px,4.4vw,40px);line-height:1.12;letter-spacing:-.02em;max-width:880px}
-.why{margin:0 0 40px;color:var(--muted);max-width:680px}
+/* Project overview */
+.challenge{margin:0 0 16px;font-family:var(--display);font-weight:600;font-size:clamp(26px,4.4vw,40px);line-height:1.12;letter-spacing:-.02em;max-width:900px}
+.why{margin:0 0 40px;color:var(--muted);max-width:700px}
 .why strong{color:var(--fg)}
 h3.sub-h{margin:0 0 14px;font-family:var(--display);font-weight:800;font-size:24px}
 h3.sub-h.gap{margin-top:44px}
-
-/* Project cards: horizontal scroller, keyboard scrollable */
 .scroller{overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory;scrollbar-color:#4A4A4A transparent}
 .projects{display:flex;gap:16px;margin:0;padding:0;list-style:none}
-.projects li{flex:0 0 200px;height:280px;border-radius:24px;background:var(--card);border:1px solid var(--card-line);padding:20px;display:flex;flex-direction:column;justify-content:space-between;scroll-snap-align:start}
+.projects li{flex:0 0 210px;min-height:280px;border-radius:24px;background:var(--card);border:1px solid var(--card-line);padding:20px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;scroll-snap-align:start}
 .projects .when{font-size:14px;font-weight:600;color:var(--subtle)}
-.projects .what{font-family:var(--display);font-weight:800;font-size:24px;line-height:1.08}
-.projects li.first{background:var(--fg);color:#000;border-color:var(--fg)}
+.projects .what{font-family:var(--display);font-weight:800;font-size:23px;line-height:1.08}
+.projects .desc{font-size:14px;color:var(--muted);line-height:1.4}
+.projects li.first{background:var(--fg);color:#000;border-color:var(--fg);box-shadow:inset 0 -6px 0 var(--green)}
 .projects li.first .when{color:#000;font-weight:700}
+.projects li.first .desc{color:#333}
 .scroll-hint{margin:6px 0 0;color:var(--subtle);font-size:14px}
-
 .skills{display:flex;flex-wrap:wrap;gap:10px;margin:0;padding:0;list-style:none;max-width:900px}
 .skills li{padding:10px 18px;border-radius:999px;border:1.5px solid var(--pill-line);font-weight:600;font-size:16px}
+.skills li::before{content:"✓";color:var(--green);margin-right:8px;font-weight:800}
 
 /* Checklist */
 .setup{max-width:720px}
 .progress-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;font-size:15px;margin-bottom:8px}
-.progress-row .note{color:var(--subtle)}
+.progress-row .save{color:var(--subtle)}
 .bar{height:8px;border-radius:999px;background:var(--rule);overflow:hidden;margin-bottom:24px}
-.bar span{display:block;height:8px;border-radius:999px;background:var(--fg);width:0;transition:width .25s ease}
+.bar span{display:block;height:8px;border-radius:999px;background:var(--green);width:0;transition:width .25s ease}
 .tasks{margin:0;padding:0;list-style:none}
 .task{display:flex;gap:16px;padding:20px 0;border-top:1px solid var(--rule)}
 .chk{appearance:none;-webkit-appearance:none;width:26px;height:26px;margin:2px 0 0;border-radius:50%;border:2px solid var(--faint);background:transparent;cursor:pointer;display:grid;place-items:center;flex:none}
-.chk:checked{background:var(--fg);border-color:var(--fg)}
+.chk:checked{background:var(--green);border-color:var(--green)}
 .chk:checked::after{content:"";width:6px;height:12px;border:solid #000;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
 .task-body{flex:1;min-width:0}
 .task label{font-weight:700;font-size:18px;cursor:pointer}
@@ -103,8 +135,10 @@ h3.sub-h.gap{margin-top:44px}
 .task .btn{margin-top:14px}
 
 /* Closing CTA */
-.cta{margin:8px 0 80px;border-radius:32px;background:var(--fg);color:#000;padding:clamp(28px,5vw,44px);display:flex;flex-direction:column;gap:24px}
-.cta .status{margin:0 0 8px;font-weight:700;font-size:15px}
+.cta{border-radius:32px;background:var(--fg);color:#000;padding:clamp(28px,5vw,44px);display:flex;flex-direction:column;gap:24px;border-top:8px solid var(--green)}
+.cta .status{margin:0 0 8px;font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:8px}
+.cta .status::before{content:"";width:12px;height:12px;border-radius:50%;background:#8C8C8C;flex:none}
+.cta .status.ok::before{background:var(--green);box-shadow:0 0 0 2px #000}
 .cta h2{margin:0 0 10px;font-family:var(--display);font-weight:800;font-size:clamp(34px,5.5vw,48px);line-height:1.02;letter-spacing:-.03em}
 .cta p.body{margin:0;font-size:18px;color:#333}
 .cta .actions{display:flex;flex-wrap:wrap;gap:12px}
@@ -114,6 +148,7 @@ h3.sub-h.gap{margin-top:44px}
 .cta .secondary{background:transparent;color:#000;border:2px solid #000}
 .cta .secondary:hover{background:#EDEDED}
 .cta :focus-visible{outline-color:#000}
+.back-top{margin-top:24px}
 
 /* Help dialog (from board "BeReal: help panel open") */
 dialog{width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 32px);margin:auto;padding:0;border:1px solid var(--card-line);border-radius:28px;background:#121212;color:var(--fg)}
@@ -127,68 +162,111 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 .dlg details p{margin:0 0 12px;color:var(--muted);font-size:15px}
 .links{display:flex;flex-wrap:wrap;gap:8px}
 .links a{min-height:44px;padding:0 16px;display:inline-flex;align-items:center;border-radius:999px;background:#222;text-decoration:none;font-weight:600;font-size:14px}
-.stuck{margin-top:16px;background:var(--fg);color:#000;border-radius:20px;padding:16px 18px}
+.stuck{margin-top:16px;background:var(--fg);color:#000;border-radius:20px;padding:16px 18px;border-left:6px solid var(--green)}
 .stuck p{margin:0}
 
-@media (max-width:520px){
-  .video{width:100%;max-width:300px;height:440px}
+@media (max-width:640px){
+  :root{--bar-h:96px}
+  .steps .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .steps a{min-height:32px}
+  .panel{min-height:0;padding:44px 0 52px}
   .task{gap:12px}
 }
-@media (prefers-reduced-motion:reduce){ .bar span{transition:none} .scroller{scroll-behavior:auto} }
+@media (min-width:641px){ .where{display:none} }
+@media (prefers-reduced-motion:reduce){ .bar span{transition:none} html{scroll-behavior:auto} }
 </style>
 </head>
 <body>
-<div class="wrap">
+<a class="skip" href="#s-setup">Skip to the setup checklist</a>
 
-<header>
-  <p class="brand" aria-label="Extern and BeReal">Extern <span class="x" aria-hidden="true">×</span> BeReal</p>
-  <button type="button" class="btn" data-open-help aria-haspopup="dialog">Help</button>
-</header>
-
-<main>
-<section class="hero" aria-labelledby="page-title">
-  <div class="hero-copy">
-    <p class="eyebrow">Associate Product Manager externship</p>
-    <h1 id="page-title">Welcome to your externship.</h1>
-    <p class="lede">During this experience, you'll get to do the work of an Associate Product Manager on a real BeReal challenge.</p>
-    <p class="sub">This intro shows you how to make the most of your externship experience.</p>
-    <ul class="chips" aria-label="At a glance">
-      <li>About 10 minutes to get set up</li>
-      <li>Project 1 unlocks on Day 1</li>
-    </ul>
+<div class="topbar">
+  <div class="wrap">
+    <div class="row">
+      <p class="brand" aria-label="Extern and BeReal"><span class="dot" aria-hidden="true"></span>Extern <span class="x" aria-hidden="true">×</span> BeReal</p>
+      <p class="where" aria-hidden="true" id="where">Step 1 of 6: Intro</p>
+      <button type="button" class="btn" data-open-help aria-haspopup="dialog">Help</button>
+    </div>
+    <nav aria-label="Onboarding steps">
+      <ol class="steps" id="steps">
+        <li><a href="#s-intro"><span class="seg" aria-hidden="true"></span><span class="lbl">1. Intro</span></a></li>
+        <li><a href="#s-video"><span class="seg" aria-hidden="true"></span><span class="lbl">2. Video</span></a></li>
+        <li><a href="#s-how"><span class="seg" aria-hidden="true"></span><span class="lbl">3. How it works</span></a></li>
+        <li><a href="#s-overview"><span class="seg" aria-hidden="true"></span><span class="lbl">4. Project</span></a></li>
+        <li><a href="#s-setup"><span class="seg" aria-hidden="true"></span><span class="lbl">5. Set up</span></a></li>
+        <li><a href="#s-ready"><span class="seg" aria-hidden="true"></span><span class="lbl">6. Start</span></a></li>
+      </ol>
+    </nav>
   </div>
-  <div class="hero-media">
-    <figure class="video" style="margin:0">
-      <span class="tag">Day 0</span>
-      <span aria-hidden="true">[Welcome video from your program manager]</span>
-      <figcaption class="title">A welcome from your program manager.</figcaption>
-      <a class="btn btn-solid" href="#" data-link="welcomeVideo"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M3 1.5v11l9-5.5z" fill="#000"/></svg>Watch the welcome</a>
-    </figure>
-  </div>
-</section>
+</div>
 
-<section class="block how" aria-labelledby="how-h">
-  <h2 id="how-h">How Extern works</h2>
-  <ul class="cards">
-    <li><h3>Extern runs your externship</h3><p>The platform, Slack, scheduling, and support.</p></li>
-    <li><h3>BeReal brings the challenge</h3><p>A real problem, a mentor, and feedback on your work.</p></li>
-    <li><h3>You do the work</h3><p>Projects at a suggested pace, plus live sessions.</p></li>
+<main class="wrap">
+
+<!-- 1. Intro -->
+<section class="panel" id="s-intro" aria-labelledby="h-intro">
+  <p class="eyebrow">Step 1 of 6 · Intro</p>
+  <h1 id="h-intro" tabindex="-1">Welcome to your externship.</h1>
+  <p class="lede">You'll do the work of an <span class="hl">Associate Product Manager</span> on a real BeReal challenge: helping BeReal grow its monthly active users without losing what makes it real.</p>
+  <p class="sub">Scroll through six short steps. They show you how the externship works and get you set up for Day 1.</p>
+  <ul class="chips" aria-label="At a glance">
+    <li>About 10 minutes</li>
+    <li>Project 1 unlocks on Day 1</li>
   </ul>
+  <div><a class="btn btn-solid btn-next" href="#s-video" data-next>Next: Day 0 video <span class="arrow" aria-hidden="true">↓</span></a></div>
 </section>
 
-<section class="block" aria-labelledby="overview-h">
-  <div class="step-head"><span class="step-num" aria-hidden="true">1</span><h2 id="overview-h"><span class="sr-only">Part 1: </span>Project overview</h2></div>
-  <p class="challenge">Find where BeReal users fall off, and design something that keeps them coming back.</p>
-  <p class="why"><strong>Why BeReal cares:</strong> [Why the BeReal team cares about this, ideally in your mentor's words]</p>
+<!-- 2. Day 0 video -->
+<section class="panel" id="s-video" aria-labelledby="h-video">
+  <p class="eyebrow">Step 2 of 6 · Day 0 video</p>
+  <h2 class="title" id="h-video" tabindex="-1">A welcome from your program manager</h2>
+  <div class="video-wrap">
+    <div class="video-frame">
+      <video controls preload="metadata" playsinline
+        poster="https://vpdasgupta.github.io/tiktok/bereal-orient-assets/bereal-pm-intro-poster.jpg"
+        aria-describedby="video-about">
+        <source src="https://vpdasgupta.github.io/tiktok/bereal-orient-assets/bereal-pm-intro.mp4" type="video/mp4">
+        <track kind="captions" srclang="en" label="English" src="https://vpdasgupta.github.io/tiktok/bereal-orient-assets/bereal-pm-intro.vtt" default>
+        Your browser can't play this video. The transcript is below.
+      </video>
+    </div>
+    <p class="video-meta" id="video-about"><span class="tag">Day 0</span> 1 minute · Captions on · Your program manager on how they'll support you</p>
+    <details class="transcript">
+      <summary>Read the transcript</summary>
+      <p>Hi and welcome to the team. I'm your program manager, Christie, and I'm here to support and guide you throughout your externship. You can think of me as a mentor, a manager, and a facilitator. I'm here to help you navigate the experience, connect with experts, and make the most of your time.</p>
+      <p>Here's more about what you can expect from me throughout the externship. I'll provide guidance on how to work on your projects and how to stay on track. I will also facilitate your interactions with our host company and with industry professionals through live meetings. I'll ensure that you have a smooth and productive externship experience.</p>
+      <p>Most importantly, I'll make sure you feel supported as you prepare to gain real work experience and practical skills. I can't wait to start on this journey with you on the team.</p>
+    </details>
+  </div>
+  <div><a class="btn btn-solid btn-next" href="#s-how" data-next>Next: How Extern works <span class="arrow" aria-hidden="true">↓</span></a></div>
+</section>
+
+<!-- 3. How Extern works -->
+<section class="panel" id="s-how" aria-labelledby="h-how">
+  <p class="eyebrow">Step 3 of 6 · How Extern works</p>
+  <h2 class="title" id="h-how" tabindex="-1">Three parts, one externship</h2>
+  <ul class="cards">
+    <li><span class="who">Extern</span><h3>Runs your externship</h3><p>The platform, Slack, scheduling, and support. Your program manager is your go-to for questions.</p></li>
+    <li><span class="who">BeReal</span><h3>Brings the challenge</h3><p>A real product problem, a company mentor, and feedback on your work in live sessions.</p></li>
+    <li><span class="who">You</span><h3>Do the work</h3><p>Five projects at a suggested pace, plus live sessions with your cohort.</p></li>
+  </ul>
+  <div class="note"><p><strong>You're an Extern, not a BeReal employee.</strong> BeReal brought a real challenge, and your company mentor guides your cohort through it. Extern is your home base.</p></div>
+  <div><a class="btn btn-solid btn-next" href="#s-overview" data-next>Next: Project overview <span class="arrow" aria-hidden="true">↓</span></a></div>
+</section>
+
+<!-- 4. Project overview -->
+<section class="panel" id="s-overview" aria-labelledby="h-overview">
+  <p class="eyebrow">Step 4 of 6 · Project overview</p>
+  <h2 class="title" id="h-overview" tabindex="-1">Your challenge</h2>
+  <p class="challenge">Help BeReal grow its <span class="hl">monthly active users</span> while staying true to its mission of authenticity.</p>
+  <p class="why"><strong>Why BeReal cares:</strong> BeReal's promise is no filters and no fakes. People love the idea, but the daily habit is harder to keep. Monthly active users (MAUs) are the people who open the app at least once a month, and BeReal needs ideas that bring more of them back without making the app less real.</p>
 
   <h3 class="sub-h" id="do-h">What you'll do</h3>
   <div class="scroller" role="region" aria-labelledby="do-h" tabindex="0">
     <ol class="projects">
-      <li class="first"><span class="when">Project 1, Day 1</span><span class="what">Map the BeReal user journey</span></li>
-      <li><span class="when">Project 2</span><span class="what">Find where users fall off</span></li>
-      <li><span class="when">Project 3</span><span class="what">Design a new feature</span></li>
-      <li><span class="when">Project 4</span><span class="what">Test your feature</span></li>
-      <li><span class="when">Project 5</span><span class="what">Pitch it to your BeReal mentor</span></li>
+      <li class="first"><span class="when">Project 1 · Starts Day 1</span><span class="what">Map the BeReal user journey</span><span class="desc">Go from sign-up to posting to reacting, and spot friction and delight.</span></li>
+      <li><span class="when">Project 2</span><span class="what">Benchmark BeReal's competitors</span><span class="desc">Find which features actually drive growth.</span></li>
+      <li><span class="when">Project 3</span><span class="what">Design a new app feature</span><span class="desc">Prototype one idea that could grow BeReal's MAUs.</span></li>
+      <li><span class="when">Project 4</span><span class="what">Test it in focus groups</span><span class="desc">Run focus groups with peers and refine your feature.</span></li>
+      <li><span class="when">Project 5</span><span class="what">Pitch your feature</span><span class="desc">Present a short, data-backed proposal.</span></li>
     </ol>
   </div>
   <p class="scroll-hint" id="scroll-hint">Scroll sideways to see all 5 projects.</p>
@@ -196,19 +274,22 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   <h3 class="sub-h gap">What you'll learn</h3>
   <ul class="skills">
     <li>Mapping a user journey</li>
-    <li>Finding where users drop off</li>
-    <li>Designing a product feature</li>
-    <li>Testing a feature</li>
-    <li>Pitching to a company stakeholder</li>
+    <li>Benchmarking competitors</li>
+    <li>Prototyping a feature</li>
+    <li>Running focus groups</li>
+    <li>Pitching with data</li>
   </ul>
+  <div><a class="btn btn-solid btn-next" href="#s-setup" data-next>Next: Get set up for Day 1 <span class="arrow" aria-hidden="true">↓</span></a></div>
 </section>
 
-<section class="block" aria-labelledby="setup-h">
-  <div class="step-head"><span class="step-num" aria-hidden="true">2</span><h2 id="setup-h"><span class="sr-only">Part 2: </span>Get set up for Day 1</h2></div>
+<!-- 5. Get set up -->
+<section class="panel" id="s-setup" aria-labelledby="h-setup">
+  <p class="eyebrow">Step 5 of 6 · Get set up</p>
+  <h2 class="title" id="h-setup" tabindex="-1">Get set up for Day 1</h2>
   <div class="setup">
     <div class="progress-row">
       <span id="progress-text" role="status" style="font-weight:600">0 of 3 required steps done</span>
-      <span class="note">Your checkmarks save in this browser.</span>
+      <span class="save">Your checkmarks save in this browser.</span>
     </div>
     <div class="bar" aria-hidden="true"><span id="bar"></span></div>
     <ul class="tasks">
@@ -233,7 +314,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
         <div class="task-body">
           <label for="t-how_we_work">Agree to how we work</label>
           <div class="rules" id="d-how_we_work">
-            <div><h4>Do</h4><ul><li>Follow the suggested pacing.</li><li>Join live sessions and company meetings.</li><li>Bring every question to Slack or your program manager.</li></ul></div>
+            <div><h4>Do</h4><ul><li>Follow the suggested pacing.</li><li>Join live sessions with your company mentor.</li><li>Bring every question to Slack or your program manager.</li></ul></div>
             <div><h4>Don't</h4><ul><li>Contact anyone at BeReal directly.</li><li>Ask BeReal staff for jobs or referrals.</li><li>Call yourself an intern or employee.</li><li>Share project data outside approved channels.</li></ul></div>
           </div>
         </div>
@@ -248,21 +329,26 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
       </li>
     </ul>
   </div>
+  <div><a class="btn btn-solid btn-next" href="#s-ready" data-next>Next: Ready to get started <span class="arrow" aria-hidden="true">↓</span></a></div>
 </section>
 
-<section class="cta" aria-labelledby="cta-h">
-  <div style="max-width:640px">
-    <p class="status" id="next-line">Finish the steps above, then head to the platform.</p>
-    <h2 id="cta-h">Ready to get started?</h2>
-    <p class="body">Head to the platform to begin Project 1: Your First BeReal Teardown. If anything is unclear, your program manager is there to help.</p>
+<!-- 6. Ready -->
+<section class="panel" id="s-ready" aria-labelledby="h-ready">
+  <p class="eyebrow">Step 6 of 6 · Ready to start</p>
+  <div class="cta">
+    <div style="max-width:640px">
+      <p class="status" id="next-line">Finish the setup steps, then head to the platform.</p>
+      <h2 id="h-ready" tabindex="-1">Ready to get started?</h2>
+      <p class="body">Head to the platform to begin Project 1: Map the End-to-End BeReal User Journey. If anything is unclear, your program manager is there to help.</p>
+    </div>
+    <div class="actions">
+      <a class="primary" href="#" data-link="platform">Go to the platform</a>
+      <button type="button" class="secondary" data-open-help aria-haspopup="dialog">Get help from your program manager</button>
+    </div>
   </div>
-  <div class="actions">
-    <a class="primary" href="#" data-link="platform">Go to the platform</a>
-    <button type="button" class="secondary" data-open-help aria-haspopup="dialog">Get help from your program manager</button>
-  </div>
+  <div><a class="btn back-top" href="#s-intro" data-next>Back to the start <span aria-hidden="true">↑</span></a></div>
 </section>
 </main>
-</div>
 
 <dialog id="help" aria-labelledby="help-h">
   <div class="dlg">
@@ -304,7 +390,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 (function(){
   // Fill in real URLs here; "#" links stay inert.
   var LINKS = {
-    welcomeVideo:'#', slack:'#', availability:'#', linkedinImage:'#',
+    slack:'#', availability:'#', linkedinImage:'#',
     platform:'#', zoom:'#', calendar:'#'
   };
   document.querySelectorAll('[data-link]').forEach(function(a){
@@ -313,6 +399,44 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     if (url === '#') a.addEventListener('click', function(e){ e.preventDefault(); });
     else { a.target = '_blank'; a.rel = 'noopener'; }
   });
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Step links (tracker + Next buttons): scroll to the step, then move focus to its heading
+  function go(id){
+    var sec = document.getElementById(id); if (!sec) return;
+    sec.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'});
+    var h = sec.querySelector('h1,h2[tabindex]');
+    if (h) h.focus({preventScroll:true});
+  }
+  document.querySelectorAll('#steps a, [data-next]').forEach(function(a){
+    a.addEventListener('click', function(e){ e.preventDefault(); go(a.getAttribute('href').slice(1)); });
+  });
+
+  // Tracker: mark the step in view as current, earlier steps as seen
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var stepLinks = Array.prototype.slice.call(document.querySelectorAll('#steps a'));
+  var where = document.getElementById('where');
+  var names = ['Intro','Day 0 video','How Extern works','Project overview','Get set up','Ready to start'];
+  function setCurrent(i){
+    stepLinks.forEach(function(a, j){
+      if (j === i) a.setAttribute('aria-current','step'); else a.removeAttribute('aria-current');
+      a.classList.toggle('seen', j < i);
+    });
+    where.textContent = 'Step ' + (i + 1) + ' of 6: ' + names[i];
+  }
+  function update(){
+    var line = window.innerHeight * 0.35, cur = 0;
+    panels.forEach(function(p, i){ if (p.getBoundingClientRect().top <= line) cur = i; });
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = panels.length - 1;
+    setCurrent(cur);
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (!ticking){ ticking = true; requestAnimationFrame(function(){ ticking = false; update(); }); }
+  }, {passive:true});
+  window.addEventListener('resize', update);
+  update();
 
   // Checklist progress, saved per browser
   var KEY = 'bereal-extern-onboarding-v1';
@@ -330,7 +454,8 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     tasks.forEach(function(t){ t.classList.toggle('done', !!done[t.dataset.id]); });
     txt.textContent = all ? "All required steps done. You're set for Day 1." : n + ' of ' + required.length + ' required steps done';
     bar.style.width = Math.round(n / required.length * 100) + '%';
-    next.textContent = all ? "You're set for Day 1." : 'Finish the steps above, then head to the platform.';
+    next.textContent = all ? "Setup done. You're set for Day 1." : 'Finish the setup steps, then head to the platform.';
+    next.classList.toggle('ok', all);
   }
   tasks.forEach(function(t){
     var box = t.querySelector('input');
