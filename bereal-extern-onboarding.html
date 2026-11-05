@@ -95,10 +95,17 @@ details.transcript p{margin:0 0 12px;color:var(--muted);max-width:720px}
 
 /* Project overview */
 .challenge{margin:0 0 16px;font-family:var(--display);font-weight:600;font-size:clamp(26px,4.4vw,40px);line-height:1.12;letter-spacing:-.02em;max-width:900px}
-.why{margin:0 0 40px;color:var(--muted);max-width:700px}
+.why{margin:0 0 28px;color:var(--muted);max-width:700px}
 .why strong{color:var(--fg)}
 h3.sub-h{margin:0 0 14px;font-family:var(--display);font-weight:800;font-size:24px}
-h3.sub-h.gap{margin-top:44px}
+h3.sub-h.gap{margin-top:32px}
+.do-sum{margin:0 0 14px;color:var(--muted)}
+.more summary{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 20px;border-radius:999px;border:1.5px solid var(--pill-line);font-weight:600;font-size:15px;cursor:pointer;list-style:none}
+.more summary::-webkit-details-marker{display:none}
+.more summary::before{content:"+";display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--green);color:#000;font-weight:800;line-height:1}
+.more[open] summary::before{content:"−"}
+.more summary:hover{border-color:#6B6B6B}
+.more[open] summary{margin-bottom:16px}
 .scroller{overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory;scrollbar-color:#4A4A4A transparent}
 .projects{display:flex;gap:16px;margin:0;padding:0;list-style:none}
 .projects li{flex:0 0 210px;min-height:280px;border-radius:24px;background:var(--card);border:1px solid var(--card-line);padding:20px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;scroll-snap-align:start}
@@ -261,6 +268,9 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   <p class="why"><strong>Why BeReal cares:</strong> BeReal's promise is no filters and no fakes. People love the idea, but the daily habit is harder to keep. Monthly active users (MAUs) are the people who open the app at least once a month, and BeReal needs ideas that bring more of them back without making the app less real.</p>
 
   <h3 class="sub-h" id="do-h">What you'll do</h3>
+  <p class="do-sum">Five projects, starting with mapping the BeReal user journey on Day 1.</p>
+  <details class="more" id="projects-more">
+  <summary>See all 5 projects</summary>
   <div class="scroller" role="region" aria-labelledby="do-h" tabindex="0">
     <ol class="projects">
       <li class="first"><span class="when">Project 1 · Starts Day 1</span><span class="what">Map the BeReal user journey</span><span class="desc">Go from sign-up to posting to reacting, and spot friction and delight.</span></li>
@@ -271,6 +281,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     </ol>
   </div>
   <p class="scroll-hint" id="scroll-hint">Scroll sideways to see all 5 projects.</p>
+  </details>
 
   <h3 class="sub-h gap">What you'll learn</h3>
   <ul class="skills">
@@ -472,6 +483,11 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   var sc = document.querySelector('.scroller'), hint = document.getElementById('scroll-hint');
   function fit(){ if (!sc.offsetParent) return; hint.hidden = sc.scrollWidth <= sc.clientWidth + 2; }
   window.addEventListener('resize', fit); fit();
+  var more = document.getElementById('projects-more');
+  more.addEventListener('toggle', function(){
+    more.querySelector('summary').textContent = more.open ? 'Hide the projects' : 'See all 5 projects';
+    fit();
+  });
 
   // Help dialog: native modal traps focus and closes on Escape; return focus to opener
   var dlg = document.getElementById('help'), opener = null;
