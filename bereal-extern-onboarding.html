@@ -134,6 +134,17 @@ h3.sub-h.gap{margin-top:32px}
 .rules h4{margin:0 0 4px;font-size:15px;font-weight:700}
 .rules ul{margin:0;padding-left:20px;color:var(--muted);font-size:15px}
 .task .btn{margin-top:14px}
+/* House Rules: read first, then agree. The left circle mirrors the agree checkbox. */
+.chk-mark{width:26px;height:26px;margin:2px 0 0;border-radius:50%;border:2px solid var(--faint);display:grid;place-items:center;flex:none}
+.task.done .chk-mark{background:var(--green);border-color:var(--green)}
+.task.done .chk-mark::after{content:"";width:6px;height:12px;border:solid #000;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.task-title{margin:0;font-size:18px;font-weight:700;line-height:1.55}
+.task.done .task-title{color:var(--faint);text-decoration:line-through}
+.agree{margin-top:14px;display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 16px;border-radius:14px;border:1.5px solid var(--pill-line);background:var(--chip)}
+.agree .chk{margin:0}
+.task .agree label{font-size:16px;font-weight:600}
+.task.done .agree{border-color:var(--green-line);background:var(--green-soft)}
+.task.done .agree label{color:var(--fg);text-decoration:none}
 
 /* Closing CTA */
 .cta{border-radius:32px;background:var(--fg);color:#000;padding:clamp(28px,5vw,44px);display:flex;flex-direction:column;gap:24px;border-top:8px solid var(--green)}
@@ -307,13 +318,17 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
           <a class="btn" href="#" data-link="availability">Open the availability form</a>
         </div>
       </li>
-      <li class="task" data-id="how_we_work">
-        <input class="chk" type="checkbox" id="t-how_we_work" aria-describedby="d-how_we_work">
+      <li class="task" data-id="house_rules">
+        <span class="chk-mark" aria-hidden="true"></span>
         <div class="task-body">
-          <label for="t-how_we_work">Agree to how we work</label>
-          <div class="rules" id="d-how_we_work">
+          <h3 class="task-title">Read the House Rules</h3>
+          <div class="rules" id="d-house_rules">
             <div><h4>Do</h4><ul><li>Follow the suggested pacing.</li><li>Join live sessions with your company mentor.</li><li>Bring every question to Slack or your program manager.</li></ul></div>
             <div><h4>Don't</h4><ul><li>Contact anyone at BeReal directly.</li><li>Ask BeReal staff for jobs or referrals.</li><li>Call yourself an intern or employee.</li><li>Share project data outside approved channels.</li></ul></div>
+          </div>
+          <div class="agree">
+            <input class="chk" type="checkbox" id="t-house_rules">
+            <label for="t-house_rules">I agree to follow the House Rules</label>
           </div>
         </div>
       </li>
