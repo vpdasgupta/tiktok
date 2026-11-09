@@ -393,7 +393,6 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     <h3>Links</h3>
     <div class="links">
       <a href="#" data-link="slack">Extern Slack</a>
-      <a href="#" data-link="zoom">Live session Zoom</a>
       <a href="#" data-link="calendar">Program calendar</a>
     </div>
     <div class="stuck">
@@ -410,7 +409,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     slack:'https://externslackplatform.slack.com/archives/C09GCPRM78R',
     availability:'https://tally.so/r/ob5b9e',
     linkedinImage:'https://drive.google.com/file/d/1b_tjAhmMPjcmZyHf8L0Zjz6TBqI8uMtq/view',
-    zoom:'#', calendar:'#'
+    calendar:'https://calendar.google.com/calendar/u/0/embed?src=c_07aed567e10c9c11b4506d7e09edc17239dedfb1734e3eb979dbed3b75cbad39@group.calendar.google.com&ctz=America/Chicago&mode=WEEK'
   };
   document.querySelectorAll('[data-link]').forEach(function(a){
     var url = LINKS[a.getAttribute('data-link')] || '#';
