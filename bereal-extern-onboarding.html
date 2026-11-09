@@ -160,6 +160,10 @@ h3.sub-h.gap{margin-top:32px}
 .cta .secondary{background:transparent;color:#000;border:2px solid #000}
 .cta .secondary:hover{background:#EDEDED}
 .cta :focus-visible{outline-color:#000}
+/* Points to the platform's own Next button outside the embed; deliberately not a button */
+.next-hint{margin:0;display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:18px;background:#F2F2F2;border-left:6px solid var(--green);font-size:17px;font-weight:600;max-width:640px}
+.next-hint .down{flex:none;width:36px;height:36px;border-radius:50%;background:#000;color:#fff;display:grid;place-items:center;font-size:20px;font-weight:700}
+@media (prefers-reduced-motion:no-preference){ .next-hint .down{animation:nudge 1.6s ease-in-out 3} @keyframes nudge{50%{transform:translateY(4px)}} }
 .back-top{margin-top:24px}
 
 /* Help dialog (from board "BeReal: help panel open") */
@@ -350,12 +354,12 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   <p class="eyebrow">Step 6 of 6 · Ready to start</p>
   <div class="cta">
     <div style="max-width:640px">
-      <p class="status" id="next-line">Finish the setup steps, then head to the platform.</p>
-      <h2 id="h-ready" tabindex="-1">Ready to get started?</h2>
-      <p class="body">Head to the platform to begin Project 1: Map the End-to-End BeReal User Journey. If anything is unclear, your program manager is there to help.</p>
+      <p class="status" id="next-line">Finish the setup steps in step 5, then click Next.</p>
+      <h2 id="h-ready" tabindex="-1">One last click</h2>
+      <p class="body">Click <strong>Next</strong> at the bottom of this page to save your progress. That's how the platform knows you finished onboarding. If anything is unclear, your program manager is there to help.</p>
     </div>
+    <p class="next-hint"><span class="down" aria-hidden="true">↓</span><span>The <strong>Next</strong> button is below this box, at the very bottom of the page.</span></p>
     <div class="actions">
-      <a class="primary" href="#" data-link="platform">Go to the platform</a>
       <button type="button" class="secondary" data-open-help aria-haspopup="dialog">Get help from your program manager</button>
     </div>
   </div>
@@ -406,7 +410,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     slack:'https://externslackplatform.slack.com/archives/C09GCPRM78R',
     availability:'https://tally.so/r/ob5b9e',
     linkedinImage:'https://drive.google.com/file/d/1b_tjAhmMPjcmZyHf8L0Zjz6TBqI8uMtq/view',
-    platform:'https://app.extern.com', zoom:'#', calendar:'#'
+    zoom:'#', calendar:'#'
   };
   document.querySelectorAll('[data-link]').forEach(function(a){
     var url = LINKS[a.getAttribute('data-link')] || '#';
@@ -467,7 +471,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     tasks.forEach(function(t){ t.classList.toggle('done', !!done[t.dataset.id]); });
     txt.textContent = all ? "All required steps done. You're set for Day 1." : n + ' of ' + required.length + ' required steps done';
     bar.style.width = Math.round(n / required.length * 100) + '%';
-    next.textContent = all ? "Setup done. You're set for Day 1." : 'Finish the setup steps, then head to the platform.';
+    next.textContent = all ? "Setup done. You're set for Day 1." : 'Finish the setup steps in step 5, then click Next.';
     next.classList.toggle('ok', all);
   }
   tasks.forEach(function(t){
