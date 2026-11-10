@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Download the BeReal App</title>
 <!-- [Task] Download the BeReal App, steps section. Engine from Beats beats-p2-comment-check-deck.html,
-     skin from bereal-p1-s1-01-mission.html (BeReal widget style). -->
+     skin from bereal-p1-s1-01-mission.html (BeReal widget style).
+     Navigation matches p1-s1-08-meet-bereal.html: top bar (back arrow, dots, Start over),
+     bobbing green forward arrow, pointing-hand hint. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Text&family=Inter:wght@400;500;600;700&display=swap">
@@ -27,19 +29,28 @@ body{margin:0;padding:14px 12px 12px;color:var(--ink);font:400 15px/1.5 var(--bo
 button{font:inherit;color:inherit}
 .hl{background:linear-gradient(transparent 58%,var(--green) 58%,var(--green) 90%,transparent 90%);padding:0 2px}
 
-/* progress segments */
-.segs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:0 0 12px;padding:0;list-style:none}
-.segs li{height:6px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1.5px #000}
-.segs li.on{background:var(--green)}
+/* top bar: back arrow + progress dots on the left, Start over on the right */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;min-height:44px}
+.topleft{display:flex;align-items:center;gap:14px}
+.dots{display:flex;gap:8px;margin:0;padding:0;list-style:none}
+.dots li{width:11px;height:11px;border-radius:50%;background:#fff;border:1.5px solid #000;transition:all .3s}
+.dots li.done{background:var(--green-mid)}
+.dots li.now{background:var(--green);transform:scale(1.3)}
+.back{width:44px;height:44px;border-radius:50%;border:2px solid #000;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:opacity .3s}
+.back:hover{background:var(--green-soft)}
+.restart{font-size:15px;font-weight:600;background:#fff;border:1.5px solid #000;border-radius:999px;min-height:44px;padding:0 16px;cursor:pointer}
+.restart:hover{background:var(--green-soft)}
+.is-hidden{opacity:0 !important;visibility:hidden;pointer-events:none}
 
 /* horizontal scroll track */
+.deck{position:relative;padding-bottom:44px}
 .slides{display:flex;align-items:stretch;margin:0;padding:2px;overflow-x:auto;overflow-y:hidden;
   scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain}
 .slides::-webkit-scrollbar{display:none}
 .slides:focus-visible{outline:3px solid #000;outline-offset:2px;border-radius:var(--r-card)}
 .frame{flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always;padding:0 2px;display:flex}
 
-.slide{flex:1;border:1.5px solid var(--line);border-radius:var(--r-card);padding:18px 18px 16px;
+.slide{flex:1;border:1.5px solid var(--line);border-radius:var(--r-card);padding:18px 18px 40px;
   display:flex;gap:18px;align-items:center;min-height:340px}
 .slide .txt{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:10px}
 .kicker{margin:0;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green-text)}
@@ -73,31 +84,40 @@ button{font:inherit;color:inherit}
 
 .go{font:400 30px/1.1 var(--serif)}
 
-/* controls */
-.controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1.5px solid #000}
-.btn{min-width:44px;min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid #000;background:#fff;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.btn:hover{background:var(--green-soft)}
-.btn-solid{background:#000;color:#fff}
-.btn-solid:hover{background:#333;color:#fff}
-.btn[aria-disabled="true"]{opacity:.4;cursor:default;border-style:dashed}
-.btn-solid[aria-disabled="true"]{background:#fff;color:#000}
-.count{margin:0;font-size:14px;font-weight:700;color:var(--muted)}
+/* forward arrow: sits on the slide's bottom-right edge and bobs toward the next slide */
+.fwd{position:absolute;right:22px;bottom:6px;width:76px;height:76px;border-radius:50%;border:3px solid #000;background:var(--green);
+  cursor:pointer;z-index:3;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 6px 0 #000;animation:bob 1.4s ease-in-out infinite}
+.fwd:hover{background:#07A657}
+@keyframes bob{0%,100%{transform:translateX(0)}50%{transform:translateX(9px)}}
+.fwd:focus-visible,.back:focus-visible,.restart:focus-visible{outline:3px solid #000;outline-offset:4px}
+
+/* pointing hand: fades in after a pause to show where to tap */
+.hand{position:absolute;right:12px;bottom:-14px;width:56px;height:62px;z-index:4;pointer-events:none;opacity:0;transition:opacity .3s;animation:tap 1.4s ease-in-out infinite}
+@keyframes tap{0%,100%{transform:translate(0,0) rotate(-12deg)}50%{transform:translate(-6px,-10px) rotate(-12deg)}}
 
 @media (max-width:560px){
   .slide{flex-direction:column;align-items:stretch;min-height:0}
   .shot,.ping,.reel{flex-basis:auto;max-width:240px;width:100%;margin:0 auto}
   .slide h2{font-size:24px}
 }
-@media (prefers-reduced-motion:reduce){.slides{scroll-behavior:auto}}
-@media (forced-colors:active){.segs li.on{background:CanvasText}.btn[aria-disabled="true"]{color:GrayText;border-color:GrayText}}
+@media (prefers-reduced-motion:reduce){.slides{scroll-behavior:auto}.fwd,.hand{animation:none}.dots li{transition:none}}
+@media (forced-colors:active){.dots li.now,.dots li.done{background:CanvasText}.fwd{border-color:ButtonText}}
 </style>
 </head>
 <body>
 <main>
 <h1 class="sr-only">Download the BeReal App</h1>
-<ol class="segs" id="segs" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li></ol>
+<div class="topbar">
+  <div class="topleft">
+    <button class="back is-hidden" id="back" type="button" aria-label="Previous slide">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5 L8 12 L15 19" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <ol class="dots" id="dots" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li></ol>
+  </div>
+  <button class="restart" id="restart" type="button"><span aria-hidden="true">↺</span> Start over</button>
+</div>
 
-<section aria-roledescription="carousel" aria-label="Download the BeReal app steps">
+<section class="deck" aria-roledescription="carousel" aria-label="Download the BeReal app steps">
 <div class="slides" id="track" tabindex="0" aria-label="Slides. Use the left and right arrow keys.">
 
   <div class="frame" role="group" aria-roledescription="slide" aria-label="1 of 5">
@@ -180,11 +200,13 @@ button{font:inherit;color:inherit}
   </div>
 
 </div>
-<div class="controls">
-  <button type="button" class="btn" id="prev"><span aria-hidden="true">‹</span> Previous</button>
-  <p class="count" id="count" aria-hidden="true">1 of 5</p>
-  <button type="button" class="btn btn-solid" id="next">Next <span aria-hidden="true">›</span></button>
-</div>
+<button class="fwd" id="fwd" type="button" aria-label="Next slide">
+  <svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<svg class="hand" id="hand" viewBox="0 0 58 64" aria-hidden="true" focusable="false">
+  <path d="M22 6 c0-3.5 6-3.5 6 0 v22 l2-1 c0-3.5 6-3.5 6 0 v2 c0-3.5 6-3.5 6 0 v3 c0-3.5 6-3.5 6 0 v12 c0 10-6 16-15 16 h-5 c-6 0-9-3-12-8 l-8-13 c-2-3 2-6 5-3 l6 6 z" fill="#FFFFFF" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+  <line x1="28" y1="30" x2="28" y2="38" stroke="#000" stroke-width="2"/><line x1="36" y1="31" x2="36" y2="38" stroke="#000" stroke-width="2"/><line x1="44" y1="33" x2="44" y2="39" stroke="#000" stroke-width="2"/>
+</svg>
 <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
 </section>
 </main>
@@ -192,10 +214,12 @@ button{font:inherit;color:inherit}
 (function () {
   var track = document.getElementById('track');
   var slides = Array.prototype.slice.call(track.querySelectorAll('.frame'));
-  var segs = Array.prototype.slice.call(document.querySelectorAll('#segs li'));
-  var prevBtn = document.getElementById('prev');
-  var nextBtn = document.getElementById('next');
-  var countEl = document.getElementById('count');
+  var dots = Array.prototype.slice.call(document.querySelectorAll('#dots li'));
+  var backBtn = document.getElementById('back');
+  var fwdBtn = document.getElementById('fwd');
+  var restartBtn = document.getElementById('restart');
+  var hand = document.getElementById('hand');
+  var handTimer;
   var announceEl = document.getElementById('announce');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var current = -1;
@@ -207,10 +231,16 @@ button{font:inherit;color:inherit}
       if (si === i) { sl.removeAttribute('inert'); sl.removeAttribute('aria-hidden'); }
       else { sl.setAttribute('inert', ''); sl.setAttribute('aria-hidden', 'true'); }
     });
-    segs.forEach(function (s, si) { s.classList.toggle('on', si <= i); });
-    prevBtn.setAttribute('aria-disabled', i === 0 ? 'true' : 'false');
-    nextBtn.setAttribute('aria-disabled', i === slides.length - 1 ? 'true' : 'false');
-    countEl.textContent = (i + 1) + ' of ' + slides.length;
+    dots.forEach(function (d, di) { d.className = di < i ? 'done' : di === i ? 'now' : ''; });
+    var last = i === slides.length - 1;
+    // don't strand keyboard focus on a button that is about to disappear
+    if (last && document.activeElement === fwdBtn) restartBtn.focus();
+    if (i === 0 && document.activeElement === backBtn) fwdBtn.focus();
+    backBtn.classList.toggle('is-hidden', i === 0);
+    fwdBtn.classList.toggle('is-hidden', last);
+    hand.style.opacity = 0;
+    clearTimeout(handTimer);
+    if (!last) handTimer = setTimeout(function () { hand.style.opacity = 1; }, 2600);
     if (speak) announceEl.textContent = 'Slide ' + (i + 1) + ' of ' + slides.length + ': ' + slides[i].querySelector('h2').textContent;
   }
   function goTo(i) {
@@ -219,8 +249,9 @@ button{font:inherit;color:inherit}
     track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft, behavior: reduce.matches ? 'auto' : 'smooth' });
     setActive(i, true);
   }
-  prevBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
-  nextBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
+  backBtn.addEventListener('click', function () { if (current > 0) goTo(current - 1); });
+  fwdBtn.addEventListener('click', function () { if (current < slides.length - 1) goTo(current + 1); });
+  restartBtn.addEventListener('click', function () { goTo(0); });
   track.addEventListener('keydown', function (e) {
     var k = e.key;
     if (k === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
