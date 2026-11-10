@@ -92,8 +92,8 @@ button{font:inherit;color:inherit}
 .fwd:focus-visible,.back:focus-visible,.restart:focus-visible{outline:3px solid #000;outline-offset:4px}
 
 /* pointing hand: fades in after a pause to show where to tap */
-.hand{position:absolute;right:12px;bottom:-14px;width:56px;height:62px;z-index:4;pointer-events:none;opacity:0;transition:opacity .3s;animation:tap 1.4s ease-in-out infinite}
-@keyframes tap{0%,100%{transform:translate(0,0) rotate(-12deg)}50%{transform:translate(-6px,-10px) rotate(-12deg)}}
+.hand{position:absolute;right:26px;bottom:-20px;width:56px;height:56px;z-index:4;pointer-events:none;opacity:0;transition:opacity .3s;animation:tap 1.4s ease-in-out infinite}
+@keyframes tap{0%,100%{transform:translate(0,0)}50%{transform:translate(-4px,-8px)}}
 
 @media (max-width:560px){
   .slide{flex-direction:column;align-items:stretch;min-height:0}
@@ -203,10 +203,7 @@ button{font:inherit;color:inherit}
 <button class="fwd" id="fwd" type="button" aria-label="Next slide">
   <svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
-<svg class="hand" id="hand" viewBox="0 0 58 64" aria-hidden="true" focusable="false">
-  <path d="M22 6 c0-3.5 6-3.5 6 0 v22 l2-1 c0-3.5 6-3.5 6 0 v2 c0-3.5 6-3.5 6 0 v3 c0-3.5 6-3.5 6 0 v12 c0 10-6 16-15 16 h-5 c-6 0-9-3-12-8 l-8-13 c-2-3 2-6 5-3 l6 6 z" fill="#FFFFFF" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
-  <line x1="28" y1="30" x2="28" y2="38" stroke="#000" stroke-width="2"/><line x1="36" y1="31" x2="36" y2="38" stroke="#000" stroke-width="2"/><line x1="44" y1="33" x2="44" y2="39" stroke="#000" stroke-width="2"/>
-</svg>
+<svg class="hand" id="hand" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g transform="rotate(-14 32 32)"><path d="M22 9a5 5 0 0 1 10 0V27a4.5 4.5 0 0 1 9 1v2a4.5 4.5 0 0 1 9 1.5v1.5a4.5 4.5 0 0 1 9 1.5V46c0 10-7 16-17 16h-8c-6 0-10-2.5-13.5-7.5L11 40.5a4.6 4.6 0 0 1 7-6L22 39Z" fill="#FFFFFF" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/><path d="M32 27v8M41 30v6M50 33v5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/></g></svg>
 <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
 </section>
 </main>
