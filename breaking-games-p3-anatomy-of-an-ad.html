@@ -231,7 +231,12 @@
   .stake-line { font-weight: 800; margin: 6px 0 0; }
   .rules2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 12px; }
   .bridge { border-left: 4px solid var(--red-ink); background: var(--pink-tint); border-radius: var(--radius-sm); padding: 12px 16px; font-weight: 700; font-size: 17px; margin: 0; }
-  @media (max-width: 760px) { .parts { grid-template-columns: 1fr 1fr; } }
+  /* Round 1 filmstrip: each second of the ad as a phone frame plus its text. The text is the equivalent, so images use alt="". */
+  .clues.strip { grid-template-columns: repeat(4, 1fr); align-items: start; }
+  .strip .frame { grid-template-columns: 1fr; gap: 4px; padding: 10px 10px 10px 14px; font-size: 14px; }
+  .strip .frame img { display: block; width: 112px; height: auto; margin: 0 auto 4px; }
+  .strip .frame .when { padding-top: 0; }
+  @media (max-width: 760px) { .parts, .clues.strip { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 640px) {
     .intro-row, .opts, .rules2 { grid-template-columns: 1fr; }
     .frame { grid-template-columns: 1fr; gap: 2px; }
@@ -264,7 +269,7 @@
     <section class="slide" aria-labelledby="h-1" hidden>
       <p class="round-tag">Round 1 of 2 · a sample ad that works</p>
       <h2 id="h-1" tabindex="-1">What is this ad selling?</h2>
-      <ol class="clues" aria-label="What the ad shows so far"><li class="frame" id="cl0-0"><span class="when">Second 0</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>Adult hands tip cards onto a kitchen table. Text: "Rainy Saturday. Kids bored."</span></li><li class="frame" id="cl0-1" hidden><span class="when">Second 2</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>The POOP: The Game box slides in, with "Breaking Games" in the corner.</span></li><li class="frame" id="cl0-2" hidden><span class="when">Second 5</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>Voices laugh off camera as a card is played.</span></li><li class="frame" id="cl0-3" hidden><span class="when">End card</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>"$10, ages 6 and up. Find your next game night." plus "Good game, folks."</span></li></ol>
+      <ol class="clues strip" aria-label="What the ad shows so far"><li class="frame" id="cl0-0"><img src="https://vpdasgupta.github.io/tiktok/breaking-games-p3-anatomy-frame-sec0.png" alt="" width="112" height="196"><span class="when">Second 0</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>Adult hands tip cards onto a kitchen table. Text: "Rainy Saturday. Kids bored."</span></li><li class="frame" id="cl0-1" hidden><img src="https://vpdasgupta.github.io/tiktok/breaking-games-p3-anatomy-frame-sec2.png" alt="" width="112" height="196"><span class="when">Second 2</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>The POOP: The Game box slides in, with "Breaking Games" in the corner.</span></li><li class="frame" id="cl0-2" hidden><img src="https://vpdasgupta.github.io/tiktok/breaking-games-p3-anatomy-frame-sec5.png" alt="" width="112" height="196"><span class="when">Second 5</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>Voices laugh off camera as a card is played.</span></li><li class="frame" id="cl0-3" hidden><img src="https://vpdasgupta.github.io/tiktok/breaking-games-p3-anatomy-frame-end.png" alt="" width="112" height="196"><span class="when">End card</span><span><span class="meta"><span class="concept-tag">Sample ad, concept</span></span>"$10, ages 6 and up. Find your next game night." plus "Good game, folks."</span></li></ol>
       <form class="guess" id="gf0" autocomplete="off">
         <div class="field-wrap"><label for="g0">Your guess</label><input id="g0" type="text" autocomplete="off" spellcheck="false" aria-describedby="res0"></div>
         <button type="submit" class="btn primary">Guess</button>
