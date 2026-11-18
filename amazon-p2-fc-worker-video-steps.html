@@ -82,11 +82,11 @@ const TASK = {
       "sample": {
         "label": "Format for each moment",
         "kind": "text",
-        "body": "Video: [title], [channel]\nMoment 1 – chunk_start_sec: [number]\nQuote (1–2 sentences, word for word from transcript_text):\nLeave or stay? [leave / stay / nearly left]\nWhy, in your words (1 sentence):\nMoment 2 – chunk_start_sec: [number]\n..."
+        "body": "Video: [title], [channel]\nMoment 1 – chunk_start_sec: [number]\nQuote (1–2 sentences, word for word from the text column):\nLeave or stay? [leave / stay / nearly left]\nWhy, in your words (1 sentence):\nMoment 2 – chunk_start_sec: [number]\n..."
       },
       "onTrack": "you know you need one video, two moments and a row number for each.",
       "stuck": [
-        "You don't need to search YouTube or copy transcripts. The captions of 8 videos are already in one file, <code>youtube_transcripts.csv</code>."
+        "You don't need to search YouTube or copy transcripts. The captions of 8 videos are already on the <code>YouTube</code> tab of your workbook."
       ]
     },
     {
@@ -112,12 +112,12 @@ const TASK = {
       },
       "onTrack": "you have at least 2 times, each with a few words on what was said.",
       "stuck": [
-        "Turn on captions (the CC button). They match the transcript file, which helps in the next step."
+        "Turn on captions (the CC button). They match the <code>YouTube</code> tab, which helps in the next step."
       ]
     },
     {
-      "title": "Find each moment in the transcript file",
-      "instruction": "Open <b>youtube_transcripts.csv</b> (link coming) and click <b>Open with</b>, then <b>Google Sheets</b>. Each row is about 75 seconds of one video. Filter the <code>title</code> column to your video, find the row whose <code>transcript_text</code> has your moment, and note its <code>chunk_start_sec</code>.",
+      "title": "Find each moment on the YouTube tab",
+      "instruction": "Open the <code>YouTube</code> tab of your workbook. Each row is about 75 seconds of one video. Click <b>Data → Create a filter</b>, then use the filter icon on the <code>title</code> column to show only your video. Find the row whose <code>text</code> has your moment (<b>Edit → Find and replace</b> helps) and note its <code>chunk_start_sec</code>.",
       "sample": {
         "label": "Tip: jump to that second",
         "kind": "text",
@@ -130,13 +130,13 @@ const TASK = {
     },
     {
       "title": "Example: moment 1",
-      "instruction": "Here's a moment from the Gin Ether video, quoted from the caption file.",
+      "instruction": "Here's a moment from the Gin Ether video, quoted from the <code>YouTube</code> tab.",
       "sample": {
         "label": "How To Survive Working At Amazon Warehouse, Gin Ether",
         "kind": "text",
         "body": "Moment 1 – chunk_start_sec: 382\nQuote: \"you want to mentally prepare yourself for your feet to be hurting for like the first two to three weeks that does not mean quit\"\nLeave or stay? Nearly left (stay)\nWhy: Foot pain in the first 2–3 weeks is a reason new hires think about quitting, and she says it passes once you adjust."
       },
-      "onTrack": "your quote is 1–2 sentences, copied word for word from <code>transcript_text</code>.",
+      "onTrack": "your quote is 1–2 sentences, copied word for word from the <code>text</code> column.",
       "stuck": [
         "Auto-captions have no punctuation. Copy them as they are and stop at a natural break."
       ]

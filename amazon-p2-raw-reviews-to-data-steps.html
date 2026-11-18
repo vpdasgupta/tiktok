@@ -91,20 +91,20 @@ const TASK = {
     },
     {
       "title": "See the same parts as a row",
-      "instruction": "Each review becomes a <b>row</b>. Each detail becomes a <b>column</b>. Here's review 16 from the file, showing 7 of its 28 columns.",
+      "instruction": "Each review becomes a <b>row</b>. Each detail becomes a <b>column</b>. Here's review 16 from the <code>Raw</code> tab, showing 7 of its 28 columns.",
       "sample": {
-        "label": "Review 16, as it appears in the raw file",
+        "label": "Review 16, as it appears on the Raw tab",
         "kind": "text",
         "body": "review_id: 16\nrating_date: 2025-04-24T00:00:00.000Z\nemployee_type: Former employee, less than 1 year\nemployee_location: Hamilton, ON\nemployee_job_title: Order Picker\nrating_overall: 2\nreview_cons: fired without notification, one day my badge just didnt work…"
       },
       "onTrack": "you can match each line to one part of a review from the last slide.",
       "stuck": [
-        "The date has extra characters after it. That's how the scraper saved it. The notebook trims it later."
+        "The date has extra characters after it. That's how the scraper saved it. You won't need the time part in this project, so you can ignore it."
       ]
     },
     {
-      "title": "Open the file and look around",
-      "instruction": "Open the <a href=\"https://drive.google.com/file/d/1NFJcm7B2zkN_cypMJUMOSvtsrvNfhd8t/view?usp=sharing\" target=\"_blank\" rel=\"noopener\">Glassdoor reviews file</a> and click <b>Open with</b>, then <b>Google Sheets</b>. Scroll for 5 minutes before you go on.",
+      "title": "Open the Raw tab and look around",
+      "instruction": "Open your copy of the class workbook (you made it in the Sheets Quickstart) and click the <code>Raw</code> tab. This is the data you'll clean in this step. Scroll for 5 minutes before you go on.",
       "sample": {
         "label": "What's in it",
         "kind": "text",
@@ -133,21 +133,21 @@ const TASK = {
     },
     {
       "title": "Spot the quirks you'll fix",
-      "instruction": "Scrapers leave fingerprints. These are the ones you'll clean up in the notebook:",
+      "instruction": "Scrapers leave fingerprints. Here's what you'll see on the <code>Raw</code> tab:",
       "items": [
         "A sub-rating of <b>0</b> means the reviewer skipped it. Ratings run from 1 to 5.",
-        "<code>&amp;amp;</code> shows up instead of <code>&amp;</code>. That's web code that leaked into the text.",
-        "<code>employee_status</code> is the type of job (REGULAR, PART_TIME). Current or former is hidden in <code>employee_type</code>.",
+        "<code>&amp;amp;</code> shows up instead of <code>&amp;</code>. That's web code that leaked into the text. The <code>Reviews</code> answer-key tab has it fixed for you.",
+        "<code>employee_status</code> is the type of job (REGULAR, PART_TIME). Current or former is hidden in <code>employee_type</code>. You'll pull it out with formulas into <code>is_former</code> and <code>tenure_band</code>.",
         "<code>employee_length</code> of 0 means the reviewer didn't say. It doesn't mean brand new."
       ],
       "sample": {
-        "label": "Real values from the file",
+        "label": "Real values from the Raw tab",
         "kind": "text",
         "body": "review_cons: inhumane draining physically &amp;amp; mentally\nrating_work_life: 0\nemployee_type: Former employee, less than 1 year"
       },
-      "onTrack": "you can explain why leaving a 0 in a sub-rating would make the average too low.",
+      "onTrack": "you can explain why a 0 in a sub-rating would pull an average down.",
       "stuck": [
-        "Your job right now is to notice. You won't fix anything until the notebook."
+        "Your job right now is to notice. You'll fix what matters with formulas on the next pages."
       ]
     },
     {
@@ -164,7 +164,7 @@ const TASK = {
       },
       "onTrack": "each pick has a one-line reason. There's nothing to submit.",
       "stuck": [
-        "Not sure? You're not expected to be right. You'll compare your list with what the notebook keeps."
+        "Not sure? You're not expected to be right. Compare your list with the <code>Reviews</code> answer-key tab: it keeps <code>is_former</code>, <code>tenure_band</code>, <code>rating_overall</code> and a joined <code>text</code> column, and drops the rest."
       ]
     }
   ]
