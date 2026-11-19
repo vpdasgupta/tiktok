@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+Amazon Ops Strategy & People Analytics — "Why This Is Resume Gold" card.
+Replaces H5P 1292591900812543459 ("ResumePointers", image + hover hotspots) on:
+  - P0 [Training] Know Your Host Company and Business Challenge (working copy 41c1…679c)
+  - P6 [Task] Congratulations! (working copy c281…35d1)
+Built 2026-11-19. Bullets match the v2 refresh (Sheets + AI, P1–P6 deliverables).
+
+Accessibility (WCAG 2.2 AA):
+  - All resume text is real text (the H5P had it baked into an image).
+  - "Why it matters" uses native <details>/<summary>: keyboard and screen-reader
+    operable, expanded state announced, no hover needed.
+  - Copy button reports its result in a polite live region; if the clipboard is
+    blocked (Notion iframe sandbox) it shows a labeled read-only textarea with the
+    lines selected and focused, and says how to copy.
+  - Text ≥ 4.5:1, UI borders ≥ 3:1 in light and dark; visible focus ring;
+    44px targets; decorative logo and timeline are aria-hidden / CSS only.
+-->
+<title>Resume Lines: Amazon Externship</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --card: #f7f7f5;
+  --head: #b4f5c6;
+  --head-ink: #0b0f0c;
+  --head-sub: #2f3a32;
+  --ink: #1f2328;
+  --ink-2: #3d444d;
+  --line: #6e7781;
+  --accent: #7a1a7b;
+  --accent-bg: #f6e8f6;
+  --focus: #0550ae;
+  --border: #6e7781;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #191919;
+    --card: #232323;
+    --head: #1e4d2b;
+    --head-ink: #f2fff5;
+    --head-sub: #c9e8d1;
+    --ink: #ececec;
+    --ink-2: #c4c4c4;
+    --line: #8b8b8b;
+    --accent: #f0a6f1;
+    --accent-bg: #3a2340;
+    --focus: #79b8ff;
+    --border: #8b8b8b;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #191919; --card: #232323; --head: #1e4d2b; --head-ink: #f2fff5; --head-sub: #c9e8d1;
+  --ink: #ececec; --ink-2: #c4c4c4; --line: #8b8b8b; --accent: #f0a6f1; --accent-bg: #3a2340;
+  --focus: #79b8ff; --border: #8b8b8b;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding: 16px;
+}
+.card {
+  max-width: 760px;
+  margin: 0 auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.head {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  background: var(--head);
+  padding: 22px 24px;
+}
+.logo {
+  flex: 0 0 auto;
+  width: 64px; height: 64px;
+  border-radius: 14px;
+  background: #000;
+  display: grid; place-items: center;
+}
+.head > div { min-width: 0; overflow-wrap: anywhere; }
+.head h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--head-ink);
+}
+.head p { margin: 4px 0 0; color: var(--head-sub); font-size: 0.98rem; }
+.body { padding: 20px 24px 24px; }
+.intro { margin: 0 0 16px; color: var(--ink-2); }
+ul.bullets { list-style: none; margin: 0; padding: 0; }
+ul.bullets li {
+  position: relative;
+  padding: 0 0 22px 34px;
+}
+ul.bullets li::before {
+  content: "";
+  position: absolute; left: 4px; top: 6px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--line);
+}
+ul.bullets li::after {
+  content: "";
+  position: absolute; left: 10px; top: 22px; bottom: 0;
+  width: 2px; background: var(--line);
+}
+ul.bullets li:last-child { padding-bottom: 4px; }
+ul.bullets li:last-child::after { display: none; }
+.line { margin: 0 0 6px; font-size: 1.02rem; }
+details { margin: 0; }
+summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px 0 8px;
+  margin-left: -8px;
+  border-radius: 8px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  list-style: none;
+}
+summary::-webkit-details-marker { display: none; }
+summary .sign {
+  display: inline-grid; place-items: center;
+  width: 22px; height: 22px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  font-size: 15px; line-height: 1;
+}
+summary .sign::before { content: "+"; }
+details[open] summary .sign::before { content: "\2212"; }
+summary:hover { background: var(--accent-bg); }
+.why {
+  margin: 4px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-bg);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+.actions {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  margin-top: 18px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+button {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit; font-weight: 600;
+  cursor: pointer;
+}
+button:hover { background: var(--accent-bg); }
+.status { color: var(--ink-2); font-size: 0.95rem; }
+.fb-label { display: block; margin: 14px 0 6px; font-weight: 600; }
+textarea {
+  width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px;
+  background: var(--bg); color: var(--ink); font: inherit; font-size: 0.95rem; resize: vertical;
+}
+.tip { margin: 12px 0 0; color: var(--ink-2); font-size: 0.92rem; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 520px) {
+  .head { padding: 18px 16px; gap: 14px; }
+  .logo { width: 52px; height: 52px; }
+  .head h1 { font-size: 1.15rem; }
+  .body { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="head">
+    <div class="logo" aria-hidden="true">
+      <svg width="38" height="38" viewBox="0 0 38 38" focusable="false">
+        <path d="M6 5h9l17 28h-9z" fill="#fff"/>
+        <path d="M25 5h8l-5 8z" fill="#fff"/>
+        <path d="M5 33l5-9 5 9z" fill="#2fe06a"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Operational Strategy &amp; People Analytics Extern</h1>
+      <p>Extern · Amazon Fulfillment Center project</p>
+      <p>About 8 weeks · Remote</p>
+    </div>
+  </div>
+  <div class="body">
+    <p class="intro">Here's how this externship can read on your resume. Open <b>Why it matters</b> under each line to see the roles it speaks to.</p>
+    <ul class="bullets" id="bullets">
+      <li>
+        <p class="line">Analyzed 100+ real Glassdoor reviews and frontline worker videos with Google Sheets and AI tools to find the sentiment, keyword and theme patterns behind attrition at Amazon Fulfillment Centers.</p>
+        <details>
+          <summary><span class="sign" aria-hidden="true"></span>Why it matters</summary>
+          <p class="why">Shows you can pull clear insights out of messy, real-world data, and that you use AI tools with care: AI labels the text, and you check its work by hand. That matters in HR strategy, operations and consulting roles, where workforce performance drives business results.</p>
+        </details>
+      </li>
+      <li>
+        <p class="line">Built a cost-of-turnover estimate and a root-cause tree, then compared employee segments by tenure and employment status to pick a priority group.</p>
+        <details>
+          <summary><span class="sign" aria-hidden="true"></span>Why it matters</summary>
+          <p class="why">Shows you can put a dollar figure on a business problem, trace it back to a cause a manager could change, and decide who to help first. These are core skills in people analytics, operations and strategy roles.</p>
+        </details>
+      </li>
+      <li>
+        <p class="line">Designed and pitched a pilot-ready intervention with success metrics in a 5-slide deck and a recorded walkthrough.</p>
+        <details>
+          <summary><span class="sign" aria-hidden="true"></span>Why it matters</summary>
+          <p class="why">Shows you can turn analysis into a decision-ready pitch, with a plan to measure whether it worked. That's essential in consulting, strategy and cross-functional roles, where you have to win stakeholders over.</p>
+        </details>
+      </li>
+    </ul>
+    <div class="actions">
+      <button type="button" id="copy">Copy the 3 resume lines</button>
+      <span class="status" id="status" role="status" aria-live="polite"></span>
+    </div>
+    <div id="fallback" hidden>
+      <label for="fallback-text" class="fb-label">Resume lines (selected, ready to copy)</label>
+      <textarea id="fallback-text" readonly rows="6"></textarea>
+    </div>
+    <p class="tip">List <b>Extern</b> as the employer. Adjust the wording so every line matches what you actually did.</p>
+  </div>
+</main>
+<script>
+(function () {
+  var btn = document.getElementById('copy');
+  var status = document.getElementById('status');
+  var lines = Array.prototype.map.call(document.querySelectorAll('#bullets .line'), function (p) {
+    return '• ' + p.textContent.trim();
+  });
+  var text = lines.join('\n');
+  function say(msg) {
+    status.textContent = '';
+    setTimeout(function () { status.textContent = msg; }, 50);
+  }
+  function selectFallback() {
+    var box = document.getElementById('fallback');
+    var ta = document.getElementById('fallback-text');
+    ta.value = text;
+    box.hidden = false;
+    ta.focus();
+    ta.select();
+    say('Your browser blocked copying. The lines are selected in the box below. Press Control+C or Command+C to copy.');
+  }
+  btn.addEventListener('click', function () {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        say('Copied 3 lines. Paste them into your resume.');
+      }, selectFallback);
+    } else {
+      selectFallback();
+    }
+  });
+})();
+</script>
+</body>
+</html>
