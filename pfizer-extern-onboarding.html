@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pfizer Extern Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Source design: "Extern Onboarding" Claude Design canvas, board "Pfizer: full onboarding page (desktop)" (Pfizer.dc.html),
+   built on the same six-step, one-at-a-time model as bereal-extern-onboarding.html.
+   Brand layer: "Pfizer × Extern Core" design system, Light (Extern-led) format: white ground, pale-blue flat cards,
+   DM Serif Display headlines, Inter text, Pfizer blue #0033A0 accents, Extern dark green #07A657 for the one
+   highlighted headline word (24px and up only). The bright Extern green is not used in this system.
+   Contrast on white: ink #000 21:1, muted #333 12.6:1, subtle #666 5.7:1, Pfizer blue 10.6:1. */
+:root{
+  --bg:#FFFFFF; --fg:#000000; --muted:#333333; --subtle:#666666;
+  --card:#E6ECF7; --line:#E4E4E4; --gray-50:#F2F2F2;
+  --blue:#0033A0; --navy:#001A54; --blue-200:#B9C8E8; --hl:#07A657;
+  --display:'DM Serif Display', Georgia, serif;
+  --body:Inter, system-ui, -apple-system, sans-serif;
+}
+*{box-sizing:border-box}
+html{color-scheme:light;scroll-padding-top:140px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.55;border-top:4px solid var(--blue)}
+a{color:var(--blue)} a:hover{color:var(--navy)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:16px;top:-60px;z-index:20;padding:10px 16px;border-radius:8px;background:var(--fg);color:#fff;font-weight:700}
+.skip:focus{top:12px}
+
+/* Buttons: Light format = black, 8px corners */
+.btn{min-height:44px;padding:0 18px;display:inline-flex;align-items:center;gap:8px;border-radius:8px;border:1.5px solid var(--subtle);background:#fff;color:var(--fg);text-decoration:none;font:600 15px/1.2 var(--body);cursor:pointer}
+.btn:hover{border-color:var(--fg);background:var(--gray-50);color:var(--fg)}
+.btn-solid{background:var(--fg);color:#fff;border-color:var(--fg)}
+.btn-solid:hover{background:#333;color:#fff}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:40px}
+/* Next: label + big Pfizer-blue arrow that bobs forward; a pointing hand fades in after a pause (same pattern as BeReal) */
+.btn.btn-next{position:relative;min-height:80px;padding:0 6px 6px 4px;gap:16px;background:transparent;border:0;color:var(--fg);font-size:17px}
+.btn.btn-next:hover{background:transparent;color:var(--fg)}
+.btn-next:hover .lbl-txt,.btn-next:focus-visible .lbl-txt{text-decoration:underline;text-underline-offset:4px}
+.btn-next .arrow{order:2;flex:none;position:relative;z-index:1;width:68px;height:68px;border-radius:50%;background:var(--blue);box-shadow:0 5px 0 var(--navy);display:flex;align-items:center;justify-content:center}
+.btn-next:hover .arrow{background:var(--navy)}
+/* Motion stops after 3 cycles (WCAG 2.2.2) and only runs when reduced motion isn't requested */
+@media (prefers-reduced-motion:no-preference){ .btn-next .arrow{animation:bob 1.4s ease-in-out 3} .btn-next .hand{animation:tap 1.4s ease-in-out 3} }
+@keyframes bob{0%,100%{transform:translateX(0)}50%{transform:translateX(9px)}}
+.btn-next .hand{position:absolute;z-index:2;right:6px;bottom:-24px;width:56px;height:56px;pointer-events:none;opacity:0;transition:opacity .3s}
+.btn-next .hand.show{opacity:1}
+@keyframes tap{0%,100%{transform:translate(0,0)}50%{transform:translate(-4px,-8px)}}
+
+/* Sticky top bar + step tracker */
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
+.topbar .row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0 8px}
+.brand{margin:0;display:flex;align-items:center;gap:12px}
+.brand .logo{display:block;width:36px;height:36px;border-radius:22%}
+.brand .divider{width:1px;height:28px;background:var(--line)}
+.brand .co{font-weight:700;font-size:20px;letter-spacing:-.01em;color:var(--blue)}
+.steps{display:flex;gap:6px;margin:0;padding:0 0 12px;list-style:none}
+.steps li{flex:1 1 0;min-width:0}
+.steps a{display:flex;flex-direction:column;gap:6px;min-height:44px;padding-top:6px;text-decoration:none;color:var(--subtle);font-size:13px;font-weight:600}
+.steps .seg{display:block;height:5px;border-radius:999px;background:var(--line)}
+.steps .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.steps a.seen .seg{background:#6F86C6}
+.steps a[aria-current="step"]{color:var(--fg)}
+.steps a[aria-current="step"] .seg{background:var(--blue)}
+.steps a:hover{color:var(--fg)}
+.where{margin:0;min-width:0;font-size:14px;color:var(--subtle);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:420px){ .where{display:none} }
+
+/* Step panels */
+.panel{padding:48px 0 56px}
+.panel[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){ .panel.enter{animation:in .28s ease-out} @keyframes in{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}} }
+.eyebrow{margin:0 0 14px;color:var(--blue);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+h1{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(44px,8vw,80px);line-height:1.02;letter-spacing:-.015em}
+h2.title{margin:0 0 18px;font-family:var(--display);font-weight:400;font-size:clamp(32px,5vw,48px);line-height:1.1;letter-spacing:-.01em}
+h1:focus,h2:focus{outline:none}
+h1:focus-visible,h2:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+/* The one highlighted word: colour the word itself, headline sizes only */
+.hl{color:var(--hl)}
+.lede{margin:24px 0 0;font-size:clamp(20px,2.4vw,24px);line-height:1.42;max-width:640px}
+.sub{margin:14px 0 0;font-size:18px;color:var(--muted);max-width:600px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 0;padding:0;list-style:none}
+.chips li{padding:8px 16px;border-radius:999px;background:var(--card);color:var(--fg);font-size:15px;font-weight:500;display:inline-flex;align-items:center;gap:8px}
+.chips li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--blue)}
+
+/* Video */
+.video-wrap{max-width:820px}
+.video-frame{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#000}
+.video-frame video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000}
+.video-meta{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:14px 0 0;color:var(--subtle);font-size:15px}
+.tag{padding:4px 12px;border-radius:999px;background:var(--blue);color:#fff;font-size:13px;font-weight:700}
+details.transcript{margin-top:16px;border-top:1px solid var(--line)}
+details.transcript summary{padding:14px 0;font-weight:700;cursor:pointer;min-height:44px}
+details.transcript p{margin:0 0 12px;color:var(--muted);max-width:720px}
+
+/* How Extern works: Light-format cards are pale blue and flat */
+.cards{display:flex;flex-wrap:wrap;gap:14px;margin:0;padding:0;list-style:none}
+.cards li{flex:1 1 220px;background:var(--card);border-radius:14px;padding:26px}
+.cards .who{display:block;margin-bottom:8px;color:var(--blue);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.cards h3{margin:0 0 6px;font-size:21px;line-height:1.25;font-weight:600}
+.cards p{margin:0;color:var(--muted);font-size:15px}
+.note{margin:20px 0 0;padding:16px 20px;border-radius:14px;background:var(--gray-50);max-width:760px}
+.note p{margin:0}
+
+/* Project overview */
+.challenge{margin:0 0 16px;font-family:var(--display);font-weight:400;font-size:clamp(28px,4.4vw,40px);line-height:1.15;max-width:900px}
+.why{margin:0 0 28px;color:var(--muted);max-width:720px}
+.why strong{color:var(--fg)}
+h3.sub-h{margin:0 0 14px;font-family:var(--display);font-weight:400;font-size:28px;line-height:1.2}
+h3.sub-h.gap{margin-top:36px}
+.stages{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin:0;padding:0;list-style:none}
+@media (min-width:880px){ .stages{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.stages > li{min-width:0;background:var(--card);border-radius:14px;padding:22px 22px 18px}
+.stage-when{margin:0;color:var(--blue);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.stage-name{margin:4px 0 12px;font-size:21px;font-weight:600;line-height:1.25}
+.plist{margin:0;padding:0;list-style:none}
+.plist li{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--blue-200);font-size:15px;line-height:1.4;color:var(--muted)}
+.plist .num{flex:none;width:24px;color:var(--blue);font-weight:600;font-size:13px;letter-spacing:.08em;padding-top:2px}
+.plist .first{color:var(--fg);font-weight:600}
+.plist .day1{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:999px;background:var(--fg);color:#fff;font-size:12px;font-weight:700}
+.skills{display:grid;grid-template-columns:minmax(0,1fr);margin:0;padding:0;list-style:none;max-width:960px;border-top:1px solid var(--line)}
+@media (min-width:720px){ .skills{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px} }
+.skills li{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.skills svg{flex:none;margin-top:3px}
+
+/* Checklist */
+.setup{max-width:720px}
+.progress-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;font-size:15px;margin-bottom:8px}
+.progress-row .save{color:var(--subtle)}
+.bar{height:8px;border-radius:999px;background:var(--line);overflow:hidden;margin-bottom:24px}
+.bar span{display:block;height:8px;border-radius:999px;background:var(--blue);width:0;transition:width .25s ease}
+.tasks{margin:0;padding:0;list-style:none}
+.task{display:flex;gap:16px;padding:20px 0;border-top:1px solid var(--line)}
+.chk{appearance:none;-webkit-appearance:none;width:24px;height:24px;margin:3px 0 0;border-radius:4px;border:2px solid var(--subtle);background:#fff;cursor:pointer;display:grid;place-items:center;flex:none}
+.chk:checked{background:var(--blue);border-color:var(--blue)}
+.chk:checked::after{content:"";width:6px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.task-body{flex:1;min-width:0}
+.task label{font-weight:700;font-size:18px;cursor:pointer}
+.task .opt{margin-left:8px;font-size:14px;font-weight:500;color:var(--subtle)}
+.task.done label{color:var(--subtle);text-decoration:line-through}
+.task p{margin:6px 0 0;color:var(--muted)}
+.rules{margin:10px 0 0;display:grid;gap:10px}
+.rules div{background:var(--card);border-radius:14px;padding:12px 16px}
+.rules h4{margin:0 0 4px;font-size:15px;font-weight:700}
+.rules ul{margin:0;padding-left:20px;color:var(--muted);font-size:15px}
+.task .btn{margin-top:14px}
+/* House Rules: read first, then agree. The left box mirrors the agree checkbox. */
+.chk-mark{width:24px;height:24px;margin:3px 0 0;border-radius:4px;border:2px solid var(--subtle);display:grid;place-items:center;flex:none}
+.task.done .chk-mark{background:var(--blue);border-color:var(--blue)}
+.task.done .chk-mark::after{content:"";width:6px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.task-title{margin:0;font-size:18px;font-weight:700;line-height:1.55}
+.task.done .task-title{color:var(--subtle);text-decoration:line-through}
+.agree{margin-top:14px;display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 16px;border-radius:14px;border:1.5px solid var(--subtle);background:#fff}
+.agree .chk{margin:0}
+.task .agree label{font-size:16px;font-weight:600}
+.task.done .agree{border-color:var(--blue);background:var(--card)}
+.task.done .agree label{color:var(--fg);text-decoration:none}
+
+/* Closing CTA: Pfizer-blue band, white text (10.6:1) */
+.cta{border-radius:18px;background:var(--blue);color:#fff;padding:clamp(28px,5vw,44px);display:flex;flex-direction:column;gap:24px}
+.cta .status{margin:0 0 8px;font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:8px;color:#fff}
+.cta .status::before{content:"";width:12px;height:12px;border-radius:50%;border:2px solid #fff;flex:none}
+.cta .status.ok::before{background:#fff}
+.cta h2{margin:0 0 10px;font-family:var(--display);font-weight:400;font-size:clamp(34px,5.5vw,48px);line-height:1.08}
+.cta p.body{margin:0;font-size:18px;color:#fff}
+.cta .actions{display:flex;flex-wrap:wrap;gap:12px}
+.cta button{min-height:56px;padding:0 28px;border-radius:8px;display:inline-flex;align-items:center;font:700 17px/1.2 var(--body);cursor:pointer;background:transparent;color:#fff;border:2px solid #fff}
+.cta button:hover{background:var(--navy)}
+.cta :focus-visible{outline-color:#fff}
+/* Points to the platform's own Next button outside the embed; deliberately not a button */
+.next-hint{margin:0;display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:14px;background:#fff;color:var(--fg);font-size:17px;font-weight:600;max-width:640px}
+.next-hint .down{flex:none;width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:20px;font-weight:700}
+@media (prefers-reduced-motion:no-preference){ .next-hint .down{animation:nudge 1.6s ease-in-out 3} @keyframes nudge{50%{transform:translateY(4px)}} }
+
+/* Help dialog (from board "Pfizer: help panel on a phone") */
+dialog{width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 32px);margin:auto;padding:0;border:1px solid var(--line);border-top:4px solid var(--blue);border-radius:18px;background:#fff;color:var(--fg);box-shadow:0 14px 30px rgba(0,16,60,.18)}
+dialog::backdrop{background:rgba(0,26,84,.45)}
+.dlg{padding:20px 24px 24px;display:flex;flex-direction:column;gap:6px}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px}
+.dlg-head h2{margin:0;font-family:var(--display);font-weight:400;font-size:28px}
+.dlg h3{margin:12px 0 4px;color:var(--blue);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.dlg details{border-top:1px solid var(--line)}
+.dlg summary{padding:12px 0;font-weight:700;cursor:pointer;list-style-position:outside;margin-left:18px}
+.dlg details p{margin:0 0 12px;color:var(--muted);font-size:15px}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links a{min-height:44px;padding:0 16px;display:inline-flex;align-items:center;border-radius:8px;background:var(--card);color:var(--blue);text-decoration:none;font-weight:600;font-size:14px}
+.links a:hover{background:var(--blue-200);color:var(--navy)}
+.stuck{margin-top:16px;background:var(--gray-50);border-radius:14px;padding:16px 18px}
+.stuck p{margin:0}
+
+@media (max-width:640px){
+  .steps .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .steps a{min-height:32px}
+  .panel{padding:36px 0 44px}
+  .task{gap:12px}
+}
+@media (min-width:641px){ .where{display:none} }
+@media (prefers-reduced-motion:reduce){ .bar span{transition:none} }
+</style>
+</head>
+<body>
+<a class="skip" href="#s-setup" data-go>Skip to the setup checklist</a>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="row">
+      <p class="brand"><img class="logo" src="data:image/png;base64,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" alt="Extern" width="36" height="36"><span class="divider" aria-hidden="true"></span><span class="co">Pfizer</span></p>
+      <p class="where" aria-hidden="true" id="where">Step 1 of 6: Intro</p>
+      <button type="button" class="btn" data-open-help aria-haspopup="dialog">Help</button>
+    </div>
+    <nav aria-label="Onboarding steps">
+      <ol class="steps" id="steps">
+        <li><a href="#s-intro"><span class="seg" aria-hidden="true"></span><span class="lbl">1. Intro</span></a></li>
+        <li><a href="#s-video"><span class="seg" aria-hidden="true"></span><span class="lbl">2. Video</span></a></li>
+        <li><a href="#s-how"><span class="seg" aria-hidden="true"></span><span class="lbl">3. How it works</span></a></li>
+        <li><a href="#s-overview"><span class="seg" aria-hidden="true"></span><span class="lbl">4. Project</span></a></li>
+        <li><a href="#s-setup"><span class="seg" aria-hidden="true"></span><span class="lbl">5. Set up</span></a></li>
+        <li><a href="#s-ready"><span class="seg" aria-hidden="true"></span><span class="lbl">6. Start</span></a></li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<main class="wrap">
+
+<!-- 1. Intro -->
+<section class="panel" id="s-intro" aria-labelledby="h-intro">
+  <p class="eyebrow">Step 1 of 6 · Intro</p>
+  <h1 id="h-intro" tabindex="-1">Welcome to your <span class="hl">externship</span>.</h1>
+  <p class="lede">You'll do the work of an <strong>AI researcher</strong> on a real Pfizer challenge: building a tool that reads pharmaceutical documents, pulls out the details that matter, and flags the ones that may be out of date.</p>
+  <p class="sub">Go through six short steps. They show you how the externship works and get you set up for Day 1.</p>
+  <ul class="chips" aria-label="At a glance">
+    <li>About 10 minutes</li>
+    <li>Project 1 unlocks on Day 1</li>
+  </ul>
+  <div class="nav"><a class="btn btn-next" href="#s-video" data-go><span class="lbl-txt">Next: Day 0 video</span><span class="arrow" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" focusable="false"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><svg class="hand" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g transform="rotate(-14 32 32)"><path d="M22 9a5 5 0 0 1 10 0V27a4.5 4.5 0 0 1 9 1v2a4.5 4.5 0 0 1 9 1.5v1.5a4.5 4.5 0 0 1 9 1.5V46c0 10-7 16-17 16h-8c-6 0-10-2.5-13.5-7.5L11 40.5a4.6 4.6 0 0 1 7-6L22 39Z" fill="#FFFFFF" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/><path d="M32 27v8M41 30v6M50 33v5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/></g></svg></a></div>
+</section>
+
+<!-- 2. Day 0 video -->
+<section class="panel" id="s-video" aria-labelledby="h-video">
+  <p class="eyebrow">Step 2 of 6 · Day 0 video</p>
+  <h2 class="title" id="h-video" tabindex="-1">Welcome to your Pfizer project</h2>
+  <div class="video-wrap">
+    <div class="video-frame">
+      <video controls preload="metadata" playsinline
+        poster="https://vpdasgupta.github.io/tiktok/pfizer-orient-assets/pfizer-welcome-poster.jpg"
+        aria-describedby="video-about">
+        <source src="https://vpdasgupta.github.io/tiktok/pfizer-orient-assets/pfizer-welcome-onboarding.mp4" type="video/mp4">
+        Your browser can't play this video. The transcript is below.
+      </video>
+    </div>
+    <p class="video-meta" id="video-about"><span class="tag">Day 0</span> 1.5 minutes · Captions shown in the video · The challenge, your role, and what you'll build</p>
+    <details class="transcript">
+      <summary>Read the transcript</summary>
+      <p>Welcome to the Pfizer Supply Chain Document Processing Externship. Over nine projects, you'll build a real AI tool. It's the kind of work that belongs on your résumé.</p>
+      <p>Pfizer makes vaccines, cancer treatments and other medicines that reach more than 400 million patients a year. Every one of those medicines needs a paper trail that proves it's safe.</p>
+      <p>And that paper trail is huge. Vendors send certificates and quality reports, and one file can run past a hundred pages. Who reads all of it? Mostly people, line by line. AI can help, but it isn't perfect. Scanned pages, handwritten signatures and decades of old formats can trip it up.</p>
+      <p>That's where you come in, as an AI researcher. Your mission is to build a document intelligence system. It pulls out key details like dates and revision numbers, sorts documents by type, and flags the ones that may be out of date for compliance review.</p>
+      <p>You'll get there in three stages. In Projects 1 to 3, you'll learn how AI reads documents, pick up Python and pull data out of PDFs with OCR. In Projects 4 to 6, you'll compare OCR tools and build a smart search with RAG. Then in Projects 7 to 9, you'll sort and route files, add a chatbot and put it all together.</p>
+      <p>By the end, you'll have a working system with a searchable database and a chatbot you can show people. The Python, OCR and RAG skills come with you, into healthcare, data science or wherever you head next.</p>
+    </details>
+  </div>
+  <div class="nav"><a class="btn" href="#s-intro" data-go><span aria-hidden="true">←</span> Back<span class="sr-only">: Intro</span></a><a class="btn btn-next" href="#s-how" data-go><span class="lbl-txt">Next: How Extern works</span><span class="arrow" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" focusable="false"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><svg class="hand" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g transform="rotate(-14 32 32)"><path d="M22 9a5 5 0 0 1 10 0V27a4.5 4.5 0 0 1 9 1v2a4.5 4.5 0 0 1 9 1.5v1.5a4.5 4.5 0 0 1 9 1.5V46c0 10-7 16-17 16h-8c-6 0-10-2.5-13.5-7.5L11 40.5a4.6 4.6 0 0 1 7-6L22 39Z" fill="#FFFFFF" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/><path d="M32 27v8M41 30v6M50 33v5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/></g></svg></a></div>
+</section>
+
+<!-- 3. How Extern works -->
+<section class="panel" id="s-how" aria-labelledby="h-how">
+  <p class="eyebrow">Step 3 of 6 · How Extern works</p>
+  <h2 class="title" id="h-how" tabindex="-1">Three parts, one externship</h2>
+  <ul class="cards">
+    <li><span class="who">Extern</span><h3>Runs your externship</h3><p>The platform, Slack, scheduling, and support. Your program manager is your go-to for questions.</p></li>
+    <li><span class="who">Pfizer</span><h3>Brings the challenge</h3><p>A real supply chain problem, company mentors, and feedback on your work in live sessions.</p></li>
+    <li><span class="who">You</span><h3>Do the work</h3><p>Nine projects at a suggested pace, plus live sessions with your cohort.</p></li>
+  </ul>
+  <div class="note"><p><strong>You're an Extern, not a Pfizer employee.</strong> Pfizer brought a real challenge, and your company mentors guide your cohort through it. Extern is your home base.</p></div>
+  <div class="nav"><a class="btn" href="#s-video" data-go><span aria-hidden="true">←</span> Back<span class="sr-only">: Day 0 video</span></a><a class="btn btn-next" href="#s-overview" data-go><span class="lbl-txt">Next: Project overview</span><span class="arrow" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" focusable="false"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><svg class="hand" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g transform="rotate(-14 32 32)"><path d="M22 9a5 5 0 0 1 10 0V27a4.5 4.5 0 0 1 9 1v2a4.5 4.5 0 0 1 9 1.5v1.5a4.5 4.5 0 0 1 9 1.5V46c0 10-7 16-17 16h-8c-6 0-10-2.5-13.5-7.5L11 40.5a4.6 4.6 0 0 1 7-6L22 39Z" fill="#FFFFFF" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/><path d="M32 27v8M41 30v6M50 33v5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/></g></svg></a></div>
+</section>
+
+<!-- 4. Project overview -->
+<section class="panel" id="s-overview" aria-labelledby="h-overview">
+  <p class="eyebrow">Step 4 of 6 · Project overview</p>
+  <h2 class="title" id="h-overview" tabindex="-1">Your challenge</h2>
+  <p class="challenge">Build an AI <span class="hl">document intelligence</span> system that reads Pfizer's supply chain files and flags the ones that need a compliance check.</p>
+  <p class="why"><strong>Why Pfizer cares:</strong> Pfizer's medicines reach more than 400 million patients a year, and every one needs a paper trail that proves it's safe. Vendor certificates and quality reports can run past 100 pages, and people still check most of them by hand. AI can speed this up, but scanned pages, handwritten signatures, and decades of old formats trip it up.</p>
+
+  <h3 class="sub-h" id="do-h">What you'll do</h3>
+  <ol class="stages" aria-labelledby="do-h">
+    <li>
+      <p class="stage-when">Weeks 1–3</p>
+      <p class="stage-name">Foundations</p>
+      <ol class="plist" aria-label="Foundations projects">
+        <li><span class="num" aria-hidden="true">01</span><span class="first"><span class="sr-only">Project 1: </span>Learn how AI reads pharmaceutical documents<br><span class="day1">Starts Day 1</span></span></li>
+        <li><span class="num" aria-hidden="true">02</span><span><span class="sr-only">Project 2: </span>Learn Python for AI document processing</span></li>
+        <li><span class="num" aria-hidden="true">03</span><span><span class="sr-only">Project 3: </span>Extract data from documents with Python</span></li>
+      </ol>
+    </li>
+    <li>
+      <p class="stage-when">Weeks 4–7</p>
+      <p class="stage-name">Search</p>
+      <ol class="plist" aria-label="Search projects">
+        <li><span class="num" aria-hidden="true">04</span><span><span class="sr-only">Project 4: </span>Compare OCR engines on complex layouts</span></li>
+        <li><span class="num" aria-hidden="true">05</span><span><span class="sr-only">Project 5: </span>Build a smart search with RAG</span></li>
+        <li><span class="num" aria-hidden="true">06</span><span><span class="sr-only">Project 6: </span>Try advanced RAG and open-source models</span></li>
+      </ol>
+    </li>
+    <li>
+      <p class="stage-when">Weeks 8–10</p>
+      <p class="stage-name">Ship it</p>
+      <ol class="plist" aria-label="Ship it projects">
+        <li><span class="num" aria-hidden="true">07</span><span><span class="sr-only">Project 7: </span>Split, classify, and route document files</span></li>
+        <li><span class="num" aria-hidden="true">08</span><span><span class="sr-only">Project 8: </span>Build a chatbot for document search</span></li>
+        <li><span class="num" aria-hidden="true">09</span><span><span class="sr-only">Project 9: </span>Integrate, test, and present your system</span></li>
+      </ol>
+    </li>
+  </ol>
+
+  <h3 class="sub-h gap" id="learn-h">What you'll learn</h3>
+  <ul class="skills" aria-labelledby="learn-h">
+    <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 10.5l4 4 8-9" fill="none" stroke="#0033A0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reading scanned documents with OCR</span></li>
+    <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 10.5l4 4 8-9" fill="none" stroke="#0033A0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Extracting data with Python in Google Colab</span></li>
+    <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 10.5l4 4 8-9" fill="none" stroke="#0033A0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Building search with retrieval-augmented generation (RAG)</span></li>
+    <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 10.5l4 4 8-9" fill="none" stroke="#0033A0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Classifying and routing documents with AI</span></li>
+    <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 10.5l4 4 8-9" fill="none" stroke="#0033A0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Building a chatbot interface with Gradio</span></li>
+    <li><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 10.5l4 4 8-9" fill="none" stroke="#0033A0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Testing and presenting a working AI system</span></li>
+  </ul>
+  <div class="nav"><a class="btn" href="#s-how" data-go><span aria-hidden="true">←</span> Back<span class="sr-only">: How Extern works</span></a><a class="btn btn-next" href="#s-setup" data-go><span class="lbl-txt">Next: Get set up for Day 1</span><span class="arrow" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" focusable="false"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><svg class="hand" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g transform="rotate(-14 32 32)"><path d="M22 9a5 5 0 0 1 10 0V27a4.5 4.5 0 0 1 9 1v2a4.5 4.5 0 0 1 9 1.5v1.5a4.5 4.5 0 0 1 9 1.5V46c0 10-7 16-17 16h-8c-6 0-10-2.5-13.5-7.5L11 40.5a4.6 4.6 0 0 1 7-6L22 39Z" fill="#FFFFFF" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/><path d="M32 27v8M41 30v6M50 33v5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/></g></svg></a></div>
+</section>
+
+<!-- 5. Get set up -->
+<section class="panel" id="s-setup" aria-labelledby="h-setup">
+  <p class="eyebrow">Step 5 of 6 · Get set up</p>
+  <h2 class="title" id="h-setup" tabindex="-1">Get set up for Day 1</h2>
+  <div class="setup">
+    <div class="progress-row">
+      <span id="progress-text" role="status" style="font-weight:600">0 of 3 required steps done</span>
+      <span class="save">Your checkmarks save in this browser.</span>
+    </div>
+    <div class="bar" aria-hidden="true"><span id="bar"></span></div>
+    <ul class="tasks">
+      <li class="task" data-id="join_slack">
+        <input class="chk" type="checkbox" id="t-join_slack" aria-describedby="d-join_slack">
+        <div class="task-body">
+          <label for="t-join_slack">Join Extern Slack</label>
+          <p id="d-join_slack">Join the workspace, then say hello in your program channel. Slack is where you ask questions and get updates from your program manager.</p>
+          <a class="btn" href="#" data-link="slack">Join Slack</a>
+        </div>
+      </li>
+      <li class="task" data-id="availability">
+        <input class="chk" type="checkbox" id="t-availability" aria-describedby="d-availability">
+        <div class="task-body">
+          <label for="t-availability">Share your availability</label>
+          <p id="d-availability">Tell us when you're free so we can set live session times that work for everyone.</p>
+          <a class="btn" href="#" data-link="availability">Open the availability form</a>
+        </div>
+      </li>
+      <li class="task" data-id="house_rules">
+        <span class="chk-mark" aria-hidden="true"></span>
+        <div class="task-body">
+          <h3 class="task-title">Read the House Rules</h3>
+          <div class="rules" id="d-house_rules">
+            <div><h4>Do</h4><ul><li>Follow the suggested pacing.</li><li>Join live sessions with your company mentors.</li><li>Bring every question to Slack or your program manager.</li></ul></div>
+            <div><h4>Don't</h4><ul><li>Contact anyone at Pfizer directly.</li><li>Ask Pfizer staff for jobs or referrals.</li><li>Call yourself an intern or employee.</li><li>Share project data outside approved channels.</li></ul></div>
+          </div>
+          <div class="agree">
+            <input class="chk" type="checkbox" id="t-house_rules">
+            <label for="t-house_rules">I agree to follow the House Rules</label>
+          </div>
+        </div>
+      </li>
+      <li class="task" data-id="linkedin" data-optional>
+        <input class="chk" type="checkbox" id="t-linkedin" aria-describedby="d-linkedin">
+        <div class="task-body">
+          <label for="t-linkedin">Tell your network <span class="opt">Optional</span></label>
+          <p id="d-linkedin">Download the "I'm In" image and post it on LinkedIn to share that you've started your externship.</p>
+          <a class="btn" href="#" data-link="linkedinImage">Get the "I'm In" image</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="nav"><a class="btn" href="#s-overview" data-go><span aria-hidden="true">←</span> Back<span class="sr-only">: Project overview</span></a><a class="btn btn-next" href="#s-ready" data-go><span class="lbl-txt">Next: Ready to get started</span><span class="arrow" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" focusable="false"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><svg class="hand" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g transform="rotate(-14 32 32)"><path d="M22 9a5 5 0 0 1 10 0V27a4.5 4.5 0 0 1 9 1v2a4.5 4.5 0 0 1 9 1.5v1.5a4.5 4.5 0 0 1 9 1.5V46c0 10-7 16-17 16h-8c-6 0-10-2.5-13.5-7.5L11 40.5a4.6 4.6 0 0 1 7-6L22 39Z" fill="#FFFFFF" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/><path d="M32 27v8M41 30v6M50 33v5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/></g></svg></a></div>
+</section>
+
+<!-- 6. Ready -->
+<section class="panel" id="s-ready" aria-labelledby="h-ready">
+  <p class="eyebrow">Step 6 of 6 · Ready to start</p>
+  <div class="cta">
+    <div style="max-width:640px">
+      <p class="status" id="next-line">Finish the setup steps in step 5, then click Next.</p>
+      <h2 id="h-ready" tabindex="-1">One last click</h2>
+      <p class="body">Click <strong>Next</strong> at the bottom of this page to save your progress. That's how the platform knows you finished onboarding. If anything is unclear, your program manager is there to help.</p>
+    </div>
+    <p class="next-hint"><span class="down" aria-hidden="true">↓</span><span>The <strong>Next</strong> button is below this box, at the very bottom of the page.</span></p>
+    <div class="actions">
+      <button type="button" data-open-help aria-haspopup="dialog">Get help from your program manager</button>
+    </div>
+  </div>
+  <div class="nav"><a class="btn" href="#s-setup" data-go><span aria-hidden="true">←</span> Back<span class="sr-only">: Get set up</span></a><a class="btn" href="#s-intro" data-go>Start over</a></div>
+</section>
+</main>
+
+<dialog id="help" aria-labelledby="help-h">
+  <div class="dlg">
+    <div class="dlg-head">
+      <h2 id="help-h">Help and resources</h2>
+      <button type="button" class="btn" data-close-help>Close</button>
+    </div>
+    <h3>Getting help</h3>
+    <details open>
+      <summary>Who do I ask when I'm stuck?</summary>
+      <p>Post in your program's Slack channel or message your program manager. Don't contact Pfizer staff directly; your program manager routes questions to them.</p>
+    </details>
+    <details>
+      <summary>Where do I submit my work?</summary>
+      <p>Each project has a few tasks for you to complete. You'll submit your work on those task pages in the platform.</p>
+    </details>
+    <details>
+      <summary>I missed a live session. What now?</summary>
+      <p>All of your live sessions are recorded and saved in the Recordings tab on your account page.</p>
+    </details>
+    <details>
+      <summary>Is this run by Extern or by Pfizer?</summary>
+      <p>Extern runs your externship: the platform, Slack, scheduling, and support. Pfizer brings the challenge, company mentors, and feedback on your work. You're an Extern, not a Pfizer employee.</p>
+    </details>
+    <h3>Links</h3>
+    <div class="links">
+      <a href="#" data-link="slack">Extern Slack</a>
+      <a href="#" data-link="slackInvite">Slack invite (if you're not in yet)</a>
+    </div>
+    <div class="stuck">
+      <p style="font-weight:700">Still stuck?</p>
+      <p style="font-size:15px">Message your program manager on Slack.</p>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  // Fill in real URLs here; "#" links stay inert.
+  var LINKS = {
+    slack:'https://externslackplatform.slack.com/archives/C0ABJMXU6CE',
+    slackInvite:'http://bit.ly/externslackinvitation',
+    availability:'https://tally.so/r/ob5b9e',
+    linkedinImage:'https://drive.google.com/file/d/17__CitS2NvEUtlLQEDlW4f1iuhyKe6J1/view?usp=sharing'
+  };
+  document.querySelectorAll('[data-link]').forEach(function(a){
+    var url = LINKS[a.getAttribute('data-link')] || '#';
+    a.setAttribute('href', url);
+    if (url === '#') a.addEventListener('click', function(e){ e.preventDefault(); });
+    else {
+      a.target = '_blank'; a.rel = 'noopener';
+      var note = document.createElement('span'); note.className = 'sr-only'; note.textContent = ' (opens in a new tab)'; a.appendChild(note);
+    }
+  });
+
+  // One step at a time: show the chosen panel, hide the rest, move focus to its heading
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var stepLinks = Array.prototype.slice.call(document.querySelectorAll('#steps a'));
+  var where = document.getElementById('where');
+  var names = ['Intro','Day 0 video','How Extern works','Project overview','Get set up','Ready to start'];
+  var STEP_KEY = 'pfizer-extern-onboarding-step';
+  var handTimer;
+  function show(i, focus){
+    document.querySelectorAll('.btn-next .hand').forEach(function(h){ h.classList.remove('show'); });
+    clearTimeout(handTimer);
+    var hand = panels[i].querySelector('.btn-next .hand');
+    if (hand) handTimer = setTimeout(function(){ hand.classList.add('show'); }, 2600);
+    panels.forEach(function(p, j){
+      p.hidden = j !== i;
+      p.classList.toggle('enter', j === i && focus);
+      if (j !== i) p.querySelectorAll('video').forEach(function(v){ v.pause(); });
+    });
+    stepLinks.forEach(function(a, j){
+      if (j === i) a.setAttribute('aria-current','step'); else a.removeAttribute('aria-current');
+      a.classList.toggle('seen', j < i);
+    });
+    where.textContent = 'Step ' + (i + 1) + ' of 6: ' + names[i];
+    document.title = names[i] + ' · Pfizer Extern Onboarding';
+    try { localStorage.setItem(STEP_KEY, String(i)); } catch(e) {}
+    if (focus){
+      window.scrollTo(0, 0);
+      var h = panels[i].querySelector('h1[tabindex],h2[tabindex]');
+      if (h) h.focus({preventScroll:true});
+    }
+  }
+  document.querySelectorAll('#steps a, [data-go]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var i = panels.indexOf(document.getElementById(a.getAttribute('href').slice(1)));
+      if (i > -1) show(i, true);
+    });
+  });
+  var start = 0;
+  try { start = Math.min(panels.length - 1, Math.max(0, parseInt(localStorage.getItem(STEP_KEY), 10) || 0)); } catch(e) {}
+  show(start, false);
+
+  // Checklist progress, saved per browser
+  var KEY = 'pfizer-extern-onboarding-v1';
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e) { done = {}; }
+  var tasks = Array.prototype.slice.call(document.querySelectorAll('.task'));
+  var required = tasks.filter(function(t){ return !t.hasAttribute('data-optional'); });
+  var txt = document.getElementById('progress-text');
+  var bar = document.getElementById('bar');
+  var next = document.getElementById('next-line');
+
+  function render(){
+    var n = required.filter(function(t){ return done[t.dataset.id]; }).length;
+    var all = n === required.length;
+    tasks.forEach(function(t){ t.classList.toggle('done', !!done[t.dataset.id]); });
+    txt.textContent = all ? "All required steps done. You're set for Day 1." : n + ' of ' + required.length + ' required steps done';
+    bar.style.width = Math.round(n / required.length * 100) + '%';
+    next.textContent = all ? "Setup done. You're set for Day 1." : 'Finish the setup steps in step 5, then click Next.';
+    next.classList.toggle('ok', all);
+  }
+  tasks.forEach(function(t){
+    var box = t.querySelector('input');
+    box.checked = !!done[t.dataset.id];
+    box.addEventListener('change', function(){
+      done[t.dataset.id] = box.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(done)); } catch(e) {}
+      render();
+    });
+  });
+  render();
+
+  // Help dialog: native modal traps focus and closes on Escape; return focus to opener
+  var dlg = document.getElementById('help'), opener = null;
+  document.querySelectorAll('[data-open-help]').forEach(function(b){
+    b.addEventListener('click', function(){
+      opener = b; dlg.showModal();
+      // A tall Notion iframe would centre the dialog off-screen, so anchor it near the button
+      var top = Math.max(16, Math.min(b.getBoundingClientRect().top - 40, window.innerHeight - dlg.offsetHeight - 16));
+      dlg.style.margin = '0 auto'; dlg.style.top = top + 'px'; dlg.style.bottom = 'auto';
+      dlg.querySelector('[data-close-help]').focus();
+    });
+  });
+  dlg.querySelector('[data-close-help]').addEventListener('click', function(){ dlg.close(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', function(){ if (opener) opener.focus(); });
+})();
+</script>
+</body>
+</html>
