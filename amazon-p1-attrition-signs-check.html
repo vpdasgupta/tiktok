@@ -63,22 +63,22 @@ const DECK = {
     heading: "Four kinds of warning signs",
     intro: "Open each card to see what to look for.",
     cards: [
-      { name: "Productivity", icon: "trend",
+      { name: "Productivity red flags", icon: "trend",
         items: ["Tasks take longer than usual, with frequent re-dos",
                 "They stop volunteering for new or complex assignments",
                 "They become more error-prone or distracted"],
         tip: "Ask yourself: has their output or accuracy dropped lately?" },
-      { name: "Burnout", icon: "battery",
+      { name: "Burnout warning signs", icon: "battery",
         items: ["More sick days or last-minute absences",
                 "Visible fatigue, frustration or emotional detachment",
                 "“I’m just tired” becomes their default mood"],
         tip: "Burnout is physical and emotional. It sneaks in slowly." },
-      { name: "Belonging", icon: "apart",
+      { name: "Signs of disconnection", icon: "apart",
         items: ["Silence in meetings or huddles",
                 "They pull away from team chats, lunches and off-shift talk",
                 "When asked about their future, they shrug or avoid answering"],
         tip: "If someone doesn’t feel like they belong, they won’t stay." },
-      { name: "Other signals", icon: "door",
+      { name: "Checked-out cues", icon: "door",
         items: ["Declines feedback or shows no interest in growth",
                 "Skips optional learning or team events",
                 "Seems mentally somewhere else, even when they’re at work"],
@@ -125,7 +125,7 @@ const DECK = {
     }
   ],
   takeaways: [
-    "Watch for four kinds of warning signs: productivity, burnout, belonging and other signals.",
+    "Watch for four kinds of warning signs: slipping work, burnout, pulling away and checking out.",
     "Find the core issue behind a complaint. In these posts it was health and safety, pay or schedule.",
     "Some people say outright that they'll quit. Others keep asking for help first. A complaint is a warning sign too."
   ]
@@ -370,7 +370,7 @@ const DECK = {
     <p class="eyebrow">${labels[total - 1]}</p>
     <h2 tabindex="-1">Three things to remember</h2>
     <ol class="takeaways">${DECK.takeaways.map(t => `<li><span>${t}</span></li>`).join("")}</ol>
-    <p class="next-hint"><span aria-hidden="true">↓ </span>You're done with this activity. Scroll down and click the platform's <b>Next</b> button at the bottom of the page to save your progress.</p>`;
+    <p class="next-hint"><span aria-hidden="true">↓ </span>You're done with this activity. Scroll down for a quick recap, then click the platform's <b>Next</b> button at the bottom of the page.</p>`;
 
   const bodies = [intro, signsSlide, ...C.map(checkHtml), outro];
   $("slides").innerHTML = bodies.map((b, i) =>
