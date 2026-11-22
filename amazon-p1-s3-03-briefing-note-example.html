@@ -7,7 +7,10 @@
 <!--
   Amazon P1 Step 3, page 3 "[Training] Learn How to Write a Briefing Note" (2026-11-22).
   The full worked example as a one-page document, so students see what they are making before
-  the six-part deck. Text is word for word from the page's "Text version" toggle.
+  the six-part deck. Visible text is word for word from the page's "Text version" toggle.
+  2026-11-22 (v2): only the first line or two of each part is shown. The rest is NOT in the DOM:
+  it is neutral placeholder text, blurred (filter: blur(4px)), aria-hidden, unselectable, with an
+  sr-only "Rest of this section hidden" note per part and one visible caption at the top.
   Amazon Supply Chain palette (same tokens as gen-attrition-widgets.py / review cards).
 
   ACCESSIBILITY (WCAG 2.2 AA)
@@ -76,6 +79,9 @@ h2 small{font-weight:600;text-transform:none;letter-spacing:0;color:var(--p-mute
  .part .tag{flex-direction:row;gap:8px;align-items:baseline;justify-self:start}
  h1{font-size:21px}
 }
+.blur{filter:blur(4px);-webkit-user-select:none;user-select:none;pointer-events:none;color:var(--p-muted)}
+.caption{margin:0 0 12px;font-size:15px;color:var(--text);background:rgba(54,194,180,.14);border-left:4px solid var(--teal);border-radius:0 8px 8px 0;padding:8px 12px}
+@media print{.blur{display:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
 </style>
 </head>
@@ -94,6 +100,8 @@ h2 small{font-weight:600;text-transform:none;letter-spacing:0;color:var(--p-mute
     </div>
   </div>
 
+  <p class="caption">We've blurred the rest of each section so you write your own.</p>
+
   <article class="paper" id="paper" aria-labelledby="t">
     <div class="doc-head">
       <p class="kind">Briefing note</p>
@@ -109,7 +117,7 @@ h2 small{font-weight:600;text-transform:none;letter-spacing:0;color:var(--p-mute
       <p class="tag"><b>Part 2 of 6</b><span>Set the scene</span></p>
       <div>
         <h2 id="h2">Context</h2>
-        <p>Amazon employed about 1,576,000 people at the end of 2025 <span class="src">(Form 10-K, FY2025)</span>, but it doesn't publish a turnover rate. This note models an illustrative fulfillment center of 100 associates, using public estimates.</p>
+        <p>Amazon employed about 1,576,000 people at the end of 2025 <span class="src">(Form 10-K, FY2025)</span>, but it doesn't publish a turnover rate. <span class="sr-only">Rest of this section hidden. Write your own.</span><span class="blur" aria-hidden="true">This part of the example is hidden so that you can write this section on your own, in your own words,.</span></p>
       </div>
     </section>
 
@@ -117,7 +125,7 @@ h2 small{font-weight:600;text-transform:none;letter-spacing:0;color:var(--p-mute
       <p class="tag"><b>Part 3 of 6</b><span>Numbers, not feelings</span></p>
       <div>
         <h2 id="h3">Problem Statement</h2>
-        <p>New associates appear to leave very early. Leaked Amazon research reported in 2022 found that only about one in three people hired in 2021 stayed 90 days <span class="src">(Engadget, 2022)</span>. A 2021 New York Times investigation, using pre-2020 data, put annual turnover for hourly workers at about 150%. Amazon hasn't confirmed either figure. For comparison, the whole transportation and warehousing sector had a quits rate of 2.2% a month in 2025, roughly 26% a year <span class="src">(BLS JOLTS)</span>.</p>
+        <p>New associates appear to leave very early. Leaked Amazon research reported in 2022 found that only about one in three people hired in 2021 stayed 90 days <span class="src">(Engadget, 2022)</span>. <span class="sr-only">Rest of this section hidden. Write your own.</span><span class="blur" aria-hidden="true">This part of the example is hidden so that you can write this section on your own, in your own words, using your own figures and your own sources. This part of the example is hidden so that you can write this section on your own, in your own words, using your own.</span></p>
       </div>
     </section>
 
@@ -125,7 +133,7 @@ h2 small{font-weight:600;text-transform:none;letter-spacing:0;color:var(--p-mute
       <p class="tag"><b>Part 4 of 6</b><span>Tie it to business impact</span></p>
       <div>
         <h2 id="h4">Why It Matters</h2>
-        <p>At 124% to 150% turnover <span class="src">(NELP, 2022; New York Times, 2021)</span>, our illustrative site would replace 124 to 150 associates a year. At $4,700 to $8,000 per replacement <span class="src">(SHRM, 2022; Center for American Progress, 2012)</span>, that costs between about $583,000 and $1.2 million a year. At 150%, about $800,000 of the mid estimate comes from people who leave in their first 90 days. Gallup found that 52% of people who quit say their employer could have done something to keep them <span class="src">(2019)</span>, so much of this cost may be preventable.</p>
+        <p>At 124% to 150% turnover <span class="src">(NELP, 2022; New York Times, 2021)</span>, our illustrative site would replace 124 to 150 associates a year. <span class="sr-only">Rest of this section hidden. Write your own.</span><span class="blur" aria-hidden="true">This part of the example is hidden so that you can write this section on your own, in your own words, using your own figures and your own sources. This part of the example is hidden so that you can write this section on your own, in your own words, using your own figures and your own sources. This part of the example is hidden so that you can write this section on your own, in your own.</span></p>
       </div>
     </section>
 
@@ -133,7 +141,7 @@ h2 small{font-weight:600;text-transform:none;letter-spacing:0;color:var(--p-mute
       <p class="tag"><b>Part 5 of 6</b><span>Drivers, not proof</span></p>
       <div>
         <h2 id="h5">Root Causes <small>(preliminary)</small></h2>
-        <p>Pay is probably not the main driver: Amazon raised its minimum starting wage to $20 an hour in 2026. Public employee reviews point to other causes: "constant pressure to maintain exhausting rate," communication that is "poorly handled leading to inconsistent work practices," and having to rely on a chatbot for help. These are early signals from a few reviews, not proven causes.</p>
+        <p>Pay is probably not the main driver: Amazon raised its minimum starting wage to $20 an hour in 2026. <span class="sr-only">Rest of this section hidden. Write your own.</span><span class="blur" aria-hidden="true">This part of the example is hidden so that you can write this section on your own, in your own words, using your own figures and your own sources. This part of the example is hidden so that you can write this section on your own, in your own words, using your own figures and your own.</span></p>
       </div>
     </section>
 
@@ -141,12 +149,12 @@ h2 small{font-weight:600;text-transform:none;letter-spacing:0;color:var(--p-mute
       <p class="tag"><b>Part 6 of 6</b><span>What to investigate</span></p>
       <div>
         <h2 id="h6">Next Steps</h2>
-        <p>We recommend (1) analyzing a larger set of employee reviews to see which themes appear most among people who left in their first year (the closest the review data gets to the 90-day window), (2) comparing what new and tenured associates say about managers and communication, and (3) checking whether new hires know about existing benefits such as Career Choice, which only 11% of eligible associates used in 2025.</p>
+        <p>We recommend (1) analyzing a larger set of employee reviews to see which themes appear most among people who left in their first year (the closest the review data gets to the 90-day window), … <span class="sr-only">Rest of this section hidden. Write your own.</span><span class="blur" aria-hidden="true">This part of the example is hidden so that you can write this section on your own, in your own words, using your own figures and your own sources. This part of the example is hidden so that you can write this section on.</span></p>
       </div>
     </section>
   </article>
 
-  <p class="foot"><b>Notice:</b> every number has a source, causes are labeled as early signals, and the note ends with questions to investigate, not a fix.</p>
+  <p class="foot"><b>Notice:</b> each section opens with one specific line, and every number has a source.</p>
   <div class="sr-only" aria-live="polite" id="status"></div>
 </main>
 <script>
