@@ -92,107 +92,66 @@ const TASK = {
   "steps": [
     {
       "title": "What a briefing note is",
-      "instruction": "A <b>briefing note</b> is a one-page document that explains a problem to the people who decide what to do about it. A senior manager reads it between meetings. It has six parts: Title, Context, Problem Statement, Why It Matters, Root Causes and Next Steps.",
+      "instruction": "A <b>briefing note</b> is a one-page document that explains a problem to the people who decide what to do about it. A senior manager reads it between meetings, so every line has to be specific. It has six parts: Title, Context, Problem Statement, Why It Matters, Root Causes and Next Steps. It states the problem clearly. It doesn't solve it yet.",
       "sample": {
         "label": "Vague vs. specific",
         "kind": "text",
-        "body": "Vague: \"People are quitting all the time.\"\nSpecific: \"Leaked Amazon research found only about one in three 2021 hires stayed 90 days (Engadget, 2022).\""
-      },
-      "onTrack": "you can say why the second line is stronger: it's specific and it names a source.",
-      "stuck": [
-        "You're not solving the problem yet. You're stating it clearly so the next projects can find the causes."
-      ]
+        "body": "Vague: \"People are quitting all the time.\"\nSpecific: \"Leaked Amazon research found only about one in three 2021 hires stayed 90 days (Engadget, 2022).\"\nThe second line works because it's specific and names a source."
+      }
     },
     {
       "title": "Title: name the who, what and where",
-      "instruction": "Write one specific line. Avoid vague labels like \"Attrition Problem.\"",
+      "instruction": "One specific line that names the workers, the problem and the place. Avoid vague labels like \"Attrition Problem.\" A pattern that works: [Problem] Among [which workers] at [where].",
       "sample": {
         "label": "From the worked example",
         "kind": "text",
         "body": "Early-Tenure Attrition Among New Associates at an Illustrative Amazon FC"
-      },
-      "onTrack": "your title names a group of workers, the problem and the place.",
-      "stuck": [
-        "Fill in the pattern: [Problem] Among [which workers] at [where]."
-      ]
+      }
     },
     {
       "title": "Context: set the scene in 2–3 sentences",
-      "instruction": "Say what's happening and who's affected, so someone outside the team understands the situation cold.",
+      "instruction": "Say what's happening and to whom, so a reader who has never been inside an FC knows what the note is about.",
       "sample": {
         "label": "From the worked example",
         "kind": "text",
         "body": "Amazon employed about 1,576,000 people at the end of 2025 (Form 10-K, FY2025), but it doesn't publish a turnover rate. This note models an illustrative fulfillment center of 100 associates, using public estimates."
-      },
-      "onTrack": "a reader who has never been inside an FC would know what the note is about.",
-      "stuck": [
-        "Answer two questions only: what's happening, and to whom?"
-      ]
+      }
     },
     {
       "title": "Problem Statement: use numbers, not feelings",
-      "instruction": "Turn \"people are quitting\" into a measurable pattern. Cite at least 2 figures from the P1 Evidence Pack, each with source and year. Say when a figure is leaked or estimated.",
+      "instruction": "Turn \"people are quitting\" into a measurable pattern. Cite at least 2 figures from the P1 Evidence Pack, each with source and year, and say when a figure is leaked or estimated.",
       "sample": {
         "label": "From the worked example",
         "kind": "text",
         "body": "Leaked Amazon research reported in 2022 found that only about one in three people hired in 2021 stayed 90 days (Engadget, 2022). A 2021 New York Times investigation, using pre-2020 data, put annual turnover for hourly workers at about 150%. Amazon hasn't confirmed either figure."
-      },
-      "onTrack": "you cite 2 figures, each with source and year, and flag the ones that are leaked or unconfirmed.",
-      "stuck": [
-        "Keep the P1 Evidence Pack open in another tab and copy each source and year exactly."
-      ]
+      }
     },
     {
       "title": "Why It Matters: tie it to business impact",
-      "instruction": "Connect the problem to costs the business feels, such as training cost, throughput and delivery delays. Use the dollar range from your cost-of-turnover sheet.",
+      "instruction": "Connect the problem to costs the business feels, such as hiring, training and lost output. Give a dollar range and say where it comes from. Yours will come from the cost-of-turnover sheet you make in the next task.",
       "sample": {
         "label": "From the worked example",
         "kind": "text",
-        "body": "At 150% turnover, our illustrative site would replace 150 associates a year. At $4,700 to $8,000 per replacement (SHRM, 2022; Center for American Progress, 2012), that costs between $705,000 and $1.2 million a year."
-      },
-      "onTrack": "you give a dollar range and say where it comes from.",
-      "stuck": [
-        "You'll build the cost-of-turnover sheet in the next task. For now, notice how the range turns a turnover rate into money."
-      ]
+        "body": "At 124% to 150% turnover (NELP, 2022; New York Times, 2021), our illustrative site would replace 124 to 150 associates a year. At $4,700 to $8,000 per replacement (SHRM, 2022; Center for American Progress, 2012), that costs between about $583,000 and $1.2 million a year."
+      }
     },
     {
       "title": "Root Causes: offer drivers, not proof",
-      "instruction": "List two or three plausible drivers, such as burnout, thin onboarding or limited advancement. Don't claim certainty.",
+      "instruction": "Name two or three plausible drivers, such as burnout, thin onboarding or limited advancement. Keep the symptom (people quit) separate from the driver (why they quit), and label drivers as early signals, not proven causes.",
       "sample": {
         "label": "From the worked example",
         "kind": "text",
         "body": "Pay is probably not the main driver: Amazon raised its minimum starting wage to $20 an hour in 2026. Public employee reviews point to other causes: \"constant pressure to maintain exhausting rate\" and communication that is \"poorly handled leading to inconsistent work practices.\" These are early signals from a few reviews, not proven causes."
-      },
-      "onTrack": "you name 2–3 drivers and label them as early signals, not proven causes.",
-      "stuck": [
-        "Separate the symptom (people quit) from a driver (why they quit)."
-      ]
+      }
     },
     {
       "title": "Next Steps: point to what to investigate",
-      "instruction": "End with what to look into next. Don't jump to a solution.",
+      "instruction": "End with what to find out next, not a fix. If a step starts with \"launch\" or \"build,\" turn it into a question: what would we need to know first?",
       "sample": {
         "label": "From the worked example",
         "kind": "text",
-        "body": "We recommend (1) analyzing a larger set of employee reviews to see which themes appear most among people who left within a year, and (2) comparing what new and tenured associates say about managers and communication."
-      },
-      "onTrack": "each next step is something to find out, not a fix.",
-      "stuck": [
-        "Does a step start with \"launch\" or \"build\"? Turn it into a question: what would we need to know first?"
-      ]
-    },
-    {
-      "title": "Check it before you submit",
-      "instruction": "Keep it to 400 words at most. Use a neutral, business tone. Skip \"I think\" and \"we believe\" and stick to observations and data.",
-      "sample": {
-        "label": "Checklist",
-        "kind": "text",
-        "body": "Is the title specific?\nIs the context clear for someone outside the team?\nDoes it cite at least 2 figures from the P1 Evidence Pack, with source and year?\nDid you connect the issue to business impact?\nDid you suggest a few practical next steps?"
-      },
-      "onTrack": "you can answer yes to all five questions.",
-      "stuck": [
-        "Ask yourself: if I were the client, would I take this seriously?"
-      ]
+        "body": "We recommend (1) analyzing a larger set of employee reviews to see which themes appear most among people who left in their first year (the closest the review data gets to the 90-day window), and (2) comparing what new and tenured associates say about managers and communication."
+      }
     }
   ]
 };
