@@ -86,74 +86,62 @@ RESKIN 2026-11-22 (CSS only; TASK content and engine unchanged):
 <script>
 /* ============================ EDIT THIS ============================ */
 const TASK = {
-  "deckId": "amazon-p1-draft-briefing-note-steps",
+  "deckId": "amazon-p1-draft-briefing-note-steps-v3",
   "title": "Draft a briefing note",
   "exampleUrl": "",
   "steps": [
     {
       "title": "What you'll hand in",
-      "instruction": "You'll write a <b>300–400 word briefing note</b> that frames early attrition at an Amazon fulfillment center as a clear, urgent business problem. You're not solving it yet. Keep the P1 Evidence Pack open in another tab. Every number in your note comes from there or from your sheet.",
+      "instruction": "You'll write a <b>300–400 word briefing note</b> that frames early attrition at an Amazon fulfillment center as a clear, urgent business problem. First you'll run a quick cost estimate so your note has real dollar figures. The six parts and the full worked example are on the previous page, Learn How to Write a Briefing Note.",
       "sample": {
         "label": "Your 3 submissions",
         "kind": "text",
         "body": "1. Your briefing note as a PDF (upload)\n2. The link to your Google Doc\n3. The link to your cost-of-turnover sheet\nTime: about 1 hour (15 min sheet, 40 min draft, 5 min check and submit)"
       },
-      "onTrack": "you know the 3 things you'll submit and have the Evidence Pack open.",
+      "onTrack": "you know the 3 things you'll submit.",
       "stuck": [
-        "Can't find the Evidence Pack? It's in Step 2 of this project, right after the people analytics training."
+        "Can't find the Evidence Pack? It's the first page of Step 3."
       ]
     },
     {
-      "title": "Copy the cost sheet and check the inputs",
-      "instruction": "Open the <b>Cost-of-Turnover template</b> (link coming). Click <b>Make a copy</b>. Work in your copy, then set sharing to <i>Anyone with the link can view</i>. The six input cells (highlighted yellow, labeled Headcount, Annual turnover, Early-tenure share, Pay, Cost per replacement low and Cost per replacement mid) hold the Evidence Pack inputs. Keep them, or switch the turnover rate from 150% (row 6) to 124% (row 9) for a lower case.",
+      "title": "Copy the Evidence Pack Sheet",
+      "instruction": "Open the <a href=\"https://docs.google.com/spreadsheets/d/1UuC16_eU9NC4vBVFJV1r2IajG4VkI3mUGvgskZchk8Y/edit\" target=\"_blank\" rel=\"noopener\">Evidence Pack Sheet (opens in a new tab)</a>. Click <b>File</b>, then <b>Make a copy</b>, and name it <i>Your Name – Cost of Turnover</i>. This copy is your cost-of-turnover sheet. Go to the <b>Cost Inputs</b> tab. The yellow cells hold the Evidence Pack inputs, and the Result column updates on its own.",
       "sample": {
-        "label": "Default inputs (the six input cells, highlighted yellow)",
+        "label": "Cost Inputs tab results (150% turnover)",
         "kind": "text",
-        "body": "Headcount: 100\nAnnual turnover: 150%\nEarly-tenure share: 0.67 (assumption)\nPay: $20 × 2,000 hours = $40,000\nCost per replacement, low: $4,700\nCost per replacement, mid: 20% of pay ($8,000)"
+        "body": "Leavers per year: 150\nEarly leavers (first 90 days): 100\nCost, low: $705,000\nCost, mid: $1,200,000\nCost from 90-day exits (mid): $800,000"
       },
-      "onTrack": "your six input cells match these defaults, or you changed only the turnover rate.",
+      "onTrack": "your copy's Cost Inputs tab shows $705,000 (low) and $1,200,000 (mid).",
       "stuck": [
-        "The row numbers (6 and 9) are rows in the P1 Evidence Pack, not in your sheet."
+        "No <b>Make a copy</b> option? Sign in to your Google account first."
       ]
     },
     {
-      "title": "Read the results",
-      "instruction": "Your sheet calculates the results below. You'll use the low cost, mid cost and 90-day cost in the Why It Matters section of your note.",
+      "title": "Add a lower-case tab",
+      "instruction": "One estimate on its own is easy to doubt, so consultants show a range. Right-click the <b>Cost Inputs</b> tab at the bottom of the screen and choose <b>Duplicate</b>. Rename the new tab <i>Lower case</i>. In that tab, change <b>B. Annual turnover rate</b> (cell C3) from 150% to <b>124%</b>, the NELP figure in row 9 of the Evidence Pack. Leave every other input as it is.",
       "sample": {
-        "label": "Results at the default inputs",
+        "label": "Lower case tab results (124% turnover)",
         "kind": "text",
-        "body": "Leavers per year: 150\nEarly leavers: 100\nCost, low: $705,000\nCost, mid: $1,200,000\nCost from 90-day exits (mid): $800,000"
+        "body": "Leavers per year: 124\nEarly leavers (first 90 days): about 83\nCost, low: $582,800\nCost, mid: $992,000\nCost from 90-day exits (mid): $661,333\nYour range: about $583,000 (lower case, low) to $1.2 million (Cost Inputs, mid) a year per 100 associates"
       },
-      "onTrack": "your sheet shows about $705,000 (low) and $1,200,000 (mid) at the default inputs.",
+      "onTrack": "your Lower case tab shows $582,800 (low) and $992,000 (mid), and your Cost Inputs tab still shows 150%.",
       "stuck": [
-        "Numbers way off? Check that the turnover cell shows 150%. Typing 150 without the % sign gives 15,000%."
+        "Numbers way off? Type 124% with the % sign. Typing 124 on its own gives 12,400%.",
+        "Row 9 is a row in the Evidence Pack, not in your sheet."
       ]
     },
     {
-      "title": "Set up the six-part structure",
-      "instruction": "Open a new Google Doc. Add the six section headings from the previous page, in this order, before you write any sentences.",
+      "title": "Write your note",
+      "instruction": "Open a new Google Doc and add the six headings from Learn How to Write a Briefing Note: Title, Context, Problem Statement, Why It Matters, Root Causes and Next Steps. Then write each section in your own words, with your own choice of figures and focus.",
       "sample": {
-        "label": "Your Doc's headings and what goes under each",
+        "label": "What each section takes from your work",
         "kind": "text",
-        "body": "Title: [Problem] Among [which workers] at [where]\nContext: 2–3 sentences on what's happening and who's affected\nProblem Statement: at least 2 Evidence Pack figures, with source and year\nWhy It Matters: the cost range from your sheet\nRoot Causes: 2–3 likely drivers, not proven\nNext Steps: what to investigate, not a solution"
+        "body": "Problem Statement: at least 2 Evidence Pack figures, with source and year\nWhy It Matters: your range from both tabs, plus the 90-day cost\nRoot Causes: 2–3 themes from the employee reviews you read in Step 2\nNext Steps: what to find out, not a fix"
       },
-      "onTrack": "your Doc has all six headings in this order.",
+      "onTrack": "every section has at least one sentence, and Why It Matters gives your dollar range.",
       "stuck": [
-        "Go back to the briefing-note training page for one example line per section."
-      ]
-    },
-    {
-      "title": "Draft each section",
-      "instruction": "Read the worked example on this page first (the toggle above the steps, about 330 words). Then write your own note. Use your own words, and choose your own figures and focus.",
-      "sample": {
-        "label": "How the worked example handles each part",
-        "kind": "text",
-        "body": "Title: Early-Tenure Attrition Among New Associates at an Illustrative Amazon FC\nProblem: only about one in three 2021 hires stayed 90 days (Engadget, 2022)\nWhy it matters: $705,000 to $1.2 million a year at 150% turnover\nRoot causes: rate pressure and poor communication, from public reviews\nNext steps: analyze more reviews; compare new and tenured associates"
-      },
-      "onTrack": "every section of your draft has at least one sentence, and the cost range from your sheet appears in Why It Matters.",
-      "stuck": [
-        "Don't copy the example's wording. Borrow its structure, then use your own figures and focus.",
-        "Stuck on Root Causes? Pick two themes from the employee quotes in the Evidence Pack."
+        "Blank page? Reread the full worked example on Learn How to Write a Briefing Note, then close it and write. Borrow its structure, not its wording.",
+        "Stuck on Root Causes? Pick two themes from the reviews on the \"Find Who's at Risk of Leaving\" task."
       ]
     },
     {
@@ -162,7 +150,7 @@ const TASK = {
       "sample": {
         "label": "Done when",
         "kind": "text",
-        "body": "Your note is 300–400 words and uses all six sections.\nIt cites at least 2 figures from the P1 Evidence Pack, each with source and year, worded as estimates where needed (\"reported,\" \"leaked\").\n\"Why it matters\" uses the cost range from your sheet.\n\"Next steps\" names things to investigate, not a solution."
+        "body": "Your note is 300–400 words and uses all six sections.\nIt cites at least 2 figures from the P1 Evidence Pack, each with source and year, worded as estimates where needed (\"reported,\" \"leaked\").\n\"Why It Matters\" gives the cost range from both tabs of your sheet.\n\"Next Steps\" names things to investigate, not a solution."
       },
       "onTrack": "you can tick all four lines.",
       "stuck": [
