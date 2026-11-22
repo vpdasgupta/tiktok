@@ -8,41 +8,48 @@
 TRAINING CHECK DECK: Follow one order through a fulfillment center (2026-11-21)
 ================================================================================
 Reinforces the order-flow video on the [Training] page "Learn How Fulfillment
-Centers Power Amazon's Business" (Amazon P1 Step 1, working copy). Replaces the
-task step deck amazon-p1-fc-order-flow-steps.html on that page.
+Centers Power Amazon's Business" (Amazon P1 Step 1, working copy).
 
-Slides: 1 overview (five steps) → 5 quick checks → 1 takeaways slide.
+Slides: 1 animated flow (five steps) → 5 quick checks → 1 takeaways slide.
 Edit only the DECK object. Checks are practice: never graded, never gated.
 
-ACCESSIBILITY (WCAG 2.2 AA), same tokens and patterns as the step-deck engine:
+STYLE: Amazon Supply Chain palette, same as the page banners (gen-banners.py) and
+amazon-p0-themes-and-tools.html: squid ink #0F141A canvas, panel #18202A,
+#0578FF glow, gradient #1A98FF → #36C2B4 → #94ED88, text #F5F3EF, muted #B7B7B7,
+open dots #929292. Font: Amazon Ember → Helvetica Neue → Arial.
+Contrast on #18202A: #F5F3EF 15.1, #B7B7B7 8.3, #94ED88 11.6, #7CC4FF 8.6,
+#929292 5.3 (UI borders); #0F141A on #1A98FF button 6.15.
+
+ANIMATED FLOW (slide 1): the five steps are a real <ol>, so the text is always
+in the accessibility tree in order. JS lights each station in turn (track fills,
+a box drops into the active station). Decorative parts are aria-hidden.
+  - Pause / Play button (WCAG 2.2.2). Stops after 3 loops on its own.
+  - prefers-reduced-motion: no autoplay, all stations shown lit.
+  - Horizontal at ≥ 641px, vertical below.
+
+ACCESSIBILITY (WCAG 2.2 AA):
   - Inactive slides use `hidden`; on Back/Next/dot navigation focus moves to the
     new slide's heading; a polite live region announces "Slide K of N".
   - Each check is a native <fieldset>/<legend> radio group plus a "Check answer"
-    button. Feedback goes into an aria-live="polite" region that exists on load.
-    Right/wrong is said in words ("Correct." / "Not quite.") and by icon shape,
-    never by color alone. Learners can retry.
-  - No arrow-key slide shortcuts, so radio groups keep their native arrow keys.
-  - Dots are real buttons with aria-label and aria-current="step".
-  - Text ≥ 4.5:1, UI borders ≥ 3:1, visible focus ring, 44px targets.
-  - prefers-reduced-motion disables transitions; reflows to one column ≤ 640px.
+    button. Feedback goes into an aria-live="polite" region present on load.
+    Right/wrong is said in words and by icon shape, never by color alone.
+  - No arrow-key slide shortcuts, so radio groups keep native arrow keys.
+  - Visible focus ring (lime, 3px), 44px targets, reflows at 320px.
   - The last slide points to the platform's own Next button (plain text, no link).
 ================================================================================
 -->
 <title>Follow One Order</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
 /* ============================ EDIT THIS ============================ */
 const DECK = {
   deckId: "amazon-p1-fc-order-flow-check",
   title: "Follow one order through a fulfillment center",
   flow: [
-    { name: "Receive", what: "Products arrive at the fulfillment center (FC) and are checked in." },
-    { name: "Stow", what: "A Stower puts each item in a storage bin and scans it, so the system knows where it is." },
-    { name: "Pick", what: "When an order comes in, a Picker pulls its items from their bins." },
-    { name: "Pack", what: "A Packer puts the order in the right box and labels it." },
-    { name: "Ship", what: "The labeled box goes onto a truck." }
+    { name: "Receive", cap: "Items arrive", icon: "receive" },
+    { name: "Stow", cap: "Scanned into a bin", icon: "stow" },
+    { name: "Pick", cap: "Pulled for an order", icon: "pick" },
+    { name: "Pack", cap: "Boxed and labeled", icon: "pack" },
+    { name: "Ship", cap: "Onto the truck", icon: "ship" }
   ],
   checks: [
     {
@@ -104,26 +111,27 @@ const DECK = {
 </script>
 <style>
   :root {
-    --eggshell: #F3EEDF;
-    --paper: #FBF8F0;
-    --white: #FFFFFF;
-    --ink: #1D2420;
-    --ink-soft: #55605A;   /* 6.5:1 on white, 5.6:1 on eggshell */
-    --line: #E2DBC6;       /* decorative only */
-    --edge: #7A7F76;       /* UI borders, 4.1:1 on white, 3.5:1 on eggshell */
-    --green: #2F6B45;      /* 6.3:1 on white */
-    --green-dark: #1F4D31;
-    --green-tint: #E3EEE5;
-    --amber: #8A5E0F;      /* 5.6:1 on white */
-    --amber-tint: #F6EEDC;
-    --focus: #1F4D31;
+    --ink: #0F141A;
+    --panel: #18202A;
+    --panel-2: #1F2935;
+    --line: #2A3542;      /* decorative only */
+    --edge: #929292;      /* UI borders, 5.3:1 on panel */
+    --text: #F5F3EF;
+    --muted: #B7B7B7;
+    --blue: #1A98FF;
+    --blue-soft: #7CC4FF;
+    --teal: #36C2B4;
+    --lime: #94ED88;
+    --glow: #0578FF;
+    --grad: linear-gradient(90deg, #1A98FF, #36C2B4, #94ED88);
+    --focus: #94ED88;
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
   html, body { margin: 0; }
   body {
-    font-family: "Inter", system-ui, sans-serif;
-    background: var(--eggshell); color: var(--ink);
+    font-family: "Amazon Ember", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: var(--ink); color: var(--text);
     line-height: 1.5; padding: 16px; -webkit-font-smoothing: antialiased;
   }
   button { font-family: inherit; }
@@ -131,73 +139,127 @@ const DECK = {
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
   .deck { max-width: 880px; margin: 0 auto; }
-  .deck-title { font-size: 15px; font-weight: 700; margin: 0 0 12px; }
-  .slide { overflow-wrap: anywhere; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 28px 32px 24px; }
-  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--green); margin: 0; }
-  .slide h2 { font-size: 22px; line-height: 1.25; margin: 4px 0 12px; }
+  .deck-title { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+  .slide {
+    position: relative; overflow: hidden; overflow-wrap: anywhere;
+    background: radial-gradient(520px 300px at 100% 0%, rgba(5,120,255,.20), transparent 65%),
+                radial-gradient(420px 260px at 0% 100%, rgba(54,194,180,.10), transparent 65%), var(--panel);
+    border: 1px solid var(--line); border-radius: 16px; padding: 28px 32px 30px;
+  }
+  .slide::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: var(--grad); }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); margin: 0; }
+  .slide h2 { font-size: 24px; line-height: 1.25; font-weight: 800; margin: 6px 0 12px; }
   .slide h2:focus { outline: none; }
   .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
   .slide p { font-size: 16px; margin: 0 0 16px; }
+  .muted { color: var(--muted); }
 
-  /* five-step flow */
-  .flow { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 10px; counter-reset: f; }
-  .flow li { counter-increment: f; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start;
-    background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--green); border-radius: 10px; padding: 10px 14px; }
-  .flow li::before { content: counter(f); width: 32px; height: 32px; border-radius: 50%; background: var(--green); color: var(--white);
-    font-weight: 800; display: grid; place-items: center; font-size: 15px; }
-  .flow b { display: block; font-size: 16px; }
-  .flow span { font-size: 15px; color: var(--ink-soft); }
+  /* ---------- animated flow ---------- */
+  .flowviz { list-style: none; margin: 8px 0 18px; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .st { position: relative; text-align: center; padding-top: 30px; }
+  .ring {
+    position: relative; z-index: 1; width: 84px; height: 84px; margin: 0 auto 10px; border-radius: 50%;
+    display: grid; place-items: center; color: var(--muted);
+    background: var(--panel-2); border: 3px solid #4A5664;
+    transition: border-color .4s, color .4s, box-shadow .4s, transform .4s;
+  }
+  .ring svg { width: 40px; height: 40px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .st b { display: block; font-size: 17px; font-weight: 800; color: var(--muted); transition: color .4s; }
+  .st .cap { display: block; font-size: 14px; color: var(--muted); }
+  .num { position: absolute; z-index: 2; top: 26px; left: calc(50% + 22px); width: 26px; height: 26px; border-radius: 50%;
+    background: var(--ink); border: 2px solid #4A5664; color: var(--muted); font-size: 13px; font-weight: 800; display: grid; place-items: center;
+    transition: background .4s, color .4s, border-color .4s; }
+  /* track between stations */
+  .track { position: absolute; z-index: 0; top: 70px; left: calc(50% + 42px); width: calc(100% - 84px + 8px); height: 4px; border-radius: 2px; background: #2F3B49; overflow: hidden; }
+  .track i { position: absolute; inset: 0; background: var(--grad); transform: scaleX(0); transform-origin: left; transition: transform .9s ease-in-out; }
+  /* the box that drops into the active station */
+  .pkg { position: absolute; z-index: 2; top: 0; left: 50%; width: 22px; height: 22px; margin-left: -11px; opacity: 0; }
+  .pkg svg { width: 22px; height: 22px; }
 
-  /* quick check */
+  .st.done .ring { border-color: var(--blue); color: var(--text); }
+  .st.done .num { background: var(--blue); border-color: var(--blue); color: var(--ink); }
+  .st.done b { color: var(--text); }
+  .st.done .track i { transform: scaleX(1); }
+  .st.active .ring { border-color: var(--lime); color: var(--lime); box-shadow: 0 0 0 6px rgba(148,237,136,.14), 0 0 28px rgba(54,194,180,.45); transform: scale(1.06); }
+  .st.active .num { background: var(--lime); border-color: var(--lime); color: var(--ink); }
+  .st.active b { color: var(--lime); }
+  .st.active .pkg { animation: drop .7s ease-out forwards; }
+  @keyframes drop { 0% { opacity: 0; transform: translateY(-14px); } 60% { opacity: 1; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(2px); } }
+
+  .flow-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0 0 14px; }
+  .ghost-btn { min-height: 44px; border: 2px solid var(--edge); background: transparent; color: var(--text);
+    border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+  .ghost-btn:hover { border-color: var(--text); }
+
+  /* ---------- quick check ---------- */
   fieldset { border: 0; margin: 0 0 14px; padding: 0; min-width: 0; }
-  legend { font-size: 18px; font-weight: 700; line-height: 1.35; margin: 0 0 12px; padding: 0; }
-  .opt { display: flex; gap: 12px; align-items: flex-start; min-height: 44px; padding: 10px 14px; margin-bottom: 8px;
-    border: 2px solid var(--edge); border-radius: 10px; cursor: pointer; font-size: 16px; background: var(--white); }
-  .opt:hover { border-color: var(--ink); }
-  .opt input { width: 20px; height: 20px; margin: 2px 0 0; flex: none; accent-color: var(--green); }
-  .opt:has(input:checked) { border-color: var(--green); background: var(--green-tint); }
+  legend { font-size: 19px; font-weight: 700; line-height: 1.35; margin: 0 0 14px; padding: 0; }
+  .opt { display: flex; gap: 12px; align-items: flex-start; min-height: 44px; padding: 11px 14px; margin-bottom: 8px;
+    border: 2px solid var(--edge); border-radius: 12px; cursor: pointer; font-size: 16px; background: rgba(15,20,26,.55); }
+  .opt:hover { border-color: var(--text); }
+  .opt input { width: 20px; height: 20px; margin: 2px 0 0; flex: none; accent-color: var(--teal); }
+  .opt:has(input:checked) { border-color: var(--teal); background: rgba(54,194,180,.14); }
   .opt:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
   .opt input:focus-visible { outline: none; }
-  .check-btn { min-height: 44px; border: 2px solid var(--ink); background: var(--ink); color: var(--white);
-    border-radius: 10px; padding: 8px 18px; font-size: 15px; font-weight: 700; cursor: pointer; }
-  .check-btn:hover { background: var(--green-dark); border-color: var(--green-dark); }
+  .check-btn { min-height: 44px; border: 0; background: var(--blue); color: var(--ink);
+    border-radius: 10px; padding: 10px 20px; font-size: 15px; font-weight: 800; cursor: pointer; }
+  .check-btn:hover { background: var(--blue-soft); }
   .feedback { margin-top: 14px; }
-  .fb { border-left: 4px solid; border-radius: 0 10px 10px 0; padding: 10px 14px; font-size: 15px; }
+  .fb { border-left: 4px solid; border-radius: 0 12px 12px 0; padding: 12px 16px; }
   .fb p { margin: 0; font-size: 15px; }
   .fb p + p { margin-top: 6px; }
   .fb .verdict { font-weight: 800; display: flex; gap: 8px; align-items: center; }
-  .fb.ok { border-color: var(--green); background: var(--green-tint); }
-  .fb.ok .verdict { color: var(--green-dark); }
-  .fb.no { border-color: var(--amber); background: var(--amber-tint); }
-  .fb.no .verdict { color: #6E4A0A; }
+  .fb.ok { border-color: var(--lime); background: rgba(148,237,136,.10); }
+  .fb.ok .verdict { color: var(--lime); }
+  .fb.no { border-color: var(--blue-soft); background: rgba(26,152,255,.12); }
+  .fb.no .verdict { color: var(--blue-soft); }
 
-  /* takeaways */
-  .takeaways { margin: 0 0 16px; padding-left: 24px; font-size: 16px; }
-  .takeaways li { margin-bottom: 8px; }
-  .finish { background: var(--green-tint); border-radius: 10px; padding: 12px 16px; font-weight: 600; margin: 0 0 12px; }
-  .next-hint { border: 2px dashed var(--edge); border-radius: 10px; padding: 12px 16px; font-size: 15px; margin: 0; }
+  /* ---------- takeaways ---------- */
+  .takeaways { list-style: none; margin: 0 0 18px; padding: 0; counter-reset: t; display: grid; gap: 10px; }
+  .takeaways li { counter-increment: t; display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; font-size: 16px;
+    background: rgba(15,20,26,.55); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .takeaways li::before { content: counter(t); width: 32px; height: 32px; border-radius: 8px; background: var(--grad); color: var(--ink);
+    font-weight: 800; display: grid; place-items: center; }
+  .finish { border-left: 4px solid var(--teal); background: rgba(54,194,180,.12); border-radius: 0 12px 12px 0; padding: 12px 16px; font-weight: 700; margin: 0 0 12px; }
+  .next-hint { border: 2px dashed var(--edge); border-radius: 12px; padding: 12px 16px; font-size: 15px; margin: 0; color: var(--muted); }
+  .next-hint b { color: var(--text); }
 
-  /* nav */
+  /* ---------- nav ---------- */
   .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
-  .nav-btn { min-height: 44px; min-width: 44px; background: var(--white); border: 1px solid var(--edge); color: var(--ink);
-    border-radius: 10px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; }
-  .nav-btn.primary { background: var(--ink); color: var(--white); border-color: var(--ink); }
-  .nav-btn.primary:hover:not(:disabled) { background: var(--green-dark); }
-  .nav-btn:disabled { opacity: .45; cursor: default; }
-  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
-  .dot { width: 32px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
-  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink-soft); background: var(--white); }
-  .dot.seen::before { border-color: var(--green); background: var(--green); }
-  .dot[aria-current="step"]::before { width: 26px; border-radius: 6px; border-color: var(--green); background: var(--green); }
-  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+  .nav-btn { min-height: 44px; min-width: 44px; background: transparent; border: 2px solid var(--edge); color: var(--text);
+    border-radius: 10px; padding: 9px 18px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .nav-btn:hover:not(:disabled) { border-color: var(--text); }
+  .nav-btn.primary { background: var(--blue); color: var(--ink); border-color: var(--blue); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--blue-soft); border-color: var(--blue-soft); }
+  .nav-btn:disabled { opacity: .4; cursor: default; }
+  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; align-items: center; }
+  .dot { width: 30px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--edge); background: transparent; }
+  .dot.seen::before { border-color: var(--blue); background: var(--blue); }
+  .dot[aria-current="step"]::before { width: 28px; height: 14px; border-radius: 7px; border: 2px solid #FFFFFF; background: var(--grad); }
+  .counter { font-size: 13px; color: var(--muted); text-align: center; margin-top: 6px; }
 
   @media (max-width: 640px) {
     body { padding: 12px; }
-    .slide { padding: 20px 18px; }
-    .slide h2 { font-size: 20px; }
+    .slide { padding: 20px 18px 24px; }
+    .slide h2 { font-size: 21px; }
+    .flowviz { grid-template-columns: 1fr; gap: 14px; }
+    .st { text-align: left; padding: 0 0 0 108px; min-height: 72px; display: flex; flex-direction: column; justify-content: center; }
+    .ring { position: absolute; left: 28px; top: 0; width: 64px; height: 64px; margin: 0; }
+    .ring svg { width: 30px; height: 30px; }
+    .num { top: -4px; left: 76px; width: 22px; height: 22px; font-size: 12px; }
+    .track { top: 64px; left: 58px; width: 4px; height: calc(100% - 64px + 14px); }
+    .track i { transform: scaleY(0); transform-origin: top; }
+    .st.done .track i { transform: scaleY(1); }
+    .pkg { left: 0; top: 21px; margin-left: 0; }
+    @keyframes drop { 0% { opacity: 0; transform: translateX(-10px); } 60% { opacity: 1; transform: translateX(4px); } 100% { opacity: 1; transform: translateX(2px); } }
     .slide-nav { flex-wrap: wrap; }
     .dots { order: -1; width: 100%; justify-content: center; }
     .nav-btn { flex: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ring, .track i, .num, .st b { transition: none; }
+    .st.active .pkg { animation: none; opacity: 1; }
   }
   @media (prefers-reduced-motion: no-preference) {
     .slide:not([hidden]) { animation: in .25s ease; }
@@ -221,18 +283,38 @@ const DECK = {
 <script>
 (() => {
   const $ = id => document.getElementById(id);
-  const C = DECK.checks;
+  const C = DECK.checks, F = DECK.flow;
   const total = C.length + 2;
   const KEY = "fc-check:" + DECK.deckId;
   $("deckTitle").textContent = DECK.title;
+
+  const ICONS = {
+    receive: '<path d="M5 18 20 8l15 10v16H5z"/><path d="M12 34V24h16v10"/><path d="M16 29h8"/>',
+    stow: '<rect x="6" y="6" width="28" height="28" rx="2"/><path d="M6 15.3h28M6 24.6h28M15.3 6v28M24.6 6v28"/><rect x="17.5" y="17.5" width="5" height="5" fill="currentColor"/>',
+    pick: '<path d="M5 16h30l-3.5 17h-23z"/><path d="M14 16v-5a6 6 0 0 1 12 0v5"/><path d="M15 23v5M20 23v5M25 23v5"/>',
+    pack: '<path d="M6 13 20 6l14 7v15l-14 7-14-7z"/><path d="M6 13l14 7 14-7M20 20v15"/>',
+    ship: '<path d="M3 10h20v18H3zM23 16h8l5 6v6H23z"/><circle cx="10" cy="30" r="3.5"/><circle cx="29" cy="30" r="3.5"/>'
+  };
+  const PKG = '<svg viewBox="0 0 22 22" aria-hidden="true"><rect x="2" y="4" width="18" height="15" rx="2" fill="#94ED88"/><path d="M2 9h18M11 4v5" stroke="#0F141A" stroke-width="2"/></svg>';
 
   const labels = ["The five steps", ...C.map((c, i) => `Quick check ${i + 1} of ${C.length}`), "What to remember"];
 
   const intro = `
     <p class="eyebrow">${labels[0]}</p>
-    <h2 tabindex="-1">An order moves through five steps</h2>
-    <p>Here's what you just watched. Each step hands work to the next one.</p>
-    <ol class="flow">${DECK.flow.map(f => `<li><div><b>${f.name}</b><span>${f.what}</span></div></li>`).join("")}</ol>
+    <h2 tabindex="-1">Watch one order move through the building</h2>
+    <ol class="flowviz" id="flowviz">${F.map((f, i) => `
+      <li class="st">
+        <span class="pkg" aria-hidden="true">${PKG}</span>
+        <span class="ring" aria-hidden="true"><svg viewBox="0 0 40 40">${ICONS[f.icon]}</svg></span>
+        <span class="num" aria-hidden="true">${i + 1}</span>
+        <b>${f.name}</b><span class="cap">${f.cap}</span>
+        ${i < F.length - 1 ? '<span class="track" aria-hidden="true"><i></i></span>' : ""}
+      </li>`).join("")}
+    </ol>
+    <div class="flow-controls">
+      <button type="button" class="ghost-btn" id="flowBtn"></button>
+      <span class="muted">Each step hands work to the next.</span>
+    </div>
     <p>Next come ${C.length} quick checks. They aren't graded, so try each one and read why.</p>`;
 
   const checkHtml = (c, i) => `
@@ -250,7 +332,7 @@ const DECK = {
   const outro = `
     <p class="eyebrow">${labels[total - 1]}</p>
     <h2 tabindex="-1">Three things to take with you</h2>
-    <ol class="takeaways">${DECK.takeaways.map(t => `<li>${t}</li>`).join("")}</ol>
+    <ol class="takeaways">${DECK.takeaways.map(t => `<li><span>${t}</span></li>`).join("")}</ol>
     <p class="finish">${DECK.nextUp}</p>
     <p class="next-hint"><span aria-hidden="true">↓ </span>You're done with this page. Scroll down and click the platform's <b>Next</b> button at the bottom of the page to save your progress.</p>`;
 
@@ -259,6 +341,38 @@ const DECK = {
     `<section class="slide" id="s${i}" aria-label="${labels[i]}" hidden>${b}</section>`).join("");
   $("dots").innerHTML = labels.map((l, i) =>
     `<li><button type="button" class="dot" data-i="${i}" aria-label="Go to slide ${i + 1}: ${l}"></button></li>`).join("");
+
+  /* ---- flow animation ---- */
+  const stations = [...document.querySelectorAll("#flowviz .st")];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let phase = 0, loops = 0, timer = null;
+  const paint = p => stations.forEach((s, k) => {
+    s.classList.toggle("done", k < p);
+    s.classList.toggle("active", k === p);
+  });
+  const showAll = () => paint(F.length);
+  function tick() {
+    phase++;
+    if (phase > F.length + 1) {          // held on "all done", restart
+      loops++;
+      if (loops >= 3) { stop(); return; }
+      phase = 0;
+    }
+    paint(Math.min(phase, F.length));
+  }
+  function play() {
+    if (timer) return;
+    if (phase >= F.length) { phase = 0; loops = 0; }
+    paint(phase);
+    timer = setInterval(tick, 1500);
+    setBtn();
+  }
+  function stop() { clearInterval(timer); timer = null; showAll(); phase = F.length; setBtn(); }
+  function setBtn() {
+    const b = $("flowBtn");
+    b.innerHTML = timer ? '<span aria-hidden="true">❚❚</span> Pause animation' : '<span aria-hidden="true">▶</span> Play animation';
+  }
+  $("flowBtn").onclick = () => timer ? stop() : play();
 
   document.querySelectorAll("form[data-q]").forEach(f => f.addEventListener("submit", e => {
     e.preventDefault();
@@ -285,6 +399,7 @@ const DECK = {
     $("nextBtn").disabled = cur === total - 1;
     $("counter").textContent = `Slide ${cur + 1} of ${total}`;
     try { localStorage.setItem(KEY, cur); } catch (e) {}
+    if (cur === 0 && !reduce) play(); else if (timer) stop();
     if (focus) {
       $("status").textContent = `Slide ${cur + 1} of ${total}: ${labels[cur]}`;
       $("s" + cur).querySelector("h2").focus();
@@ -293,6 +408,7 @@ const DECK = {
   $("prevBtn").onclick = () => go(cur - 1, true);
   $("nextBtn").onclick = () => go(cur + 1, true);
   $("dots").onclick = e => { const b = e.target.closest(".dot"); if (b) go(+b.dataset.i, true); };
+  showAll(); phase = F.length; setBtn();
   let start = 0;
   try { start = +localStorage.getItem(KEY) || 0; } catch (e) {}
   go(start, false);
