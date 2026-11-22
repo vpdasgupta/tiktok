@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Briefing Note Example</title>
+<!--
+  Amazon P1 Step 3, page 3 "[Training] Learn How to Write a Briefing Note" (2026-11-22).
+  The full worked example as a one-page document, so students see what they are making before
+  the six-part deck. Text is word for word from the page's "Text version" toggle.
+  Amazon Supply Chain palette (same tokens as gen-attrition-widgets.py / review cards).
+
+  ACCESSIBILITY (WCAG 2.2 AA)
+  - One H1 (the note's title); each part is an H2 inside its own <section>.
+  - Part labels are visible text ("Part 2 of 6: Context"), not color. Hiding them only hides the
+    visual chip; the H2 still names the part.
+  - "Highlight sources" marks citations with a background AND a solid underline, so it is not
+    color alone. Both toggles are <button aria-pressed>, with a polite live region.
+  - Paper: #0F141A on #FFFFFF 18.9:1; muted #4A5563 on #FFF 7.6:1; chip #0F141A on #DCEEFF 16:1;
+    highlight #0F141A on #FFE58A 15.6:1. Dark frame text #F5F3EF on #18202A 15.1:1.
+  - 44 px targets, lime 3 px focus ring on dark / #0B5FA5 on paper, reflows at 320 px.
+-->
+<style>
+:root{--ink:#0F141A;--panel:#18202A;--line:#2A3542;--edge:#929292;--text:#F5F3EF;--muted:#B7B7B7;
+--blue:#1A98FF;--teal:#36C2B4;--lime:#94ED88;--grad:linear-gradient(90deg,#1A98FF,#36C2B4,#94ED88);
+--paper:#FFFFFF;--p-ink:#0F141A;--p-muted:#4A5563;--p-line:#D6DCE3;--chip:#DCEEFF;--chip-edge:#0B5FA5;--hl:#FFE58A}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Amazon Ember","Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;
+background:radial-gradient(640px 360px at 100% 0%,rgba(5,120,255,.22),transparent 65%),radial-gradient(520px 320px at 0% 100%,rgba(54,194,180,.12),transparent 65%),var(--panel)}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.w{position:relative;padding:16px 24px 28px;max-width:940px;margin:0 auto}
+.w::after{content:"";position:fixed;left:0;right:0;bottom:0;height:5px;background:var(--grad)}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin:0}
+.facts{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:15px;color:var(--muted)}
+.facts li::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--lime);margin-right:8px;vertical-align:middle}
+.ctrls{display:flex;gap:10px;flex-wrap:wrap}
+.btn{min-height:44px;border:2px solid var(--edge);background:transparent;color:var(--text);border-radius:999px;padding:8px 16px;font-size:15px;font-weight:800;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.btn:hover{border-color:var(--text)}
+.btn .box{width:20px;height:20px;border-radius:5px;border:2px solid currentColor;display:grid;place-items:center}
+.btn .box svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;visibility:hidden}
+.btn[aria-pressed="true"]{background:var(--text);color:var(--ink);border-color:var(--text)}
+.btn[aria-pressed="true"] .box svg{visibility:visible}
+
+/* the paper */
+.paper{background:var(--paper);color:var(--p-ink);border-radius:6px;box-shadow:0 18px 40px rgba(0,0,0,.45);padding:34px 40px 30px;position:relative}
+.paper :focus-visible{outline-color:var(--chip-edge)}
+.doc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:3px solid var(--p-ink);padding-bottom:12px;margin-bottom:6px;flex-wrap:wrap}
+.kind{margin:0;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--p-muted)}
+.stamp{margin:0;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--p-ink);border:2px solid var(--p-ink);border-radius:4px;padding:2px 8px}
+.part{display:grid;grid-template-columns:132px minmax(0,1fr);gap:18px;padding:14px 0;border-bottom:1px solid var(--p-line)}
+.part:last-of-type{border-bottom:0}
+.part .tag{font-family:inherit;margin:2px 0 0;align-self:start;display:flex;flex-direction:column;gap:2px;background:var(--chip);border-left:4px solid var(--chip-edge);border-radius:4px;padding:6px 10px;font-size:13px;line-height:1.25}
+.part .tag b{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--p-muted)}
+.part .tag span{font-weight:800}
+.hide-tags .part{grid-template-columns:minmax(0,1fr)}
+.hide-tags .part .tag{display:none}
+h1{margin:0;font-size:24px;line-height:1.25;font-family:Georgia,"Times New Roman",serif}
+h2{margin:0 0 4px;font-size:15px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+h2 small{font-weight:600;text-transform:none;letter-spacing:0;color:var(--p-muted);font-size:14px}
+.part p{margin:0 0 8px;font-family:Georgia,"Times New Roman",serif;font-size:16.5px;line-height:1.6}
+.part p:last-child{margin-bottom:0}
+.src{border-radius:3px;transition:background .15s}
+.show-src .src{background:var(--hl);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:0 2px}
+.foot{margin:14px 0 0;font-size:15px;color:var(--muted)}
+.foot b{color:var(--text)}
+
+@media (max-width:720px){
+ .w{padding:12px 16px 24px}
+ .paper{padding:22px 18px 20px}
+ .part{grid-template-columns:minmax(0,1fr);gap:8px}
+ .part .tag{flex-direction:row;gap:8px;align-items:baseline;justify-self:start}
+ h1{font-size:21px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="w">
+  <div class="top">
+    <div>
+      <p class="eyebrow">What you'll make: a worked example</p>
+      <ul class="facts" aria-label="About this note">
+        <li>1 page</li><li>About 340 words</li><li>6 parts</li>
+      </ul>
+    </div>
+    <div class="ctrls">
+      <button class="btn" type="button" id="tTags" aria-pressed="true"><span class="box" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>Show part labels</button>
+      <button class="btn" type="button" id="tSrc" aria-pressed="false"><span class="box" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>Highlight sources</button>
+    </div>
+  </div>
+
+  <article class="paper" id="paper" aria-labelledby="t">
+    <div class="doc-head">
+      <p class="kind">Briefing note</p>
+      <p class="stamp">Example</p>
+    </div>
+
+    <section class="part">
+      <p class="tag"><b>Part 1 of 6</b><span>Title: who, what, where</span></p>
+      <div><h1 id="t">Early-Tenure Attrition Among New Associates at an Illustrative Amazon FC</h1></div>
+    </section>
+
+    <section class="part" aria-labelledby="h2">
+      <p class="tag"><b>Part 2 of 6</b><span>Set the scene</span></p>
+      <div>
+        <h2 id="h2">Context</h2>
+        <p>Amazon employed about 1,576,000 people at the end of 2025 <span class="src">(Form 10-K, FY2025)</span>, but it doesn't publish a turnover rate. This note models an illustrative fulfillment center of 100 associates, using public estimates.</p>
+      </div>
+    </section>
+
+    <section class="part" aria-labelledby="h3">
+      <p class="tag"><b>Part 3 of 6</b><span>Numbers, not feelings</span></p>
+      <div>
+        <h2 id="h3">Problem Statement</h2>
+        <p>New associates appear to leave very early. Leaked Amazon research reported in 2022 found that only about one in three people hired in 2021 stayed 90 days <span class="src">(Engadget, 2022)</span>. A 2021 New York Times investigation, using pre-2020 data, put annual turnover for hourly workers at about 150%. Amazon hasn't confirmed either figure. For comparison, the whole transportation and warehousing sector had a quits rate of 2.2% a month in 2025, roughly 26% a year <span class="src">(BLS JOLTS)</span>.</p>
+      </div>
+    </section>
+
+    <section class="part" aria-labelledby="h4">
+      <p class="tag"><b>Part 4 of 6</b><span>Tie it to business impact</span></p>
+      <div>
+        <h2 id="h4">Why It Matters</h2>
+        <p>At 124% to 150% turnover <span class="src">(NELP, 2022; New York Times, 2021)</span>, our illustrative site would replace 124 to 150 associates a year. At $4,700 to $8,000 per replacement <span class="src">(SHRM, 2022; Center for American Progress, 2012)</span>, that costs between about $583,000 and $1.2 million a year. At 150%, about $800,000 of the mid estimate comes from people who leave in their first 90 days. Gallup found that 52% of people who quit say their employer could have done something to keep them <span class="src">(2019)</span>, so much of this cost may be preventable.</p>
+      </div>
+    </section>
+
+    <section class="part" aria-labelledby="h5">
+      <p class="tag"><b>Part 5 of 6</b><span>Drivers, not proof</span></p>
+      <div>
+        <h2 id="h5">Root Causes <small>(preliminary)</small></h2>
+        <p>Pay is probably not the main driver: Amazon raised its minimum starting wage to $20 an hour in 2026. Public employee reviews point to other causes: "constant pressure to maintain exhausting rate," communication that is "poorly handled leading to inconsistent work practices," and having to rely on a chatbot for help. These are early signals from a few reviews, not proven causes.</p>
+      </div>
+    </section>
+
+    <section class="part" aria-labelledby="h6">
+      <p class="tag"><b>Part 6 of 6</b><span>What to investigate</span></p>
+      <div>
+        <h2 id="h6">Next Steps</h2>
+        <p>We recommend (1) analyzing a larger set of employee reviews to see which themes appear most among people who left in their first year (the closest the review data gets to the 90-day window), (2) comparing what new and tenured associates say about managers and communication, and (3) checking whether new hires know about existing benefits such as Career Choice, which only 11% of eligible associates used in 2025.</p>
+      </div>
+    </section>
+  </article>
+
+  <p class="foot"><b>Notice:</b> every number has a source, causes are labeled as early signals, and the note ends with questions to investigate, not a fix.</p>
+  <div class="sr-only" aria-live="polite" id="status"></div>
+</main>
+<script>
+(function(){
+  var paper=document.getElementById('paper'),status=document.getElementById('status');
+  function wire(id,cls,onWhenPressed,msgOn,msgOff){
+    var b=document.getElementById(id);
+    b.addEventListener('click',function(){
+      var on=b.getAttribute('aria-pressed')!=='true';
+      b.setAttribute('aria-pressed',on?'true':'false');
+      paper.classList.toggle(cls,onWhenPressed?on:!on);
+      status.textContent=on?msgOn:msgOff;
+    });
+  }
+  wire('tTags','hide-tags',false,'Part labels shown.','Part labels hidden.');
+  wire('tSrc','show-src',true,'Sources highlighted.','Source highlighting off.');
+})();
+</script>
+</body>
+</html>
