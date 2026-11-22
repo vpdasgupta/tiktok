@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+TRAINING CHECK DECK: Follow one order through a fulfillment center (2026-11-21)
+================================================================================
+Reinforces the order-flow video on the [Training] page "Learn How Fulfillment
+Centers Power Amazon's Business" (Amazon P1 Step 1, working copy). Replaces the
+task step deck amazon-p1-fc-order-flow-steps.html on that page.
+
+Slides: 1 overview (five steps) → 5 quick checks → 1 takeaways slide.
+Edit only the DECK object. Checks are practice: never graded, never gated.
+
+ACCESSIBILITY (WCAG 2.2 AA), same tokens and patterns as the step-deck engine:
+  - Inactive slides use `hidden`; on Back/Next/dot navigation focus moves to the
+    new slide's heading; a polite live region announces "Slide K of N".
+  - Each check is a native <fieldset>/<legend> radio group plus a "Check answer"
+    button. Feedback goes into an aria-live="polite" region that exists on load.
+    Right/wrong is said in words ("Correct." / "Not quite.") and by icon shape,
+    never by color alone. Learners can retry.
+  - No arrow-key slide shortcuts, so radio groups keep their native arrow keys.
+  - Dots are real buttons with aria-label and aria-current="step".
+  - Text ≥ 4.5:1, UI borders ≥ 3:1, visible focus ring, 44px targets.
+  - prefers-reduced-motion disables transitions; reflows to one column ≤ 640px.
+  - The last slide points to the platform's own Next button (plain text, no link).
+================================================================================
+-->
+<title>Follow One Order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* ============================ EDIT THIS ============================ */
+const DECK = {
+  deckId: "amazon-p1-fc-order-flow-check",
+  title: "Follow one order through a fulfillment center",
+  flow: [
+    { name: "Receive", what: "Products arrive at the fulfillment center (FC) and are checked in." },
+    { name: "Stow", what: "A Stower puts each item in a storage bin and scans it, so the system knows where it is." },
+    { name: "Pick", what: "When an order comes in, a Picker pulls its items from their bins." },
+    { name: "Pack", what: "A Packer puts the order in the right box and labels it." },
+    { name: "Ship", what: "The labeled box goes onto a truck." }
+  ],
+  checks: [
+    {
+      step: "Stow",
+      question: "A Stower puts a phone into a storage bin. Why do they scan it?",
+      options: [
+        "So the system knows which bin the phone is in",
+        "To print the shipping label",
+        "To tell the customer their order is on the way"
+      ],
+      answer: 0,
+      why: "The scan at stow is what lets every later step find the item. If the scan and the bin don't match, the next person feels it."
+    },
+    {
+      step: "Pick",
+      question: "A Picker goes to the bin the system shows, but the phone isn't there. Which step most likely went wrong first?",
+      options: ["Pack", "Stow", "Ship"],
+      answer: 1,
+      why: "A Picker can only find what the Stower put in the right bin. A mistake at one step often shows up at the next one."
+    },
+    {
+      step: "Order",
+      question: "The items for an order just left storage. What happens to them next?",
+      options: ["They're stowed", "They're received", "They're packed"],
+      answer: 2,
+      why: "The order is receive, stow, pick, pack, ship. You'll use these five steps for the rest of Project 1."
+    },
+    {
+      step: "People and machines",
+      question: "Robots move storage pods and conveyors carry totes. Which is true about the people on the floor?",
+      options: [
+        "They only watch the robots",
+        "They keep the system flexible, and they're also where errors and delays can start, especially when someone is new",
+        "They're there only for jobs that robots will soon take over"
+      ],
+      answer: 1,
+      why: "People and machines hand work to each other at every step. That's why how fast new associates learn matters so much."
+    },
+    {
+      step: "Hand-offs",
+      question: "A customer orders a phone and gets a different model. The Picker scanned the bin the system showed. Where could the mix-up have started?",
+      options: [
+        "At stow: two similar phones went into the same bin",
+        "At ship: the truck went to the wrong city",
+        "At receive: the customer typed the wrong address"
+      ],
+      answer: 0,
+      why: "The Picker did their part, so look one hand-off back. A rushed or new Stower who puts look-alike items together can cause a wrong item two steps later."
+    }
+  ],
+  takeaways: [
+    "Every order moves through five steps: receive, stow, pick, pack, ship.",
+    "Each step depends on the one before it. The scan at stow is what lets the Picker find the item.",
+    "People and machines hand work to each other at every step. People keep the system flexible, and they're also where mistakes can start, especially when they're new."
+  ],
+  nextUp: "Next, you'll meet the Learning Ambassadors who train new associates on the floor."
+};
+/* ======================= DO NOT EDIT BELOW ======================== */
+</script>
+<style>
+  :root {
+    --eggshell: #F3EEDF;
+    --paper: #FBF8F0;
+    --white: #FFFFFF;
+    --ink: #1D2420;
+    --ink-soft: #55605A;   /* 6.5:1 on white, 5.6:1 on eggshell */
+    --line: #E2DBC6;       /* decorative only */
+    --edge: #7A7F76;       /* UI borders, 4.1:1 on white, 3.5:1 on eggshell */
+    --green: #2F6B45;      /* 6.3:1 on white */
+    --green-dark: #1F4D31;
+    --green-tint: #E3EEE5;
+    --amber: #8A5E0F;      /* 5.6:1 on white */
+    --amber-tint: #F6EEDC;
+    --focus: #1F4D31;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: var(--eggshell); color: var(--ink);
+    line-height: 1.5; padding: 16px; -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck { max-width: 880px; margin: 0 auto; }
+  .deck-title { font-size: 15px; font-weight: 700; margin: 0 0 12px; }
+  .slide { overflow-wrap: anywhere; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 28px 32px 24px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--green); margin: 0; }
+  .slide h2 { font-size: 22px; line-height: 1.25; margin: 4px 0 12px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 16px; margin: 0 0 16px; }
+
+  /* five-step flow */
+  .flow { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 10px; counter-reset: f; }
+  .flow li { counter-increment: f; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start;
+    background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--green); border-radius: 10px; padding: 10px 14px; }
+  .flow li::before { content: counter(f); width: 32px; height: 32px; border-radius: 50%; background: var(--green); color: var(--white);
+    font-weight: 800; display: grid; place-items: center; font-size: 15px; }
+  .flow b { display: block; font-size: 16px; }
+  .flow span { font-size: 15px; color: var(--ink-soft); }
+
+  /* quick check */
+  fieldset { border: 0; margin: 0 0 14px; padding: 0; min-width: 0; }
+  legend { font-size: 18px; font-weight: 700; line-height: 1.35; margin: 0 0 12px; padding: 0; }
+  .opt { display: flex; gap: 12px; align-items: flex-start; min-height: 44px; padding: 10px 14px; margin-bottom: 8px;
+    border: 2px solid var(--edge); border-radius: 10px; cursor: pointer; font-size: 16px; background: var(--white); }
+  .opt:hover { border-color: var(--ink); }
+  .opt input { width: 20px; height: 20px; margin: 2px 0 0; flex: none; accent-color: var(--green); }
+  .opt:has(input:checked) { border-color: var(--green); background: var(--green-tint); }
+  .opt:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .opt input:focus-visible { outline: none; }
+  .check-btn { min-height: 44px; border: 2px solid var(--ink); background: var(--ink); color: var(--white);
+    border-radius: 10px; padding: 8px 18px; font-size: 15px; font-weight: 700; cursor: pointer; }
+  .check-btn:hover { background: var(--green-dark); border-color: var(--green-dark); }
+  .feedback { margin-top: 14px; }
+  .fb { border-left: 4px solid; border-radius: 0 10px 10px 0; padding: 10px 14px; font-size: 15px; }
+  .fb p { margin: 0; font-size: 15px; }
+  .fb p + p { margin-top: 6px; }
+  .fb .verdict { font-weight: 800; display: flex; gap: 8px; align-items: center; }
+  .fb.ok { border-color: var(--green); background: var(--green-tint); }
+  .fb.ok .verdict { color: var(--green-dark); }
+  .fb.no { border-color: var(--amber); background: var(--amber-tint); }
+  .fb.no .verdict { color: #6E4A0A; }
+
+  /* takeaways */
+  .takeaways { margin: 0 0 16px; padding-left: 24px; font-size: 16px; }
+  .takeaways li { margin-bottom: 8px; }
+  .finish { background: var(--green-tint); border-radius: 10px; padding: 12px 16px; font-weight: 600; margin: 0 0 12px; }
+  .next-hint { border: 2px dashed var(--edge); border-radius: 10px; padding: 12px 16px; font-size: 15px; margin: 0; }
+
+  /* nav */
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn { min-height: 44px; min-width: 44px; background: var(--white); border: 1px solid var(--edge); color: var(--ink);
+    border-radius: 10px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .nav-btn.primary { background: var(--ink); color: var(--white); border-color: var(--ink); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--green-dark); }
+  .nav-btn:disabled { opacity: .45; cursor: default; }
+  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .dot { width: 32px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink-soft); background: var(--white); }
+  .dot.seen::before { border-color: var(--green); background: var(--green); }
+  .dot[aria-current="step"]::before { width: 26px; border-radius: 6px; border-color: var(--green); background: var(--green); }
+  .counter { font-size: 13px; color: var(--ink-soft); text-align: center; margin-top: 6px; }
+
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .slide { padding: 20px 18px; }
+    .slide h2 { font-size: 20px; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; justify-content: center; }
+    .nav-btn { flex: 1; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <h1 class="deck-title" id="deckTitle"></h1>
+  <div id="slides"></div>
+  <nav class="slide-nav" aria-label="Slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const C = DECK.checks;
+  const total = C.length + 2;
+  const KEY = "fc-check:" + DECK.deckId;
+  $("deckTitle").textContent = DECK.title;
+
+  const labels = ["The five steps", ...C.map((c, i) => `Quick check ${i + 1} of ${C.length}`), "What to remember"];
+
+  const intro = `
+    <p class="eyebrow">${labels[0]}</p>
+    <h2 tabindex="-1">An order moves through five steps</h2>
+    <p>Here's what you just watched. Each step hands work to the next one.</p>
+    <ol class="flow">${DECK.flow.map(f => `<li><div><b>${f.name}</b><span>${f.what}</span></div></li>`).join("")}</ol>
+    <p>Next come ${C.length} quick checks. They aren't graded, so try each one and read why.</p>`;
+
+  const checkHtml = (c, i) => `
+    <p class="eyebrow">${c.step}</p>
+    <h2 tabindex="-1">${labels[i + 1]}</h2>
+    <form data-q="${i}" novalidate>
+      <fieldset>
+        <legend>${c.question}</legend>
+        ${c.options.map((o, j) => `<label class="opt"><input type="radio" name="q${i}" value="${j}"><span>${o}</span></label>`).join("")}
+      </fieldset>
+      <button type="submit" class="check-btn">Check answer</button>
+      <div class="feedback" id="fb-${i}" aria-live="polite"></div>
+    </form>`;
+
+  const outro = `
+    <p class="eyebrow">${labels[total - 1]}</p>
+    <h2 tabindex="-1">Three things to take with you</h2>
+    <ol class="takeaways">${DECK.takeaways.map(t => `<li>${t}</li>`).join("")}</ol>
+    <p class="finish">${DECK.nextUp}</p>
+    <p class="next-hint"><span aria-hidden="true">↓ </span>You're done with this page. Scroll down and click the platform's <b>Next</b> button at the bottom of the page to save your progress.</p>`;
+
+  const bodies = [intro, ...C.map(checkHtml), outro];
+  $("slides").innerHTML = bodies.map((b, i) =>
+    `<section class="slide" id="s${i}" aria-label="${labels[i]}" hidden>${b}</section>`).join("");
+  $("dots").innerHTML = labels.map((l, i) =>
+    `<li><button type="button" class="dot" data-i="${i}" aria-label="Go to slide ${i + 1}: ${l}"></button></li>`).join("");
+
+  document.querySelectorAll("form[data-q]").forEach(f => f.addEventListener("submit", e => {
+    e.preventDefault();
+    const i = +f.dataset.q, c = C[i], fb = $("fb-" + i);
+    const picked = f.querySelector("input:checked");
+    if (!picked) { fb.innerHTML = `<div class="fb no"><p>Pick an answer first, then select Check answer.</p></div>`; return; }
+    const right = +picked.value === c.answer;
+    fb.innerHTML = right
+      ? `<div class="fb ok"><p class="verdict"><span aria-hidden="true">✓</span>Correct.</p><p>${c.why}</p></div>`
+      : `<div class="fb no"><p class="verdict"><span aria-hidden="true">↻</span>Not quite. Try another answer.</p></div>`;
+  }));
+
+  let cur = 0;
+  const seen = new Set();
+  function go(i, focus) {
+    cur = Math.max(0, Math.min(total - 1, i));
+    seen.add(cur);
+    document.querySelectorAll(".slide").forEach((s, k) => s.hidden = k !== cur);
+    document.querySelectorAll(".dot").forEach((d, k) => {
+      d.classList.toggle("seen", seen.has(k));
+      if (k === cur) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = cur === 0;
+    $("nextBtn").disabled = cur === total - 1;
+    $("counter").textContent = `Slide ${cur + 1} of ${total}`;
+    try { localStorage.setItem(KEY, cur); } catch (e) {}
+    if (focus) {
+      $("status").textContent = `Slide ${cur + 1} of ${total}: ${labels[cur]}`;
+      $("s" + cur).querySelector("h2").focus();
+    }
+  }
+  $("prevBtn").onclick = () => go(cur - 1, true);
+  $("nextBtn").onclick = () => go(cur + 1, true);
+  $("dots").onclick = e => { const b = e.target.closest(".dot"); if (b) go(+b.dataset.i, true); };
+  let start = 0;
+  try { start = +localStorage.getItem(KEY) || 0; } catch (e) {}
+  go(start, false);
+})();
+</script>
+</body>
+</html>
