@@ -86,13 +86,13 @@ RESKIN 2026-11-22 (CSS only; TASK content and engine unchanged):
 <script>
 /* ============================ EDIT THIS ============================ */
 const TASK = {
-  "deckId": "amazon-p1-draft-briefing-note-steps-v4",
-  "title": "Draft a briefing note",
+  "deckId": "amazon-p1-draft-briefing-note-steps-v5",
+  "title": "Draft your briefing note",
   "exampleUrl": "",
   "steps": [
     {
       "title": "What you'll hand in",
-      "instruction": "You'll write a <b>300–400 word briefing note</b> that frames early attrition at an Amazon fulfillment center as a clear, urgent business problem. Keep the P1 Evidence Pack and your cost-of-turnover sheet open. The six parts and a full worked example are on the previous page, Learn How to Write a Briefing Note.",
+      "instruction": "You'll write a <b>300–400 word briefing note</b> that frames early attrition at an Amazon fulfillment center as a clear, urgent business problem. Keep the Project 1 Evidence Pack and your cost-of-turnover sheet open. The six parts and a worked example are on the previous page, Learn How to Write a Briefing Note.",
       "sample": {
         "label": "Your 2 submissions",
         "kind": "text",
@@ -109,12 +109,12 @@ const TASK = {
       "sample": {
         "label": "What each section takes from your work",
         "kind": "text",
-        "body": "Problem Statement: at least 2 Evidence Pack figures, with source and year\nWhy It Matters: your cost range and 90-day cost from Estimate the Cost of Turnover\nRoot Causes: 2–3 themes from the employee reviews you read in Step 2\nNext Steps: what to find out, not a fix"
+        "body": "Problem Statement: at least 2 Evidence Pack figures, with source and year\nWhy It Matters: your cost range and 90-day cost from Estimate the Cost of Turnover. Then name the FC role whose early exits hurt the fulfillment center most, and say why in one sentence. Use what you saw in Step 1's roles chain (Stower, Picker, Packer, Learning Ambassador).\nRoot Causes: the 2 themes you named at the end of the Find Who's at Risk of Leaving task\nNext Steps: what to find out, not a fix"
       },
-      "onTrack": "every section has at least one sentence, and Why It Matters gives your dollar range.",
+      "onTrack": "every section has at least one sentence, and Why It Matters gives your dollar range and names one FC role.",
       "stuck": [
-        "Blank page? Reread the full worked example on Learn How to Write a Briefing Note, then close it and write. Borrow its structure, not its wording.",
-        "Stuck on Root Causes? Pick two themes from the reviews on the \"Find Who's at Risk of Leaving\" task."
+        "Blank page? Reread the worked example on Learn How to Write a Briefing Note, then close it and write. Borrow its structure, not its wording.",
+        "Stuck on Root Causes? Use the 2 themes you named at the end of the Find Who's at Risk of Leaving task."
       ]
     },
     {
@@ -123,7 +123,7 @@ const TASK = {
       "sample": {
         "label": "Done when",
         "kind": "text",
-        "body": "Your note is 300–400 words and uses all six sections.\nIt cites at least 2 figures from the P1 Evidence Pack, each with source and year, worded as estimates where needed (\"reported,\" \"leaked\").\n\"Why It Matters\" gives your cost range from Estimate the Cost of Turnover.\n\"Next Steps\" names things to investigate, not a solution."
+        "body": "Your note is 300–400 words and uses all six sections.\nIt cites at least 2 figures from the Project 1 Evidence Pack, each with source and year, worded as estimates where needed (\"reported,\" \"leaked\").\n\"Why It Matters\" gives your cost range from Estimate the Cost of Turnover and names the FC role whose early exits hurt the site most.\n\"Next Steps\" names things to investigate, not a solution."
       },
       "onTrack": "you can tick all four lines.",
       "stuck": [
@@ -150,7 +150,7 @@ const TASK = {
   ],
   "evaluation": {
     "title": "How your note will be assessed",
-    "intro": "Your note is reviewed against these four criteria.",
+    "intro": "Your note is reviewed against these five criteria.",
     "criteria": [
       {
         "name": "Problem framing",
@@ -158,11 +158,15 @@ const TASK = {
       },
       {
         "name": "Evidence use",
-        "lookFor": "Cites at least 2 figures from the P1 Evidence Pack, each with source and year, and says when a figure is leaked or estimated. Uses the cost range from your cost-of-turnover estimate."
+        "lookFor": "Cites at least 2 figures from the Project 1 Evidence Pack, each with source and year, and says when a figure is leaked or estimated. Uses the cost range from your cost-of-turnover estimate."
+      },
+      {
+        "name": "Operational link",
+        "lookFor": "Names the FC role whose early exits hurt the fulfillment center most and gives a clear one-sentence reason, drawn from the Step 1 roles chain."
       },
       {
         "name": "Root-cause depth",
-        "lookFor": "Offers two or three plausible, specific drivers and separates them from symptoms, without over-claiming certainty."
+        "lookFor": "Builds on the 2 themes from the Find Who's at Risk of Leaving task: offers two or three plausible, specific drivers and separates them from symptoms, without over-claiming certainty."
       },
       {
         "name": "Actionability",
