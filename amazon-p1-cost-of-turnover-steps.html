@@ -92,11 +92,11 @@ const TASK = {
   "steps": [
     {
       "title": "What you'll hand in",
-      "instruction": "You'll put a dollar range on turnover at an illustrative 100-person FC, using the Evidence Pack's sourced figures. The range goes straight into the Why It Matters section of your briefing note later in this step.",
+      "instruction": "You'll build your own estimate of what turnover costs an illustrative 100-person FC. You pick the inputs, using the Evidence Pack figures as guardrails, and say why. There's no single right answer. Your range goes into the Why It Matters section of your briefing note later in this step.",
       "sample": {
         "label": "Your 2 submissions",
         "kind": "text",
-        "body": "1. The link to your cost-of-turnover sheet\n2. One or two sentences that read your result\nTime: about 15 minutes"
+        "body": "1. The link to your copy of the Evidence Pack Sheet, with your My estimate tab\n2. Two or three sentences about your estimate\nTime: about 20 minutes"
       },
       "onTrack": "you know the 2 things you'll submit.",
       "stuck": [
@@ -104,10 +104,10 @@ const TASK = {
       ]
     },
     {
-      "title": "Copy the Evidence Pack Sheet",
-      "instruction": "Open the <a href=\"https://docs.google.com/spreadsheets/d/1UuC16_eU9NC4vBVFJV1r2IajG4VkI3mUGvgskZchk8Y/edit\" target=\"_blank\" rel=\"noopener\">Evidence Pack Sheet (opens in a new tab)</a>. Click <b>File</b>, then <b>Make a copy</b>, and name it <i>Your Name – Cost of Turnover</i>. This copy is your cost-of-turnover sheet. Go to the <b>Cost Inputs</b> tab. The yellow cells hold the Evidence Pack inputs, and the Result column updates on its own.",
+      "title": "Copy the Sheet and find the baseline",
+      "instruction": "Open the <a href=\"https://docs.google.com/spreadsheets/d/1UuC16_eU9NC4vBVFJV1r2IajG4VkI3mUGvgskZchk8Y/edit\">Evidence Pack Sheet</a>. Click <b>File</b>, then <b>Make a copy</b>, and name it <i>Your Name – Cost of Turnover</i>. Go to the <b>Cost Inputs</b> tab. The yellow cells in the <b>Value</b> column hold the sourced inputs. The <b>Result</b> column below them updates on its own. Leave this tab as it is. It's your sourced baseline.",
       "sample": {
-        "label": "Cost Inputs tab results (150% turnover)",
+        "label": "Baseline with the sourced inputs (150% turnover)",
         "kind": "text",
         "body": "Leavers per year: 150\nEarly leavers (first 90 days): 100\nCost, low: $705,000\nCost, mid: $1,200,000\nCost from 90-day exits (mid): $800,000"
       },
@@ -117,43 +117,43 @@ const TASK = {
       ]
     },
     {
-      "title": "Add a lower-case tab",
-      "instruction": "One estimate on its own is easy to doubt, so consultants show a range. Right-click the <b>Cost Inputs</b> tab at the bottom of the screen and choose <b>Duplicate</b>. Rename the new tab <i>Lower case</i>. In that tab, change <b>B. Annual turnover rate</b> (cell C3) from 150% to <b>124%</b>, the NELP figure in row 9 of the Evidence Pack. Leave every other input as it is.",
+      "title": "Build your own estimate",
+      "instruction": "Right-click the <b>Cost Inputs</b> tab at the bottom of the screen and choose <b>Duplicate</b>. Rename the new tab <i>My estimate</i>. In that tab, choose your own value for each input below and type it in the <b>Value</b> column. Then type <i>My reason</i> in cell F1, and in column F next to each input, write one line on why you chose it. Keeping a sourced number is fine. Give the reason anyway.",
       "sample": {
-        "label": "Lower case tab results (124% turnover)",
+        "label": "Inputs to choose, with guardrails",
         "kind": "text",
-        "body": "Leavers per year: 124\nEarly leavers (first 90 days): about 83\nCost, low: $582,800\nCost, mid: $992,000\nCost from 90-day exits (mid): $661,333\nYour range: about $583,000 (lower case, low) to $1.2 million (Cost Inputs, mid) a year per 100 associates"
+        "body": "Turnover rate (C3): 124% to 150% (Evidence Pack rows 6 and 9), or another number you can justify\nEarly-exit share (C4): about 0.67 (row 8), or your own reasoning\nCost per replacement (C6 low, C7 mid): $4,700 to $8,000 (rows 10 and 11), or your own reasoning\nExample reason in F3: \"130%. Between NELP's 124% and the NYT's 150%, since both are old and Amazon has raised pay since.\""
       },
-      "onTrack": "your Lower case tab shows $582,800 (low) and $992,000 (mid), and your Cost Inputs tab still shows 150%.",
+      "onTrack": "your My estimate tab has your values and a one-line reason next to each, and your Cost Inputs tab still shows 150%.",
       "stuck": [
-        "Numbers way off? Type 124% with the % sign. Typing 124 on its own gives 12,400%.",
-        "Row 9 is a row in the Evidence Pack, not in your sheet."
+        "Numbers way off? Type 130% with the % sign. Typing 130 on its own gives 13,000%.",
+        "C7 is a formula (20% of a year's pay). Typing your own number over it is fine in your copy."
       ]
     },
     {
       "title": "Write what your numbers say",
-      "instruction": "A manager won't open your sheet, so say the result in words. Write one or two sentences that give your range, say how much comes from people who leave in their first 90 days, and flag that it's a rough estimate.",
+      "instruction": "A manager won't open your sheet, so say the result in words. Write 2 or 3 sentences: give your cost range, say how much comes from people who leave in their first 90 days, and name the assumption that moved the number most and why. Flag that it's a rough estimate.",
       "sample": {
         "label": "Example",
         "kind": "text",
-        "body": "At 124% to 150% turnover, a 100-person FC could lose about $583,000 to $1.2 million a year to turnover. At 150%, about $800,000 of the mid estimate comes from people who leave in their first 90 days. This is a rough estimate from older third-party figures, not Amazon's actual cost."
+        "body": "Using 130% turnover and an early-exit share of 0.6, a 100-person FC could lose about $611,000 to $1.04 million a year. About $624,000 of the mid estimate comes from people who leave in their first 90 days. The turnover rate moved the number most: going from 150% to 130% cut the mid cost by $160,000, and it's the least certain input because Amazon doesn't publish it. This is a rough estimate from older third-party figures, not Amazon's actual cost."
       },
-      "onTrack": "your sentences give a range, the 90-day cost and a note that it's an estimate.",
+      "onTrack": "your sentences give your range, the 90-day cost, the assumption that moved it most and a note that it's an estimate.",
       "stuck": [
-        "Not sure which numbers make the range? Take the lowest cost on either tab and the highest cost on either tab."
+        "Not sure which assumption moved it most? Change one input at a time and watch <b>Cost, mid</b>. Compare it with the Cost Inputs tab."
       ]
     },
     {
       "title": "Share and submit",
       "instruction": "Submit 2 things in the task box below the steps:",
       "items": [
-        "<b>The link to your cost-of-turnover sheet.</b> Click <b>Share</b>, set General access to <i>Anyone with the link</i>, role <i>Viewer</i>, then <b>Copy link</b>.",
+        "<b>The link to your copy of the Sheet.</b> Click <b>Share</b>, set General access to <i>Anyone with the link</i>, role <i>Viewer</i>, then <b>Copy link</b>.",
         "<b>Your sentences</b> from the previous step."
       ],
       "sample": {
         "label": "Done when",
         "kind": "text",
-        "body": "Your sheet has two tabs: Cost Inputs (150%) and Lower case (124%).\nThe link opens in a private browser window without asking for access.\nYour sentences give a range, the 90-day cost and a note that it's an estimate."
+        "body": "Your sheet has two tabs: Cost Inputs (the sourced baseline) and My estimate (your inputs, each with a reason).\nThe link opens in a private browser window without asking for access.\nYour sentences give your range, the 90-day cost and the assumption that moved it most."
       },
       "onTrack": "you can tick all three lines.",
       "stuck": [
