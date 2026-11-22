@@ -10,7 +10,8 @@ TRAINING CHECK DECK: Follow one order through a fulfillment center (2026-11-21)
 Reinforces the order-flow video on the [Training] page "Learn How Fulfillment
 Centers Power Amazon's Business" (Amazon P1 Step 1, working copy).
 
-Slides: 1 animated flow (five steps) → 5 quick checks → 1 takeaways slide.
+Slides: 1 animated flow (five steps, role tags on Stow/Pick/Pack) → 1 roles slide
+(Stower, Picker, Packer) → 5 quick checks → 1 takeaways slide.
 Edit only the DECK object. Checks are practice: never graded, never gated.
 
 STYLE: Amazon Supply Chain palette, same as the page banners (gen-banners.py) and
@@ -46,11 +47,24 @@ const DECK = {
   title: "Follow one order through a fulfillment center",
   flow: [
     { name: "Receive", cap: "Items arrive", icon: "receive" },
-    { name: "Stow", cap: "Scanned into a bin", icon: "stow" },
-    { name: "Pick", cap: "Pulled for an order", icon: "pick" },
-    { name: "Pack", cap: "Boxed and labeled", icon: "pack" },
+    { name: "Stow", cap: "Scanned into a bin", icon: "stow", role: "Stower" },
+    { name: "Pick", cap: "Pulled for an order", icon: "pick", role: "Picker" },
+    { name: "Pack", cap: "Boxed and labeled", icon: "pack", role: "Packer" },
     { name: "Ship", cap: "Onto the truck", icon: "ship" }
   ],
+  roles: {
+    title: "Three steps, three roles",
+    intro: "Stow, pick and pack aren't just steps. Each one is a job that associates do every shift.",
+    cards: [
+      { role: "Stower", icon: "stow", does: "Puts each new item in a storage bin and scans it.",
+        handoff: "Gives the Picker an item that's in the bin the system shows." },
+      { role: "Picker", icon: "pick", does: "Pulls the items for each order from their bins.",
+        handoff: "Depends on the Stower. Sends the right items on to the Packer." },
+      { role: "Packer", icon: "pack", does: "Puts each order in the right box and labels it.",
+        handoff: "Depends on the Picker. Sends a labeled box on to the truck." }
+    ],
+    why: "These are the roles you'll look at closely in this externship to find ways to improve employee outcomes."
+  },
   checks: [
     {
       step: "Stow",
@@ -71,11 +85,11 @@ const DECK = {
       why: "A Picker can only find what the Stower put in the right bin. A mistake at one step often shows up at the next one."
     },
     {
-      step: "Order",
-      question: "The items for an order just left storage. What happens to them next?",
-      options: ["They're stowed", "They're received", "They're packed"],
+      step: "Roles",
+      question: "An associate pulls a phone from its bin and puts it in a tote for an order. What's their role?",
+      options: ["Stower", "Packer", "Picker"],
       answer: 2,
-      why: "The order is receive, stow, pick, pack, ship. You'll use these five steps for the rest of Project 1."
+      why: "Stower, Picker and Packer each match one step: stow, pick and pack. You'll look closely at these three roles in this externship."
     },
     {
       step: "People and machines",
@@ -102,8 +116,8 @@ const DECK = {
   ],
   takeaways: [
     "Every order moves through five steps: receive, stow, pick, pack, ship.",
-    "Each step depends on the one before it. The scan at stow is what lets the Picker find the item.",
-    "People and machines hand work to each other at every step. People keep the system flexible, and they're also where mistakes can start, especially when they're new."
+    "Stow, pick and pack are also roles: Stower, Picker and Packer. Each depends on the one before. The Picker can only find what the Stower scanned into the right bin.",
+    "People keep the system flexible, and they're also where mistakes can start, especially when they're new. That's why you'll look closely at these three roles to find ways to improve employee outcomes."
   ],
   nextUp: "Next, you'll meet the Learning Ambassadors who train new associates on the floor."
 };
@@ -191,6 +205,26 @@ const DECK = {
     border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
   .ghost-btn:hover { border-color: var(--text); }
 
+
+  /* role tag on flow stations */
+  .role-tag { display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; padding: 3px 10px 3px 8px; border-radius: 999px;
+    font-size: 13px; font-weight: 800; color: var(--text); background: rgba(15,20,26,.7); border: 1.5px solid var(--teal); }
+  .role-tag svg { width: 13px; height: 13px; fill: none; stroke: var(--teal); stroke-width: 1.8; stroke-linecap: round; }
+  .st.active .role-tag { border-color: var(--lime); }
+  .st.active .role-tag svg { stroke: var(--lime); }
+
+  /* roles slide */
+  .roles { list-style: none; margin: 0 0 16px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .role { position: relative; background: rgba(15,20,26,.55); border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 14px; overflow: hidden; }
+  .role::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--grad); }
+  .role-icon { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; color: var(--ink); background: var(--grad); margin-bottom: 10px; }
+  .role-icon svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .role h3 { margin: 0; font-size: 20px; font-weight: 800; }
+  .role .role-step { margin: 0 0 10px; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); }
+  .role dl { margin: 0; font-size: 15px; }
+  .role dt { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+  .role dd { margin: 2px 0 0; }
+
   /* ---------- quick check ---------- */
   fieldset { border: 0; margin: 0 0 14px; padding: 0; min-width: 0; }
   legend { font-size: 19px; font-weight: 700; line-height: 1.35; margin: 0 0 14px; padding: 0; }
@@ -244,6 +278,8 @@ const DECK = {
     .slide { padding: 20px 18px 24px; }
     .slide h2 { font-size: 21px; }
     .flowviz { grid-template-columns: 1fr; gap: 14px; }
+    .roles { grid-template-columns: 1fr; }
+    .st .role-tag { align-self: flex-start; }
     .st { text-align: left; padding: 0 0 0 108px; min-height: 72px; display: flex; flex-direction: column; justify-content: center; }
     .ring { position: absolute; left: 28px; top: 0; width: 64px; height: 64px; margin: 0; }
     .ring svg { width: 30px; height: 30px; }
@@ -284,7 +320,8 @@ const DECK = {
 (() => {
   const $ = id => document.getElementById(id);
   const C = DECK.checks, F = DECK.flow;
-  const total = C.length + 2;
+  const R = DECK.roles;
+  const total = C.length + 3;
   const KEY = "fc-check:" + DECK.deckId;
   $("deckTitle").textContent = DECK.title;
 
@@ -297,7 +334,8 @@ const DECK = {
   };
   const PKG = '<svg viewBox="0 0 22 22" aria-hidden="true"><rect x="2" y="4" width="18" height="15" rx="2" fill="#94ED88"/><path d="M2 9h18M11 4v5" stroke="#0F141A" stroke-width="2"/></svg>';
 
-  const labels = ["The five steps", ...C.map((c, i) => `Quick check ${i + 1} of ${C.length}`), "What to remember"];
+  const PERSON = '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="3"/><path d="M2.5 15c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5"/></svg>';
+  const labels = ["The five steps", "The three roles", ...C.map((c, i) => `Quick check ${i + 1} of ${C.length}`), "What to remember"];
 
   const intro = `
     <p class="eyebrow">${labels[0]}</p>
@@ -308,18 +346,37 @@ const DECK = {
         <span class="ring" aria-hidden="true"><svg viewBox="0 0 40 40">${ICONS[f.icon]}</svg></span>
         <span class="num" aria-hidden="true">${i + 1}</span>
         <b>${f.name}</b><span class="cap">${f.cap}</span>
+        ${f.role ? `<span class="role-tag"><span class="sr-only">Role: </span>${PERSON}${f.role}</span>` : ""}
         ${i < F.length - 1 ? '<span class="track" aria-hidden="true"><i></i></span>' : ""}
       </li>`).join("")}
     </ol>
     <div class="flow-controls">
       <button type="button" class="ghost-btn" id="flowBtn"></button>
-      <span class="muted">Each step hands work to the next.</span>
+      <span class="muted">Each step hands work to the next. Three of them are roles: Stower, Picker and Packer.</span>
     </div>
-    <p>Next come ${C.length} quick checks. They aren't graded, so try each one and read why.</p>`;
+    <p>Next, meet the three roles.</p>`;
+
+  const rolesSlide = `
+    <p class="eyebrow">${labels[1]}</p>
+    <h2 tabindex="-1">${R.title}</h2>
+    <p>${R.intro}</p>
+    <ul class="roles">${R.cards.map((r, i) => `
+      <li class="role">
+        <span class="role-icon" aria-hidden="true"><svg viewBox="0 0 40 40">${ICONS[r.icon]}</svg></span>
+        <h3>${r.role}</h3>
+        <p class="role-step">Step ${i + 2}: ${F[i + 1].name}</p>
+        <dl>
+          <dt>Does</dt><dd>${r.does}</dd>
+          <dt>Hand-off</dt><dd>${r.handoff}</dd>
+        </dl>
+      </li>`).join("")}
+    </ul>
+    <p class="finish">${R.why}</p>
+    <p class="muted">Next come ${C.length} quick checks. They aren't graded, so try each one and read why.</p>`;
 
   const checkHtml = (c, i) => `
     <p class="eyebrow">${c.step}</p>
-    <h2 tabindex="-1">${labels[i + 1]}</h2>
+    <h2 tabindex="-1">${labels[i + 2]}</h2>
     <form data-q="${i}" novalidate>
       <fieldset>
         <legend>${c.question}</legend>
@@ -336,7 +393,7 @@ const DECK = {
     <p class="finish">${DECK.nextUp}</p>
     <p class="next-hint"><span aria-hidden="true">↓ </span>You're done with this page. Scroll down and click the platform's <b>Next</b> button at the bottom of the page to save your progress.</p>`;
 
-  const bodies = [intro, ...C.map(checkHtml), outro];
+  const bodies = [intro, rolesSlide, ...C.map(checkHtml), outro];
   $("slides").innerHTML = bodies.map((b, i) =>
     `<section class="slide" id="s${i}" aria-label="${labels[i]}" hidden>${b}</section>`).join("");
   $("dots").innerHTML = labels.map((l, i) =>
