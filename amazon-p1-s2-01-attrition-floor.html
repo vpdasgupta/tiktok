@@ -31,7 +31,8 @@ a:hover{color:var(--text)}
 .dot.now{width:26px;border-radius:6px;border-color:#fff;background:var(--grad)}
 .restart{white-space:nowrap;min-height:44px;border:2px solid var(--edge);background:transparent;color:var(--text);border-radius:999px;padding:8px 16px;font-size:15px;font-weight:700;cursor:pointer}
 .restart:hover{border-color:var(--text)}
-.slides{flex:1;display:flex}
+.slides{flex:1;display:flex;min-width:0}
+.slide{min-width:0}
 .slide{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:6px 0}
 .eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin:0}
 .lead{font-size:clamp(23px,3.2vw,34px);line-height:1.18;font-weight:800;margin:0;max-width:30ch}
@@ -54,7 +55,7 @@ a:hover{color:var(--text)}
 .ghost[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:var(--ink)}
 .go{min-height:44px;border:0;background:var(--blue);color:var(--ink);border-radius:999px;padding:10px 20px;font-size:15px;font-weight:800;cursor:pointer}
 .go:hover:not(:disabled){background:var(--blue-soft)}
-.go:disabled,.ghost:disabled{opacity:.45;cursor:default}
+.go:disabled,.ghost:disabled,.ghost[aria-disabled="true"]{opacity:.45;cursor:default}
 .chips{display:flex;gap:10px;flex-wrap:wrap;list-style:none;margin:0;padding:0}
 .chips li{border:2px solid var(--teal);border-radius:999px;padding:6px 14px;font-weight:800;font-size:16px}
 .door{width:170px;height:170px;justify-self:center;color:var(--lime)}
