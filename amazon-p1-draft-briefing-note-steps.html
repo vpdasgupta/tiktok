@@ -86,48 +86,21 @@ RESKIN 2026-11-22 (CSS only; TASK content and engine unchanged):
 <script>
 /* ============================ EDIT THIS ============================ */
 const TASK = {
-  "deckId": "amazon-p1-draft-briefing-note-steps-v3",
+  "deckId": "amazon-p1-draft-briefing-note-steps-v4",
   "title": "Draft a briefing note",
   "exampleUrl": "",
   "steps": [
     {
       "title": "What you'll hand in",
-      "instruction": "You'll write a <b>300–400 word briefing note</b> that frames early attrition at an Amazon fulfillment center as a clear, urgent business problem. First you'll run a quick cost estimate so your note has real dollar figures. The six parts and the full worked example are on the previous page, Learn How to Write a Briefing Note.",
+      "instruction": "You'll write a <b>300–400 word briefing note</b> that frames early attrition at an Amazon fulfillment center as a clear, urgent business problem. Keep the P1 Evidence Pack and your cost-of-turnover sheet open. The six parts and a full worked example are on the previous page, Learn How to Write a Briefing Note.",
       "sample": {
-        "label": "Your 3 submissions",
+        "label": "Your 2 submissions",
         "kind": "text",
-        "body": "1. Your briefing note as a PDF (upload)\n2. The link to your Google Doc\n3. The link to your cost-of-turnover sheet\nTime: about 1 hour (15 min sheet, 40 min draft, 5 min check and submit)"
+        "body": "1. Your briefing note as a PDF (upload)\n2. The link to your Google Doc\nTime: about 45 minutes (40 min draft, 5 min check and submit)"
       },
-      "onTrack": "you know the 3 things you'll submit.",
+      "onTrack": "you know the 2 things you'll submit and have the Evidence Pack and your sheet open.",
       "stuck": [
-        "Can't find the Evidence Pack? It's the first page of Step 3."
-      ]
-    },
-    {
-      "title": "Copy the Evidence Pack Sheet",
-      "instruction": "Open the <a href=\"https://docs.google.com/spreadsheets/d/1UuC16_eU9NC4vBVFJV1r2IajG4VkI3mUGvgskZchk8Y/edit\" target=\"_blank\" rel=\"noopener\">Evidence Pack Sheet (opens in a new tab)</a>. Click <b>File</b>, then <b>Make a copy</b>, and name it <i>Your Name – Cost of Turnover</i>. This copy is your cost-of-turnover sheet. Go to the <b>Cost Inputs</b> tab. The yellow cells hold the Evidence Pack inputs, and the Result column updates on its own.",
-      "sample": {
-        "label": "Cost Inputs tab results (150% turnover)",
-        "kind": "text",
-        "body": "Leavers per year: 150\nEarly leavers (first 90 days): 100\nCost, low: $705,000\nCost, mid: $1,200,000\nCost from 90-day exits (mid): $800,000"
-      },
-      "onTrack": "your copy's Cost Inputs tab shows $705,000 (low) and $1,200,000 (mid).",
-      "stuck": [
-        "No <b>Make a copy</b> option? Sign in to your Google account first."
-      ]
-    },
-    {
-      "title": "Add a lower-case tab",
-      "instruction": "One estimate on its own is easy to doubt, so consultants show a range. Right-click the <b>Cost Inputs</b> tab at the bottom of the screen and choose <b>Duplicate</b>. Rename the new tab <i>Lower case</i>. In that tab, change <b>B. Annual turnover rate</b> (cell C3) from 150% to <b>124%</b>, the NELP figure in row 9 of the Evidence Pack. Leave every other input as it is.",
-      "sample": {
-        "label": "Lower case tab results (124% turnover)",
-        "kind": "text",
-        "body": "Leavers per year: 124\nEarly leavers (first 90 days): about 83\nCost, low: $582,800\nCost, mid: $992,000\nCost from 90-day exits (mid): $661,333\nYour range: about $583,000 (lower case, low) to $1.2 million (Cost Inputs, mid) a year per 100 associates"
-      },
-      "onTrack": "your Lower case tab shows $582,800 (low) and $992,000 (mid), and your Cost Inputs tab still shows 150%.",
-      "stuck": [
-        "Numbers way off? Type 124% with the % sign. Typing 124 on its own gives 12,400%.",
-        "Row 9 is a row in the Evidence Pack, not in your sheet."
+        "Can't find your cost range? It's the sentence you wrote in the Estimate the Cost of Turnover task."
       ]
     },
     {
@@ -136,7 +109,7 @@ const TASK = {
       "sample": {
         "label": "What each section takes from your work",
         "kind": "text",
-        "body": "Problem Statement: at least 2 Evidence Pack figures, with source and year\nWhy It Matters: your range from both tabs, plus the 90-day cost\nRoot Causes: 2–3 themes from the employee reviews you read in Step 2\nNext Steps: what to find out, not a fix"
+        "body": "Problem Statement: at least 2 Evidence Pack figures, with source and year\nWhy It Matters: your cost range and 90-day cost from Estimate the Cost of Turnover\nRoot Causes: 2–3 themes from the employee reviews you read in Step 2\nNext Steps: what to find out, not a fix"
       },
       "onTrack": "every section has at least one sentence, and Why It Matters gives your dollar range.",
       "stuck": [
@@ -150,7 +123,7 @@ const TASK = {
       "sample": {
         "label": "Done when",
         "kind": "text",
-        "body": "Your note is 300–400 words and uses all six sections.\nIt cites at least 2 figures from the P1 Evidence Pack, each with source and year, worded as estimates where needed (\"reported,\" \"leaked\").\n\"Why It Matters\" gives the cost range from both tabs of your sheet.\n\"Next Steps\" names things to investigate, not a solution."
+        "body": "Your note is 300–400 words and uses all six sections.\nIt cites at least 2 figures from the P1 Evidence Pack, each with source and year, worded as estimates where needed (\"reported,\" \"leaked\").\n\"Why It Matters\" gives your cost range from Estimate the Cost of Turnover.\n\"Next Steps\" names things to investigate, not a solution."
       },
       "onTrack": "you can tick all four lines.",
       "stuck": [
@@ -159,18 +132,17 @@ const TASK = {
     },
     {
       "title": "Export, share and submit",
-      "instruction": "Submit 3 things in the task box below the steps:",
+      "instruction": "Submit 2 things in the task box below the steps:",
       "items": [
         "<b>Your briefing note as a PDF.</b> In Google Docs, click <b>File</b>, then <b>Download</b>, then <b>PDF Document (.pdf)</b>. Upload the file.",
-        "<b>The link to your Google Doc.</b> Click <b>Share</b>, set General access to <i>Anyone with the link</i>, role <i>Viewer</i>, then <b>Copy link</b>.",
-        "<b>The link to your cost-of-turnover sheet</b>, with the same sharing setting."
+        "<b>The link to your Google Doc.</b> Click <b>Share</b>, set General access to <i>Anyone with the link</i>, role <i>Viewer</i>, then <b>Copy link</b>."
       ],
       "sample": {
         "label": "Before you click submit",
         "kind": "text",
-        "body": "Open both links in a private browser window.\nCheck that each one opens without asking you to sign in or request access."
+        "body": "Open your Doc link in a private browser window.\nCheck that it opens without asking you to sign in or request access."
       },
-      "onTrack": "both links open in a private window and your PDF is attached.",
+      "onTrack": "your Doc link opens in a private window and your PDF is attached.",
       "stuck": [
         "Link asks for access? Go back to <b>Share</b> and change General access from <i>Restricted</i> to <i>Anyone with the link</i>."
       ]
@@ -186,7 +158,7 @@ const TASK = {
       },
       {
         "name": "Evidence use",
-        "lookFor": "Cites at least 2 figures from the P1 Evidence Pack, each with source and year, and says when a figure is leaked or estimated. Uses the cost range from the cost-of-turnover sheet."
+        "lookFor": "Cites at least 2 figures from the P1 Evidence Pack, each with source and year, and says when a figure is leaked or estimated. Uses the cost range from your cost-of-turnover estimate."
       },
       {
         "name": "Root-cause depth",
@@ -197,7 +169,7 @@ const TASK = {
         "lookFor": "Ends with clear next steps or questions that point toward investigation, not premature solutions."
       }
     ],
-    "finish": "Done? Submit your PDF and both links in the task box below the steps."
+    "finish": "Done? Submit your PDF and Doc link in the task box below the steps."
   }
 };
 /* ======================= DO NOT EDIT BELOW ======================== */
