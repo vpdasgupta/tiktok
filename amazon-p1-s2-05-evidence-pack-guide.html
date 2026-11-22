@@ -31,7 +31,8 @@ a:hover{color:var(--text)}
 .dot.now{width:26px;border-radius:6px;border-color:#fff;background:var(--grad)}
 .restart{white-space:nowrap;min-height:44px;border:2px solid var(--edge);background:transparent;color:var(--text);border-radius:999px;padding:8px 16px;font-size:15px;font-weight:700;cursor:pointer}
 .restart:hover{border-color:var(--text)}
-.slides{flex:1;display:flex}
+.slides{flex:1;display:flex;min-width:0}
+.slide{min-width:0}
 .slide{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:6px 0}
 .eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin:0}
 .lead{font-size:clamp(23px,3.2vw,34px);line-height:1.18;font-weight:800;margin:0;max-width:30ch}
@@ -54,7 +55,7 @@ a:hover{color:var(--text)}
 .ghost[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:var(--ink)}
 .go{min-height:44px;border:0;background:var(--blue);color:var(--ink);border-radius:999px;padding:10px 20px;font-size:15px;font-weight:800;cursor:pointer}
 .go:hover:not(:disabled){background:var(--blue-soft)}
-.go:disabled,.ghost:disabled{opacity:.45;cursor:default}
+.go:disabled,.ghost:disabled,.ghost[aria-disabled="true"]{opacity:.45;cursor:default}
 .chips{display:flex;gap:10px;flex-wrap:wrap;list-style:none;margin:0;padding:0}
 .chips li{border:2px solid var(--teal);border-radius:999px;padding:6px 14px;font-weight:800;font-size:16px}
 .door{width:170px;height:170px;justify-self:center;color:var(--lime)}
@@ -229,22 +230,16 @@ a:hover{color:var(--text)}
 <div class="row"><button type="button" class="go" id="qcheck">Check</button><button type="button" class="ghost" id="qnext" hidden>Next question</button></div>
 <p class="fb5" id="qfb" role="status"></p></section>
 <section class="slide" aria-label="Slide 6 of 7" hidden><p class="eyebrow">Cost of turnover</p>
-<h2 class="lead" tabindex="-1">Five inputs chain into one rough cost. Pick a cost per replacement.</h2>
-<ol class="inputs" aria-label="Inputs per 100 associates"><li><span class="k">A. Headcount</span><b>100 associates</b><span class="sub">so you can scale it</span></li><li><span class="k">B. Turnover rate</span><b>150%</b><span class="sub">row 6</span></li><li><span class="k">C. Early share</span><b>about 2/3</b><span class="sub">row 8, an assumption</span></li><li><span class="k">D. Pay per associate</span><b>$40,000</b><span class="sub">$20/hour &times; 2,000 hours</span></li><li><span class="k">E. Cost per replacement</span><b>$4,700 or $8,000</b><span class="sub">low: row 11, mid: 20% of D</span></li></ol>
-<div class="seg" role="group" aria-label="Cost per replacement">
-  <button type="button" class="ghost" id="low" aria-pressed="true">Low: $4,700</button>
-  <button type="button" class="ghost" id="mid" aria-pressed="false">Mid: $8,000</button>
-</div>
-<div aria-live="polite" id="cres">
-  <p class="res">100 &times; 150% = 150 leavers a year. About 2/3 of them, around 100, leave before day 90.</p>
-  <p class="res" id="cline"></p>
-</div>
+<h2 class="lead" tabindex="-1">Five inputs chain into one rough cost.</h2>
+<ol class="inputs" aria-label="Inputs per 100 associates"><li><span class="k">A. Headcount</span><b>100 associates</b><span class="sub">so you can scale it</span></li><li><span class="k">B. Turnover rate</span><b>150%</b><span class="sub">row 6; row 9 gives 124%</span></li><li><span class="k">C. Early share</span><b>about 2/3</b><span class="sub">row 8, an assumption</span></li><li><span class="k">D. Pay per associate</span><b>$40,000</b><span class="sub">$20/hour &times; 2,000 hours</span></li><li><span class="k">E. Cost per replacement</span><b>$4,700 or $8,000</b><span class="sub">low: row 11, mid: 20% of D</span></li></ol>
+<p class="res">The method: headcount &times; turnover rate gives leavers a year. Leavers &times; cost per replacement gives the yearly cost.</p>
+<p class="res">The Cost Inputs tab holds these sourced inputs. You'll use them to build your own estimate in the next task.</p>
 <p class="src">A rough estimate built on older, third-party numbers. Don't present it as Amazon's actual cost.</p></section>
 <section class="slide" aria-label="Slide 7 of 7" hidden><p class="eyebrow auto">Where you'll use it</p>
-<h2 class="lead auto" tabindex="-1">In Step 3, this pack becomes your evidence.</h2>
+<h2 class="lead auto" tabindex="-1">In this step, this pack becomes your evidence.</h2>
 <div class="uses">
   <div class="card auto d1"><h3><span class="ic badge" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M6 8h28v18H18l-7 6v-6H6z"/><path d="M13 15h14M13 20h9"/></svg></span>Briefing note</h3><p>Cite at least 2 figures, each with its source and year.</p></div>
-  <div class="card auto d2"><h3><span class="ic badge" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14"/><path d="M24.5 14.5c-1-1.6-2.7-2.5-4.5-2.5-2.8 0-4.5 1.6-4.5 3.6 0 4.8 9.5 2.6 9.5 7.8 0 2.1-2 3.6-5 3.6-2 0-3.9-1-5-2.6M20 9v3M20 27v3"/></svg></span>Cost-of-turnover sheet</h3><p>Use inputs A to E to estimate what turnover costs.</p></div>
+  <div class="card auto d2"><h3><span class="ic badge" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14"/><path d="M24.5 14.5c-1-1.6-2.7-2.5-4.5-2.5-2.8 0-4.5 1.6-4.5 3.6 0 4.8 9.5 2.6 9.5 7.8 0 2.1-2 3.6-5 3.6-2 0-3.9-1-5-2.6M20 9v3M20 27v3"/></svg></span>Cost-of-turnover sheet</h3><p>Use inputs A to E as guardrails for your own estimate of what turnover costs.</p></div>
 </div>
 <p class="auto d2">Want the figures in a spreadsheet? Open the Google Sheet version from the page.</p>
 <p class="nexthint auto d3">Done? Click the platform's <b>Next</b> button below. <span aria-hidden="true">↓</span></p></section>
@@ -325,15 +320,7 @@ function checkQ() {
   $id('qnext').hidden = false; $id('qnext').textContent = last ? 'Try again' : 'Next question';
   $id('qnext').focus();
 }
-/* 6: cost */
-function cost(m) {
-  $id('low').setAttribute('aria-pressed', m === 'low');
-  $id('mid').setAttribute('aria-pressed', m === 'mid');
-  $id('cline').innerHTML = m === 'low'
-    ? 'Low: 150 &times; $4,700 = <b>$705,000</b> a year. About two-thirds of it comes from people who leave in their first 90 days.'
-    : 'Mid: 150 &times; $8,000 = <b>$1,200,000</b> a year. About <b>$800,000</b> of it comes from 90-day exits (100 &times; $8,000).';
-}
-W.cue = {0: '.grp', 1: '.sbtn', 2: '#yearly', 4: '.opt', 5: '#mid'};
+W.cue = {0: '.grp', 1: '.sbtn', 2: '#yearly', 4: '.opt'};
 W.init = () => {
   all('.grp').forEach(b => b.onclick = () => pickGroup(+b.dataset.g));
   all('.sbtn').forEach(b => b.onclick = () => {
@@ -351,15 +338,13 @@ W.init = () => {
   $id('qcheck').onclick = checkQ;
   $id('qnext').onclick = () => { if (qi === Q.length - 1) { qi = 0; qscore = 0; } else qi++; showQ(true); };
   all('.opt input').forEach(i => i.onchange = () => { if (!qdone) $id('qfb').textContent = ''; });
-  $id('low').onclick = () => cost('low');
-  $id('mid').onclick = () => cost('mid');
-  sortReset(); meter('m'); showQ(false); cost('low');
+  sortReset(); meter('m'); showQ(false);
 };
 W.enter = { 2: () => meter(mm) };
 W.reset = () => {
   all('.grp').forEach(b => b.setAttribute('aria-pressed', 'false'));
   $id('grpPanel').innerHTML = '<p class="muted">Pick a group to see its figures.</p>';
-  sortReset(); meter('m'); qi = 0; qscore = 0; showQ(false); cost('low');
+  sortReset(); meter('m'); qi = 0; qscore = 0; showQ(false);
 };
 </script>
 <script>
