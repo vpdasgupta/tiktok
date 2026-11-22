@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Employee Review Cards</title>
+<!--
+  Amazon P1 Step 2, page 5 "[Task] Find Who's at Risk of Leaving" (2026-11-22).
+  One card per employee review, Amazon Supply Chain palette (same tokens as gen-attrition-widgets.py).
+  Review text is copied word for word from the Notion page (Indeed, 2021-23). No signals are
+  highlighted or ranked: finding them is the student's task.
+
+  ACCESSIBILITY (WCAG 2.2 AA)
+  - One sr-only H1; each card's title is its H2.
+  - Employee picker is an ARIA tablist: roving tabindex, Left/Right/Home/End. Prev/Next buttons
+    move focus to the new card's H2 and a polite live region says "Employee K of 3".
+  - Stars and rating bars are decorative (aria-hidden); the same values are in visible text.
+  - Pros/cons use + / - shapes and labels, never color alone. Ratings use one neutral color.
+  - 44 px targets, lime 3 px focus ring, reflows at 320 px, prefers-reduced-motion respected.
+  - Contrast on #18202A: #F5F3EF 15.1, #B7B7B7 8.3, #94ED88 11.6, #7CC4FF 8.6, #929292 5.3.
+-->
+<style>
+:root{--ink:#0F141A;--panel:#18202A;--panel-2:#1F2935;--line:#2A3542;--edge:#929292;--text:#F5F3EF;--muted:#B7B7B7;
+--blue:#1A98FF;--blue-soft:#7CC4FF;--teal:#36C2B4;--lime:#94ED88;--grad:linear-gradient(90deg,#1A98FF,#36C2B4,#94ED88);--focus:#94ED88}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:"Amazon Ember","Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;
+background:radial-gradient(640px 360px at 100% 0%,rgba(5,120,255,.22),transparent 65%),radial-gradient(520px 320px at 0% 100%,rgba(54,194,180,.12),transparent 65%),var(--panel)}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.w{position:relative;padding:16px 24px 26px;max-width:1000px;margin:0 auto}
+.w::after{content:"";position:fixed;left:0;right:0;bottom:0;height:5px;background:var(--grad)}
+.ic{display:inline-grid;place-items:center;flex:none}
+.ic svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* top: instruction + picker */
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin:0}
+.tabs{display:flex;gap:10px;flex-wrap:wrap}
+.tab{min-height:48px;display:flex;align-items:center;gap:10px;padding:6px 16px 6px 6px;border-radius:999px;border:2px solid var(--edge);
+background:transparent;color:var(--text);font-size:15px;font-weight:800;cursor:pointer}
+.tab:hover{border-color:var(--text)}
+.tab .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--panel-2);border:2px solid var(--edge);font-size:15px}
+.tab[aria-selected="true"]{border-color:transparent;background:var(--blue);color:var(--ink)}
+.tab[aria-selected="true"] .av{background:var(--ink);color:var(--text);border-color:var(--ink)}
+.tab .seen{width:18px;height:18px;color:var(--lime)}
+.tab[aria-selected="true"] .seen{color:var(--ink)}
+
+/* card */
+.card{background:rgba(15,20,26,.6);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.card:focus{outline:none}
+.card:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.head{display:flex;gap:16px;align-items:center;padding:18px 22px;background:linear-gradient(90deg,rgba(26,152,255,.18),rgba(54,194,180,.08) 60%,transparent);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.badge{width:64px;height:64px;border-radius:18px;background:var(--grad);color:var(--ink);padding:10px;position:relative}
+.badge b{position:absolute;right:-8px;bottom:-8px;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--text);border:2px solid var(--lime);display:grid;place-items:center;font-size:14px}
+.who{flex:1 1 220px}
+.who h2{margin:0;font-size:24px;line-height:1.2}
+.who h2:focus{outline:none}.who h2:focus-visible{outline:3px solid var(--focus);outline-offset:4px;border-radius:4px}
+.meta{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;color:var(--muted);font-size:15px}
+.meta li{display:flex;align-items:center;gap:6px}
+.meta .ic{width:18px;height:18px;color:var(--blue-soft)}
+.stars{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.stars .row{display:flex;gap:3px}
+.star{width:26px;height:26px}
+.star svg{width:100%;height:100%}
+.stars p{margin:0;font-size:15px;font-weight:800}
+
+.body{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:0}
+.left,.right,.who,.bars li>div{min-width:0}
+.left{padding:20px 22px;border-right:1px solid var(--line)}
+.right{padding:20px 22px;display:flex;flex-direction:column;gap:18px}
+.title{position:relative;margin:0 0 12px;padding-left:44px;font-size:20px;font-weight:800;line-height:1.3}
+.title .ic{position:absolute;left:0;top:0;width:34px;height:34px;color:var(--lime)}
+.review{margin:0;font-size:16px;color:var(--text)}
+.review p{margin:0 0 10px}
+.review p:last-child{margin:0}
+h3{margin:0 0 10px;font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+
+/* rating bars */
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.bars li{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center}
+.bars .ic{width:24px;height:24px;color:var(--blue-soft)}
+.bars .lbl{font-size:14px;font-weight:700;display:block;margin-bottom:4px}
+.segs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.seg{height:10px;border-radius:3px;border:1px solid var(--edge);background:transparent}
+.seg.on{background:var(--blue-soft);border-color:var(--blue-soft)}
+.bars .val{font-size:16px;font-weight:800;min-width:2.6ch;text-align:right}
+
+/* pros / cons */
+.pc{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.pc li{display:flex;gap:10px;align-items:flex-start;font-size:15px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.pc .mk{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:900;font-size:18px;line-height:1}
+.pc .pro .mk{background:var(--lime);color:var(--ink)}
+.pc .con .mk{border:2px solid var(--text);color:var(--text)}
+.pc b{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.none{margin:0;font-size:15px;color:var(--muted);background:var(--panel-2);border:1px dashed var(--edge);border-radius:12px;padding:10px 12px}
+
+/* footer nav */
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;flex-wrap:wrap}
+.btn{min-height:44px;border:2px solid var(--edge);background:transparent;color:var(--text);border-radius:999px;padding:8px 18px;font-size:15px;font-weight:800;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.btn:hover{border-color:var(--text)}
+.btn.go{border:0;background:var(--grad);color:var(--ink);padding:10px 22px}
+.btn.go:hover{filter:brightness(1.1)}
+.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.count{font-size:15px;color:var(--muted);font-weight:700}
+.done{margin:0;font-size:15px;font-weight:700;color:var(--lime);display:flex;gap:8px;align-items:center}
+.done svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.gone{visibility:hidden}
+
+@media (max-width:720px){
+ .w{padding:12px 16px 22px}
+ .body{grid-template-columns:minmax(0,1fr)}
+ .left{border-right:0;border-bottom:1px solid var(--line)}
+ .stars{align-items:flex-start;width:100%}
+ .tab{padding-right:12px}
+}
+@media (max-width:420px){
+ .tab .nm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+ .tab{padding-right:8px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="w">
+  <h1 class="sr-only">Three employee reviews</h1>
+  <div class="top">
+    <p class="eyebrow" id="pick">Read all 3 reviews</p>
+    <div class="tabs" role="tablist" aria-labelledby="pick" id="tabs"></div>
+  </div>
+  <div id="cards"></div>
+  <div class="nav">
+    <button class="btn" id="prev" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Previous</button>
+    <span class="count" id="count" aria-hidden="true"></span>
+    <button class="btn go" id="next" type="button">Next employee<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+    <p class="done" id="done" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v14M6 12l6 6 6-6"/></svg>Answer the 3 questions below the reviews.</p>
+  </div>
+  <div class="sr-only" aria-live="polite" id="status"></div>
+</main>
+
+<script>
+(() => {
+const ICON = {
+  person:'<circle cx="20" cy="13" r="6"/><path d="M8 35c0-7 5.4-12 12-12s12 5 12 12"/>',
+  role:'<rect x="6" y="11" width="28" height="21" rx="3"/><path d="M15 11V7h10v4M6 19h28"/>',
+  pin:'<path d="M20 35s-11-10-11-19a11 11 0 0 1 22 0c0 9-11 19-11 19z"/><circle cx="20" cy="16" r="4"/>',
+  cal:'<rect x="6" y="9" width="28" height="25" rx="3"/><path d="M6 17h28M13 5v7M27 5v7"/>',
+  quote:'<path d="M8 28c0-8 3-13 9-15M22 28c0-8 3-13 9-15"/><circle cx="12" cy="27" r="4"/><circle cx="26" cy="27" r="4"/>',
+  balance:'<path d="M20 6v28M10 34h20M8 12h24"/><path d="M8 12l-5 10h10zM32 12l-5 10h10z"/>',
+  dollar:'<circle cx="20" cy="20" r="14"/><path d="M24.5 14.5c-1-1.6-2.7-2.5-4.5-2.5-2.8 0-4.5 1.6-4.5 3.6 0 4.8 9.5 2.6 9.5 7.8 0 2.1-2 3.6-5 3.6-2 0-3.9-1-5-2.6M20 9v3M20 27v3"/>',
+  stairs:'<path d="M6 32h8v-8h8v-8h8V8"/><path d="M25 8h5v5"/>',
+  boss:'<circle cx="20" cy="11" r="5"/><path d="M10 34c0-6 4.5-11 10-11s10 5 10 11"/><path d="M20 23l-2 5 2 6 2-6z"/>',
+  team:'<circle cx="13" cy="14" r="5"/><circle cx="27" cy="14" r="5"/><path d="M3 33c0-6 4.5-10 10-10s10 4 10 10M17 33c0-6 4.5-10 10-10s10 4 10 10"/>',
+  check:'<path d="M8 21l8 8 16-17"/>'
+};
+const ico = (n, c='ic') => `<span class="${c}" aria-hidden="true"><svg viewBox="0 0 40 40">${ICON[n]}</svg></span>`;
+const STAR = f => `<span class="star" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="${f?'#94ED88':'none'}" stroke="${f?'#94ED88':'#929292'}" stroke-width="1.8" stroke-linejoin="round"/></svg></span>`;
+const AREAS = [['balance','Work/Life Balance'],['dollar','Compensation/Benefits'],['stairs','Job Security/Advancement'],['boss','Management'],['team','Culture']];
+
+const E = [
+ { role:'Amazon Associate', place:'Coppell, TX', date:'Feb 17, 2023', stars:3,
+   title:'Easy-going work environment with long shifts',
+   text:["Amazon has a very simple hiring process and is probably one of the quickest jobs you can get. They don't interview you and instead hire groups of people at a time. They will perform a background check, you'll be given a date and time for your drug screening, and if you pass those then you will be given the date and time of orientation. You are able to pick the kind of schedule you want. The shifts are long but you get 3 days off a week instead of two. Benefits and raises are decent. Taking PTO is a lot easier than in most places because it's all submitted through the app and you are given a set amount of PTO that you can take from whenever you like. The only downside is that everything is done through a bot, so if you have an issue or need help, it takes a lot longer to receive it and most of the time they don't know what you're talking about. Also, the restroom breaks are timed, and even though they give you 10-12 minutes, it will sometimes take a while to walk to and from the restroom due to how big the warehouse is."],
+   pros:'Flexible Scheduling, Pto, multiple breaks',
+   cons:'Timed restroom breaks, having to rely on chatbot for any help, no windows/natural light',
+   r:[4,3,3,4,3] },
+ { role:'Problem Solver, Amazon Fulfillment Center', place:'Hebron, KY', date:'July 11, 2021', stars:2,
+   title:"Working at the FC level isn't something you'll want to do for years",
+   text:["HR support is severely lacking.","The management is disorganized and uneven.","While you do get 20 of unpaid lead time per quarter, if you need more than due to illness or injury, you will need to be prepared to navigate a nightmare of red tape and then you may still not get the time off.","Communication is poorly handled leading to inconsistent work practices.","Abrupt changes in processes that are well formulated are a common, painfully repetitious occurrence. Standard work practices are nearly universally nonstandard.","There's a vast margin of overemphasis on tackt times and nearly zero focus on quality"],
+   pros:'Overtime opportunities and decent benefits',
+   cons:'Constant pressure to maintain exhausting rate without regard for circumstances',
+   r:[2,3,2,1,2] },
+ { role:'Picker/Packer', place:'Phoenix, AZ', date:'Sept 15, 2023', stars:5,
+   title:'Working at amazon',
+   text:["I loved this job it was definitely my favorite! I would definitely work here again ! I enjoyed working independently and I miss all the amazing benefits you get just by working there"],
+   pros:null, cons:null,
+   r:[5,5,5,5,5] }
+];
+const N = E.length;
+const tabs = document.getElementById('tabs'), cards = document.getElementById('cards');
+const seen = new Set([0]);
+
+tabs.innerHTML = E.map((e,i) => `<button type="button" role="tab" class="tab" id="tab${i}" aria-controls="card${i}" aria-selected="${i===0}" tabindex="${i===0?0:-1}">
+  <span class="av" aria-hidden="true">${i+1}</span><span class="nm">Employee ${i+1}</span><span class="sr-only" id="seen${i}"></span>${ico('check','seen')}</button>`).join('');
+
+cards.innerHTML = E.map((e,i) => `<section class="card" role="tabpanel" id="card${i}" aria-labelledby="h${i}" tabindex="0" ${i?'hidden':''}>
+  <div class="head">
+    <span class="badge" aria-hidden="true"><svg viewBox="0 0 40 40" style="width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round">${ICON.person}</svg><b>${i+1}</b></span>
+    <div class="who">
+      <h2 id="h${i}" tabindex="-1">Employee ${i+1}</h2>
+      <ul class="meta">
+        <li>${ico('role')}<span class="sr-only">Role: </span>${e.role}</li>
+        <li>${ico('pin')}<span class="sr-only">Location: </span>${e.place}</li>
+        <li>${ico('cal')}<span class="sr-only">Posted: </span>${e.date}</li>
+      </ul>
+    </div>
+    <div class="stars"><div class="row">${[1,2,3,4,5].map(k=>STAR(k<=e.stars)).join('')}</div><p>${e.stars} of 5 stars</p></div>
+  </div>
+  <div class="body">
+    <div class="left">
+      <p class="title">${ico('quote')}<span class="sr-only">Review title: </span>"${e.title}"</p>
+      <div class="review">${e.text.map((t,k)=>`<p>${k===0?'"':''}${t}${k===e.text.length-1?'"':''}</p>`).join('')}</div>
+    </div>
+    <div class="right">
+      <div>
+        <h3>Ratings (out of 5)</h3>
+        <ul class="bars">${AREAS.map(([ic,l],k)=>`<li>${ico(ic)}<div><span class="lbl">${l}</span><span class="segs" aria-hidden="true">${[1,2,3,4,5].map(s=>`<span class="seg${s<=e.r[k]?' on':''}"></span>`).join('')}</span></div><span class="val">${e.r[k].toFixed(1)}</span></li>`).join('')}</ul>
+      </div>
+      <div>
+        <h3>Pros and cons</h3>
+        ${e.pros ? `<ul class="pc"><li class="pro"><span class="mk" aria-hidden="true">+</span><span><b>Pros</b>${e.pros}</span></li><li class="con"><span class="mk" aria-hidden="true">&minus;</span><span><b>Cons</b>${e.cons}</span></li></ul>` : '<p class="none">No pros or cons listed.</p>'}
+      </div>
+    </div>
+  </div>
+</section>`).join('');
+
+const tabEls = [...tabs.children], cardEls = [...cards.children];
+const prev = document.getElementById('prev'), next = document.getElementById('next');
+const count = document.getElementById('count'), done = document.getElementById('done'), status = document.getElementById('status');
+let cur = 0;
+
+function show(i, how){
+  cur = (i + N) % N;
+  seen.add(cur);
+  tabEls.forEach((t,k)=>{
+    const on = k===cur;
+    t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1;
+    t.querySelector('.seen').style.visibility = seen.has(k) && !on ? 'visible' : 'hidden';
+    document.getElementById('seen'+k).textContent = seen.has(k) && !on ? ', read' : '';
+  });
+  cardEls.forEach((c,k)=>{ c.hidden = k!==cur; c.classList.remove('play'); });
+  void cardEls[cur].offsetWidth; cardEls[cur].classList.add('play');
+  count.textContent = `${cur+1} of ${N}`;
+  prev.classList.toggle('gone', cur===0);
+  next.hidden = cur===N-1;
+  done.hidden = !(cur===N-1);
+  if (how==='tab') tabEls[cur].focus();
+  if (how==='btn'){
+    status.textContent=''; setTimeout(()=>status.textContent=`Employee ${cur+1} of ${N}`,60);
+    document.getElementById('h'+cur).focus();
+    window.scrollTo({top:0});
+  }
+}
+tabEls.forEach((t,k)=>{
+  t.addEventListener('click',()=>show(k));
+  t.addEventListener('keydown',e=>{
+    const m={ArrowRight:cur+1,ArrowLeft:cur-1,Home:0,End:N-1}[e.key];
+    if (m!==undefined){ e.preventDefault(); show(m,'tab'); }
+  });
+});
+prev.onclick=()=>show(cur-1,'btn');
+next.onclick=()=>show(cur+1,'btn');
+show(0);
+})();
+</script>
+</body>
+</html>
