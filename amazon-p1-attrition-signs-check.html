@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+================================================================================
+TRAINING CHECK DECK: Spot the signs before someone quits (2026-11-22)
+================================================================================
+Replaces two H5P embeds on the [Training] page "Learn About Risk Factors for
+Attrition" (Amazon P1 Step 2, working copy):
+  - H5P 1292640367338035829 "Signs of Attrition" (image with + hotspots)
+  - H5P 1292640357300430439 "Attrition warning signs" (five associate posts)
+
+Slides: 1 intro → 1 warning-signs slide (four cards that open) → 5 quick checks
+(one real associate post each: name the core issue) → 1 takeaways slide.
+Edit only the DECK object. Checks are practice: never graded, never gated.
+
+PRIVACY: the original posts showed each associate's photo, first name and
+internal alias. All of that is removed here. Posts are labeled "Associate" plus
+the work area only where the post itself names it. Post wording is kept as
+written, typos included.
+
+STYLE: Amazon Supply Chain palette, same as amazon-p1-fc-order-flow-check.html:
+squid ink #0F141A canvas, panel #18202A, #0578FF glow, gradient #1A98FF →
+#36C2B4 → #94ED88, text #F5F3EF, muted #B7B7B7, UI borders #929292.
+Font: Amazon Ember → Helvetica Neue → Arial. Line icons, gradient badges.
+Contrast on #18202A: #F5F3EF 15.1, #B7B7B7 8.3, #94ED88 11.6, #7CC4FF 8.6,
+#929292 5.3 (UI borders); #0F141A on #1A98FF button 6.15.
+
+ACCESSIBILITY (WCAG 2.2 AA):
+  - Inactive slides use `hidden`; on Back/Next/dot navigation focus moves to the
+    new slide's heading; a polite live region announces "Slide K of N".
+  - Warning-sign cards are native <button aria-expanded> disclosures inside
+    <h3>s, not hover hotspots. Content is in the DOM and shown on toggle.
+  - Each check is a native <fieldset>/<legend> radio group plus a "Check answer"
+    button. Feedback goes into an aria-live="polite" region present on load.
+    Right/wrong is said in words and by icon shape, never by color alone.
+  - No arrow-key slide shortcuts, so radio groups keep native arrow keys.
+  - Visible focus ring (lime, 3px), 44px targets, reflows at 320px,
+    prefers-reduced-motion respected.
+  - The last slide points to the platform's own Next button (plain text, no link).
+================================================================================
+-->
+<title>Spot the Signs</title>
+<script>
+/* ============================ EDIT THIS ============================ */
+const DECK = {
+  deckId: "amazon-p1-attrition-signs-check",
+  title: "Signs of attrition",
+  intro: {
+    heading: "Spot the signs before someone quits",
+    lines: [
+      "People rarely quit out of nowhere. Most show signs first.",
+      "Their work slips. They get worn out. They pull away from the team."
+    ],
+    steps: [
+      { icon: "eye", text: "Look at four kinds of warning signs." },
+      { icon: "chat", text: "Read five real posts from associates. Name the core issue in each one." }
+    ]
+  },
+  signs: {
+    heading: "Four kinds of warning signs",
+    intro: "Open each card to see what to look for.",
+    cards: [
+      { name: "Productivity red flags", icon: "trend",
+        items: ["Tasks take longer than usual, with frequent re-dos",
+                "They stop volunteering for new or complex assignments",
+                "They become more error-prone or distracted"],
+        tip: "Ask yourself: has their output or accuracy dropped lately?" },
+      { name: "Burnout warning signs", icon: "battery",
+        items: ["More sick days or last-minute absences",
+                "Visible fatigue, frustration or emotional detachment",
+                "“I’m just tired” becomes their default mood"],
+        tip: "Burnout is physical and emotional. It sneaks in slowly." },
+      { name: "Signs of disconnection", icon: "apart",
+        items: ["Silence in meetings or huddles",
+                "They pull away from team chats, lunches and off-shift talk",
+                "When asked about their future, they shrug or avoid answering"],
+        tip: "If someone doesn’t feel like they belong, they won’t stay." },
+      { name: "Checked-out cues", icon: "door",
+        items: ["Declines feedback or shows no interest in growth",
+                "Skips optional learning or team events",
+                "Seems mentally somewhere else, even when they’re at work"],
+        tip: "These signs often come before a resignation letter." }
+    ]
+  },
+  options: ["Health and safety", "Pay", "Schedule and hours", "Something else"],
+  checks: [
+    {
+      who: "Associate",
+      post: "The reason I'm complaining is because my body is in pain, my arms are already hurting, my back is already hurting. I don't want to do that position putting the car in terror again and that I hurt myself. I'm already hurt, I don't want to hurt myself anymore and I want to talk to my boss to see if I can move to another position and I'm going to keep complaining until they move me. If he doesn't do anything today, then I'm going to talk to a higher-up because I can't work like this in a place where I'm hurting myself.",
+      answer: 0,
+      why: "Their body hurts and they think the job is causing it.",
+      leave: "Maybe. They haven't said they'll quit. They're asking to move first. “I can't work like this” tells you they will leave if nothing changes."
+    },
+    {
+      who: "Associate, palletize area",
+      post: "I work over at palletize area. There is a sign that says people are not suppose to walk through that area . I am six weeks pregnant and four people almost bumped into me while I was working. Sometimes I have to lift fairly large boxes at a fast pace. I would really appreciate if people would use the walk way please. It’s not polite to bump into to pregnant people",
+      answer: 0,
+      why: "People keep walking through their work area, and they're pregnant and lifting large boxes. That's a safety problem.",
+      leave: "Not yet. They're asking politely for a fix. If no one acts, that patience can wear out."
+    },
+    {
+      who: "Associate",
+      post: "So I have been injured for over three weeks. In the meantime, I went to the emergency room. I got checked out I was told to not lift more than 5 pounds or raise my arm above my head. They told me to work with works comp, which was with the company named Sedgwick. I called them. They gave me a caseworker. Once I tried to put the claim through so I can see a physician, that’s when the running around started to happen.\n\nThey had me call from one number to the other. Then they told me to go to HR after HR, they told me to see safety, from safety went back to HR. So basically back-and-forth between HR safety and Sedgwick. After 24 days of my injury I still have not received any assistance. Plus the lady from the insurance company that is handling my case is always rude to me and it’s not trying to help me in anyway, except constantly telling me that she wants to close my case as if I’m lying to them.",
+      answer: 0,
+      nudge: { 3: "Close. The back-and-forth is a big part of it. But what started it? Try again." },
+      why: "It started with an injury. Then they got sent back and forth for 24 days with no help.",
+      leave: "Likely. They feel ignored and doubted while they're hurt. That breaks trust fast."
+    },
+    {
+      who: "Associate",
+      post: "Good evening, I am not able to work on a Saturday’s, I have gone to HR multiple times but there’s nothing that can be done. Unfortunately I am going to have to resign because I am unable to come in on Saturdays. Thank you for the experience!",
+      answer: 2,
+      why: "They can't work Saturdays, and HR told them nothing can change.",
+      leave: "Yes. They say they're going to resign. They asked HR more than once before deciding."
+    },
+    {
+      who: "Associate",
+      post: "Why am I getting only $99 at the end of my 10 hour shift that's a rip off I'm being ripped off I'm about to quit seriously",
+      answer: 1,
+      why: "They feel $99 for a 10-hour shift isn't fair.",
+      leave: "Yes. They say they're about to quit."
+    }
+  ],
+  takeaways: [
+    "Watch for four kinds of warning signs: slipping work, burnout, pulling away and checking out.",
+    "Find the core issue behind a complaint. In these posts it was health and safety, pay or schedule.",
+    "Some people say outright that they'll quit. Others keep asking for help first. A complaint is a warning sign too."
+  ]
+};
+/* ======================= DO NOT EDIT BELOW ======================== */
+</script>
+<style>
+  :root {
+    --ink: #0F141A;
+    --panel: #18202A;
+    --panel-2: #1F2935;
+    --line: #2A3542;      /* decorative only */
+    --edge: #929292;      /* UI borders, 5.3:1 on panel */
+    --text: #F5F3EF;
+    --muted: #B7B7B7;
+    --blue: #1A98FF;
+    --blue-soft: #7CC4FF;
+    --teal: #36C2B4;
+    --lime: #94ED88;
+    --glow: #0578FF;
+    --grad: linear-gradient(90deg, #1A98FF, #36C2B4, #94ED88);
+    --focus: #94ED88;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Amazon Ember", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: var(--ink); color: var(--text);
+    line-height: 1.5; padding: 16px; -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  .deck { max-width: 880px; margin: 0 auto; }
+  .deck-title { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+  .slide {
+    position: relative; overflow: hidden; overflow-wrap: anywhere;
+    background: radial-gradient(520px 300px at 100% 0%, rgba(5,120,255,.20), transparent 65%),
+                radial-gradient(420px 260px at 0% 100%, rgba(54,194,180,.10), transparent 65%), var(--panel);
+    border: 1px solid var(--line); border-radius: 16px; padding: 28px 32px 30px;
+  }
+  .slide::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: var(--grad); }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); margin: 0; }
+  .slide h2 { font-size: 24px; line-height: 1.25; font-weight: 800; margin: 6px 0 12px; }
+  .slide h2:focus { outline: none; }
+  .slide h2:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+  .slide p { font-size: 16px; margin: 0 0 16px; }
+  .muted { color: var(--muted); }
+
+  /* gradient icon badge */
+  .badge { width: 48px; height: 48px; flex: none; border-radius: 12px; display: grid; place-items: center; color: var(--ink); background: var(--grad); }
+  .badge svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ---------- intro ---------- */
+  .hero { display: flex; gap: 22px; align-items: center; margin: 4px 0 18px; }
+  .hero-ring { flex: none; width: 112px; height: 112px; border-radius: 50%; display: grid; place-items: center; color: var(--lime);
+    background: var(--panel-2); border: 3px solid var(--lime); box-shadow: 0 0 0 8px rgba(148,237,136,.12), 0 0 34px rgba(54,194,180,.40); }
+  .hero-ring svg { width: 56px; height: 56px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .hero p { margin: 0 0 6px; font-size: 17px; }
+  .plan { list-style: none; margin: 0 0 16px; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .plan li { display: flex; gap: 14px; align-items: center; background: rgba(15,20,26,.55); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 16px; }
+
+  /* ---------- warning-sign cards ---------- */
+  .signs { list-style: none; margin: 0 0 16px; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+  .sign { position: relative; background: rgba(15,20,26,.55); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .sign::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--grad); }
+  .sign h3 { margin: 0; font-size: 18px; font-weight: 800; }
+  .sign-btn { width: 100%; min-height: 76px; display: flex; gap: 14px; align-items: center; text-align: left; padding: 16px 16px 14px;
+    background: transparent; border: 0; color: var(--text); font-size: 18px; font-weight: 800; cursor: pointer; border-radius: 14px; }
+  .sign-btn:focus-visible { outline-offset: -3px; }
+  .sign-btn .lbl { flex: 1; }
+  .pm { flex: none; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--edge); display: grid; place-items: center; }
+  .pm svg { width: 14px; height: 14px; stroke: var(--text); stroke-width: 2.4; stroke-linecap: round; fill: none; }
+  .sign-btn:hover .pm { border-color: var(--text); }
+  .sign-btn[aria-expanded="true"] .pm { border-color: var(--lime); }
+  .sign-btn[aria-expanded="true"] .pm .v { display: none; }
+  .sign-body { padding: 0 16px 16px; font-size: 15px; }
+  .sign-body ul { margin: 0 0 10px; padding-left: 20px; }
+  .sign-body li { margin-bottom: 4px; }
+  .sign-body .tip { margin: 0; font-size: 15px; color: var(--lime); font-weight: 700; }
+  .open-all { margin: 0; }
+
+  /* ---------- quick check ---------- */
+  .post { margin: 0 0 18px; background: rgba(15,20,26,.55); border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 0 14px 14px 0; padding: 14px 18px; }
+  .post-head { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+  .post-head .badge { width: 40px; height: 40px; border-radius: 10px; }
+  .post-head .badge svg { width: 22px; height: 22px; }
+  .post figcaption { font-size: 14px; font-weight: 800; color: var(--muted); }
+  .post blockquote { margin: 0; }
+  .post blockquote p { font-size: 16px; margin: 0 0 10px; }
+  .post blockquote p:last-child { margin: 0; }
+  fieldset { border: 0; margin: 0 0 14px; padding: 0; min-width: 0; }
+  legend { font-size: 19px; font-weight: 700; line-height: 1.35; margin: 0 0 14px; padding: 0; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .opt { display: flex; gap: 12px; align-items: flex-start; min-height: 44px; padding: 11px 14px;
+    border: 2px solid var(--edge); border-radius: 12px; cursor: pointer; font-size: 16px; background: rgba(15,20,26,.55); }
+  .opt:hover { border-color: var(--text); }
+  .opt input { width: 20px; height: 20px; margin: 2px 0 0; flex: none; accent-color: var(--teal); }
+  .opt:has(input:checked) { border-color: var(--teal); background: rgba(54,194,180,.14); }
+  .opt:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .opt input:focus-visible { outline: none; }
+  .check-btn { min-height: 44px; border: 0; background: var(--blue); color: var(--ink);
+    border-radius: 10px; padding: 10px 20px; font-size: 15px; font-weight: 800; cursor: pointer; }
+  .check-btn:hover { background: var(--blue-soft); }
+  .feedback { margin-top: 14px; }
+  .fb { border-left: 4px solid; border-radius: 0 12px 12px 0; padding: 12px 16px; }
+  .fb p { margin: 0; font-size: 15px; }
+  .fb p + p { margin-top: 6px; }
+  .fb .verdict { font-weight: 800; display: flex; gap: 8px; align-items: center; }
+  .fb.ok { border-color: var(--lime); background: rgba(148,237,136,.10); }
+  .fb.ok .verdict { color: var(--lime); }
+  .fb.no { border-color: var(--blue-soft); background: rgba(26,152,255,.12); }
+  .fb.no .verdict { color: var(--blue-soft); }
+
+  /* ---------- takeaways ---------- */
+  .takeaways { list-style: none; margin: 0 0 18px; padding: 0; counter-reset: t; display: grid; gap: 10px; }
+  .takeaways li { counter-increment: t; display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; font-size: 16px;
+    background: rgba(15,20,26,.55); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .takeaways li::before { content: counter(t); width: 32px; height: 32px; border-radius: 8px; background: var(--grad); color: var(--ink);
+    font-weight: 800; display: grid; place-items: center; }
+  .next-hint { border: 2px dashed var(--edge); border-radius: 12px; padding: 12px 16px; font-size: 15px; margin: 0; color: var(--muted); }
+  .next-hint b { color: var(--text); }
+
+  /* ---------- nav ---------- */
+  .slide-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+  .nav-btn { min-height: 44px; min-width: 44px; background: transparent; border: 2px solid var(--edge); color: var(--text);
+    border-radius: 10px; padding: 9px 18px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .nav-btn:hover:not(:disabled) { border-color: var(--text); }
+  .nav-btn.primary { background: var(--blue); color: var(--ink); border-color: var(--blue); }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--blue-soft); border-color: var(--blue-soft); }
+  .nav-btn:disabled { opacity: .4; cursor: default; }
+  .dots { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; align-items: center; }
+  .dot { width: 30px; height: 44px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .dot::before { content: ""; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--edge); background: transparent; }
+  .dot.seen::before { border-color: var(--blue); background: var(--blue); }
+  .dot[aria-current="step"]::before { width: 28px; height: 14px; border-radius: 7px; border: 2px solid #FFFFFF; background: var(--grad); }
+  .counter { font-size: 13px; color: var(--muted); text-align: center; margin-top: 6px; }
+
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    .slide { padding: 20px 18px 24px; }
+    .slide h2 { font-size: 21px; }
+    .hero { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .hero-ring { width: 84px; height: 84px; }
+    .hero-ring svg { width: 42px; height: 42px; }
+    .plan, .signs, .opts { grid-template-columns: 1fr; }
+    .slide-nav { flex-wrap: wrap; }
+    .dots { order: -1; width: 100%; justify-content: center; }
+    .nav-btn { flex: 1; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slide:not([hidden]) { animation: in .25s ease; }
+    @keyframes in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<main class="deck" aria-labelledby="deckTitle">
+  <h1 class="deck-title" id="deckTitle"></h1>
+  <div id="slides"></div>
+  <nav class="slide-nav" aria-label="Slides">
+    <button type="button" class="nav-btn" id="prevBtn"><span aria-hidden="true">← </span>Back</button>
+    <ul class="dots" id="dots"></ul>
+    <button type="button" class="nav-btn primary" id="nextBtn">Next<span aria-hidden="true"> →</span></button>
+  </nav>
+  <p class="counter" id="counter" aria-hidden="true"></p>
+  <div class="sr-only" role="status" aria-live="polite" id="status"></div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const C = DECK.checks, S = DECK.signs, I = DECK.intro, O = DECK.options;
+  const total = C.length + 3;
+  const KEY = "attrition-check:" + DECK.deckId;
+  $("deckTitle").textContent = DECK.title;
+
+  const ICONS = {
+    eye: '<path d="M3 20s6-11 17-11 17 11 17 11-6 11-17 11S3 20 3 20z"/><circle cx="20" cy="20" r="5.5"/>',
+    chat: '<path d="M6 8h28v18H17l-7 6v-6H6z"/><path d="M12 15h16M12 20h10"/>',
+    signs: '<path d="M20 5 36 33H4z"/><path d="M20 15v9"/><circle cx="20" cy="28.5" r="1.2" fill="currentColor"/>',
+    trend: '<path d="M5 6v29h30"/><path d="M10 13l7 7 5-4 9 11"/><path d="M31 21v6h-6"/>',
+    battery: '<rect x="4" y="12" width="28" height="16" rx="3"/><path d="M36 17v6"/><path d="M9 17v6"/>',
+    apart: '<circle cx="11" cy="12" r="4.5"/><path d="M3 32c0-5 3.5-9 8-9s8 4 8 9"/><circle cx="29" cy="12" r="4.5"/><path d="M21 32c0-5 3.5-9 8-9s8 4 8 9"/><path d="M20 6v28" stroke-dasharray="3 3"/>',
+    door: '<path d="M9 35V5h17v30"/><path d="M26 9l6 2v24h-6"/><path d="M5 35h30"/><circle cx="21" cy="21" r="1.2" fill="currentColor"/>',
+    person: '<circle cx="20" cy="13" r="6"/><path d="M8 35c0-7 5.4-12 12-12s12 5 12 12"/>'
+  };
+  const svg = (k, vb = 40) => `<svg viewBox="0 0 ${vb} ${vb}" aria-hidden="true">${ICONS[k]}</svg>`;
+  const PM = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10"/><path class="v" d="M7 2v10"/></svg>';
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const labels = ["Start here", "Warning signs", ...C.map((c, i) => `Quick check ${i + 1} of ${C.length}`), "What to remember"];
+
+  const intro = `
+    <p class="eyebrow">${labels[0]}</p>
+    <h2 tabindex="-1">${I.heading}</h2>
+    <div class="hero">
+      <span class="hero-ring" aria-hidden="true">${svg("signs")}</span>
+      <div>${I.lines.map(l => `<p>${l}</p>`).join("")}</div>
+    </div>
+    <ul class="plan">${I.steps.map(s => `<li><span class="badge" aria-hidden="true">${svg(s.icon)}</span><span>${s.text}</span></li>`).join("")}</ul>
+    <p class="muted">The checks aren't graded. Try each one and read why.</p>`;
+
+  const signsSlide = `
+    <p class="eyebrow">${labels[1]}</p>
+    <h2 tabindex="-1">${S.heading}</h2>
+    <p>${S.intro}</p>
+    <ul class="signs">${S.cards.map((c, i) => `
+      <li class="sign">
+        <h3><button type="button" class="sign-btn" aria-expanded="false" aria-controls="sign-${i}">
+          <span class="badge" aria-hidden="true">${svg(c.icon)}</span>
+          <span class="lbl">${c.name}</span>
+          <span class="pm" aria-hidden="true">${PM}</span>
+        </button></h3>
+        <div class="sign-body" id="sign-${i}" hidden>
+          <ul>${c.items.map(t => `<li>${t}</li>`).join("")}</ul>
+          <p class="tip">${c.tip}</p>
+        </div>
+      </li>`).join("")}
+    </ul>
+    <p class="muted open-all">Next, read five real posts from associates.</p>`;
+
+  const checkHtml = (c, i) => `
+    <p class="eyebrow">Associate post ${i + 1} of ${C.length}</p>
+    <h2 tabindex="-1">${labels[i + 2]}</h2>
+    <figure class="post">
+      <figcaption class="post-head"><span class="badge" aria-hidden="true">${svg("person")}</span><span>${c.who}</span></figcaption>
+      <blockquote>${c.post.split("\n\n").map(p => `<p>${esc(p)}</p>`).join("")}</blockquote>
+    </figure>
+    <form data-q="${i}" novalidate>
+      <fieldset>
+        <legend>What's the core issue in this post?</legend>
+        <div class="opts">${O.map((o, j) => `<label class="opt"><input type="radio" name="q${i}" value="${j}"><span>${o}</span></label>`).join("")}</div>
+      </fieldset>
+      <button type="submit" class="check-btn">Check answer</button>
+      <div class="feedback" id="fb-${i}" aria-live="polite"></div>
+    </form>`;
+
+  const outro = `
+    <p class="eyebrow">${labels[total - 1]}</p>
+    <h2 tabindex="-1">Three things to remember</h2>
+    <ol class="takeaways">${DECK.takeaways.map(t => `<li><span>${t}</span></li>`).join("")}</ol>
+    <p class="next-hint"><span aria-hidden="true">↓ </span>You're done with this activity. Scroll down and click the platform's <b>Next</b> button at the bottom of the page to save your progress.</p>`;
+
+  const bodies = [intro, signsSlide, ...C.map(checkHtml), outro];
+  $("slides").innerHTML = bodies.map((b, i) =>
+    `<section class="slide" id="s${i}" aria-label="${labels[i]}" hidden>${b}</section>`).join("");
+  $("dots").innerHTML = labels.map((l, i) =>
+    `<li><button type="button" class="dot" data-i="${i}" aria-label="Go to slide ${i + 1}: ${l}"></button></li>`).join("");
+
+  document.querySelectorAll(".sign-btn").forEach(b => b.addEventListener("click", () => {
+    const open = b.getAttribute("aria-expanded") !== "true";
+    b.setAttribute("aria-expanded", String(open));
+    $(b.getAttribute("aria-controls")).hidden = !open;
+  }));
+
+  document.querySelectorAll("form[data-q]").forEach(f => f.addEventListener("submit", e => {
+    e.preventDefault();
+    const i = +f.dataset.q, c = C[i], fb = $("fb-" + i);
+    const picked = f.querySelector("input:checked");
+    if (!picked) { fb.innerHTML = `<div class="fb no"><p>Pick an answer first, then select Check answer.</p></div>`; return; }
+    const v = +picked.value;
+    if (v === c.answer) {
+      fb.innerHTML = `<div class="fb ok"><p class="verdict"><span aria-hidden="true">✓</span>Correct: ${O[c.answer]}.</p><p>${c.why}</p><p><b>Might they leave?</b> ${c.leave}</p></div>`;
+    } else {
+      const hint = (c.nudge && c.nudge[v]) || "Not quite. Read the post again and try another answer.";
+      fb.innerHTML = `<div class="fb no"><p class="verdict"><span aria-hidden="true">↻</span>${hint}</p></div>`;
+    }
+  }));
+
+  let cur = 0;
+  const seen = new Set();
+  function go(i, focus) {
+    cur = Math.max(0, Math.min(total - 1, i));
+    seen.add(cur);
+    document.querySelectorAll(".slide").forEach((s, k) => s.hidden = k !== cur);
+    document.querySelectorAll(".dot").forEach((d, k) => {
+      d.classList.toggle("seen", seen.has(k));
+      if (k === cur) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
+    });
+    $("prevBtn").disabled = cur === 0;
+    $("nextBtn").disabled = cur === total - 1;
+    $("counter").textContent = `Slide ${cur + 1} of ${total}`;
+    try { localStorage.setItem(KEY, cur); } catch (e) {}
+    if (focus) {
+      $("status").textContent = `Slide ${cur + 1} of ${total}: ${labels[cur]}`;
+      $("s" + cur).querySelector("h2").focus();
+    }
+  }
+  $("prevBtn").onclick = () => go(cur - 1, true);
+  $("nextBtn").onclick = () => go(cur + 1, true);
+  $("dots").onclick = e => { const b = e.target.closest(".dot"); if (b) go(+b.dataset.i, true); };
+  let start = 0;
+  try { start = +localStorage.getItem(KEY) || 0; } catch (e) {}
+  go(start, false);
+})();
+</script>
+</body>
+</html>
