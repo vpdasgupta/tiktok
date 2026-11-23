@@ -27,6 +27,7 @@ HOW TO CUSTOMIZE
   - deckId: unique kebab-case slug (remembers the learner's place per task)
   - steps[]: 3–6 steps. Strings may contain simple inline HTML (<b>, <code>, <a>).
   - sample: { label, kind: "text" | "code", body }   (omit if the step has none)
+    Add copy: "Copy text" (the button label) only when learners should paste the sample somewhere.
   - evaluation: omit it entirely if the task isn't graded.
 
 DEPLOY
@@ -101,7 +102,7 @@ const TASK = {
         "<b>Magic Media</b> (<b>Apps</b> panel, on the left of your design): turn a prompt into an image you drag onto a slide. Good for game-night tables and hands.",
         "<b>Magic Write</b> (<b>Apps</b> panel): try 5 rewrites of a hook, then edit the best one down to 7 words or fewer."
       ],
-      sample: { label: "Copy this Magic Media prompt", kind: "code",
+      sample: { label: "Copy this Magic Media prompt", kind: "code", copy: "Copy prompt",
         body: "Candid phone photo, bright daylight. Close-up of adult hands playing a card game\non a wooden kitchen table, a blue mug and teal dice nearby.\nHands only, no faces. No text, no logos. Not a studio shoot." },
       onTrack: "every AI image shows hands only and is labeled “AI image,” and the words on your slides are ones you chose.",
       stuck: [
@@ -324,7 +325,7 @@ const TASK = {
     if (s.kind === "code") {
       const esc = s.body.replace(/&/g, "&amp;").replace(/</g, "&lt;");
       return `<div class="sample">${lbl}<pre role="region" tabindex="0" aria-labelledby="sl-${i}"><code>${esc}</code></pre>
-        <button type="button" class="copy-btn" data-copy="${i}">Copy code</button></div>`;
+        ${s.copy ? `<button type="button" class="copy-btn" data-copy="${i}">${s.copy}</button>` : ""}</div>`;
     }
     return `<div class="sample">${lbl}<p class="sample-text">${s.body}</p></div>`;
   }
@@ -404,7 +405,7 @@ const TASK = {
     try { await navigator.clipboard.writeText(steps[+b.dataset.copy].sample.body); b.textContent = "Copied"; }
     catch (err) { b.textContent = "Select the code and copy it"; }
     announce(b.textContent);
-    setTimeout(() => b.textContent = "Copy code", 2500);
+    setTimeout(() => b.textContent = steps[+b.dataset.copy].sample.copy, 2500);
   });
 
   goTo(step, false);
