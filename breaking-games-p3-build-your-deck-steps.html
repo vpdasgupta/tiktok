@@ -60,7 +60,7 @@ const TASK = {
   steps: [
     {
       title: "Finish your \"Playbook so far\" and your 3 strategy insights",
-      instruction: `Open your Experiment Journal. Give every one of the 8 <b>"Playbook so far"</b> rows a line (what you'd say now) and a proof (the experiment or deliverable behind it). Then write <b>"My 3 strategy insights"</b>: one each for <b>Gen Z</b>, the <b>current buyer</b> and <b>ads</b>, written as Toast (what's working), Evidence (a number and the experiment) and Recommendation (one thing to do). Last, note one starting hunch that held up and one that surprised you. This is Checkpoint 2, and it's what you submit.`,
+      instruction: `Open your Experiment Journal. Give every one of the 8 <b>"Playbook so far"</b> rows a line (what you'd say now) and a proof (the experiment or deliverable behind it). Then write <b>"My 3 strategy insights"</b>: one each for <b>Gen Z</b>, the <b>current buyer</b> and <b>ads</b>, written as Toast (what's working), Evidence (a number and the experiment) and Recommendation (one thing to do). Last, note one starting hunch that held up and one that surprised you. This is Checkpoint 2: your slides are built from it.`,
       sample: { label: "Sample: one row and one insight (made-up vote)", kind: "text",
         body: `6. Best TikTok: Video 2, my Game of 49 tutorial for Rachel (score 71), beat the benchmark on paper (an estimate). Proof: Experiment 2.
 
@@ -90,7 +90,7 @@ Speaker note: Watch the first 3 seconds. The promise is on screen before the gam
     },
     {
       title: "Check it and share it",
-      instruction: `Read only your 8 titles, top to bottom. If they tell the whole plan, your deck works. Rewrite any title that's a topic ("The brand") instead of a sentence. Then check every slide against the list below, set the deck to <b>"Anyone with the link can view,"</b> and download a PDF backup. Posting your link in your cohort's Slack for feedback is optional.`,
+      instruction: `Read only your 8 titles, top to bottom. If they tell the whole plan, your deck works. Rewrite any title that's a topic ("The brand") instead of a sentence. Then check every slide against the list below, set the deck to <b>"Anyone with the link can view"</b> and copy the link. Posting your link in your cohort's Slack for feedback is optional.`,
       sample: { label: "The final check", kind: "text",
         body: `- Every title is a full sentence that states a point
 - Every number has a source, and simulator numbers say "estimate"
@@ -106,13 +106,14 @@ Speaker note: Watch the first 3 seconds. The promise is on screen before the gam
   ],
   evaluation: {
     title: "How it will be evaluated",
-    intro: "Checked for completion, not polish. Your program manager looks at your journal for these three things.",
+    intro: "Checked for completion, not polish. Your program manager opens your deck link and looks for these four things.",
     criteria: [
-      { name: "Playbook so far", lookFor: "All 8 rows have a line and a proof, plus one hunch that held up and one that surprised you." },
-      { name: "3 strategy insights", lookFor: "Gen Z, current buyer and ads, each as Toast, Evidence from an experiment, then a Recommendation, with no roast words." },
-      { name: "Shared", lookFor: "The journal's view link opens for your program manager." }
+      { name: "8 slides", lookFor: "One per \"Playbook so far\" row, each with a title that's a full sentence stating a point." },
+      { name: "Proof", lookFor: "Every claim has a number or an experiment behind it, and a source line." },
+      { name: "Strategy insights", lookFor: "Slide 3 shows your 3 insights (Gen Z, current buyer, ads), each naming its experiment, with no roast words." },
+      { name: "Videos and sharing", lookFor: "Your best TikTok and your ad play on slides 6 and 7, and the link opens for your program manager." }
     ],
-    finish: "Done? Submit your journal's view link on the page below. Save your deck link and PDF: they go in your Relaunch Playbook. Good game, folks."
+    finish: "Done? Submit your deck's view link on the page below. Good game, folks."
   }
 };
 /* ======================= DO NOT EDIT BELOW ======================== */
