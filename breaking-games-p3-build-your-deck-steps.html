@@ -54,112 +54,53 @@ ACCESSIBILITY (WCAG 2.2 AA). Keep these patterns when editing:
 <script>
 /* ============================ EDIT THIS ============================ */
 const TASK = {
-  deckId: "bg-p3-build-your-deck",
+  deckId: "bg-p3-build-your-deck-v2",
   title: "Build Your Deck",
   exampleUrl: "https://vpdasgupta.github.io/tiktok/breaking-games-p3-build-your-deck-example.png",
   steps: [
     {
-      title: "Finish your \"Playbook so far\" and your 3 strategy insights (Checkpoint 2)",
-      instruction: `Open your Experiment Journal and find <b>"Playbook so far."</b> Every one of the 8 rows needs a line (what you'd say now) and a proof (the experiment, roast or deliverable that backs it up). Fill in the rows you left blank at Checkpoint 1, using your ad, your ad test plan and your calendar. Then fill in <b>"My 3 strategy insights,"</b> the section right after the table: one about <b>Gen Z</b>, one about the <b>current buyer</b> and one about <b>ads</b>. Write each one in the client version: <b>Toast</b> (what's already working), then <b>Evidence</b> (a number or comparison from your journal, with the experiment), then <b>Recommendation</b> (one thing to do). Call simulator numbers an "estimate." Last, under the table, write which of your 3 starting hunches (at the top of your journal, from your Project 1 roast) held up and which one surprised you.`,
-      sample: { label: "Sample rows and one insight (made-up vote)", kind: "text",
-        body: `3. What works: see My 3 strategy insights. Proof: Experiments 1 and 3.
-My 3 strategy insights, Ads (Experiment 3): Toast: The new "Good game, folks." line fits family moments well. Evidence: In our cohort's hook vote, the ad that opened on a rainy-Saturday problem won 9 of 14 votes. Recommendation: We recommend opening Rachel-facing ads on a family moment, with the game and the Breaking Games name on screen by second 3. (Write Gen Z and current buyer the same way.)
-6. Best TikTok: Video 2, my Game of 49 tutorial for Rachel (score 71), beat the benchmark on paper (an estimate). Proof: Experiment 2.
-7. The ad: lead with the problem hook for Rachel in Reels; watch hook rate (how many viewers stay past the first 3 seconds). Proof: Experiment 3 and my ad test plan.
-8. Holiday calendar, measurement and first 30 days: 7 moments after the handoff, measured by saves, shares and link taps. Proof: holiday calendar.
-Hunches: Held up: a question hook beats a spec sheet (Experiment 1). Surprised me: the problem hook beat my question hook (Experiment 3).` },
-      onTrack: `all 8 rows have both a line and a proof, each insight has a Toast, Evidence and Recommendation and names its experiment, and you named one hunch that held and one that surprised you.`,
+      title: "Finish your \"Playbook so far\" and your 3 strategy insights",
+      instruction: `Open your Experiment Journal. Give every one of the 8 <b>"Playbook so far"</b> rows a line (what you'd say now) and a proof (the experiment or deliverable behind it). Then write <b>"My 3 strategy insights"</b>: one each for <b>Gen Z</b>, the <b>current buyer</b> and <b>ads</b>, written as Toast (what's working), Evidence (a number and the experiment) and Recommendation (one thing to do). Last, note one starting hunch that held up and one that surprised you. This is Checkpoint 2, and it's what you submit.`,
+      sample: { label: "Sample: one row and one insight (made-up vote)", kind: "text",
+        body: `6. Best TikTok: Video 2, my Game of 49 tutorial for Rachel (score 71), beat the benchmark on paper (an estimate). Proof: Experiment 2.
+
+Ads (Experiment 3). Toast: The new "Good game, folks." line fits family moments well. Evidence: In our cohort's hook vote, the rainy-Saturday problem hook won 9 of 14 votes. Recommendation: We recommend opening Rachel-facing ads on a family moment, with the game on screen by second 3.` },
+      onTrack: `all 8 rows have a line and a proof, each insight has Toast, Evidence and Recommendation, and you named one hunch that held and one that surprised you.`,
       stuck: [
-        `Roast words sneaking in? "Flopped" becomes "underperformed," and "they should have" becomes "we recommend." Never write about a person, a team or a creator.`,
-        `A row or insight with no number? A peer count works too ("3 of 4 peers said they'd comment"), or point to the deliverable that comes closest.`,
-        `Behind on a Week 5 piece? Tell your program manager in Slack today. Done and submitted beats perfect and late.`
+        `Roast words sneaking in? "Flopped" becomes "underperformed," and "they should have" becomes "we recommend."`,
+        `A row with no number? A peer count works too ("3 of 4 peers said they'd comment").`,
+        `Want to see all 3 insights written out? <a href="https://vpdasgupta.github.io/tiktok/breaking-games-p3-strategy-insights-example.png" target="_blank" rel="noopener">Open the strategy insights example<span class="sr-only"> (opens in a new tab)</span></a>.`
       ]
     },
     {
-      title: "Set up your deck draft",
-      instruction: `Make a Google Doc called <code>BG-Deck-Draft-[YourName]</code>. Copy the block below 8 times, one per row, in the same order: 1 The big idea, 2 The challenge, 3 What works, 4 Who we're for, 5 The brand, 6 Best TikTok, 7 The ad, 8 Holiday calendar, measurement and first 30 days.`,
-      sample: { label: "Copy this block 8 times", kind: "code",
-        body: `SLIDE [#]: [slide name from Playbook so far]
-Action title: [one full sentence that states the point]
-Key points: [2 or 3 short bullets, each with its proof]
-Visual: [what the audience sees: a video still, a player slide, a chart]
-Speaker note: [2 or 3 sentences you'll say out loud]
-Source: [where each fact or number came from, and the date you checked it]` },
-      onTrack: `you have 8 blocks, in the same order as your "Playbook so far" rows.`,
-      stuck: [
-        `Can't find your journal? Check the link you shared with your program manager at the Project 2 recap.`,
-        `A row is blank? Look at the "What I learned" lines in your experiments. One of them is that slide's point.`,
-        `Not sure how a journal entry turns into a slide? Open "From one experiment to one slide" near the top of this page.`
-      ]
-    },
-    {
-      title: "Fill slides 1 to 5: the setup and the proof",
-      instruction: `Most of this is already written. Slide 1 is your answer in one line. Slide 2 is the challenge. Slide 3 uses your <b>3 strategy insights</b> from Step 1. Slide 4 uses your two player slides from your mood board. Slide 5 uses Breaking Games' own tagline, mission and voice from the brand guide (on the Project 1 page "Good Game, Folks!"), plus your mood board's Feel and Look. Your job is to cut, not add.`,
-      sample: { label: "Sample student work: slide 3", kind: "text",
-        body: `SLIDE 3: What works
-Action title: A question in the first 3 seconds beat a promo on the same account.
-Key points:
-- Gen Z: a guessing hook got peers commenting (Experiment 1)
-- Current buyer: Rachel saves posts that show who a game is for (Experiment 2)
-- Ads: the problem hook won the cohort hook vote (Experiment 3)
-Visual: "Keep Calm or Panic?" (1,049 views) next to the promo version (595)
-Source: Roast Deck, pair B` },
-      onTrack: `every key point on slide 3 names the experiment or roast pair that proves it.`,
-      stuck: [
-        `Slide 2 feels like a pile of numbers? Keep one: the TikTok last posted in October 2024.`,
-        `An insight still sounds like a roast ("the promo flopped")? Rewrite it as Toast, Evidence, Recommendation.`
-      ]
-    },
-    {
-      title: "Fill slides 6 to 8, then read only your titles",
-      instruction: `Slide 6: your <b>best TikTok</b> (Video 1 or 2), its player tag, and its simulator score and range against the 1,049-view benchmark. Slide 7: your <b>ad</b> with the hook you'd test first, the 3-line ad test plan from Experiment 3, and your Reels and carousel ad mock-ups labeled "concept" if you made the bonus. Slide 8: 6 to 8 calendar moments with go-live dates, 3 numbers beyond views you'd watch (like saves, shares and link taps), and the first 30 days. Then read only your 8 titles, top to bottom. Rewrite any that are topics ("The brand") instead of sentences.`,
-      sample: { label: "Sample student work: slide 6 (score made up)", kind: "text",
-        body: `SLIDE 6: Best TikTok
-Action title: Our tutorial beat the benchmark on paper.
-Key points:
-- Video 2, a Game of 49 tutorial for Rachel
-- Simulator score 71: estimate about 480 to 3,000 views
-- Benchmark: "Keep Calm or Panic?", 1,049 views
-Visual: video still, linked to the file on the Video Board
+      title: "Build your 8 slides in Canva or Google Slides",
+      instruction: `Make one slide per "Playbook so far" row, in the same order. On each slide, write the row as an <b>action title</b>: one full sentence that states the point. Under it, add 2 or 3 short points with their proof, one visual, and a small source line. Put everything else you want to say in the <b>speaker notes</b>, not on the slide. Add your best TikTok to slide 6 and your ad to slide 7 so they play when you present. Tips for both tools are in the toggles below the steps.`,
+      sample: { label: "Sample: slide 6, row to slide (score made up)", kind: "text",
+        body: `Row: Video 2 scored 71, above the benchmark on paper (Experiment 2).
+Title: Our tutorial beat the benchmark on paper.
+Points: Video 2, a Game of 49 tutorial for Rachel · Simulator score 71, an estimate of about 480 to 3,000 views · Benchmark: "Keep Calm or Panic?", 1,049 views
+Visual: the video itself
 Speaker note: Watch the first 3 seconds. The promise is on screen before the game is.` },
-      onTrack: `slides 6 and 7 each have a number from your own work, and your 8 titles tell the whole plan on their own.`,
+      onTrack: `you have exactly 8 slides, each with a sentence title, proof and a source, and both videos play in present mode.`,
       stuck: [
-        `Picking between Video 1 and 2? Pick the one with the clearer "What I learned" line, not only the higher score. The score is feedback, not the grade.`,
-        `Want a second opinion on your titles? Paste them into an AI chat: "Is each of these slide titles a full sentence that states a point? Suggest a tighter version under 15 words. Don't add facts, numbers or game details." Keep only what still sounds like you.`
+        `Want to see a finished deck? Click <b>See the example</b> at the top.`,
+        `A slide holds two ideas? Keep one and move the other to your speaker notes.`,
+        `Text too small? Cut words before you shrink the font.`
       ]
     },
     {
-      title: "Build it in Gamma or Canva",
-      instruction: `<b><a href="https://gamma.app" target="_blank" rel="noopener">Gamma<span class="sr-only"> (opens in a new tab)</span></a></b> (the free plan works): in a copy of your deck draft, delete the speaker-note lines and put <code>---</code> between slides. Create a new presentation, choose Paste in text, pick the setting that keeps (preserves) your text, and generate once. <b>Canva:</b> create a Presentation and put each block on its own slide. Use the brand-guide colors if you have them, or your mood board's temporary palette, labeled "temporary." Then add a still of your best TikTok and your ad to slides 6 and 7, each linked to its file (Video Board card, then Open in Drive).`,
-      sample: { label: "Sample: what you paste into Gamma", kind: "text",
-        body: `Breaking Games' TikTok comes back as the place to find your next game night, starting with Caminito.
-- Every video ends on a "good game" moment
----
-The TikTok last posted in October 2024, and people know the games better than the company.
-- @breakinggamesllc: 1,301 followers (TikTok profile, date checked)
----
-(6 more slides, one per block)` },
-      onTrack: `you have exactly 8 slides, every title matches your deck draft, and both video links open in present mode.`,
-      stuck: [
-        `Gamma's free plan has limited AI credits. Generate once, then fix small things by hand. Got 10 slides? Merge them back to 8.`,
-        `Want to see it done? Watch the build walkthrough: {V-4.2 BUILD WALKTHROUGH LINK}.`
-      ]
-    },
-    {
-      title: "Clean every slide and share",
-      instruction: `Go through every slide with the checklist below. Then set the deck to "Anyone with the link can view" and download a PDF backup. Want a second set of eyes? You can post your link in your cohort's Slack channel and ask for feedback, but it's optional.`,
-      sample: { label: "The clean-up checklist", kind: "text",
-        body: `- Title matches the deck draft, word for word
-- No sentence on the slide that I didn't write
+      title: "Check it and share it",
+      instruction: `Read only your 8 titles, top to bottom. If they tell the whole plan, your deck works. Rewrite any title that's a topic ("The brand") instead of a sentence. Then check every slide against the list below, set the deck to <b>"Anyone with the link can view,"</b> and download a PDF backup. Posting your link in your cohort's Slack for feedback is optional.`,
+      sample: { label: "The final check", kind: "text",
+        body: `- Every title is a full sentence that states a point
+- Every number has a source, and simulator numbers say "estimate"
+- Each piece says which player it's for (Rachel or Danny)
+- Ad mock-ups are labeled "concept," and any creator idea has an FTC disclosure
 - No AI-made people shown as real players
-- A source and date for every fact and number
-- Each piece says which persona it's for
-- Any ad mock-ups labeled "concept"; FTC disclosure on any creator idea
-- No roast words: every critique leads with what works, shows evidence, and ends in a recommendation` },
-      onTrack: `every line on the checklist is true for every slide.`,
+- No roast words: what works first, then evidence, then a recommendation` },
+      onTrack: `your titles tell the plan on their own and every line on the list is true for every slide.`,
       stuck: [
-        `Text too small? Cut words before you shrink fonts.`,
-        `A slide holds two ideas? Move one to your speaker notes.`
+        `Want a second opinion on your titles? Paste them into an AI chat: "Is each of these a full sentence that states a point? Suggest a tighter version under 15 words. Don't add facts or numbers." Keep only what still sounds like you.`
       ]
     }
   ],
@@ -171,7 +112,7 @@ The TikTok last posted in October 2024, and people know the games better than th
       { name: "3 strategy insights", lookFor: "Gen Z, current buyer and ads, each as Toast, Evidence from an experiment, then a Recommendation, with no roast words." },
       { name: "Shared", lookFor: "The journal's view link opens for your program manager." }
     ],
-    finish: "Done? Submit your journal's view link on the page below. Your deck goes in with your Relaunch Playbook. Good game, folks."
+    finish: "Done? Submit your journal's view link on the page below. Save your deck link and PDF: they go in your Relaunch Playbook. Good game, folks."
   }
 };
 /* ======================= DO NOT EDIT BELOW ======================== */
