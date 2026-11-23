@@ -27,6 +27,7 @@ HOW TO CUSTOMIZE
   - deckId: unique kebab-case slug (remembers the learner's place per task)
   - steps[]: 3–6 steps. Strings may contain simple inline HTML (<b>, <code>, <a>).
   - sample: { label, kind: "text" | "code", body }   (omit if the step has none)
+    Add copy: "Copy text" (the button label) only when learners should paste the sample somewhere.
   - evaluation: omit it entirely if the task isn't graded.
 
 DEPLOY
@@ -89,62 +90,31 @@ Run 2: 4:50. Listener said my big idea was "ask a question first." Close enough.
       ]
     },
     {
-      title: "Set up Loom (or Zoom)",
-      instruction: `Both tools are free and record your slides with your face in a corner. Never used either? Start with Loom: it's built for this. Open your deck in <b>Present</b> mode first, then set up one tool.`,
-      items: [
-        `<b>Loom:</b> Go to loom.com, select <b>Get Loom for free</b> and sign up (your Google account works). Install the Chrome extension or desktop app when it asks. Select the Loom icon: in Chrome it's in the toolbar (look under the puzzle-piece icon); the desktop app sits in your menu bar or taskbar. Choose the mode that records your <b>screen and camera</b>, pick the window with your slides, then pick your camera and microphone from the menus. Allow camera and mic access if your computer asks.`,
-        `<b>Zoom (the alternative):</b> Install the Zoom desktop app (zoom.us/download) and sign in. The browser version can't record. Open <b>Settings</b>, then <b>Recording</b>, and check <b>Record video during screen sharing</b> so your face shows next to your slides. Then select <b>New meeting</b>. You'll be the only one in it.`,
-        `<b>Either way:</b> check your mic, close other tabs, turn off notifications, and sit facing a window or lamp.`
-      ],
+      title: "Set up Loom",
+      instruction: `Make a free Loom account (loom.com) and install the desktop app or Chrome extension. Open your deck in <b>Present</b> mode. In Loom, choose <b>Screen + Cam</b> so your face shows in a small bubble. Check your mic, close other tabs, turn off notifications, and sit facing a window or lamp.`,
       sample: { label: "Your setup checklist", kind: "text",
         body: `- Deck open in Present mode
-- Loom set to screen and camera (or Zoom set to record video while sharing)
+- Loom set to Screen + Cam
 - Mic checked: my voice is clear, not echoing
 - Light in front of me, not behind
 - Notifications off, other tabs closed
 - Cue cards where I can glance at them` },
       onTrack: `a 10-second test recording shows your face lit, your slides sharp, and your voice clear.`,
       stuck: [
-        `Can't install Loom (a school laptop can block extensions)? Use Zoom instead. Neither works? Message your program manager in Slack today, not on the due date.`,
         `Your video's sound doesn't come through in the test? Your captions are burned in, so it still works. Tell viewers what's happening while it plays ("Watch the question pop up in the first 2 seconds").`
       ]
     },
     {
-      title: "Record your pitch",
-      instruction: `Do one practice take and watch it back for one thing to fix. Then record your final take, aiming for <b>4:30 to 5:00</b>. Small slips are fine: pause, breathe, keep going.`,
-      items: [
-        `<b>Loom:</b> Select <b>Start recording</b>. After a 3-second countdown, click into your slides and present. A small control bar shows a timer with pause and stop buttons. Select <b>stop</b> when you finish. The free plan stops on its own at 5:00, so keep an eye on the timer. Your video opens in a browser tab.`,
-        `<b>Zoom:</b> Select <b>Share screen</b>, pick the window with your slides and select <b>Share</b>. Then select <b>Record</b> (it may be under <b>More</b>) and present. When you finish, select <b>Stop recording</b>, then <b>End meeting</b>. Zoom turns your recording into an MP4 file on your computer. Wait for that to finish.`
-      ],
-      sample: { label: "Done beats perfect: rules for your final take", kind: "text",
-        body: `- Two takes, max. Your second take is your final take.
-- Stumbled? Pause, say the line again, keep going. Don't restart.
-- A few "ums" are normal. Leadership is listening for your idea, not polish.
-- Slide didn't advance? Say "next slide" and click again.
-- No editing beyond trimming the start and end.
-- Give yourself 30 minutes. When time's up, submit your best take.` },
-      onTrack: `your take runs 4:30 to 5:00 and you can hear every word.`,
-      stuck: [
-        `Loom cut you off at 5:00 before your last slide? Cut words from slides 2, 4 and 5 and record once more.`,
-        `Tempted to redo it for one small slip? Don't. Viewers forgive a stumble faster than you do.`
-      ]
-    },
-    {
-      title: "Get your link and submit it",
-      instruction: `Name your video <code>BG-Pitch-[YourName]</code>, then get a link that anyone can open.`,
-      items: [
-        `<b>Recorded in Loom:</b> On your video's page, select the title to rename it. To trim dead air, select <b>Edit</b>, then <b>Trim</b>. Select <b>Share</b>, check that anyone with the link can view, and select <b>Copy link</b>. That Loom link is what you submit.`,
-        `<b>Recorded in Zoom (or saved as an MP4):</b> Zoom opens the folder with your MP4 when it finishes (usually Documents, then Zoom). Go to drive.google.com, select <b>New</b>, then <b>File upload</b>, and choose the MP4. When it's uploaded, rename it, right-click it and select <b>Share</b>. Under General access, choose <b>Anyone with the link</b> (Viewer), then select <b>Copy link</b>. That Drive link is what you submit.`
-      ],
-      sample: { label: "The before-you-submit check", kind: "text",
+      title: "Record, trim and share",
+      instruction: `Do one practice take and watch it back for one thing to fix. Then record your final take, aiming for <b>4:30 to 5:00</b> (Loom's free plan has capped recordings at 5 minutes). Small slips are fine: pause, breathe, keep going. Trim the start and end, rename it <code>BG-Pitch-[YourName]</code>, set the link to "Anyone with the link can view," and copy it.`,
+      sample: { label: "The before-you-share check", kind: "text",
         body: `- About 5 minutes (between 4:30 and 5:00)
+- Practiced out loud; good light and audio
 - Clear story: what I learned, who it's for, what I made, what's next
 - Both videos play (or I narrate them)
-- Named BG-Pitch-[YourName]
 - Link opens in a private browser window` },
       onTrack: `the link plays for someone who isn't signed in to your account.`,
       stuck: [
-        `Drive says the video is still processing? That's normal for a few minutes. Submit the link anyway: it plays once processing finishes.`,
         `"Good enough and submitted" beats "perfect and never sent." If your second take is clear and on time, you're done.`
       ]
     }
@@ -351,7 +321,7 @@ Run 2: 4:50. Listener said my big idea was "ask a question first." Close enough.
     if (s.kind === "code") {
       const esc = s.body.replace(/&/g, "&amp;").replace(/</g, "&lt;");
       return `<div class="sample">${lbl}<pre role="region" tabindex="0" aria-labelledby="sl-${i}"><code>${esc}</code></pre>
-        <button type="button" class="copy-btn" data-copy="${i}">Copy code</button></div>`;
+        ${s.copy ? `<button type="button" class="copy-btn" data-copy="${i}">${s.copy}</button>` : ""}</div>`;
     }
     return `<div class="sample">${lbl}<p class="sample-text">${s.body}</p></div>`;
   }
@@ -431,7 +401,7 @@ Run 2: 4:50. Listener said my big idea was "ask a question first." Close enough.
     try { await navigator.clipboard.writeText(steps[+b.dataset.copy].sample.body); b.textContent = "Copied"; }
     catch (err) { b.textContent = "Select the code and copy it"; }
     announce(b.textContent);
-    setTimeout(() => b.textContent = "Copy code", 2500);
+    setTimeout(() => b.textContent = steps[+b.dataset.copy].sample.copy, 2500);
   });
 
   goTo(step, false);
