@@ -27,6 +27,7 @@ HOW TO CUSTOMIZE
   - deckId: unique kebab-case slug (remembers the learner's place per task)
   - steps[]: 3–6 steps. Strings may contain simple inline HTML (<b>, <code>, <a>).
   - sample: { label, kind: "text" | "code", body }   (omit if the step has none)
+    Add copy: "Copy text" (the button label) only when learners should paste the sample somewhere.
   - evaluation: omit it entirely if the task isn't graded.
 
 DEPLOY
@@ -76,7 +77,7 @@ const TASK = {
     {
       title: "Write your resume bullet (optional)",
       instruction: `Write one bullet for social media coordinator, content creator or creator marketing roles. Name your role and <b>Breaking Games</b>, then use strong verbs to list what you made. Keep numbers to ones you can explain in an interview. Call yourself an extern (for example, Social Media Coordinator Extern), never an intern or employee.`,
-      sample: { label: "Copy and edit", kind: "code",
+      sample: { label: "Copy and edit", kind: "code", copy: "Copy text",
         body: `Social Media Coordinator Extern, Breaking Games (via Extern): planned and made 3 short-form videos and a paid-social ad concept (3 hook versions and a test plan) for a TikTok relaunch; built a 7-post holiday content calendar with platforms and post dates; logged results each week and presented the relaunch plan in a 5-minute video. Concept work, never posted.` },
       onTrack: `a recruiter could read your bullet and know what you made and for whom.`,
       stuck: [
@@ -86,7 +87,7 @@ const TASK = {
     {
       title: "Write 3 interview talking points (optional)",
       instruction: `Turn your work into 3 short stories for interviews, using <b>STAR</b>: <b>S</b>ituation (1 sentence), <b>T</b>ask (what you were responsible for), <b>A</b>ction (what you did, the biggest part) and <b>R</b>esult (what changed, and what you learned). Fill in the brackets from your Experiment Journal, paste the prompt into your AI assistant, then rewrite each draft in your own words and practice it out loud in under 90 seconds.`,
-      sample: { label: "AI prompt to copy and fill in", kind: "code",
+      sample: { label: "AI prompt to copy and fill in", kind: "code", copy: "Copy prompt",
         body: `I'm preparing for social media coordinator interviews. Here are facts from an externship project I just finished:
 Client: Breaking Games, an indie tabletop game publisher relaunching its quiet TikTok under a new brand, "Good game, folks."
 My personas: Rachel, 38 (the current buyer) and Danny, 21 (younger players)
@@ -108,7 +109,7 @@ Rules: Use only my facts; don't invent numbers, views, sales or results. The ad 
     {
       title: "Post about it on LinkedIn (optional)",
       instruction: `Write a short post about what you did and what you learned. <b>Post about the externship, not the work itself:</b> don't attach your videos, deck, ad mock-ups or calendar, because program work never gets posted. You can name Breaking Games as your host. For an image, use a photo of you or your setup.`,
-      sample: { label: "Copy and edit", kind: "code",
+      sample: { label: "Copy and edit", kind: "code", copy: "Copy text",
         body: `For the last 6 weeks, I was a social media coordinator extern on a TikTok relaunch for Breaking Games, an indie tabletop game publisher.
 
 What I did:
@@ -350,7 +351,7 @@ Files: available on request once Breaking Games OKs sharing.` },
     if (s.kind === "code") {
       const esc = s.body.replace(/&/g, "&amp;").replace(/</g, "&lt;");
       return `<div class="sample">${lbl}<pre role="region" tabindex="0" aria-labelledby="sl-${i}"><code>${esc}</code></pre>
-        <button type="button" class="copy-btn" data-copy="${i}">Copy code</button></div>`;
+        ${s.copy ? `<button type="button" class="copy-btn" data-copy="${i}">${s.copy}</button>` : ""}</div>`;
     }
     return `<div class="sample">${lbl}<p class="sample-text">${s.body}</p></div>`;
   }
@@ -430,7 +431,7 @@ Files: available on request once Breaking Games OKs sharing.` },
     try { await navigator.clipboard.writeText(steps[+b.dataset.copy].sample.body); b.textContent = "Copied"; }
     catch (err) { b.textContent = "Select the code and copy it"; }
     announce(b.textContent);
-    setTimeout(() => b.textContent = "Copy code", 2500);
+    setTimeout(() => b.textContent = steps[+b.dataset.copy].sample.copy, 2500);
   });
 
   goTo(step, false);
