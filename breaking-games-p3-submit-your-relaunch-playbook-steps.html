@@ -27,6 +27,7 @@ HOW TO CUSTOMIZE
   - deckId: unique kebab-case slug (remembers the learner's place per task)
   - steps[]: 3–6 steps. Strings may contain simple inline HTML (<b>, <code>, <a>).
   - sample: { label, kind: "text" | "code", body }   (omit if the step has none)
+    Add copy: "Copy text" (the button label) only when learners should paste the sample somewhere.
   - evaluation: omit it entirely if the task isn't graded.
 
 DEPLOY
@@ -78,6 +79,7 @@ const TASK = {
       "sample": {
         "label": "Sample student work",
         "kind": "code",
+        "copy": "Copy template",
         "body": "BREAKING GAMES: TIKTOK RELAUNCH PLAYBOOK\nAn externship concept by [Your Name]. Nothing here has been posted or run.\n\nThe plan in one sentence: Breaking Games' TikTok comes back as the place to find your next game night, starting with Caminito.\n\nWatch the pitch (about 5 min): [Loom link]\nView the deck: [deck link]\nExperiment Journal (view only): [journal link]\n\nWhat's inside:\n- 01-Strategy: mood board with player slides, Holiday Content Calendar (the ad test plan is in my journal, Experiment 3)\n- 02-Videos: both TikToks + ad video in 3 hook versions\n- 03-Bonus (if made): Reels and carousel ad mock-ups (concept), Creator Seeding Kit\n\nStart here: test the problem hook first, because it won the cohort hook vote."
       },
       "onTrack": "someone who opens only the cover note knows your plan and can reach every link in one click.",
@@ -334,7 +336,7 @@ const TASK = {
     if (s.kind === "code") {
       const esc = s.body.replace(/&/g, "&amp;").replace(/</g, "&lt;");
       return `<div class="sample">${lbl}<pre role="region" tabindex="0" aria-labelledby="sl-${i}"><code>${esc}</code></pre>
-        <button type="button" class="copy-btn" data-copy="${i}">Copy code</button></div>`;
+        ${s.copy ? `<button type="button" class="copy-btn" data-copy="${i}">${s.copy}</button>` : ""}</div>`;
     }
     return `<div class="sample">${lbl}<p class="sample-text">${s.body}</p></div>`;
   }
@@ -414,7 +416,7 @@ const TASK = {
     try { await navigator.clipboard.writeText(steps[+b.dataset.copy].sample.body); b.textContent = "Copied"; }
     catch (err) { b.textContent = "Select the code and copy it"; }
     announce(b.textContent);
-    setTimeout(() => b.textContent = "Copy code", 2500);
+    setTimeout(() => b.textContent = steps[+b.dataset.copy].sample.copy, 2500);
   });
 
   goTo(step, false);
