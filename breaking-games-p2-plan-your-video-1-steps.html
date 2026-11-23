@@ -27,6 +27,7 @@ HOW TO CUSTOMIZE
   - deckId: unique kebab-case slug (remembers the learner's place per task)
   - steps[]: 3–6 steps. Strings may contain simple inline HTML (<b>, <code>, <a>).
   - sample: { label, kind: "text" | "code", body }   (omit if the step has none)
+    Add copy: "Copy text" (the button label) only when learners should paste the sample somewhere.
   - evaluation: omit it entirely if the task isn't graded.
 
 DEPLOY
@@ -109,10 +110,11 @@ const TASK = {
     },
     {
       "title": "Expand your ideas with AI",
-      "instruction": "Now let AI stretch your draft, not replace it. Click <b>Copy code</b> under the prompt below, paste it into your AI chat assistant, and fill every bracket from your plan doc.",
+      "instruction": "Now let AI stretch your draft, not replace it. Click <b>Copy prompt</b> under the prompt below, paste it into your AI chat assistant, and fill every bracket from your plan doc.",
       "sample": {
         "label": "The expand-your-ideas prompt",
         "kind": "code",
+        "copy": "Copy prompt",
         "body": "I'm planning a TikTok for Breaking Games, a tabletop game producer relaunching its quiet TikTok (@breakinggamesllc). Brand line: \"Good game, folks.\" Voice: a charismatic emcee, not a scene-stealing performer. Clever, casual, friendly (not salesy), and occasionally ridiculous, never unhinged.\n\nFormat: [PASTE your format and pillar]\nWho it's for: [PASTE your player tag]\nGame: [PASTE your game]\nWhat I'm testing: [PASTE your test line]\nMy 2 hooks: [PASTE both hooks, with their visual, text and promise]\nMy 5-shot draft: [PASTE your storyboard]\n\nHelp me expand my ideas:\n1. Write 5 more hooks in the same format. Each must work in under 3 seconds with the sound off, show the game or hands in second 1, speak to my player's moment, and end on a period. Don't start with the brand name, a price, a logo or a promo code. No hype, no jokes at anyone's expense, nothing just for shock.\n2. Suggest 1 different angle on this video that I haven't thought of, in one sentence.\n3. Tighten my storyboard into a table: Shot #, Seconds, On screen, Audio/Text. Keep my hook in shot 1. Total 15 to 30 seconds, no shot longer than 5 seconds, 7 words or fewer of on-screen text per overlay, and the game named on screen at least once. Shot 5 is a 1 to 2 second end card: the Breaking Games logo, \"Good game, folks.\" and \"Find your next game night: link in bio\".\n\nRules: family-safe and PG; adult hands only, no one under 18, no real customers, no AI-made people; everything filmable with a phone on my own table; say \"games,\" not \"toys\"; don't state a price, ages or player count unless I give them to you."
       },
       "onTrack": "you get 5 new hooks, 1 new angle and a storyboard that adds up to 15 to 30 seconds.",
@@ -374,7 +376,7 @@ const TASK = {
     if (s.kind === "code") {
       const esc = s.body.replace(/&/g, "&amp;").replace(/</g, "&lt;");
       return `<div class="sample">${lbl}<pre role="region" tabindex="0" aria-labelledby="sl-${i}"><code>${esc}</code></pre>
-        <button type="button" class="copy-btn" data-copy="${i}">Copy code</button></div>`;
+        ${s.copy ? `<button type="button" class="copy-btn" data-copy="${i}">${s.copy}</button>` : ""}</div>`;
     }
     return `<div class="sample">${lbl}<p class="sample-text">${s.body}</p></div>`;
   }
@@ -455,7 +457,7 @@ const TASK = {
     try { await navigator.clipboard.writeText(steps[+b.dataset.copy].sample.body); b.textContent = "Copied"; }
     catch (err) { b.textContent = "Select the code and copy it"; }
     announce(b.textContent);
-    setTimeout(() => b.textContent = "Copy code", 2500);
+    setTimeout(() => b.textContent = steps[+b.dataset.copy].sample.copy, 2500);
   });
 
   goTo(step, false);
